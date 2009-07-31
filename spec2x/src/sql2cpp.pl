@@ -17,12 +17,14 @@ use List::MoreUtils qw/uniq/;
 # command line arguments
 my $model = 'MyModel';
 my $outdir = '.';
+my $dbfile = "$model.db";
 Getopt::Long::Configure("auto_help");
 GetOptions("model=s" => \$model,
-    "outdir=s" => \$outdir);
+    "outdir=s" => \$outdir,
+    "dbfile=s" => \$dbfile);
 
 # connect to database
-my $dbh = DBI->connect("dbi:SQLite:dbname=$model.db", '', '',
+my $dbh = DBI->connect("dbi:SQLite:dbname=$dbfile", '', '',
     { AutoCommit => 0 });
 
 # templates
@@ -579,9 +581,9 @@ line arguments.
 
 Print a brief help message and exit.
 
-=item B<--model>
+=item B<--dbfile>
 
-Specify the model name.
+Specify the database file name.
 
 =item B<--outdir>
 

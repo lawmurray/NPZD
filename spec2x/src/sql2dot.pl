@@ -14,11 +14,13 @@ use Getopt::Long;
 
 # command line arguments
 my $model = 'MyModel';
+my $dbfile = "$model.db";
 Getopt::Long::Configure("auto_help");
-GetOptions("model=s" => \$model);
+GetOptions("model=s" => \$model,
+    "dbfile=s" => \$dbfile);
 
 # connect to database
-my $dbh = DBI->connect("dbi:SQLite:dbname=$model.db", '', '',
+my $dbh = DBI->connect("dbi:SQLite:dbname=$dbfile", '', '',
     { AutoCommit => 0 });
 
 # database statement handles
@@ -26,7 +28,7 @@ my %sth;
 $sth{'GetNodes'} = $dbh->prepare('SELECT Name, LaTeXName, Formula, ' .
     'LaTeXFormula, Type, Description FROM Node');
 $sth{'GetEdges'} = $dbh->prepare('SELECT ParentNode, ChildNode, Type FROM ' .
-    'Edge, Node WHERE Edge.ChildNode = Node.Name ORDER BY Position');
+    'Edge, Node WHERE Edge.ChildNode = Node.Name ORDER BY Edge.Position');
 $sth{'CheckTrait'} = $dbh->prepare('SELECT 1 FROM NodeTrait WHERE ' .
     'Node = ? AND Trait = ?');
 
@@ -37,8 +39,8 @@ digraph model {
   splines=true;
   sep=.4;
   d2tgraphstyle="scale=0.8"
-  nslimit=8.0;
-  mclimit=8.0;
+  nslimit=2.0;
+  mclimit=2.0;
 End
 #  ratio=0.71;  # for A4 landscape
 
@@ -263,6 +265,10 @@ Print a brief help message and exit.
 =item B<--model>
 
 Specify the model name.
+
+=item B<--dbfile>
+
+Specify the database file name.
 
 =back
 

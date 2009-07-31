@@ -15,12 +15,16 @@ use Getopt::Long;
 
 # command line arguments
 my $model = 'MyModel';
+my $outdir = '.';
+my $srcdir = 'src';
 Getopt::Long::Configure("auto_help");
-GetOptions("model=s" => \$model);
+GetOptions("model=s" => \$model,
+    "outdir=s" => \$outdir,
+    "srcdir=s" => \$srcdir);
 
 # create sqlite database
-my $dbfile = "$model.db";
-`sqlite3 $dbfile < src/sqlite.sql`;
+my $dbfile = "$outdir/$model.db";
+`sqlite3 $dbfile < $srcdir/sqlite.sql`;
 
 # connect to database
 my $dbh = DBI->connect("dbi:SQLite:dbname=$dbfile", '', '', { AutoCommit => 0 });
@@ -114,6 +118,15 @@ Print a brief help message and exit.
 =item B<--model>
 
 Specify the model name.
+
+=item B<--output>
+
+Specify the output directory.
+
+=item B<--srcdir>
+
+Specify the source directory (the directory in which the sqlite.sql script
+resides).
 
 =back
 
