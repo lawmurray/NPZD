@@ -1,0 +1,1 @@
+  static const real_t <% Name %> = CUDA_REAL(<% Value %>);

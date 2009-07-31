@@ -1,0 +1,11 @@
+template<class V1, class V2, class V3, class V4>
+inline void <% ClassName %>::s(const V1& fpax, const V2& rpax,
+    const V3& inpax, V4& x) {
+<% ConstantAliases %>
+
+<% ParentAliases %>
+
+<% Inlines %>
+
+  x = <% Formula %>;
+}

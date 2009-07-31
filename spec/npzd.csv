@@ -1,0 +1,79 @@
+"OriginalName","Name","Description","LaTeXName","LaTeXFormula","Formula","Type","Dependencies","Traits"
+"Kd","KW","Light attenuation, water","K^W",,"0.0","Constant",,
+"Kchla","KC","Light attenuation, Chl-a","K^C",,"0.0","Constant",,
+"Sink","deltaS","Detrital sinking rate","\delta^S",,"0.0","Constant",,
+"FDG","deltaI","Detrital growth inefficiency","\delta^I",,"0.0","Constant",,
+"Q10","tau10",,"\tau^{10}",,"0.0","Constant",,
+"Tref","tauR","Reference temperature (10 deg. C)","\tau^R",,"0.0","Constant",,
+"Achl","piC","Chlorophyl absorption","\pi^C",,"0.0","Constant",,
+"PE","piPE","Photosynthetic efficiency","\pi^{PE}",,"0.0","Constant",,
+"maxNC","piR","Maximum N:C (Redfield)","\pi^R",,"0.0","Constant",,
+"RP","RP","P timescale","R_P",,"0.0","Constant",,
+"RZ","RZ","Z timescale","R_Z",,"0.0","Constant",,
+"Grazeexp","piK","Functional response exponent","\pi^K",,"0.0","Constant",,
+"PBC","betaP","Phytoplankton boundary condition","\beta^P",,,"Forcing",,"IS_F_NODE"
+"ZBC","betaZ","Zooplankton boundary condition","\beta^Z",,,"Forcing",,"IS_F_NODE"
+"NBC","betaN","Nitrogen boundary condition","\beta^N",,,"Forcing",,"IS_F_NODE"
+"DBC","betaD","Detritus boundary condition","\beta^D",,,"Forcing",,"IS_F_NODE"
+"T","T","Water temperature","T",,,"Forcing",,"IS_F_NODE"
+"Eir","E","Surface irradience","E",,,"Forcing",,"IS_F_NODE"
+"Depth","L","Mixed layer depth","L",,,"Forcing",,"IS_F_NODE"
+"Exch","betaE","Exchange rate","\beta^E",,,"Forcing",,"IS_F_NODE"
+"mumaxC","muC","Maximum growth rate for C","\mu^C","\mu^C(1-R_P) + R_P (\alpha^C + \sigma^C u^C)","muC*(1 - RP) + RP*(alphaC + sigmaC*uC)","Dynamic parameter","muC, RP, alphaC, sigmaC, uC","IS_IN_NODE, IS_GENERIC_STATIC"
+"mumCN","muCN","Maximum growth rate for C:N","\mu^{CN}","\mu^{CN}(1-R_P) + R_P (\alpha^{CN} + \sigma^{CN} u^{CN})","muCN*(1 - RP) + RP*(alphaCN + sigmaCN*uCN)","Dynamic parameter","muCN, RP, alphaCN, sigmaCN, uCN","IS_IN_NODE, IS_GENERIC_STATIC"
+"ChlCmax","muCh","Maximum growth rate for Chl-a:C","\mu^{Ch}","\mu^{Ch}(1-R_P) + R_P  (\alpha^{Ch} + \sigma^{Ch} u^{Ch})","muCh*(1 - RP) + RP*(alphaCh + sigmaCh*uCh)","Dynamic parameter","muCh, RP, alphaCh, sigmaCh, uCh","IS_IN_NODE, IS_GENERIC_STATIC"
+"maxNaff","nuA","Maximum N affinity","\nu^A","\nu^A(1-R_P) + R_P  (\alpha^A + \sigma^A u^A)","nuA*(1 - RP) + RP*(alphaA + sigmaA*uA)","Dynamic parameter","nuA, RP, alphaA, sigmaA, uA","IS_IN_NODE, IS_GENERIC_STATIC"
+"minmaxNC","piNC","Min/Max N:C","\pi^{NC}","\pi^{NC}(1-R_P) + R_P  (\alpha^{NC} + \sigma^{NC} u^{NC})","piNC*(1 - RP) + RP*(alphaNC + sigmaNC*uNC)","Dynamic parameter","piNC, RP, alphaNC, sigmaNC, uNC","IS_IN_NODE, IS_GENERIC_STATIC"
+"Ingmax","zetaI","Max Z ingestion rate","\zeta^I","\zeta^I(1-R_Z) + R_Z  (\alpha^I + \sigma^I u^I)","zetaI*(1 - RZ) + RZ*(alphaI + sigmaI*uI)","Dynamic parameter","zetaI, RZ, alphaI, sigmaI, uI","IS_IN_NODE, IS_GENERIC_STATIC"
+"Clear","zetaCl","Zooplankton clearance rate","\zeta^{Cl}","\zeta^{Cl}(1-R_Z) + R_Z  (\alpha^{Cl} + \sigma^{Cl} u^{Cl})","zetaCl*(1 - RZ) + RZ*(alphaCl + sigmaCl*uCl)","Dynamic parameter","zetaCl, RZ, alphaCl, sigmaCl, uCl","IS_IN_NODE, IS_GENERIC_STATIC"
+"Zeff","zetaE","Zooplankton grazing efficiency","\zeta^E","\zeta^E(1-R_Z) + R_Z  (\alpha^E + \sigma^E u^E)","zetaE*(1 - RZ) + RZ*(alphaE + sigmaE*uE)","Dynamic parameter","zetaE, RZ, alphaE, sigmaE, uE","IS_IN_NODE, IS_GENERIC_STATIC"
+"Remin","nuR","Remineralisation rate","\nu^R","\nu^R(1-R_Z) + R_Z  (\alpha^R + \sigma^R u^R)","nuR*(1 - RZ) + RZ*(alphaR + sigmaR*uR)","Dynamic parameter","nuR, RZ, alphaR, sigmaR, uR","IS_IN_NODE, IS_GENERIC_STATIC"
+"Mq","zetaQ","Z quadratic mortality term","\zeta^Q","\zeta^Q(1-R_Z) + R_Z  (\alpha^Q + \sigma^Q u^Q)","zetaQ*(1 - RZ) + RZ*(alphaQ + sigmaQ*uQ)","Dynamic parameter","zetaQ, RZ, alphaQ, sigmaQ, uQ","IS_IN_NODE, IS_GENERIC_STATIC"
+"Ml","zetaL","Z linear mortality term","\zeta^L","\zeta^L(1-R_Z) + R_Z  (\alpha^L + \sigma^L u^L)","zetaL*(1 - RZ) + RZ*(alphaL + sigmaL*uL)","Dynamic parameter","zetaL, RZ, alphaL, sigmaL, uL","IS_IN_NODE, IS_GENERIC_STATIC"
+,"alphaC",,"\alpha^C",,,"Static parameter",,"IS_IN_NODE"
+,"sigmaC",,"\sigma^C",,,"Static parameter",,"IS_IN_NODE"
+,"alphaCN",,"\alpha^{CN}",,,"Static parameter",,"IS_IN_NODE"
+,"sigmaCN",,"\sigma^{CN}",,,"Static parameter",,"IS_IN_NODE"
+,"alphaCh",,"\alpha^{Ch}",,,"Static parameter",,"IS_IN_NODE"
+,"sigmaCh",,"\sigma^{Ch}",,,"Static parameter",,"IS_IN_NODE"
+,"alphaA",,"\alpha^A",,,"Static parameter",,"IS_IN_NODE"
+,"sigmaA",,"\sigma^A",,,"Static parameter",,"IS_IN_NODE"
+,"alphaNC",,"\alpha^{NC}",,,"Static parameter",,"IS_IN_NODE"
+,"sigmaNC",,"\sigma^{NC}",,,"Static parameter",,"IS_IN_NODE"
+,"alphaI",,"\alpha^I",,,"Static parameter",,"IS_IN_NODE"
+,"sigmaI",,"\sigma^I",,,"Static parameter",,"IS_IN_NODE"
+,"alphaCl",,"\alpha^{Cl}",,,"Static parameter",,"IS_IN_NODE"
+,"sigmaCl",,"\sigma^{Cl}",,,"Static parameter",,"IS_IN_NODE"
+,"alphaE",,"\alpha^E",,,"Static parameter",,"IS_IN_NODE"
+,"sigmaE",,"\sigma^E",,,"Static parameter",,"IS_IN_NODE"
+,"alphaR",,"\alpha^R",,,"Static parameter",,"IS_IN_NODE"
+,"sigmaR",,"\sigma^R",,,"Static parameter",,"IS_IN_NODE"
+,"alphaQ",,"\alpha^Q",,,"Static parameter",,"IS_IN_NODE"
+,"sigmaQ",,"\sigma^Q",,,"Static parameter",,"IS_IN_NODE"
+,"alphaL",,"\alpha^L",,,"Static parameter",,"IS_IN_NODE"
+,"sigmaL",,"\sigma^L",,,"Static parameter",,"IS_IN_NODE"
+,"uC",,"u^C","u^C \sim \mathcal{N}(0,1)",,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
+,"uCN",,"u^{CN}","u^{CN} \sim \mathcal{N}(0,1)",,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
+,"uCh",,"u^{Ch}","u^{Ch} \sim \mathcal{N}(0,1)",,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
+,"uA",,"u^A","u^A \sim \mathcal{N}(0,1)",,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
+,"uNC",,"u^{NC}","u^{NC} \sim \mathcal{N}(0,1)",,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
+,"uI",,"u^I","u^I \sim \mathcal{N}(0,1)",,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
+,"uCl",,"u^{Cl}","u^{Cl} \sim \mathcal{N}(0,1)",,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
+,"uE",,"u^E","u^E \sim \mathcal{N}(0,1)",,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
+,"uR",,"u^R","u^R \sim \mathcal{N}(0,1)",,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
+,"uQ",,"u^Q","u^Q \sim \mathcal{N}(0,1)",,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
+,"uL",,"u^L","u^L \sim \mathcal{N}(0,1)",,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
+"Graze","piG",,"\pi^G","Z \zeta^I \tau^C \pi^S / (1 + \pi^S)","Z*zetaI*tauC*piS/(1+piS)","Intermediate result","Z, zetaI, tauC, piS",
+"Sat","piS",,"\pi^S","(\zeta^{Cl} P / \zeta^I)^{\pi^K}","(zetaCl*P/zetaI)^piK","Intermediate result","zetaCl, P, zetaI, piK",
+"mumaxCT","muCT",,"\mu^{CT}","\mu^C \tau^C","muC*tauC","Intermediate result","muC, tauC",
+"mu","mu","Phytoplankton growth rate","\mu","\mu^{CT} \pi^E \nu^N / (\nu^N + \mu^{CN} \pi^E)","muCT*piE*nuN/(nuN + muCN*piE)","Intermediate result","muCT, piE, nuN, muCN",
+"fE","piE",,"\pi^E","1 - \exp(-\pi^Q \mu^{Ch} E / \mu^C)","1-exp(-piQ*muCh*E/muC)","Intermediate result","piQ, muCh, E, muC",
+"aQ","piQ",,"\pi^Q","\pi^C \pi^{PE}","piC*piPE","Intermediate result","piC, piPE",
+"fN","nuN",,"\nu^N","N/(N + \pi^N / \nu^A)","N/(N + piN/nuA)","Intermediate result","N, piN, nuA",
+"mumaxN","piN",,"\pi^N","\mu^{CT} / \mu^{CN}","muCT/muCN","Intermediate result","muCT, muCN",
+"Zmort","zetaM",,"\zeta^{M}","(\zeta^Q Z + \zeta^L) Z","(zetaQ*Z + zetaL)*Z","Intermediate result","zetaQ, zetaL, Z",
+"Tcorr","tauC",,"\tau^C","(\tau^{10})^{\frac{1}{10} (T - \tau^R)}","pow(tau10, (T - tauR)/10)","Intermediate result","tau10, T, tauR",
+"P","P",,"P","\mu P - \pi^G + \beta^E(\beta^P - P)","mu*P - piG + betaE*(betaP - P)","State variable","mu, P, piG, betaE, betaP","IS_EX_NODE, IS_ODE_FORWARD"
+"Z","Z",,"Z","\pi^G \zeta^E - \zeta^M + \beta^E(\beta^Z - Z)","piG*zetaE - zetaM + betaE*(betaZ - Z)","State variable","piG, zetaE, zetaM, betaE, betaZ, Z","IS_EX_NODE, IS_ODE_FORWARD"
+"D","D",,"D","(1 - \zeta^E) \delta^I \pi^G + \zeta^M - \nu^R - \delta^S D/L + \beta^E (\beta^D - D)","(1 - zetaE)*deltaI*piG + zetaM - nuR - deltaS*D/L + betaE*(betaD - D)","State variable","zetaE, deltaI, piG, zetaM, nuR, deltaS, D, L, betaE, betaD","IS_EX_NODE, IS_ODE_FORWARD"
+"N","N",,"N","-\mu P + (1 - \zeta^E)(1 - \delta^I)\pi^G + \nu^R + \beta^E(\beta^N - N)","-mu*P + (1 - zetaE)*(1 - deltaI)*piG + nuR + betaE*(betaN - N)","State variable","mu, P, zetaE, deltaI, piG, nuR, betaE, betaN, N","IS_EX_NODE, IS_ODE_FORWARD"
