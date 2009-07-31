@@ -23,7 +23,7 @@ $SPECDIR = 'spec';
 $SPEC2XDIR = 'spec2x';
 $SPEC2XSRCDIR = "$SPEC2XDIR/src";
 $SPEC2XTEMPLATEDIR = "$SPEC2XDIR/templates";
-$CPPDIR = "$SRCDIR/$NAME";
+$CPPDIR = "$SRCDIR/model";
 
 # Disassembly
 #$CXXFLAGS .= ' -keep';
@@ -148,7 +148,7 @@ dot: \$(BUILDDIR)/\$(NAME).pdf
 
 cpp: \$(BUILDDIR)/\$(NAME).db \$(SPEC2XSRCDIR)/sql2cpp.pl \$(SPEC2XTEMPLATEDIR)/*.template
 \tmkdir -p \$(CPPDIR)
-\tperl \$(SPEC2XSRCDIR)/sql2cpp.pl --outdir \$(CPPDIR) --model \$(NAME) --dbfile \$(BUILDDIR)/\$(NAME).db
+\tperl \$(SPEC2XSRCDIR)/sql2cpp.pl --outdir \$(CPPDIR) --templatedir \$(SPEC2XTEMPLATEDIR) --model \$(NAME) --dbfile \$(BUILDDIR)/\$(NAME).db
 
 End
 
@@ -159,12 +159,12 @@ print <<End;
 
 End
 
-# Simulation targets
-print <<End;
-\$(BUILDDIR)/simulate: \$(BUILDDIR)/simulate.o \$(BUILDDIR)/\$(NAME).o
-\t\$(CUDACC) \$(BUILDDIR)/box.o -o \$(BUILDDIR)/simulate \$(LINKFLAGS) \$(BUILDDIR)/simulate.o
-
-End
+# Artefact
+print "\$(BUILDDIR)/simulate: ";
+print join(" \\\n    ", @targets);
+print "\n";
+print "\tar -r \$(BUILDDIR)/simulate \$(LINKFLAGS) " . join(' ', @targets);
+print "\n\n";
 
 # Targets
 print join("\n", @commands);

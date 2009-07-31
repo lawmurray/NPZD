@@ -48,3 +48,15 @@ The Perl script checks for all dependencies and incorporates them into the
 Makefile. Note that it does not compile the bi library, however. The bi
 library should be recompiled separately when changes are made to it. This is
 automatic in Eclipse, as it is registered as a project dependency.
+
+The following macros may be defined during compilation to adjust behaviour,
+set these with, e.g. 'make USE_DOUBLE=1'
+
+* NDEBUG will disable assertion checking.
+* USE_DOUBLE will use double precision arithmetic on the GPU, otherwise single
+  precision is used.
+* USE_FAST_MATH will use intrinsic CUDA functions throughout, as long as
+  USE_DOUBLE is not defined (intrinsics are available only for single
+  precision). No intrinsics are used by default.
+* USE_DOPRI5 will use the DOPRI5 integrator for ordinary differential
+  equations, otherwise RK4(3)5[2R+]C is used.

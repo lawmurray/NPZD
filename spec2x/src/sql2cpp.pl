@@ -17,10 +17,12 @@ use List::MoreUtils qw/uniq/;
 # command line arguments
 my $model = 'MyModel';
 my $outdir = '.';
+my $templatedir = 'templates';
 my $dbfile = "$model.db";
 Getopt::Long::Configure("auto_help");
 GetOptions("model=s" => \$model,
     "outdir=s" => \$outdir,
+    "templatedir=s" => \$templatedir,
     "dbfile=s" => \$dbfile);
 
 # connect to database
@@ -64,14 +66,14 @@ sub OutputModelSources {
   
   # header file
   $tokens{'Guard'} = 'BIM_' . uc($model) . '_' . uc($model) . '_CUH';
-  $tokens{'ClassName'} = $model;
+  $tokens{'ClassName'} = $model . 'Model';
   $tokens{'Includes'} = join("\n", map { &Include("$_.cuh") } @classes);
   $tokens{'NodeDeclarations'} = join("\n", map { "$_ " . lcfirst($_) . ';' } @classes);
   foreach $type ('In', 'Ex', 'R', 'F') {
     $tokens{"${type}SpecName"} = "${model}${type}Spec";
     $tokens{"${type}Spec"} = join("\n",
       "BEGIN_NODESPEC($tokens{\"${type}SpecName\"})",
-      join("\n", map { "SINGLE_TYPE($_)" } @{$classes{lc($type)}}),
+      join("\n", map { "SINGLE_TYPE(1, $_)" } @{$classes{lc($type)}}),
       'END_NODESPEC()');
   }
   
@@ -153,12 +155,12 @@ sub OutputNodeSources {
 ## Read in all templates.
 ##
 sub GulpTemplates {
-  my @files = <templates/*.template>;
+  my @files = <$templatedir/*.template>;
   my $file;
   my $name;
 
   foreach $file (@files) {
-    $file =~ /^templates\/(\w+).template$/;
+    $file =~ /^$templatedir\/(\w+).template$/;
     $name = $1;
     $templates{$name} = &GulpTemplate($file);
   }
@@ -528,17 +530,17 @@ sub Includes {
   my @results;
   
   if ($type eq 'in') {
-    push(@results, &Include('../../bi/model/NodeStaticTraits.hpp'));
+    push(@results, &Include('bi/model/NodeStaticTraits.hpp'));
   } elsif ($type eq 'ex') {
-    push(@results, &Include('../../bi/model/NodeForwardTraits.hpp'));
+    push(@results, &Include('bi/model/NodeForwardTraits.hpp'));
   } elsif ($type eq 'r') {
-    push(@results, &Include('../../bi/model/NodeRandomTraits.hpp'));
+    push(@results, &Include('bi/model/NodeRandomTraits.hpp'));
   } elsif ($type eq 'f') {
     #
   } else {
     die("Node $name has unrecognised type");
   }
-  push(@results, '#include "../../bi/model/NodeTypeTraits.hpp"');
+  push(@results, &Include('bi/model/NodeTypeTraits.hpp'));
   
   return join("\n", @results);
 }
@@ -588,6 +590,10 @@ Specify the database file name.
 =item B<--outdir>
 
 Specify the output directory for C++ source files.
+
+=item B<--templatedir>
+
+Specify directory containing C++ templates.
 
 =back
 

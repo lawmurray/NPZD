@@ -8,8 +8,8 @@
 #ifndef <% Guard %>
 #define <% Guard %>
 
-#include "../../bi/model/BayesNode.hpp"
-#include "../../bi/cuda/cuda.hpp"
+#include "bi/model/BayesNode.hpp"
+#include "bi/cuda/cuda.hpp"
 
 /**
  * \f$<% LaTeXName %>\f$; <% Description %>
