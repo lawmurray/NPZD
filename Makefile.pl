@@ -178,6 +178,6 @@ foreach $dir (sort keys %dirs) {
 # Clean target
 print <<End;
 clean:
-\trm -rf \$(BUILDDIR) \$(CPPDIR)
+\trm -rf \$(BUILDDIR)
 
 End
