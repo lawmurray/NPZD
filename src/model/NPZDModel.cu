@@ -5,7 +5,7 @@
  * $Rev$
  * $Date$
  */
-#include "NPZDModel.hpp"
+#include "NPZDModel.cuh"
 
 NPZDModel::NPZDModel() : bi::BayesNet<
     GET_NODESPEC(NPZDInSpec),
