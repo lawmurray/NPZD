@@ -21,7 +21,7 @@ extern int simulate(const unsigned P, const unsigned K,
 int main(int argc, char* argv[]) {
   /* command line arguments */
   int SEED;
-  real_t F, B, T;
+  real_t T;
   unsigned P, K;
   bool OUTPUT, TIME;
 

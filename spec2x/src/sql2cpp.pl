@@ -50,6 +50,8 @@ sub OutputModelSources {
   my $type;
   my $node;
   my $source;
+  my @parents;
+  my $parent;
 
   my $sth = $dbh->prepare('SELECT Name ' .
       "FROM Node WHERE Type <> 'Intermediate result' AND Type <> 'Constant' ".
@@ -63,12 +65,12 @@ sub OutputModelSources {
     push(@{$classes{$type}}, ucfirst($$fields{'Name'}) . 'Node');
   }
   $sth->finish;
-  
+
   # header file
   $tokens{'Guard'} = 'BIM_' . uc($model) . '_' . uc($model) . '_CUH';
   $tokens{'ClassName'} = $model . 'Model';
   $tokens{'Includes'} = join("\n", map { &Include("$_.cuh") } @classes);
-  $tokens{'NodeDeclarations'} = join("\n", map { "$_ " . lcfirst($_) . ';' } @classes);
+  $tokens{'NodeDeclarations'} = join("\n", map { ucfirst($_) . 'Node ' . $_ . ';' } @nodes);
   foreach $type ('In', 'Ex', 'R', 'F') {
     $tokens{"${type}SpecName"} = "${model}${type}Spec";
     $tokens{"${type}Spec"} = join("\n",
@@ -76,7 +78,7 @@ sub OutputModelSources {
       join("\n", map { "SINGLE_TYPE(1, $_)" } @{$classes{lc($type)}}),
       'END_NODESPEC()');
   }
-  
+
   $source = &ProcessTemplate('ModelHeader', \%tokens);
   $source = &PrettyPrint($source);
 
@@ -85,23 +87,20 @@ sub OutputModelSources {
   print SOURCE $source;
   print SOURCE "\n";
   close SOURCE;
-  
+
   # source file
   my @edges;
-  $sth = $dbh->prepare('SELECT ParentNode FROM Edge WHERE ChildNode = ? ' .
-      'ORDER BY Position');
-  
+
   foreach $node (@nodes) {
-    $sth->execute($node);
-    while ($fields = $sth->fetchrow_hashref) {
-      push(@edges, "addEdge($$fields{'ParentNode'}, $node);");
+    @parents = &Parents($node);
+    foreach $parent (@parents) {
+      push(@edges, "addArc($parent, $node);");
     }
-    $sth->finish;
   }
-    
-  $tokens{'NodeDefinitions'} = join("\n  ", map { "addNode($_);" } @nodes);
+
+  $tokens{'NodeDefinitions'} = join("\n  ", map { "addNode(${_});" } @nodes);
   $tokens{'EdgeDefinitions'} = join("\n  ", @edges);
-  
+
   $source = &ProcessTemplate('ModelSource', \%tokens);
   $source = &PrettyPrint($source);
 
@@ -215,9 +214,9 @@ sub ProcessTemplate {
 ##
 sub PrettyPrint {
   my $source = shift;
-  
+
   $source =~ s/\n{3,}/\n\n/g;
-  
+
   return $source;
 }
 
@@ -366,11 +365,11 @@ sub FunctionDefinitions {
       'WHERE Node = ?');
 
   $sth->execute($$fields{'Name'});
-  while ($trait = $sth->fetchrow_array) { 
+  while ($trait = $sth->fetchrow_array) {
     $tokens{'ClassName'} = ucfirst($$fields{'Name'}) . 'Node';
     $tokens{'ParentAliases'} = &ParentAliases($$fields{'Name'});
     $tokens{'ConstantAliases'} = &ConstantAliases($$fields{'Name'});
-    $tokens{'Inlines'} = &Inlines($$fields{'Name'});
+    $tokens{'InlineAliases'} = &InlineAliases($$fields{'Name'});
     $tokens{'Formula'} = $$fields{'Formula'};
 
     if (exists $templates{"DEF_$trait"}) {
@@ -421,7 +420,7 @@ sub Parents {
 ##
 sub ParentAliases {
   my $name = shift;
-  
+
   my @parents = &Parents($name);
   my @results;
   my $parent;
@@ -431,15 +430,12 @@ sub ParentAliases {
   my $fields;
   $positions{'inpax'} = 0;
   $positions{'expax'} = 0;
-  $positions{'inpax'} = 0;
-  $positions{'rpax'} = 0;
   $positions{'rpax'} = 0;
   $positions{'fpax'} = 0;
-  $positions{'fpax'} = 0;
-  
+
   my $sth = $dbh->prepare('SELECT Name, Formula, Type FROM Node WHERE ' .
       'Name = ?');
-  
+
   foreach $parent (@parents) {
     $sth->execute($parent);
     $fields = $sth->fetchrow_hashref;
@@ -457,8 +453,37 @@ sub ParentAliases {
     }
     $sth->finish;
   }
-  
+
   return join("\n", @results);
+}
+
+##
+## Return constant parents for node, with inlining.
+##
+## @param name Name of node.
+##
+## @returns List of inlines.
+##
+sub Constants {
+  my $name = shift;
+
+  my @results;
+  my $fields;
+  my $sth = $dbh->prepare('SELECT Name, Type FROM Node, Edge ' .
+      'WHERE (Type = \'Constant\' OR Type = \'Intermediate result\') AND ' .
+      'Edge.ChildNode = ? AND Edge.ParentNode = Node.Name');
+
+  $sth->execute($name);
+  while ($fields = $sth->fetchrow_hashref) {
+    if ($$fields{'Type'} eq 'Constant') {
+      push(@results, $$fields{'Name'});
+    } else {
+      push(@results, &Constants($$fields{'Name'}));
+    }
+  }
+  $sth->finish;
+
+  return uniq(@results);
 }
 
 ##
@@ -471,19 +496,49 @@ sub ParentAliases {
 sub ConstantAliases {
   my $name = shift;
 
+  my @constants = &Constants($name);
   my @results;
+  my $constant;
   my $fields;
-  my $sth = $dbh->prepare('SELECT Name, Formula AS Value FROM Node, Edge ' .
-      'WHERE Node.Type = \'Constant\' AND Edge.ChildNode = ? AND ' .
-      'Edge.ParentNode = Node.Name');
+  my $sth = $dbh->prepare('SELECT Name, Formula AS Value FROM Node ' .
+      'WHERE Name = ?');
 
-  $sth->execute($name); 
-  while ($fields = $sth->fetchrow_hashref) {
-    push(@results, &ProcessTemplate('ConstantAlias', $fields));
+  foreach $constant (@constants) {
+    $sth->execute($constant);
+    while ($fields = $sth->fetchrow_hashref) {
+      push(@results, &ProcessTemplate('ConstantAlias', $fields));
+    }
+    $sth->finish;
+  }
+
+  return join("\n", @results);
+}
+
+##
+## Return inlines for node, recursively.
+##
+## @param name Name of node.
+##
+## @returns List of inlines.
+##
+sub Inlines {
+  my $name = shift;
+
+  my @results;
+  my $inline;
+  my $sth = $dbh->prepare('SELECT Name ' .
+      'FROM Node, Edge WHERE Edge.ChildNode = ? AND ' .
+      'Node.Type = \'Intermediate result\' AND ' .
+      'Edge.ParentNode = Node.Name ORDER BY Edge.Position');
+
+  $sth->execute($name);
+  while ($inline = $sth->fetchrow_array) {
+    push(@results, &Inlines($inline)); # recursive inline
+    push(@results, $inline);
   }
   $sth->finish;
-  
-  return join("\n", @results);
+
+  return uniq(@results);
 }
 
 ##
@@ -493,25 +548,23 @@ sub ConstantAliases {
 ##
 ## @return Inline formulas of node, for inclusion in template.
 ##
-sub Inlines {
+sub InlineAliases {
   my $name = shift;
 
   my @results;
+  my @inlines = &Inlines($name);
+  my $fields;
   my $inline;
-  my %tokens;
 
   my $sth = $dbh->prepare('SELECT Name, Formula ' .
-      'FROM Node, Edge WHERE Edge.ChildNode = ? AND ' .
-      'Node.Type = \'Intermediate result\' AND ' .
-      'Edge.ParentNode = Node.Name ORDER BY Edge.Position');
+      'FROM Node WHERE Node.Name = ?');
 
-  $sth->execute($name);
-  while ($inline = $sth->fetchrow_hashref) {
-    $tokens{'Name'} = $$inline{'Name'};
-    $tokens{'Formula'} = $$inline{'Formula'};
-    push(@results, &ProcessTemplate('Inline', \%tokens));
+  foreach $inline (@inlines) {
+    $sth->execute($inline);
+    $fields = $sth->fetchrow_hashref;
+    push(@results, &ProcessTemplate('Inline', $fields));
+    $sth->finish;
   }
-  $sth->finish;
 
   return join("\n", @results);
 }
@@ -525,10 +578,10 @@ sub Inlines {
 ##
 sub Includes {
   my $name = shift;
-  
+
   my $type = &NodeType($name);
   my @results;
-  
+
   if ($type eq 'in') {
     push(@results, &Include('bi/model/NodeStaticTraits.hpp'));
   } elsif ($type eq 'ex') {
@@ -541,7 +594,7 @@ sub Includes {
     die("Node $name has unrecognised type");
   }
   push(@results, &Include('bi/model/NodeTypeTraits.hpp'));
-  
+
   return join("\n", @results);
 }
 
@@ -554,10 +607,10 @@ sub Includes {
 ##
 sub Include {
   my $header = shift;
-  
+
   my %tokens;
   $tokens{'Header'} = $header;
-  
+
   return &ProcessTemplate('Include', \%tokens);
 }
 
@@ -571,11 +624,11 @@ sql2cpp -- C++ code generator from SQLite model specification.
 
 spec2cpp [options]
 
-The SQLite database is read from $model.db, and C++ source files written to 
+The SQLite database is read from $model.db, and C++ source files written to
 the $outdir directory, where both $model and $outdir are specified as command
 line arguments.
 
-=head1 
+=head1
 
 =over 10
 

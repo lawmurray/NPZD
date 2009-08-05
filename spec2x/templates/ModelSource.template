@@ -5,7 +5,7 @@
  * $Rev$
  * $Date$
  */
-#include "<% ClassName %>.hpp"
+#include "<% ClassName %>.cuh"
 
 <% ClassName %>::<% ClassName %>() : bi::BayesNet<
     GET_NODESPEC(<% InSpecName %>),

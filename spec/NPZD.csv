@@ -1,16 +1,16 @@
 "OriginalName","Name","Description","LaTeXName","LaTeXFormula","Formula","Type","Dependencies","Traits"
-"Kd","KW","Light attenuation, water","K^W",,"0.0","Constant",,
-"Kchla","KC","Light attenuation, Chl-a","K^C",,"0.0","Constant",,
-"Sink","deltaS","Detrital sinking rate","\delta^S",,"0.0","Constant",,
-"FDG","deltaI","Detrital growth inefficiency","\delta^I",,"0.0","Constant",,
-"Q10","tau10",,"\tau^{10}",,"0.0","Constant",,
-"Tref","tauR","Reference temperature (10 deg. C)","\tau^R",,"0.0","Constant",,
-"Achl","piC","Chlorophyl absorption","\pi^C",,"0.0","Constant",,
-"PE","piPE","Photosynthetic efficiency","\pi^{PE}",,"0.0","Constant",,
-"maxNC","piR","Maximum N:C (Redfield)","\pi^R",,"0.0","Constant",,
-"RP","RP","P timescale","R_P",,"0.0","Constant",,
-"RZ","RZ","Z timescale","R_Z",,"0.0","Constant",,
-"Grazeexp","piK","Functional response exponent","\pi^K",,"0.0","Constant",,
+"Kd","KW","Light attenuation, water","K^W",,0,"Constant",,
+"Kchla","KC","Light attenuation, Chl-a","K^C",,0,"Constant",,
+"Sink","deltaS","Detrital sinking rate","\delta^S",,0,"Constant",,
+"FDG","deltaI","Detrital growth inefficiency","\delta^I",,0,"Constant",,
+"Q10","tau10",,"\tau^{10}",,0,"Constant",,
+"Tref","tauR","Reference temperature (10 deg. C)","\tau^R",,0,"Constant",,
+"Achl","piC","Chlorophyl absorption","\pi^C",,0,"Constant",,
+"PE","piPE","Photosynthetic efficiency","\pi^{PE}",,0,"Constant",,
+"maxNC","piR","Maximum N:C (Redfield)","\pi^R",,0,"Constant",,
+"RP","RP","P timescale","R_P",,0,"Constant",,
+"RZ","RZ","Z timescale","R_Z",,0,"Constant",,
+"Grazeexp","piK","Functional response exponent","\pi^K",,0,"Constant",,
 "PBC","betaP","Phytoplankton boundary condition","\beta^P",,,"Forcing",,"IS_F_NODE"
 "ZBC","betaZ","Zooplankton boundary condition","\beta^Z",,,"Forcing",,"IS_F_NODE"
 "NBC","betaN","Nitrogen boundary condition","\beta^N",,,"Forcing",,"IS_F_NODE"
@@ -64,7 +64,7 @@
 ,"uQ",,"u^Q","u^Q \sim \mathcal{N}(0,1)",,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
 ,"uL",,"u^L","u^L \sim \mathcal{N}(0,1)",,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
 "Graze","piG",,"\pi^G","Z \zeta^I \tau^C \pi^S / (1 + \pi^S)","Z*zetaI*tauC*piS/(1+piS)","Intermediate result","Z, zetaI, tauC, piS",
-"Sat","piS",,"\pi^S","(\zeta^{Cl} P / \zeta^I)^{\pi^K}","(zetaCl*P/zetaI)^piK","Intermediate result","zetaCl, P, zetaI, piK",
+"Sat","piS",,"\pi^S","(\zeta^{Cl} P / \zeta^I)^{\pi^K}","pow(zetaCl*P/zetaI, piK)","Intermediate result","zetaCl, P, zetaI, piK",
 "mumaxCT","muCT",,"\mu^{CT}","\mu^C \tau^C","muC*tauC","Intermediate result","muC, tauC",
 "mu","mu","Phytoplankton growth rate","\mu","\mu^{CT} \pi^E \nu^N / (\nu^N + \mu^{CN} \pi^E)","muCT*piE*nuN/(nuN + muCN*piE)","Intermediate result","muCT, piE, nuN, muCN",
 "fE","piE",,"\pi^E","1 - \exp(-\pi^Q \mu^{Ch} E / \mu^C)","1-exp(-piQ*muCh*E/muC)","Intermediate result","piQ, muCh, E, muC",

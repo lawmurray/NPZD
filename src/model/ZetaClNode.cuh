@@ -32,7 +32,7 @@ IS_IN_NODE(ZetaClNode)
 template<class V1, class V2, class V3, class V4>
 inline void ZetaClNode::s(const V1& fpax, const V2& rpax,
     const V3& inpax, V4& x) {
-  static const real_t RZ = CUDA_REAL(0.0);
+  const real_t RZ = CUDA_REAL(0);
 
   const real_t zetaCl = inpax[0];
   const real_t alphaCl = inpax[1];
