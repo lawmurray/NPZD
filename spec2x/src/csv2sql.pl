@@ -37,6 +37,8 @@ $sth{'InsertNodeTrait'} = $dbh->prepare('INSERT INTO NodeTrait(Node,' .
     'Trait) VALUES (?,?)');
 $sth{'InsertEdge'} = $dbh->prepare('INSERT INTO Edge(ParentNode,ChildNode,' .
     'Position) VALUES (?,?,?)');
+$sth{'UpdatePosition'} = $dbh->prepare('UPDATE Node SET Position = ? WHERE ' .
+    'Name = ?');
 
 # process CSV headers
 my $io = \*STDIN;
@@ -47,19 +49,24 @@ $csv->column_names($csv->getline($io));
 my $fields;
 my $val;
 my $pos;
+my @nodes;
 my @parents;
 my @children;
 my @positions;
+my %dependents;
+my $i;
 
 $fields = $csv->getline_hr($io);
 while (!$csv->eof()) {
-  # Insertnode
+  push(@nodes, $$fields{'Name'});
+
+  # insert node
   $sth{'InsertNode'}->execute($$fields{'Name'}, $$fields{'LaTeXName'},
       $$fields{'Formula'}, $$fields{'LaTeXFormula'}, $$fields{'Description'},
       $$fields{'Type'}) ||
       warn("Problem with node $$fields{'Name'}");
 
-  # Inserttraits
+  # insert traits
   foreach $val (split /,\s*/, $$fields{'Traits'}) {
     $sth{'InsertNodeTrait'}->execute($$fields{'Name'}, uc($val)) ||
         warn("Problem with trait $val of node $$fields{'Name'}");
@@ -67,7 +74,9 @@ while (!$csv->eof()) {
 
   # store edges for later
   $pos = 0;
+  %{$dependents{$$fields{'Name'}}} = ();
   foreach $val (split /,\s*/, $$fields{'Dependencies'}) {
+    $dependents{$$fields{'Name'}}{$val} = 1;
     push(@parents, $val);
     push(@children, $$fields{'Name'});
     push(@positions, $pos);
@@ -78,8 +87,13 @@ while (!$csv->eof()) {
   $fields = $csv->getline_hr($io);
 }
 
-# Insertdependencies as edges
-my $i;
+# update positions based on topological sort
+my @sorted = &TopologicalSort(\@nodes, \%dependents);
+for ($i = 0; $i < @sorted; ++$i) {
+  $sth{'UpdatePosition'}->execute($i, $sorted[$i]);
+}
+
+# insert dependencies as edges
 for ($i = 0; $i < @parents; ++$i) {
   $sth{'InsertEdge'}->execute($parents[$i], $children[$i],
        $positions[$i]) ||
@@ -93,6 +107,47 @@ foreach $key (keys %sth) {
 }
 $dbh->commit;
 $dbh->disconnect;
+
+##
+## Topologically sort nodes so that no node appears before all of its parents
+## have appeared.
+##
+## @param dependencies Hash-of-hashes, outside keyed by node, inside
+## list of parents of that node. Destroyed in process.
+## 
+## @return Sorted array of node names.
+##
+sub TopologicalSort {
+  my $nodes = shift;
+  my $dependencies = shift;
+  my @result;
+  my $key;
+  my $node;
+  my $i;
+  
+  while (@$nodes) {
+    # find node with all dependencies satisfied
+    $i = 0;
+    while ($i < @$nodes && keys %{$dependencies->{$$nodes[$i]}} > 0) {
+      ++$i;
+    }
+    if ($i >= @$nodes) {
+      $i = 0;
+    }
+    $node = $$nodes[$i];
+    splice(@$nodes, $i, 1);
+    
+    push(@result, $node);
+    delete $dependencies->{$node};
+    
+    # delete this node from dependency lists
+    foreach $key (keys %$dependencies) {
+      delete $dependencies->{$key}->{$node};
+    }
+  }
+  
+  return @result;
+}
 
 __END__
 

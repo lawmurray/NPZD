@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 ##
 ## Generate a Makefile for compilation.
 ##
@@ -10,8 +8,8 @@
 
 $CXX = 'g++';
 $CUDACC = 'nvcc';
-$CXXFLAGS = '-Wall -O3 -I"../bi/src"';
-$CUDACCFLAGS = '-O3 -arch=sm_13 -Xptxas="-v" -I"../bi/src" -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS';
+$CXXFLAGS = '-Wall -g -O3 -I"../bi/src"';
+$CUDACCFLAGS = '-O3 -g -arch=sm_13 -Xptxas="-v" -I"../bi/src" -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS';
 $LINKFLAGS = '-L"../bi/build" -lboost_program_options-gcc41-mt -lblas -llapack -lgfortran -lgslcblas -lgsl -lbi';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
@@ -160,7 +158,7 @@ print <<End;
 End
 
 # Artefact
-print "\$(BUILDDIR)/simulate: ";
+print "\$(BUILDDIR)/simulate: cpp ";
 print join(" \\\n    ", @targets);
 print "\n";
 #print "\tar -r \$(BUILDDIR)/simulate \$(LINKFLAGS) " . join(' ', @targets);

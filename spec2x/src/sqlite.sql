@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS Node (
   LaTeXFormula VARCHAR,
   Description VARCHAR,
   Type VARCHAR NOT NULL,
-  Position INTEGER AUTO_INCREMENT
+  Position INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS Trait (
@@ -124,7 +124,7 @@ DELETE FROM Edge;
 
 --
 -- Populate Trait
--- 
+--
 INSERT INTO Trait VALUES ('IS_IN_NODE');
 INSERT INTO Trait VALUES ('IS_EX_NODE');
 INSERT INTO Trait VALUES ('IS_R_NODE');
