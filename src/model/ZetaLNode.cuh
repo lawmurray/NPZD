@@ -41,7 +41,7 @@ inline ZetaLNode::ZetaLNode() {
 template<class V1, class V2, class V3, class V4>
 inline void ZetaLNode::s(const V1& fpax, const V2& rpax,
     const V3& inpax, V4& x) {
-  const real_t RZ = CUDA_REAL(0);
+  const real_t RZ = CUDA_REAL(10);
 
   const real_t zetaL = inpax[0];
   const real_t alphaL = inpax[1];

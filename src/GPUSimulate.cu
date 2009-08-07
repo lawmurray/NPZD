@@ -33,12 +33,6 @@ int simulate(const unsigned P, const unsigned K,
   gettimeofday(&start, NULL);
 
   /* initialise */
-  for (j = 0; j < m.getInSize(); ++j) {
-    for (i = 0; i < P; ++i) {
-      x = (real_t)((real_t)rand() / (real_t)RAND_MAX);
-      s.setInState(i,j,x);
-    }
-  }
   for (j = 0; j < m.getExSize(); ++j) {
     for (i = 0; i < P; ++i) {
       x = (real_t)((real_t)rand() / (real_t)RAND_MAX);

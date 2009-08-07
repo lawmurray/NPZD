@@ -41,7 +41,7 @@ inline MuChNode::MuChNode() {
 template<class V1, class V2, class V3, class V4>
 inline void MuChNode::s(const V1& fpax, const V2& rpax,
     const V3& inpax, V4& x) {
-  const real_t RP = CUDA_REAL(0);
+  const real_t RP = CUDA_REAL(3);
 
   const real_t muCh = inpax[0];
   const real_t alphaCh = inpax[1];

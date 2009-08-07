@@ -16,50 +16,6 @@
 #include "ENode.cuh"
 #include "LNode.cuh"
 #include "BetaENode.cuh"
-#include "AlphaCNode.cuh"
-#include "SigmaCNode.cuh"
-#include "AlphaCNNode.cuh"
-#include "SigmaCNNode.cuh"
-#include "AlphaChNode.cuh"
-#include "SigmaChNode.cuh"
-#include "AlphaANode.cuh"
-#include "SigmaANode.cuh"
-#include "AlphaNCNode.cuh"
-#include "SigmaNCNode.cuh"
-#include "AlphaINode.cuh"
-#include "SigmaINode.cuh"
-#include "AlphaClNode.cuh"
-#include "SigmaClNode.cuh"
-#include "AlphaENode.cuh"
-#include "SigmaENode.cuh"
-#include "AlphaRNode.cuh"
-#include "SigmaRNode.cuh"
-#include "AlphaQNode.cuh"
-#include "SigmaQNode.cuh"
-#include "AlphaLNode.cuh"
-#include "SigmaLNode.cuh"
-#include "UCNode.cuh"
-#include "UCNNode.cuh"
-#include "UChNode.cuh"
-#include "UANode.cuh"
-#include "UNCNode.cuh"
-#include "UINode.cuh"
-#include "UClNode.cuh"
-#include "UENode.cuh"
-#include "URNode.cuh"
-#include "UQNode.cuh"
-#include "ULNode.cuh"
-#include "MuCNode.cuh"
-#include "MuCNNode.cuh"
-#include "MuChNode.cuh"
-#include "NuANode.cuh"
-#include "PiNCNode.cuh"
-#include "ZetaINode.cuh"
-#include "ZetaClNode.cuh"
-#include "ZetaENode.cuh"
-#include "NuRNode.cuh"
-#include "ZetaQNode.cuh"
-#include "ZetaLNode.cuh"
 #include "PNode.cuh"
 #include "ZNode.cuh"
 #include "DNode.cuh"
@@ -72,39 +28,7 @@
  * In-net spec.
  */
 BEGIN_NODESPEC(NPZDInSpec)
-SINGLE_TYPE(1, AlphaCNode)
-SINGLE_TYPE(1, SigmaCNode)
-SINGLE_TYPE(1, AlphaCNNode)
-SINGLE_TYPE(1, SigmaCNNode)
-SINGLE_TYPE(1, AlphaChNode)
-SINGLE_TYPE(1, SigmaChNode)
-SINGLE_TYPE(1, AlphaANode)
-SINGLE_TYPE(1, SigmaANode)
-SINGLE_TYPE(1, AlphaNCNode)
-SINGLE_TYPE(1, SigmaNCNode)
-SINGLE_TYPE(1, AlphaINode)
-SINGLE_TYPE(1, SigmaINode)
-SINGLE_TYPE(1, AlphaClNode)
-SINGLE_TYPE(1, SigmaClNode)
-SINGLE_TYPE(1, AlphaENode)
-SINGLE_TYPE(1, SigmaENode)
-SINGLE_TYPE(1, AlphaRNode)
-SINGLE_TYPE(1, SigmaRNode)
-SINGLE_TYPE(1, AlphaQNode)
-SINGLE_TYPE(1, SigmaQNode)
-SINGLE_TYPE(1, AlphaLNode)
-SINGLE_TYPE(1, SigmaLNode)
-SINGLE_TYPE(1, MuCNode)
-SINGLE_TYPE(1, MuCNNode)
-SINGLE_TYPE(1, MuChNode)
-SINGLE_TYPE(1, NuANode)
-SINGLE_TYPE(1, PiNCNode)
-SINGLE_TYPE(1, ZetaINode)
-SINGLE_TYPE(1, ZetaClNode)
-SINGLE_TYPE(1, ZetaENode)
-SINGLE_TYPE(1, NuRNode)
-SINGLE_TYPE(1, ZetaQNode)
-SINGLE_TYPE(1, ZetaLNode)
+
 END_NODESPEC()
 
 /**
@@ -121,17 +45,7 @@ END_NODESPEC()
  * R-net spec
  */
 BEGIN_NODESPEC(NPZDRSpec)
-SINGLE_TYPE(1, UCNode)
-SINGLE_TYPE(1, UCNNode)
-SINGLE_TYPE(1, UChNode)
-SINGLE_TYPE(1, UANode)
-SINGLE_TYPE(1, UNCNode)
-SINGLE_TYPE(1, UINode)
-SINGLE_TYPE(1, UClNode)
-SINGLE_TYPE(1, UENode)
-SINGLE_TYPE(1, URNode)
-SINGLE_TYPE(1, UQNode)
-SINGLE_TYPE(1, ULNode)
+
 END_NODESPEC()
 
 /**
@@ -173,50 +87,6 @@ public:
   ENode E;
   LNode L;
   BetaENode betaE;
-  AlphaCNode alphaC;
-  SigmaCNode sigmaC;
-  AlphaCNNode alphaCN;
-  SigmaCNNode sigmaCN;
-  AlphaChNode alphaCh;
-  SigmaChNode sigmaCh;
-  AlphaANode alphaA;
-  SigmaANode sigmaA;
-  AlphaNCNode alphaNC;
-  SigmaNCNode sigmaNC;
-  AlphaINode alphaI;
-  SigmaINode sigmaI;
-  AlphaClNode alphaCl;
-  SigmaClNode sigmaCl;
-  AlphaENode alphaE;
-  SigmaENode sigmaE;
-  AlphaRNode alphaR;
-  SigmaRNode sigmaR;
-  AlphaQNode alphaQ;
-  SigmaQNode sigmaQ;
-  AlphaLNode alphaL;
-  SigmaLNode sigmaL;
-  UCNode uC;
-  UCNNode uCN;
-  UChNode uCh;
-  UANode uA;
-  UNCNode uNC;
-  UINode uI;
-  UClNode uCl;
-  UENode uE;
-  URNode uR;
-  UQNode uQ;
-  ULNode uL;
-  MuCNode muC;
-  MuCNNode muCN;
-  MuChNode muCh;
-  NuANode nuA;
-  PiNCNode piNC;
-  ZetaINode zetaI;
-  ZetaClNode zetaCl;
-  ZetaENode zetaE;
-  NuRNode nuR;
-  ZetaQNode zetaQ;
-  ZetaLNode zetaL;
   PNode P;
   ZNode Z;
   DNode D;

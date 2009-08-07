@@ -41,23 +41,23 @@ inline PNode::PNode() {
 template<class T1, class V1, class V2, class V3, class V4, class V5>
 inline void PNode::dfdt(const T1 t, const V1& fpax,
     const V2& rpax, const V3& inpax, const V4& expax, V5& dfdt) {
-  const real_t tau10 = CUDA_REAL(0);
-  const real_t tauR = CUDA_REAL(0);
-  const real_t piC = CUDA_REAL(0);
-  const real_t piPE = CUDA_REAL(0);
-  const real_t piK = CUDA_REAL(0);
+  const real_t muC = CUDA_REAL(1.2);
+  const real_t tau10 = CUDA_REAL(2);
+  const real_t tauR = CUDA_REAL(15);
+  const real_t piC = CUDA_REAL(0.04);
+  const real_t piPE = CUDA_REAL(1200);
+  const real_t muCh = CUDA_REAL(0.03);
+  const real_t muCN = CUDA_REAL(0.4);
+  const real_t nuA = CUDA_REAL(0.37);
+  const real_t zetaI = CUDA_REAL(1.0);
+  const real_t zetaCl = CUDA_REAL(0.08);
+  const real_t piK = CUDA_REAL(2);
 
-  const real_t muC = inpax[0];
   const real_t T = fpax[0];
-  const real_t muCh = inpax[1];
   const real_t E = fpax[1];
   const real_t N = expax[0];
-  const real_t muCN = inpax[2];
-  const real_t nuA = inpax[3];
   const real_t P = expax[1];
   const real_t Z = expax[2];
-  const real_t zetaI = inpax[4];
-  const real_t zetaCl = inpax[5];
   const real_t betaE = fpax[2];
   const real_t betaP = fpax[3];
 

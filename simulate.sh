@@ -1,8 +1,8 @@
 #!/bin/sh
 
 P=10
-K=100
-T=50.0
+K=365
+T=365.0
 SEED=0
 OUTPUT="--output 1 --time 0"
 
