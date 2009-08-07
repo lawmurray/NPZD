@@ -70,7 +70,7 @@ sub OutputModelSources {
   $tokens{'Guard'} = 'BIM_' . uc($model) . '_' . uc($model) . '_CUH';
   $tokens{'ClassName'} = $model . 'Model';
   $tokens{'Includes'} = join("\n", map { &Include("$_.cuh") } @classes);
-  $tokens{'NodeDeclarations'} = join("\n", map { ucfirst($_) . 'Node ' . $_ . ';' } @nodes);
+  $tokens{'NodeDeclarations'} = join("\n  ", map { ucfirst($_) . 'Node ' . $_ . ';' } @nodes);
   foreach $type ('In', 'Ex', 'R', 'F') {
     $tokens{"${type}SpecName"} = "${model}${type}Spec";
     $tokens{"${type}Spec"} = join("\n",
