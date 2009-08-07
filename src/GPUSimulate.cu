@@ -5,6 +5,7 @@
 #include "bi/method/Result.cuh"
 #include "bi/method/FUpdater.cuh"
 #include "bi/method/MultiSimulator.cuh"
+#include "bi/io/NetCDFWriter.cuh"
 
 #include <iostream>
 #include <iomanip>
@@ -43,29 +44,14 @@ int simulate(const unsigned P, const unsigned K,
   /* simulate */
   sim.stepTo(T);
 
+  gettimeofday(&end, NULL);
+
   /* output */
   if (write) {
-    i = 0;
-    std::cout << std::setprecision(10);
-    for (i = 0; i < P; ++i) {
-      for (k = 0; k < K; ++k) {
-        std::cout << T*k/K;
-        for (j = 0; j < m.getExSize(); ++j) {
-          std::cout << '\t' << r.getExResult(i,j,k);
-        }
-        std::cout << std::endl;
-      }
-
-      /* final result */
-      std::cout << T;
-      for (j = 0; j < m.getExSize(); ++j) {
-        std::cout << '\t' << s.getExState(i,j);
-      }
-      std::cout << std::endl << std::endl;
-    }
+    NetCDFWriter out(m, "/mnt/data/data/output.nc", P, K);
+    out.write(r);
+    out.write(s);
   }
-
-  gettimeofday(&end, NULL);
 
   return (end.tv_sec-start.tv_sec)*1000000 + (end.tv_usec-start.tv_usec);
 }
