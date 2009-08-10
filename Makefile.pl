@@ -8,8 +8,8 @@
 
 $CXX = 'g++';
 $CUDACC = 'nvcc';
-$CXXFLAGS = '-Wall -g -O3 -I"../bi/src" `nc-config --cflags`';
-$CUDACCFLAGS = '-O3 -g -arch=sm_13 -Xptxas="-v" -I"../bi/src" -I"$GSL_ROOT/include" -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS `nc-config --cflags`';
+$CXXFLAGS = '-Wall -g -O3 -I"../bi/src" -I"/tools/boost-bindings/20081116/include/boost-numeric-bindings/boost" `nc-config --cflags`';
+$CUDACCFLAGS = '-O3 -g -arch=sm_13 -Xptxas="-v" -I"../bi/src" -I"/tools/boost-bindings/20081116/include/boost-numeric-bindings/boost" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS';
 $LINKFLAGS = '-L"../bi/build" `nc-config --libs` -lnetcdf_c++ -lboost_program_options-gcc41-mt -lblas -llapack -lgfortran -lgslcblas -lgsl -lbi';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
