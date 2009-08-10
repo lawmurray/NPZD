@@ -9,7 +9,7 @@
 $CXX = 'g++';
 $CUDACC = 'nvcc';
 $CXXFLAGS = '-Wall -g -O3 -I"../bi/src" `nc-config --cflags`';
-$CUDACCFLAGS = '-O3 -g -arch=sm_13 -Xptxas="-v" -I"../bi/src" -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS `nc-config --cflags`';
+$CUDACCFLAGS = '-O3 -g -arch=sm_13 -Xptxas="-v" -I"../bi/src" -I"$GSL_ROOT/include" -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS `nc-config --cflags`';
 $LINKFLAGS = '-L"../bi/build" `nc-config --libs` -lnetcdf_c++ -lboost_program_options-gcc41-mt -lblas -llapack -lgfortran -lgslcblas -lgsl -lbi';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
@@ -36,19 +36,19 @@ while (@files) {
     push(@files, map { "$file/$_" } grep { !/^\./ } readdir(DIR));
     closedir(DIR);
   } elsif (-f $file && $file =~ /\.(?:cu|c|cpp)$/) {
-  	# determine compiler and appropriate flags
-  	if ($file =~ /\.cu$/) {
-  	  $cc = $CUDACC;
-  	  $ccstr = "\$(CUDACC)";
-  	  $flags = $CUDACCFLAGS;
-  	  $flagstr = "\$(CUDACCFLAGS)";
-  	} else {
-  	  $cc = $CXX;
-  	  $ccstr = "\$(CXX)";
-  	  $flags = $CXXFLAGS;
-  	  $flagstr = "\$(CXXFLAGS)";
-  	}
-  
+    # determine compiler and appropriate flags
+    if ($file =~ /\.cu$/) {
+      $cc = $CUDACC;
+      $ccstr = "\$(CUDACC)";
+      $flags = $CUDACCFLAGS;
+      $flagstr = "\$(CUDACCFLAGS)";
+    } else {
+      $cc = $CXX;
+      $ccstr = "\$(CXX)";
+      $flags = $CXXFLAGS;
+      $flagstr = "\$(CXXFLAGS)";
+    }
+    
     # determine dependencies of this source and construct Makefile target
     $target = $file;
     $target =~ s/^$SRCDIR/$BUILDDIR/;
@@ -58,7 +58,7 @@ while (@files) {
     $dir = $1;
     $dirs{$dir} = 1;
 
-    $command = "$dir/" . `$cc $DEPFLAGS -M $file`;
+    $command = "$dir/" . `$cc $flags -M $file`;
     chomp $command;
     $command .= " \\\n    $dir\n";
     $command .= "\t$ccstr -o $target $flagstr -c $file\n";
