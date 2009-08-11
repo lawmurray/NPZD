@@ -9,7 +9,7 @@
 use strict;
 use Text::CSV;
 use DBI;
-use DBD::SQLite; # includes SQLite, not needed separately
+use DBD::SQLite;
 use Pod::Usage;
 use Getopt::Long;
 

@@ -17,7 +17,7 @@ use List::MoreUtils qw/uniq/;
 # command line arguments
 my $model = 'MyModel';
 my $outdir = '.';
-my $templatedir = 'templates';
+my $templatedir = 'templates/cpp';
 my $dbfile = "$model.db";
 Getopt::Long::Configure("auto_help");
 GetOptions("model=s" => \$model,
@@ -154,7 +154,7 @@ sub OutputNodeSources {
 ## Read in all templates.
 ##
 sub GulpTemplates {
-  my @files = <$templatedir/cpp/*.template>;
+  my @files = <$templatedir/*.template>;
   my $file;
   my $name;
 
@@ -656,4 +656,3 @@ Reads an SQLite database model specification and generates C++ code
 implementing the model for the bi library.
 
 =cut
-

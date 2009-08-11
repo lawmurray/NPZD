@@ -11,7 +11,9 @@ CREATE TABLE IF NOT EXISTS Trait (
 );
 
 CREATE TABLE IF NOT EXISTS NodeType (
-  Name VARCHAR PRIMARY KEY
+  Name VARCHAR PRIMARY KEY,
+  Description VARCHAR,
+  Position INTEGER UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS Node (
@@ -148,10 +150,10 @@ INSERT INTO Trait VALUES ('IS_ODE_FORWARD');
 INSERT INTO Trait VALUES ('IS_UNIFORM');
 INSERT INTO Trait VALUES ('IS_GAUSSIAN');
 
-INSERT INTO NodeType VALUES('Constant');
-INSERT INTO NodeType VALUES('Forcing');
-INSERT INTO NodeType VALUES('Dynamic parameter');
-INSERT INTO NodeType VALUES('Static parameter');
-INSERT INTO NodeType VALUES('Random variate');
-INSERT INTO NodeType VALUES('State variable');
-INSERT INTO NodeType VALUES('Intermediate result');
+INSERT INTO NodeType VALUES('Constant', '', 1);
+INSERT INTO NodeType VALUES('Forcing', '', 2);
+INSERT INTO NodeType VALUES('Random variate', 'These represent pseudorandom variates required in the update of other variables.', 3);
+INSERT INTO NodeType VALUES('Static parameter', 'Fixed hyperparameters.', 4);
+INSERT INTO NodeType VALUES('Dynamic parameter', 'Autoregressive, stochastic parameters.', 5);
+INSERT INTO NodeType VALUES('Intermediate result', 'These are intermediate calculations that are either used multiple times in the update of variables, or have interpretable meaning in their own right.', 6);
+INSERT INTO NodeType VALUES('State variable', '', 7);
