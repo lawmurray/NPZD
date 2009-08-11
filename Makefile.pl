@@ -8,19 +8,21 @@
 
 $CXX = 'g++';
 $CUDACC = 'nvcc';
-$CXXFLAGS = '-Wall -g -O3 -I"../bi/src" -I"/tools/boost-bindings/20081116/include/boost-numeric-bindings/boost" `nc-config --cflags`';
-$CUDACCFLAGS = '-O3 -g -arch=sm_13 -Xptxas="-v" -I"../bi/src" -I"/tools/boost-bindings/20081116/include/boost-numeric-bindings/boost" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS';
+$CXXFLAGS = '-Wall -g -O3 -I"../bi/src" `nc-config --cflags`';
+$CUDACCFLAGS = '-O3 -g -arch=sm_13 -Xptxas="-v" -I"../bi/src" -I"$GSL_ROOT/include" -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS `nc-config --cflags`';
 $LINKFLAGS = '-L"../bi/build" `nc-config --libs` -lnetcdf_c++ -lboost_program_options-gcc41-mt -lblas -llapack -lgfortran -lgslcblas -lgsl -lbi';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 
 $NAME = 'NPZD';
+$SPEC = 'NPZD';
 $SRCDIR = 'src';
 $BUILDDIR = 'build';
 $SPECDIR = 'spec';
 $SPEC2XDIR = 'spec2x';
 $SPEC2XSRCDIR = "$SPEC2XDIR/src";
 $SPEC2XCPPTEMPLATEDIR = "$SPEC2XDIR/templates/cpp";
+$SPEC2XTEXTEMPLATEDIR = "$SPEC2XDIR/templates/tex";
 $CPPDIR = "$SRCDIR/model";
 
 # Disassembly
@@ -71,6 +73,7 @@ while (@files) {
 # Write Makefile
 print <<End;
 NAME=$NAME
+SPEC=$SPEC
 
 BUILDDIR=$BUILDDIR
 SRCDIR=$SRCDIR
@@ -78,6 +81,7 @@ SPECDIR=$SPECDIR
 SPEC2XDIR=$SPEC2XDIR
 SPEC2XSRCDIR=$SPEC2XSRCDIR
 SPEC2XCPPTEMPLATEDIR=$SPEC2XCPPTEMPLATEDIR
+SPEC2XTEXTEMPLATEDIR=$SPEC2XTEXTEMPLATEDIR
 CPPDIR=$CPPDIR
 
 CXX=$CXX
@@ -121,17 +125,28 @@ End
 # spec2x targets
 print <<End;
 
-\$(BUILDDIR)/\$(NAME).db: \$(SPECDIR)/\$(NAME).csv \$(SPEC2XSRCDIR)/csv2sql.pl \$(SPEC2XSRCDIR)/sqlite.sql
+\$(BUILDDIR)/\$(NAME).db: \$(SPECDIR)/\$(SPEC).csv \$(SPEC2XSRCDIR)/csv2sql.pl \$(SPEC2XSRCDIR)/sqlite.sql
 \tmkdir -p \$(BUILDDIR)
-\tperl \$(SPEC2XSRCDIR)/csv2sql.pl --model \$(NAME) --outdir \$(BUILDDIR) --srcdir \$(SPEC2XSRCDIR) < \$(SPECDIR)/\$(NAME).csv 
+\tperl \$(SPEC2XSRCDIR)/csv2sql.pl --model \$(NAME) --outdir \$(BUILDDIR) --srcdir \$(SPEC2XSRCDIR) < \$(SPECDIR)/\$(SPEC).csv 
 
 \$(BUILDDIR)/\$(NAME).dot: \$(BUILDDIR)/\$(NAME).db \$(SPEC2XSRCDIR)/sql2dot.pl
 \tmkdir -p \$(BUILDDIR)
 \tperl \$(SPEC2XSRCDIR)/sql2dot.pl --model \$(NAME) --dbfile \$(BUILDDIR)/\$(NAME).db > \$(BUILDDIR)/\$(NAME).dot
 
-\$(BUILDDIR)/\$(NAME).tex: \$(BUILDDIR)/\$(NAME).dot
+\$(BUILDDIR)/\$(NAME)_graph.tex: \$(BUILDDIR)/\$(NAME).dot
 \tmkdir -p \$(BUILDDIR)
-\tdot2tex --autosize --usepdflatex --figpreamble="\huge" --prog=neato -traw --crop < \$(BUILDDIR)/\$(NAME).dot > \$(BUILDDIR)/\$(NAME).tex
+\tdot2tex --autosize --usepdflatex --figpreamble="\huge" --prog=neato -traw --crop < \$(BUILDDIR)/\$(NAME).dot > \$(BUILDDIR)/\$(NAME)_graph.tex
+
+\$(BUILDDIR)/\$(NAME)_graph.pdf: \$(BUILDDIR)/\$(NAME)_graph.tex
+\tmkdir -p \$(BUILDDIR)
+\tcd \$(BUILDDIR); \\
+\tpdflatex \$(NAME)_graph.tex; \\
+\tpdflatex \$(NAME)_graph.tex; \\
+\tcd ..
+
+\$(BUILDDIR)/\$(NAME).tex: \$(BUILDDIR)/\$(NAME).db \$(SPEC2XSRCDIR)/sql2tex.pl \$(SPEC2XTEXTEMPLATEDIR)/*.template
+\tmkdir -p \$(BUILDDIR)
+\tperl \$(SPEC2XSRCDIR)/sql2tex.pl --templatedir \$(SPEC2XTEXTEMPLATEDIR) --model \$(NAME) --dbfile \$(BUILDDIR)/\$(NAME).db > \$(BUILDDIR)/\$(NAME).tex
 
 \$(BUILDDIR)/\$(NAME).pdf: \$(BUILDDIR)/\$(NAME).tex
 \tmkdir -p \$(BUILDDIR)
@@ -142,11 +157,15 @@ print <<End;
 
 sql: \$(BUILDDIR)/\$(NAME).db
 
-dot: \$(BUILDDIR)/\$(NAME).pdf
+dot: \$(BUILDDIR)/\$(NAME)_graph.pdf
 
 cpp: \$(BUILDDIR)/\$(NAME).db \$(SPEC2XSRCDIR)/sql2cpp.pl \$(SPEC2XCPPTEMPLATEDIR)/*.template
 \tmkdir -p \$(CPPDIR)
 \tperl \$(SPEC2XSRCDIR)/sql2cpp.pl --outdir \$(CPPDIR) --templatedir \$(SPEC2XCPPTEMPLATEDIR) --model \$(NAME) --dbfile \$(BUILDDIR)/\$(NAME).db
+
+tex: \$(BUILDDIR)/\$(NAME).tex
+
+pdf: \$(BUILDDIR)/\$(NAME).pdf
 
 End
 
