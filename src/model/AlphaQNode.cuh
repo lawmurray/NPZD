@@ -14,7 +14,7 @@
 /**
  * \f$\alpha^Q\f$; 
  *
- * \f$\f$
+ * \f$0.02\f$
  */
 class AlphaQNode : public bi::BayesNode {
 public:

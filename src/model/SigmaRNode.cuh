@@ -14,7 +14,7 @@
 /**
  * \f$\sigma^R\f$; 
  *
- * \f$\f$
+ * \f$0\f$
  */
 class SigmaRNode : public bi::BayesNode {
 public:

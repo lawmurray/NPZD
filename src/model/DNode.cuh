@@ -43,7 +43,7 @@ inline void DNode::dfdt(const T1 t, const V1& fpax,
     const V2& rpax, const V3& inpax, const V4& expax, V5& dfdt) {
   const real_t zetaE = CUDA_REAL(0.32);
   const real_t deltaI = CUDA_REAL(0.5);
-  const real_t zetaI = CUDA_REAL(1.0);
+  const real_t zetaI = CUDA_REAL(1);
   const real_t tau10 = CUDA_REAL(2);
   const real_t tauR = CUDA_REAL(15);
   const real_t zetaCl = CUDA_REAL(0.08);

@@ -41,7 +41,7 @@ inline ZNode::ZNode() {
 template<class T1, class V1, class V2, class V3, class V4, class V5>
 inline void ZNode::dfdt(const T1 t, const V1& fpax,
     const V2& rpax, const V3& inpax, const V4& expax, V5& dfdt) {
-  const real_t zetaI = CUDA_REAL(1.0);
+  const real_t zetaI = CUDA_REAL(1);
   const real_t tau10 = CUDA_REAL(2);
   const real_t tauR = CUDA_REAL(15);
   const real_t zetaCl = CUDA_REAL(0.08);

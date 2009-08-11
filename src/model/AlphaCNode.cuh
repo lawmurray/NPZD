@@ -14,7 +14,7 @@
 /**
  * \f$\alpha^C\f$; 
  *
- * \f$\f$
+ * \f$1.2\f$
  */
 class AlphaCNode : public bi::BayesNode {
 public:

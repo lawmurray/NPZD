@@ -14,7 +14,7 @@
 /**
  * \f$\sigma^{Ch}\f$; 
  *
- * \f$\f$
+ * \f$0\f$
  */
 class SigmaChNode : public bi::BayesNode {
 public:

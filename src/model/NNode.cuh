@@ -51,7 +51,7 @@ inline void NNode::dfdt(const T1 t, const V1& fpax,
   const real_t nuA = CUDA_REAL(0.37);
   const real_t zetaE = CUDA_REAL(0.32);
   const real_t deltaI = CUDA_REAL(0.5);
-  const real_t zetaI = CUDA_REAL(1.0);
+  const real_t zetaI = CUDA_REAL(1);
   const real_t zetaCl = CUDA_REAL(0.08);
   const real_t piK = CUDA_REAL(2);
   const real_t nuR = CUDA_REAL(0.1);

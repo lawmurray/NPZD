@@ -14,7 +14,7 @@
 /**
  * \f$\sigma^I\f$; 
  *
- * \f$\f$
+ * \f$0\f$
  */
 class SigmaINode : public bi::BayesNode {
 public:

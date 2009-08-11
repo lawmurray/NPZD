@@ -41,8 +41,8 @@ digraph model {
   d2tgraphstyle="scale=0.8"
   nslimit=2.0;
   mclimit=2.0;
+  ratio=0.71;  # for A4 landscape
 End
-#  ratio=0.71;  # for A4 landscape
 
 my $fields;
 my $label;

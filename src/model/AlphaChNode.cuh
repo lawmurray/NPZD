@@ -14,7 +14,7 @@
 /**
  * \f$\alpha^{Ch}\f$; 
  *
- * \f$\f$
+ * \f$0.03\f$
  */
 class AlphaChNode : public bi::BayesNode {
 public:

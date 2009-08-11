@@ -14,7 +14,7 @@
 /**
  * \f$\alpha^E\f$; 
  *
- * \f$\f$
+ * \f$0.32\f$
  */
 class AlphaENode : public bi::BayesNode {
 public:

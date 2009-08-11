@@ -14,7 +14,7 @@
 /**
  * \f$\alpha^{Cl}\f$; 
  *
- * \f$\f$
+ * \f$0.08\f$
  */
 class AlphaClNode : public bi::BayesNode {
 public:

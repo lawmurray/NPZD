@@ -49,7 +49,7 @@ inline void PNode::dfdt(const T1 t, const V1& fpax,
   const real_t muCh = CUDA_REAL(0.03);
   const real_t muCN = CUDA_REAL(0.4);
   const real_t nuA = CUDA_REAL(0.37);
-  const real_t zetaI = CUDA_REAL(1.0);
+  const real_t zetaI = CUDA_REAL(1);
   const real_t zetaCl = CUDA_REAL(0.08);
   const real_t piK = CUDA_REAL(2);
 

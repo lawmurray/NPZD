@@ -14,7 +14,7 @@
 /**
  * \f$\alpha^L\f$; 
  *
- * \f$\f$
+ * \f$0.01\f$
  */
 class AlphaLNode : public bi::BayesNode {
 public:

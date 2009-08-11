@@ -14,7 +14,7 @@
 /**
  * \f$\sigma^Q\f$; 
  *
- * \f$\f$
+ * \f$0\f$
  */
 class SigmaQNode : public bi::BayesNode {
 public:

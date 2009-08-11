@@ -14,7 +14,7 @@
 /**
  * \f$\sigma^C\f$; 
  *
- * \f$\f$
+ * \f$0\f$
  */
 class SigmaCNode : public bi::BayesNode {
 public:

@@ -14,7 +14,7 @@
 /**
  * \f$\alpha^R\f$; 
  *
- * \f$\f$
+ * \f$0.1\f$
  */
 class AlphaRNode : public bi::BayesNode {
 public:

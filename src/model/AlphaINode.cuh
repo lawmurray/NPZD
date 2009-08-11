@@ -14,7 +14,7 @@
 /**
  * \f$\alpha^I\f$; 
  *
- * \f$\f$
+ * \f$1\f$
  */
 class AlphaINode : public bi::BayesNode {
 public:

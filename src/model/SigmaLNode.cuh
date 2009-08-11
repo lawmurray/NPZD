@@ -14,7 +14,7 @@
 /**
  * \f$\sigma^L\f$; 
  *
- * \f$\f$
+ * \f$0\f$
  */
 class SigmaLNode : public bi::BayesNode {
 public:

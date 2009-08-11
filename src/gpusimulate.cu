@@ -8,9 +8,6 @@
 #include "model/NPZDModel.cuh"
 
 #include "bi/cuda/cuda.hpp"
-#include "bi/method/State.cuh"
-#include "bi/method/Result.cuh"
-#include "bi/method/FUpdater.cuh"
 #include "bi/method/MultiSimulator.cuh"
 #include "bi/io/NetCDFWriter.cuh"
 #include "bi/random/Random.hpp"
@@ -41,6 +38,7 @@ void simulate(const unsigned P, const unsigned K, const real_t T,
   MultiSimulator<NPZDModel,real_t> sim(m, s, &r, &fUpdater);
 
   /* parameters for ODE integrator on GPU */
+  ode_init();
   ode_set_h0(CUDA_REAL(0.2));
   ode_set_rtoler(CUDA_REAL(1.0e-3));
   ode_set_atoler(CUDA_REAL(1.0e-3));

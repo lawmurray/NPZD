@@ -14,7 +14,7 @@
 /**
  * \f$\sigma^{Cl}\f$; 
  *
- * \f$\f$
+ * \f$0\f$
  */
 class SigmaClNode : public bi::BayesNode {
 public:
