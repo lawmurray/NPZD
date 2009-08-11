@@ -20,7 +20,7 @@ $BUILDDIR = 'build';
 $SPECDIR = 'spec';
 $SPEC2XDIR = 'spec2x';
 $SPEC2XSRCDIR = "$SPEC2XDIR/src";
-$SPEC2XTEMPLATEDIR = "$SPEC2XDIR/templates";
+$SPEC2XCPPTEMPLATEDIR = "$SPEC2XDIR/templates/cpp";
 $CPPDIR = "$SRCDIR/model";
 
 # Disassembly
@@ -77,7 +77,7 @@ SRCDIR=$SRCDIR
 SPECDIR=$SPECDIR
 SPEC2XDIR=$SPEC2XDIR
 SPEC2XSRCDIR=$SPEC2XSRCDIR
-SPEC2XTEMPLATEDIR=$SPEC2XTEMPLATEDIR
+SPEC2XCPPTEMPLATEDIR=$SPEC2XCPPTEMPLATEDIR
 CPPDIR=$CPPDIR
 
 CXX=$CXX
@@ -144,9 +144,9 @@ sql: \$(BUILDDIR)/\$(NAME).db
 
 dot: \$(BUILDDIR)/\$(NAME).pdf
 
-cpp: \$(BUILDDIR)/\$(NAME).db \$(SPEC2XSRCDIR)/sql2cpp.pl \$(SPEC2XTEMPLATEDIR)/*.template
+cpp: \$(BUILDDIR)/\$(NAME).db \$(SPEC2XSRCDIR)/sql2cpp.pl \$(SPEC2XCPPTEMPLATEDIR)/*.template
 \tmkdir -p \$(CPPDIR)
-\tperl \$(SPEC2XSRCDIR)/sql2cpp.pl --outdir \$(CPPDIR) --templatedir \$(SPEC2XTEMPLATEDIR) --model \$(NAME) --dbfile \$(BUILDDIR)/\$(NAME).db
+\tperl \$(SPEC2XSRCDIR)/sql2cpp.pl --outdir \$(CPPDIR) --templatedir \$(SPEC2XCPPTEMPLATEDIR) --model \$(NAME) --dbfile \$(BUILDDIR)/\$(NAME).db
 
 End
 
