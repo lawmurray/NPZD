@@ -154,7 +154,7 @@ sub OutputNodeSources {
 ## Read in all templates.
 ##
 sub GulpTemplates {
-  my @files = <$templatedir/*.template>;
+  my @files = <$templatedir/cpp/*.template>;
   my $file;
   my $name;
 

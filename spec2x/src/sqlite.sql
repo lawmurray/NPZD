@@ -6,18 +6,22 @@
 -- $Date$
 --
 
+CREATE TABLE IF NOT EXISTS Trait (
+  Name VARCHAR PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS NodeType (
+  Name VARCHAR PRIMARY KEY
+);
+
 CREATE TABLE IF NOT EXISTS Node (
   Name VARCHAR PRIMARY KEY,
   LaTeXName VARCHAR,
   Formula VARCHAR,
   LaTeXFormula VARCHAR,
   Description VARCHAR,
-  Type VARCHAR NOT NULL,
+  Type VARCHAR NOT NULL REFERENCES NodeType(Name),
   Position INTEGER
-);
-
-CREATE TABLE IF NOT EXISTS Trait (
-  Name VARCHAR PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS NodeTrait (
@@ -38,6 +42,14 @@ CREATE TABLE IF NOT EXISTS Edge (
 -- Foreign keys
 --
 
+-- Node.Type -> NodeType.Name
+CREATE TRIGGER IF NOT EXISTS NodeInsert AFTER INSERT ON Node
+  WHEN
+    (SELECT 1 FROM NodeType WHERE Name = NEW.Type) IS NULL
+  BEGIN
+    SELECT RAISE(ABORT, 'Type does not exist');
+  END;
+    
 -- NodeTrait.Node -> Node.Name
 CREATE TRIGGER IF NOT EXISTS NodeTraitNodeInsert AFTER INSERT ON NodeTrait
   WHEN
@@ -120,6 +132,7 @@ CREATE TRIGGER IF NOT EXISTS FormulaCheck AFTER INSERT ON Edge
 DELETE FROM Node;
 DELETE FROM Trait;
 DELETE FROM NodeTrait;
+DELETE FROM NodeType;
 DELETE FROM Edge;
 
 --
@@ -134,3 +147,11 @@ INSERT INTO Trait VALUES ('IS_GENERIC_FORWARD');
 INSERT INTO Trait VALUES ('IS_ODE_FORWARD');
 INSERT INTO Trait VALUES ('IS_UNIFORM');
 INSERT INTO Trait VALUES ('IS_GAUSSIAN');
+
+INSERT INTO NodeType VALUES('Constant');
+INSERT INTO NodeType VALUES('Forcing');
+INSERT INTO NodeType VALUES('Dynamic parameter');
+INSERT INTO NodeType VALUES('Static parameter');
+INSERT INTO NodeType VALUES('Random variate');
+INSERT INTO NodeType VALUES('State variable');
+INSERT INTO NodeType VALUES('Intermediate result');
