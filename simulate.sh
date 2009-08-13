@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+#PBS –l walltime=05:00,nodes=1:ppn=1,gres=gpu -d $PBS_O_WORKDIR
 
 LD_LIBRARY_PATH=../bi/build:$LD_LIBRARY_PATH
 
