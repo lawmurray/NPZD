@@ -9,8 +9,8 @@
 $CXX = 'g++';
 $CUDACC = 'nvcc';
 $CXXFLAGS = '-Wall -g -O3 -I"../bi/src" `nc-config --cflags`';
-$CUDACCFLAGS = '-O3 -g -arch=sm_13 -Xptxas="-v" -I"../bi/src" -I"$GSL_ROOT/include" -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS `nc-config --cflags`';
-$LINKFLAGS = '-L"../bi/build" `nc-config --libs` -lnetcdf_c++ -lboost_program_options-gcc41-mt -lblas -llapack -lgfortran -lgslcblas -lgsl -lbi';
+$CUDACCFLAGS = '-O3 -g -arch=sm_13 -Xptxas="-v" -I"../bi/src" -I"$GSL_ROOT/include" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS';
+$LINKFLAGS = '-L"../bi/build" -lbi -latlas -lf77blas -llapack -lgfortran -lboost_program_options-gcc43-mt -lgslcblas -lgsl `nc-config --libs` -lnetcdf_c++ -lcuda -lcudart';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 
@@ -181,7 +181,7 @@ print "\$(BUILDDIR)/simulate: cpp ";
 print join(" \\\n    ", @targets);
 print "\n";
 #print "\tar -r \$(BUILDDIR)/simulate \$(LINKFLAGS) " . join(' ', @targets);
-print "\t$CUDACC -o $BUILDDIR/simulate \$(LINKFLAGS) " . join(' ', @targets);
+print "\t\$(CXX) -o $BUILDDIR/simulate \$(LINKFLAGS) " . join(' ', @targets);
 
 print "\n\n";
 
