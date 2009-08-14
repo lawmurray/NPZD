@@ -8,7 +8,11 @@
 #include "model/NPZDModel.cuh"
 
 #include "bi/cuda/cuda.hpp"
+#include "bi/cuda/ode/IntegratorConstants.cuh"
 #include "bi/method/MultiSimulator.cuh"
+#include "bi/method/RUpdater.hpp"
+#include "bi/method/FUpdater.hpp"
+#include "bi/io/NetCDFReader.hpp"
 #include "bi/io/NetCDFWriter.cuh"
 #include "bi/random/Random.hpp"
 
@@ -26,6 +30,9 @@ void simulate(const unsigned P, const unsigned K, const real_t T,
   /* random number generator */
   Random rng(SEED);
 
+  /* report missing variables in NetCDF, but don't die */
+  NcError ncErr(NcError::verbose_nonfatal);
+
   /* model */
   NPZDModel m;
 
@@ -33,9 +40,14 @@ void simulate(const unsigned P, const unsigned K, const real_t T,
   State s(m, P);
   Result r(m, P, K);
 
+  /* initialise state */
+  NetCDFReader in(m, INPUT_FILE);
+  in.read(s);
+
   /* simulator */
-  FUpdater<NPZDModel> fUpdater(m, s.fState, INPUT_FILE.c_str());
-  MultiSimulator<NPZDModel,real_t> sim(m, s, &r, &fUpdater);
+  RUpdater<NPZDModel> rUpdater(s, SEED);
+  FUpdater<NPZDModel> fUpdater(m, s, INPUT_FILE);
+  MultiSimulator<NPZDModel,real_t> sim(m, s, &r, &rUpdater, &fUpdater);
 
   /* parameters for ODE integrator on GPU */
   ode_init();
@@ -58,7 +70,7 @@ void simulate(const unsigned P, const unsigned K, const real_t T,
 
   /* output results */
   if (OUTPUT) {
-    NetCDFWriter out(m, OUTPUT_FILE.c_str(), P, K);
+    NetCDFWriter out(m, OUTPUT_FILE, P, K);
     out.write(r);
     out.write(s);
   }
