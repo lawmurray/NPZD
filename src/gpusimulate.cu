@@ -22,13 +22,13 @@
 using namespace bi;
 
 void simulate(const unsigned P, const unsigned K, const real_t T,
-    const int SEED, const std::string& INPUT_FILE,
+    const unsigned NS, const int SEED, const std::string& INPUT_FILE,
     const std::string& OUTPUT_FILE, const bool OUTPUT, const bool TIME) {
-  unsigned p;
+  //unsigned p;
   timeval start, end;
 
   /* random number generator */
-  Random rng(SEED);
+  //Random rng(SEED);
 
   /* report missing variables in NetCDF, but don't die */
   NcError ncErr(NcError::verbose_nonfatal);
@@ -41,12 +41,12 @@ void simulate(const unsigned P, const unsigned K, const real_t T,
   Result r(m, P, K);
 
   /* initialise state */
-  NetCDFReader in(m, INPUT_FILE);
-  in.read(s);
+  NetCDFReader<true,true,false,false> in(m, INPUT_FILE);
+  in.read(s, NS);
 
   /* simulator */
   RUpdater<NPZDModel> rUpdater(s, SEED);
-  FUpdater<NPZDModel> fUpdater(m, s, INPUT_FILE);
+  FUpdater fUpdater(m, INPUT_FILE, s, NS);
   MultiSimulator<NPZDModel,real_t> sim(m, s, &r, &rUpdater, &fUpdater);
 
   /* parameters for ODE integrator on GPU */
@@ -56,12 +56,13 @@ void simulate(const unsigned P, const unsigned K, const real_t T,
   ode_set_atoler(CUDA_REAL(1.0e-3));
 
   /* initial values of ex-nodes (N, P, Z & D) */
-  for (p = 0; p < P; ++p) {
-    s.setExState(p, m.N, rng.uniform(1.0, 10.0));
-    s.setExState(p, m.P, rng.uniform(1.0, 10.0));
-    s.setExState(p, m.Z, rng.uniform(1.0, 10.0));
-    s.setExState(p, m.D, rng.uniform(1.0, 10.0));
-  }
+  //(prefer input file)
+  //for (p = 0; p < P; ++p) {
+  //  s.setExState(p, m.N, rng.uniform(1.0, 10.0));
+  //  s.setExState(p, m.P, rng.uniform(1.0, 10.0));
+  //  s.setExState(p, m.Z, rng.uniform(1.0, 10.0));
+  //  s.setExState(p, m.D, rng.uniform(1.0, 10.0));
+  //}
 
   /* simulate */
   gettimeofday(&start, NULL);

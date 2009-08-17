@@ -14,7 +14,7 @@
 /**
  * \f$\mu^{CN}\f$; Maximum growth rate for C:N
  *
- * \f$\mu^{CN}(1-R_P) + R_P (\alpha^{CN} + \sigma^{CN} u^{CN})\f$
+ * \f$0.4\f$
  */
 class MuCNNode : public bi::BayesNode {
 public:
@@ -23,32 +23,15 @@ public:
    */
   MuCNNode();
 
-  template<class V1, class V2, class V3, class V4>
-  static CUDA_FUNC_BOTH void s(const V1& fpax, const V2& rpax,
-      const V3& inpax, V4& x);
 };
 
 #include "bi/model/NodeStaticTraits.hpp"
 #include "bi/model/NodeTypeTraits.hpp"
 
-IS_GENERIC_STATIC(MuCNNode)
 IS_IN_NODE(MuCNNode)
 
 inline MuCNNode::MuCNNode() {
   setName("muCN");
-}
-
-template<class V1, class V2, class V3, class V4>
-inline void MuCNNode::s(const V1& fpax, const V2& rpax,
-    const V3& inpax, V4& x) {
-  const real_t RP = CUDA_REAL(3);
-
-  const real_t muCN = inpax[0];
-  const real_t alphaCN = inpax[1];
-  const real_t sigmaCN = inpax[2];
-  const real_t uCN = rpax[0];
-
-  x = muCN*(1 - RP) + RP*(alphaCN + sigmaCN*uCN);
 }
 
 #endif

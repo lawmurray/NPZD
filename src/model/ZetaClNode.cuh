@@ -14,7 +14,7 @@
 /**
  * \f$\zeta^{Cl}\f$; Zooplankton clearance rate
  *
- * \f$\zeta^{Cl}(1-R_Z) + R_Z  (\alpha^{Cl} + \sigma^{Cl} u^{Cl})\f$
+ * \f$0.08\f$
  */
 class ZetaClNode : public bi::BayesNode {
 public:
@@ -23,32 +23,15 @@ public:
    */
   ZetaClNode();
 
-  template<class V1, class V2, class V3, class V4>
-  static CUDA_FUNC_BOTH void s(const V1& fpax, const V2& rpax,
-      const V3& inpax, V4& x);
 };
 
 #include "bi/model/NodeStaticTraits.hpp"
 #include "bi/model/NodeTypeTraits.hpp"
 
-IS_GENERIC_STATIC(ZetaClNode)
 IS_IN_NODE(ZetaClNode)
 
 inline ZetaClNode::ZetaClNode() {
   setName("zetaCl");
-}
-
-template<class V1, class V2, class V3, class V4>
-inline void ZetaClNode::s(const V1& fpax, const V2& rpax,
-    const V3& inpax, V4& x) {
-  const real_t RZ = CUDA_REAL(10);
-
-  const real_t zetaCl = inpax[0];
-  const real_t alphaCl = inpax[1];
-  const real_t sigmaCl = inpax[2];
-  const real_t uCl = rpax[0];
-
-  x = zetaCl*(1 - RZ) + RZ*(alphaCl + sigmaCl*uCl);
 }
 
 #endif

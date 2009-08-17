@@ -14,7 +14,7 @@
 /**
  * \f$\nu^R\f$; Remineralisation rate
  *
- * \f$\nu^R(1-R_Z) + R_Z  (\alpha^R + \sigma^R u^R)\f$
+ * \f$0.1\f$
  */
 class NuRNode : public bi::BayesNode {
 public:
@@ -23,32 +23,15 @@ public:
    */
   NuRNode();
 
-  template<class V1, class V2, class V3, class V4>
-  static CUDA_FUNC_BOTH void s(const V1& fpax, const V2& rpax,
-      const V3& inpax, V4& x);
 };
 
 #include "bi/model/NodeStaticTraits.hpp"
 #include "bi/model/NodeTypeTraits.hpp"
 
-IS_GENERIC_STATIC(NuRNode)
 IS_IN_NODE(NuRNode)
 
 inline NuRNode::NuRNode() {
   setName("nuR");
-}
-
-template<class V1, class V2, class V3, class V4>
-inline void NuRNode::s(const V1& fpax, const V2& rpax,
-    const V3& inpax, V4& x) {
-  const real_t RZ = CUDA_REAL(10);
-
-  const real_t nuR = inpax[0];
-  const real_t alphaR = inpax[1];
-  const real_t sigmaR = inpax[2];
-  const real_t uR = rpax[0];
-
-  x = nuR*(1 - RZ) + RZ*(alphaR + sigmaR*uR);
 }
 
 #endif

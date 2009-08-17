@@ -14,7 +14,7 @@
 /**
  * \f$\pi^{NC}\f$; Min/Max N:C
  *
- * \f$\pi^{NC}(1-R_P) + R_P  (\alpha^{NC} + \sigma^{NC} u^{NC})\f$
+ * \f$0.25\f$
  */
 class PiNCNode : public bi::BayesNode {
 public:
@@ -23,32 +23,15 @@ public:
    */
   PiNCNode();
 
-  template<class V1, class V2, class V3, class V4>
-  static CUDA_FUNC_BOTH void s(const V1& fpax, const V2& rpax,
-      const V3& inpax, V4& x);
 };
 
 #include "bi/model/NodeStaticTraits.hpp"
 #include "bi/model/NodeTypeTraits.hpp"
 
-IS_GENERIC_STATIC(PiNCNode)
 IS_IN_NODE(PiNCNode)
 
 inline PiNCNode::PiNCNode() {
   setName("piNC");
-}
-
-template<class V1, class V2, class V3, class V4>
-inline void PiNCNode::s(const V1& fpax, const V2& rpax,
-    const V3& inpax, V4& x) {
-  const real_t RP = CUDA_REAL(3);
-
-  const real_t piNC = inpax[0];
-  const real_t alphaNC = inpax[1];
-  const real_t sigmaNC = inpax[2];
-  const real_t uNC = rpax[0];
-
-  x = piNC*(1 - RP) + RP*(alphaNC + sigmaNC*uNC);
 }
 
 #endif

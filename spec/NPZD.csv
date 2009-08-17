@@ -19,17 +19,17 @@
 "Eir","E","Surface irradience","E",,,"Forcing",,"IS_F_NODE"
 "Depth","L","Mixed layer depth","L",,,"Forcing",,"IS_F_NODE"
 "Exch","betaE","Exchange rate","\beta^E",,,"Forcing",,"IS_F_NODE"
-"mumaxC","muC","Maximum growth rate for C","\mu^C",1.2,1.2,"Constant",,
-"mumCN","muCN","Maximum growth rate for C:N","\mu^{CN}",0.4,0.4,"Constant",,
-"ChlCmax","muCh","Maximum growth rate for Chl-a:C","\mu^{Ch}",0.03,0.03,"Constant",,
-"maxNaff","nuA","Maximum N affinity","\nu^A",0.37,0.37,"Constant",,
-"minmaxNC","piNC","Min/Max N:C","\pi^{NC}",0.25,0.25,"Constant",,
-"Ingmax","zetaI","Max Z ingestion rate","\zeta^I",1,1,"Constant",,
-"Clear","zetaCl","Zooplankton clearance rate","\zeta^{Cl}",0.08,0.08,"Constant",,
-"Zeff","zetaE","Zooplankton grazing efficiency","\zeta^E",0.32,0.32,"Constant",,
-"Remin","nuR","Remineralisation rate","\nu^R",0.1,0.1,"Constant",,
-"Mq","zetaQ","Z quadratic mortality term","\zeta^Q",0.02,0.02,"Constant",,
-"Ml","zetaL","Z linear mortality term","\zeta^L",0.01,0.01,"Constant",,
+"mumaxC","muC","Maximum growth rate for C","\mu^C",1.2,1.2,"Static parameter",,"IS_IN_NODE"
+"mumCN","muCN","Maximum growth rate for C:N","\mu^{CN}",0.4,0.4,"Static parameter",,"IS_IN_NODE"
+"ChlCmax","muCh","Maximum growth rate for Chl-a:C","\mu^{Ch}",0.03,0.03,"Static parameter",,"IS_IN_NODE"
+"maxNaff","nuA","Maximum N affinity","\nu^A",0.37,0.37,"Static parameter",,"IS_IN_NODE"
+"minmaxNC","piNC","Min/Max N:C","\pi^{NC}",0.25,0.25,"Static parameter",,"IS_IN_NODE"
+"Ingmax","zetaI","Max Z ingestion rate","\zeta^I",1,1,"Static parameter",,"IS_IN_NODE"
+"Clear","zetaCl","Zooplankton clearance rate","\zeta^{Cl}",0.08,0.08,"Static parameter",,"IS_IN_NODE"
+"Zeff","zetaE","Zooplankton grazing efficiency","\zeta^E",0.32,0.32,"Static parameter",,"IS_IN_NODE"
+"Remin","nuR","Remineralisation rate","\nu^R",0.1,0.1,"Static parameter",,"IS_IN_NODE"
+"Mq","zetaQ","Z quadratic mortality term","\zeta^Q",0.02,0.02,"Static parameter",,"IS_IN_NODE"
+"Ml","zetaL","Z linear mortality term","\zeta^L",0.01,0.01,"Static parameter",,"IS_IN_NODE"
 "Graze","piG",,"\pi^G","Z \zeta^I \tau^C \pi^S / (1 + \pi^S)","Z*zetaI*tauC*piS/(1+piS)","Intermediate result","Z, zetaI, tauC, piS",
 "Sat","piS",,"\pi^S","(\zeta^{Cl} P / \zeta^I)^{\pi^K}","pow(zetaCl*P/zetaI, piK)","Intermediate result","zetaCl, P, zetaI, piK",
 "mumaxCT","muCT",,"\mu^{CT}","\mu^C \tau^C","muC*tauC","Intermediate result","muC, tauC",

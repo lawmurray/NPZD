@@ -2,8 +2,8 @@
  * @file
  *
  * @author Lawrence Murray <lawrence.murray@csiro.au>
- * $Rev$
- * $Date$
+ * $Rev: 209 $
+ * $Date: 2009-08-10 12:20:53 +0800 (Mon, 10 Aug 2009) $
  */
 #include "bi/cuda/cuda.hpp"
 
@@ -13,7 +13,7 @@
 #include <string>
 
 extern void simulate(const unsigned P, const unsigned K, const real_t T,
-    const int SEED, const std::string& INPUT_FILE,
+    const unsigned NS, const int SEED, const std::string& INPUT_FILE,
     const std::string& OUTPUT_FILE, const bool OUTPUT, const bool TIME);
 
 int main(int argc, char* argv[]) {
@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
 
   /* handle command line arguments */
   real_t T;
-  unsigned P, K;
+  unsigned P, K, NS;
   int SEED;
   std::string INPUT_FILE, OUTPUT_FILE;
   bool OUTPUT, TIME;
@@ -32,9 +32,14 @@ int main(int argc, char* argv[]) {
     (",P", po::value(&P), "no. trajectories")
     (",K", po::value(&K), "no. points to output")
     (",T", po::value(&T), "simulation time for each trajectory")
-    ("seed", po::value(&SEED)->default_value(time(NULL)), "pseudorandom number seed")
-    ("input-file", po::value(&INPUT_FILE), "input file containing forcings")
-    ("output-file", po::value(&OUTPUT_FILE), "output file to contain results")
+    ("seed", po::value(&SEED)->default_value(time(NULL)),
+        "pseudorandom number seed")
+    ("input-file", po::value(&INPUT_FILE),
+        "input file containing forcings")
+    ("output-file", po::value(&OUTPUT_FILE),
+        "output file to contain results")
+    ("ns", po::value(&NS)->default_value(0),
+        "index along ns dimension in input file to use")
     ("output", po::value(&OUTPUT)->default_value(false), "enable output")
     ("time", po::value(&TIME)->default_value(false), "enable timing output");
   po::variables_map vm;
@@ -47,7 +52,7 @@ int main(int argc, char* argv[]) {
   }
 
   /* run simulation */
-  simulate(P, K, T, SEED, INPUT_FILE, OUTPUT_FILE, OUTPUT, TIME);
+  simulate(P, K, T, NS, SEED, INPUT_FILE, OUTPUT_FILE, OUTPUT, TIME);
 
   return 0;
 }

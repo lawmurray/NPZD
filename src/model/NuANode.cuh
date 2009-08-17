@@ -14,7 +14,7 @@
 /**
  * \f$\nu^A\f$; Maximum N affinity
  *
- * \f$\nu^A(1-R_P) + R_P  (\alpha^A + \sigma^A u^A)\f$
+ * \f$0.37\f$
  */
 class NuANode : public bi::BayesNode {
 public:
@@ -23,32 +23,15 @@ public:
    */
   NuANode();
 
-  template<class V1, class V2, class V3, class V4>
-  static CUDA_FUNC_BOTH void s(const V1& fpax, const V2& rpax,
-      const V3& inpax, V4& x);
 };
 
 #include "bi/model/NodeStaticTraits.hpp"
 #include "bi/model/NodeTypeTraits.hpp"
 
-IS_GENERIC_STATIC(NuANode)
 IS_IN_NODE(NuANode)
 
 inline NuANode::NuANode() {
   setName("nuA");
-}
-
-template<class V1, class V2, class V3, class V4>
-inline void NuANode::s(const V1& fpax, const V2& rpax,
-    const V3& inpax, V4& x) {
-  const real_t RP = CUDA_REAL(3);
-
-  const real_t nuA = inpax[0];
-  const real_t alphaA = inpax[1];
-  const real_t sigmaA = inpax[2];
-  const real_t uA = rpax[0];
-
-  x = nuA*(1 - RP) + RP*(alphaA + sigmaA*uA);
 }
 
 #endif

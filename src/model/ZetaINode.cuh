@@ -14,7 +14,7 @@
 /**
  * \f$\zeta^I\f$; Max Z ingestion rate
  *
- * \f$\zeta^I(1-R_Z) + R_Z  (\alpha^I + \sigma^I u^I)\f$
+ * \f$1\f$
  */
 class ZetaINode : public bi::BayesNode {
 public:
@@ -23,32 +23,15 @@ public:
    */
   ZetaINode();
 
-  template<class V1, class V2, class V3, class V4>
-  static CUDA_FUNC_BOTH void s(const V1& fpax, const V2& rpax,
-      const V3& inpax, V4& x);
 };
 
 #include "bi/model/NodeStaticTraits.hpp"
 #include "bi/model/NodeTypeTraits.hpp"
 
-IS_GENERIC_STATIC(ZetaINode)
 IS_IN_NODE(ZetaINode)
 
 inline ZetaINode::ZetaINode() {
   setName("zetaI");
-}
-
-template<class V1, class V2, class V3, class V4>
-inline void ZetaINode::s(const V1& fpax, const V2& rpax,
-    const V3& inpax, V4& x) {
-  const real_t RZ = CUDA_REAL(10);
-
-  const real_t zetaI = inpax[0];
-  const real_t alphaI = inpax[1];
-  const real_t sigmaI = inpax[2];
-  const real_t uI = rpax[0];
-
-  x = zetaI*(1 - RZ) + RZ*(alphaI + sigmaI*uI);
 }
 
 #endif

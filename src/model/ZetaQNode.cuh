@@ -14,7 +14,7 @@
 /**
  * \f$\zeta^Q\f$; Z quadratic mortality term
  *
- * \f$\zeta^Q(1-R_Z) + R_Z  (\alpha^Q + \sigma^Q u^Q)\f$
+ * \f$0.02\f$
  */
 class ZetaQNode : public bi::BayesNode {
 public:
@@ -23,32 +23,15 @@ public:
    */
   ZetaQNode();
 
-  template<class V1, class V2, class V3, class V4>
-  static CUDA_FUNC_BOTH void s(const V1& fpax, const V2& rpax,
-      const V3& inpax, V4& x);
 };
 
 #include "bi/model/NodeStaticTraits.hpp"
 #include "bi/model/NodeTypeTraits.hpp"
 
-IS_GENERIC_STATIC(ZetaQNode)
 IS_IN_NODE(ZetaQNode)
 
 inline ZetaQNode::ZetaQNode() {
   setName("zetaQ");
-}
-
-template<class V1, class V2, class V3, class V4>
-inline void ZetaQNode::s(const V1& fpax, const V2& rpax,
-    const V3& inpax, V4& x) {
-  const real_t RZ = CUDA_REAL(10);
-
-  const real_t zetaQ = inpax[0];
-  const real_t alphaQ = inpax[1];
-  const real_t sigmaQ = inpax[2];
-  const real_t uQ = rpax[0];
-
-  x = zetaQ*(1 - RZ) + RZ*(alphaQ + sigmaQ*uQ);
 }
 
 #endif

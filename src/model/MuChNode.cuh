@@ -14,7 +14,7 @@
 /**
  * \f$\mu^{Ch}\f$; Maximum growth rate for Chl-a:C
  *
- * \f$\mu^{Ch}(1-R_P) + R_P  (\alpha^{Ch} + \sigma^{Ch} u^{Ch})\f$
+ * \f$0.03\f$
  */
 class MuChNode : public bi::BayesNode {
 public:
@@ -23,32 +23,15 @@ public:
    */
   MuChNode();
 
-  template<class V1, class V2, class V3, class V4>
-  static CUDA_FUNC_BOTH void s(const V1& fpax, const V2& rpax,
-      const V3& inpax, V4& x);
 };
 
 #include "bi/model/NodeStaticTraits.hpp"
 #include "bi/model/NodeTypeTraits.hpp"
 
-IS_GENERIC_STATIC(MuChNode)
 IS_IN_NODE(MuChNode)
 
 inline MuChNode::MuChNode() {
   setName("muCh");
-}
-
-template<class V1, class V2, class V3, class V4>
-inline void MuChNode::s(const V1& fpax, const V2& rpax,
-    const V3& inpax, V4& x) {
-  const real_t RP = CUDA_REAL(3);
-
-  const real_t muCh = inpax[0];
-  const real_t alphaCh = inpax[1];
-  const real_t sigmaCh = inpax[2];
-  const real_t uCh = rpax[0];
-
-  x = muCh*(1 - RP) + RP*(alphaCh + sigmaCh*uCh);
 }
 
 #endif

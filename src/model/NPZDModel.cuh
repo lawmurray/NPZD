@@ -16,6 +16,17 @@
 #include "ENode.cuh"
 #include "LNode.cuh"
 #include "BetaENode.cuh"
+#include "MuCNode.cuh"
+#include "MuCNNode.cuh"
+#include "MuChNode.cuh"
+#include "NuANode.cuh"
+#include "PiNCNode.cuh"
+#include "ZetaINode.cuh"
+#include "ZetaClNode.cuh"
+#include "ZetaENode.cuh"
+#include "NuRNode.cuh"
+#include "ZetaQNode.cuh"
+#include "ZetaLNode.cuh"
 #include "PNode.cuh"
 #include "ZNode.cuh"
 #include "DNode.cuh"
@@ -28,7 +39,17 @@
  * In-net spec.
  */
 BEGIN_NODESPEC(NPZDInSpec)
-
+SINGLE_TYPE(1, MuCNode)
+SINGLE_TYPE(1, MuCNNode)
+SINGLE_TYPE(1, MuChNode)
+SINGLE_TYPE(1, NuANode)
+SINGLE_TYPE(1, PiNCNode)
+SINGLE_TYPE(1, ZetaINode)
+SINGLE_TYPE(1, ZetaClNode)
+SINGLE_TYPE(1, ZetaENode)
+SINGLE_TYPE(1, NuRNode)
+SINGLE_TYPE(1, ZetaQNode)
+SINGLE_TYPE(1, ZetaLNode)
 END_NODESPEC()
 
 /**
@@ -87,6 +108,17 @@ public:
   ENode E;
   LNode L;
   BetaENode betaE;
+  MuCNode muC;
+  MuCNNode muCN;
+  MuChNode muCh;
+  NuANode nuA;
+  PiNCNode piNC;
+  ZetaINode zetaI;
+  ZetaClNode zetaCl;
+  ZetaENode zetaE;
+  NuRNode nuR;
+  ZetaQNode zetaQ;
+  ZetaLNode zetaL;
   PNode P;
   ZNode Z;
   DNode D;

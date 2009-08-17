@@ -41,21 +41,21 @@ inline DNode::DNode() {
 template<class T1, class V1, class V2, class V3, class V4, class V5>
 inline void DNode::dfdt(const T1 t, const V1& fpax,
     const V2& rpax, const V3& inpax, const V4& expax, V5& dfdt) {
-  const real_t zetaE = CUDA_REAL(0.32);
   const real_t deltaI = CUDA_REAL(0.5);
-  const real_t zetaI = CUDA_REAL(1);
   const real_t tau10 = CUDA_REAL(2);
   const real_t tauR = CUDA_REAL(15);
-  const real_t zetaCl = CUDA_REAL(0.08);
   const real_t piK = CUDA_REAL(2);
-  const real_t zetaQ = CUDA_REAL(0.02);
-  const real_t zetaL = CUDA_REAL(0.01);
-  const real_t nuR = CUDA_REAL(0.1);
   const real_t deltaS = CUDA_REAL(0.1);
 
+  const real_t zetaE = inpax[0];
   const real_t Z = expax[0];
+  const real_t zetaI = inpax[1];
   const real_t T = fpax[0];
+  const real_t zetaCl = inpax[2];
   const real_t P = expax[1];
+  const real_t zetaQ = inpax[3];
+  const real_t zetaL = inpax[4];
+  const real_t nuR = inpax[5];
   const real_t D = expax[2];
   const real_t L = fpax[1];
   const real_t betaE = fpax[2];

@@ -14,7 +14,7 @@
 /**
  * \f$\zeta^E\f$; Zooplankton grazing efficiency
  *
- * \f$\zeta^E(1-R_Z) + R_Z  (\alpha^E + \sigma^E u^E)\f$
+ * \f$0.32\f$
  */
 class ZetaENode : public bi::BayesNode {
 public:
@@ -23,32 +23,15 @@ public:
    */
   ZetaENode();
 
-  template<class V1, class V2, class V3, class V4>
-  static CUDA_FUNC_BOTH void s(const V1& fpax, const V2& rpax,
-      const V3& inpax, V4& x);
 };
 
 #include "bi/model/NodeStaticTraits.hpp"
 #include "bi/model/NodeTypeTraits.hpp"
 
-IS_GENERIC_STATIC(ZetaENode)
 IS_IN_NODE(ZetaENode)
 
 inline ZetaENode::ZetaENode() {
   setName("zetaE");
-}
-
-template<class V1, class V2, class V3, class V4>
-inline void ZetaENode::s(const V1& fpax, const V2& rpax,
-    const V3& inpax, V4& x) {
-  const real_t RZ = CUDA_REAL(10);
-
-  const real_t zetaE = inpax[0];
-  const real_t alphaE = inpax[1];
-  const real_t sigmaE = inpax[2];
-  const real_t uE = rpax[0];
-
-  x = zetaE*(1 - RZ) + RZ*(alphaE + sigmaE*uE);
 }
 
 #endif
