@@ -33,6 +33,7 @@ NPZDModel::NPZDModel() : bi::BayesNet<
   addNode(zetaQ);
   addNode(zetaL);
   addNode(P);
+  addNode(Chla);
   addNode(Z);
   addNode(D);
   addNode(N);
@@ -51,6 +52,15 @@ NPZDModel::NPZDModel() : bi::BayesNet<
   addArc(zetaCl, P);
   addArc(betaE, P);
   addArc(betaP, P);
+  addArc(P, Chla);
+  addArc(muCh, Chla);
+  addArc(N, Chla);
+  addArc(muC, Chla);
+  addArc(T, Chla);
+  addArc(muCN, Chla);
+  addArc(nuA, Chla);
+  addArc(piNC, Chla);
+  addArc(E, Chla);
   addArc(Z, Z);
   addArc(zetaI, Z);
   addArc(T, Z);
