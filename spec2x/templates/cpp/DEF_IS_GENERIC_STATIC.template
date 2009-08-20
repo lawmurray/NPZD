@@ -1,6 +1,6 @@
-template<class V1, class V2, class V3, class V4>
+template<class V1, class V2, class V3, class V4, class V5>
 inline void <% ClassName %>::s(const V1& fpax, const V2& rpax,
-    const V3& inpax, V4& x) {
+    const V3& inpax, const V4& expax, V5& x) {
 <% ConstantAliases %>
 
 <% ParentAliases %>

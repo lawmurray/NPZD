@@ -269,31 +269,12 @@ sub Pax {
   my $parenttype = &NodeType($parent);
   my $childtype = &NodeType($child);
 
-  if ($parenttype eq 'in') {
-    if ($childtype eq 'in') {
-      return 'inpax';
-    } elsif ($childtype eq 'ex') {
-      return 'inpax';
-    }
-  } elsif ($parenttype eq 'ex') {
-    if ($childtype eq 'ex') {
-      return 'expax';
-    }
-  } elsif ($parenttype eq 'r') {
-    if ($childtype eq 'in') {
-      return 'rpax';
-    } elsif ($childtype eq 'ex') {
-      return 'rpax';
-    }
-  } elsif ($parenttype eq 'f') {
-    if ($childtype eq 'in') {
-      return 'fpax';
-    } elsif ($childtype eq 'ex') {
-      return 'fpax';
-    }
+  if ($childtype ne 'in' and $childtype ne 'ex') {
+    confess("$parent -> $child, invalid relationship, $parenttype-node -> " .
+        $childtype->node);
   }
-  confess("$parent -> $child, invalid relationship, $parenttype-node -> " .
-      $childtype->node);
+
+  return "${parenttype}pax";
 }
 
 ##
