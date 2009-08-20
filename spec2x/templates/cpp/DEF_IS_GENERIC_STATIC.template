@@ -5,7 +5,7 @@ inline void <% ClassName %>::s(const V1& fpax, const V2& rpax,
 
 <% ParentAliases %>
 
-<% Inlines %>
+<% InlineAliases %>
 
   x = <% Formula %>;
 }
