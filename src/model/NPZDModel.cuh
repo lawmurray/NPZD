@@ -28,10 +28,11 @@
 #include "ZetaQNode.cuh"
 #include "ZetaLNode.cuh"
 #include "PNode.cuh"
-#include "ChlaNode.cuh"
 #include "ZNode.cuh"
 #include "DNode.cuh"
 #include "NNode.cuh"
+#include "ChlaNode.cuh"
+#include "EZNode.cuh"
 
 #include "bi/model/NodeSpec.hpp"
 #include "bi/model/BayesNet.hpp"
@@ -52,6 +53,7 @@ SINGLE_TYPE(1, NuRNode)
 SINGLE_TYPE(1, ZetaQNode)
 SINGLE_TYPE(1, ZetaLNode)
 SINGLE_TYPE(1, ChlaNode)
+SINGLE_TYPE(1, EZNode)
 END_NODESPEC()
 
 /**
@@ -122,10 +124,11 @@ public:
   ZetaQNode zetaQ;
   ZetaLNode zetaL;
   PNode P;
-  ChlaNode Chla;
   ZNode Z;
   DNode D;
   NNode N;
+  ChlaNode Chla;
+  EZNode EZ;
 
 };
 

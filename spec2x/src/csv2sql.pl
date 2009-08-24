@@ -76,7 +76,10 @@ while (!$csv->eof()) {
   $pos = 0;
   %{$dependents{$$fields{'Name'}}} = ();
   foreach $val (split /,\s*/, $$fields{'Dependencies'}) {
-    $dependents{$$fields{'Name'}}{$val} = 1;
+    if ($$fields{'Traits'} !~ /\bIS_EX_NODE\b/) {
+      # will need to topologically order
+      $dependents{$$fields{'Name'}}{$val} = 1;
+    }
     push(@parents, $val);
     push(@children, $$fields{'Name'});
     push(@positions, $pos);
@@ -113,7 +116,10 @@ $dbh->disconnect;
 ## have appeared.
 ##
 ## @param dependencies Hash-of-hashes, outside keyed by node, inside
-## list of parents of that node. Destroyed in process.
+## list of parents of that node. Destroyed in process. Ex-nodes should
+## not be included, as they needn't be in topological order,
+## although they may be included as dependencies, and will simply be
+## ignored.
 ## 
 ## @return Sorted array of node names.
 ##
@@ -124,7 +130,18 @@ sub TopologicalSort {
   my $key;
   my $node;
   my $i;
+
+  # flush self-dependencies and non in-node dependencies
+  foreach $key (keys %$dependencies) {
+    delete $dependencies->{$key}{$key};
+    foreach $node (keys %{$dependencies->{$key}}) {
+      if (!exists $dependencies->{$node}) {
+	delete $dependencies->{$key}{$node};
+      }
+    }
+  }
   
+  # sort
   while (@$nodes) {
     # find node with all dependencies satisfied
     $i = 0;
@@ -134,15 +151,16 @@ sub TopologicalSort {
     if ($i >= @$nodes) {
       $i = 0;
     }
+
     $node = $$nodes[$i];
     splice(@$nodes, $i, 1);
-    
+
     push(@result, $node);
     delete $dependencies->{$node};
     
     # delete this node from dependency lists
     foreach $key (keys %$dependencies) {
-      delete $dependencies->{$key}->{$node};
+      delete $dependencies->{$key}{$node};
     }
   }
   

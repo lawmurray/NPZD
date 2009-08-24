@@ -14,7 +14,7 @@
 /**
  * \f$D\f$; 
  *
- * \f$(1 - \zeta^E) \delta^I \pi^G + \zeta^M - \nu^R - \delta^S D/L + \beta^E (\beta^D - D)\f$
+ * \f$(1 - \zeta^E) \delta^I \pi^G + \zeta^M - \nu^R*D - \delta^S D/L + \beta^E (\beta^D - D)\f$
  */
 class DNode : public bi::BayesNode {
 public:
@@ -66,7 +66,7 @@ inline void DNode::dfdt(const T1 t, const V1& fpax,
   const real_t piG = Z*zetaI*tauC*piS/(1+piS);
   const real_t zetaM = (zetaQ*Z + zetaL)*Z;
 
-  dfdt = (1 - zetaE)*deltaI*piG + zetaM - nuR - deltaS*D/L + betaE*(betaD - D);
+  dfdt = (1 - zetaE)*deltaI*piG + zetaM - nuR*D - deltaS*D/L + betaE*(betaD - D);
 }
 
 #endif

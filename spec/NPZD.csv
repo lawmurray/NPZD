@@ -1,49 +1,49 @@
-OriginalName,Name,Description,LaTeXName,LaTeXFormula,Formula,Type,Dependencies,Traits
-Kd,KW,"Light attenuation, water",K^W,0.03,0.03,Constant,,
-Kchla,KC,"Light attenuation, Chl-a",K^C,0.04,0.04,Constant,,
-Sink,deltaS,Detrital sinking rate,\delta^S,0.1,0.1,Constant,,
-FDG,deltaI,Detrital growth inefficiency,\delta^I,0.5,0.5,Constant,,
-Q10,tau10,,\tau^{10},2,2,Constant,,
-Tref,tauR,Reference temperature (10 deg. C),\tau^R,15,15,Constant,,
-Achl,piC,Chlorophyl absorption,\pi^C,0.04,0.04,Constant,,
-PE,piPE,Photosynthetic efficiency,\pi^{PE},1200,1200,Constant,,
-maxNC,piR,Maximum N:C (Redfield),\pi^R,0.18,0.18,Constant,,
-RP,RP,P timescale,R_P,3,3,Constant,,
-RZ,RZ,Z timescale,R_Z,10,10,Constant,,
-Grazeexp,piK,Functional response exponent,\pi^K,2,2,Constant,,
-PBC,betaP,Phytoplankton boundary condition,\beta^P,,,Forcing,,IS_F_NODE
-ZBC,betaZ,Zooplankton boundary condition,\beta^Z,,,Forcing,,IS_F_NODE
-NBC,betaN,Nitrogen boundary condition,\beta^N,,,Forcing,,IS_F_NODE
-DBC,betaD,Detritus boundary condition,\beta^D,,,Forcing,,IS_F_NODE
-T,T,Water temperature,T,,,Forcing,,IS_F_NODE
-Eir,E,Surface irradience,E,,,Forcing,,IS_F_NODE
-Depth,L,Mixed layer depth,L,,,Forcing,,IS_F_NODE
-Exch,betaE,Exchange rate,\beta^E,,,Forcing,,IS_F_NODE
-mumaxC,muC,Maximum growth rate for C,\mu^C,1.2,1.2,Static parameter,,IS_IN_NODE
-mumCN,muCN,Maximum growth rate for C:N,\mu^{CN},0.4,0.4,Static parameter,,IS_IN_NODE
-ChlCmax,muCh,Maximum growth rate for Chl-a:C,\mu^{Ch},0.03,0.03,Static parameter,,IS_IN_NODE
-maxNaff,nuA,Maximum N affinity,\nu^A,0.37,0.37,Static parameter,,IS_IN_NODE
-minmaxNC,piNC,Min/Max N:C,\pi^{NC},0.25,0.25,Static parameter,,IS_IN_NODE
-Ingmax,zetaI,Max Z ingestion rate,\zeta^I,1,1,Static parameter,,IS_IN_NODE
-Clear,zetaCl,Zooplankton clearance rate,\zeta^{Cl},0.08,0.08,Static parameter,,IS_IN_NODE
-Zeff,zetaE,Zooplankton grazing efficiency,\zeta^E,0.32,0.32,Static parameter,,IS_IN_NODE
-Remin,nuR,Remineralisation rate,\nu^R,0.1,0.1,Static parameter,,IS_IN_NODE
-Mq,zetaQ,Z quadratic mortality term,\zeta^Q,0.02,0.02,Static parameter,,IS_IN_NODE
-Ml,zetaL,Z linear mortality term,\zeta^L,0.01,0.01,Static parameter,,IS_IN_NODE
-Ez,EZ,Light at depth,E^Z,\frac{E(1-\exp(-K^Z))}{K^Z},E*(1-exp(-KZ))/KZ,State variable,"E,KZ",IS_IN_NODE
-KdZ,KZ,"Light attenation, total (water + Chl-a)",K^Z,(K^W+K^C Chla)L,(KW+KC*Chla)*L,Intermediate result,"KW,KC,Chla,L",
-Graze,piG,,\pi^G,Z \zeta^I \tau^C \pi^S / (1 + \pi^S),Z*zetaI*tauC*piS/(1+piS),Intermediate result,"Z, zetaI, tauC, piS",
-Sat,piS,,\pi^S,(\zeta^{Cl} P / \zeta^I)^{\pi^K},"pow(zetaCl*P/zetaI, piK)",Intermediate result,"zetaCl, P, zetaI, piK",
-mumaxCT,muCT,,\mu^{CT},\mu^C \tau^C,muC*tauC,Intermediate result,"muC, tauC",
-mu,mu,Phytoplankton growth rate,\mu,\mu^{CT} \pi^E \nu^N / (\nu^N + \mu^{CN} \pi^E),muCT*piE*nuN/(nuN + muCN*piE),Intermediate result,"muCT, piE, nuN, muCN",
-fE,piE,,\pi^E,1 - \exp(-\pi^Q \mu^{Ch} E / \mu^C),1-exp(-piQ*muCh*E/muC),Intermediate result,"piQ, muCh, E, muC",
-aQ,piQ,,\pi^Q,\pi^C \pi^{PE},piC*piPE,Intermediate result,"piC, piPE",
-fN,nuN,,\nu^N,N/(N + \pi^N / \nu^A),N/(N + piN/nuA),Intermediate result,"N, piN, nuA",
-mumaxN,piN,,\pi^N,\mu^{CT} / \mu^{CN},muCT/muCN,Intermediate result,"muCT, muCN",
-Zmort,zetaM,,\zeta^{M},(\zeta^Q Z + \zeta^L) Z,(zetaQ*Z + zetaL)*Z,Intermediate result,"zetaQ, zetaL, Z",
-Tcorr,tauC,,\tau^C,(\tau^{10})^{\frac{1}{10} (T - \tau^R)},"pow(tau10, (T - tauR)/10)",Intermediate result,"tau10, T, tauR",
-P,P,,P,\mu P - \pi^G + \beta^E(\beta^P - P),mu*P - piG + betaE*(betaP - P),State variable,"mu, P, piG, betaE, betaP","IS_EX_NODE, IS_ODE_FORWARD"
-Z,Z,,Z,\pi^G \zeta^E - \zeta^M + \beta^E(\beta^Z - Z),piG*zetaE - zetaM + betaE*(betaZ - Z),State variable,"piG, zetaE, zetaM, betaE, betaZ, Z","IS_EX_NODE, IS_ODE_FORWARD"
-D,D,,D,(1 - \zeta^E) \delta^I \pi^G + \zeta^M - \nu^R*D - \delta^S D/L + \beta^E (\beta^D - D),(1 - zetaE)*deltaI*piG + zetaM - nuR*D - deltaS*D/L + betaE*(betaD - D),State variable,"zetaE, deltaI, piG, zetaM, nuR, deltaS, D, L, betaE, betaD","IS_EX_NODE, IS_ODE_FORWARD"
-N,N,,N,-\mu P + (1 - \zeta^E)(1 - \delta^I)\pi^G + \nu^R*D + \beta^E(\beta^N - N),-mu*P + (1 - zetaE)*(1 - deltaI)*piG + nuR*D + betaE*(betaN - N),State variable,"mu, P, zetaE, deltaI, piG, nuR, betaE, betaN, N, D","IS_EX_NODE, IS_ODE_FORWARD"
-Chla,Chla,,Chla,\frac{P \mu^{Ch} \nu^N}{\pi^R(\nu^N + \pi^{NC} \nu^N)},P*muCh*nuN/(piR*(nuN+piNC*piE)),State variable,"P,muCh,nuN,piR,piNC,piE","IS_IN_NODE,IS_GENERIC_STATIC"
+"OriginalName","Name","Description","LaTeXName","LaTeXFormula","Formula","Type","Dependencies","Traits"
+"Kd","KW","Light attenuation, water","K^W",0.03,0.03,"Constant",,
+"Kchla","KC","Light attenuation, Chl-a","K^C",0.04,0.04,"Constant",,
+"Sink","deltaS","Detrital sinking rate","\delta^S",0.1,0.1,"Constant",,
+"FDG","deltaI","Detrital growth inefficiency","\delta^I",0.5,0.5,"Constant",,
+"Q10","tau10",,"\tau^{10}",2,2,"Constant",,
+"Tref","tauR","Reference temperature (10 deg. C)","\tau^R",15,15,"Constant",,
+"Achl","piC","Chlorophyl absorption","\pi^C",0.04,0.04,"Constant",,
+"PE","piPE","Photosynthetic efficiency","\pi^{PE}",1200,1200,"Constant",,
+"maxNC","piR","Maximum N:C (Redfield)","\pi^R",0.18,0.18,"Constant",,
+"RP","RP","P timescale","R_P",3,3,"Constant",,
+"RZ","RZ","Z timescale","R_Z",10,10,"Constant",,
+"Grazeexp","piK","Functional response exponent","\pi^K",2,2,"Constant",,
+"PBC","betaP","Phytoplankton boundary condition","\beta^P",,,"Forcing",,"IS_F_NODE"
+"ZBC","betaZ","Zooplankton boundary condition","\beta^Z",,,"Forcing",,"IS_F_NODE"
+"NBC","betaN","Nitrogen boundary condition","\beta^N",,,"Forcing",,"IS_F_NODE"
+"DBC","betaD","Detritus boundary condition","\beta^D",,,"Forcing",,"IS_F_NODE"
+"T","T","Water temperature","T",,,"Forcing",,"IS_F_NODE"
+"Eir","E","Surface irradience","E",,,"Forcing",,"IS_F_NODE"
+"Depth","L","Mixed layer depth","L",,,"Forcing",,"IS_F_NODE"
+"Exch","betaE","Exchange rate","\beta^E",,,"Forcing",,"IS_F_NODE"
+"mumaxC","muC","Maximum growth rate for C","\mu^C",1.2,1.2,"Static parameter",,"IS_IN_NODE"
+"mumCN","muCN","Maximum growth rate for C:N","\mu^{CN}",0.4,0.4,"Static parameter",,"IS_IN_NODE"
+"ChlCmax","muCh","Maximum growth rate for Chl-a:C","\mu^{Ch}",0.03,0.03,"Static parameter",,"IS_IN_NODE"
+"maxNaff","nuA","Maximum N affinity","\nu^A",0.37,0.37,"Static parameter",,"IS_IN_NODE"
+"minmaxNC","piNC","Min/Max N:C","\pi^{NC}",0.25,0.25,"Static parameter",,"IS_IN_NODE"
+"Ingmax","zetaI","Max Z ingestion rate","\zeta^I",1,1,"Static parameter",,"IS_IN_NODE"
+"Clear","zetaCl","Zooplankton clearance rate","\zeta^{Cl}",0.08,0.08,"Static parameter",,"IS_IN_NODE"
+"Zeff","zetaE","Zooplankton grazing efficiency","\zeta^E",0.32,0.32,"Static parameter",,"IS_IN_NODE"
+"Remin","nuR","Remineralisation rate","\nu^R",0.1,0.1,"Static parameter",,"IS_IN_NODE"
+"Mq","zetaQ","Z quadratic mortality term","\zeta^Q",0.02,0.02,"Static parameter",,"IS_IN_NODE"
+"Ml","zetaL","Z linear mortality term","\zeta^L",0.01,0.01,"Static parameter",,"IS_IN_NODE"
+"Ez","EZ","Light at depth","E^Z","\frac{E(1-\exp(-K^Z))}{K^Z}","E*(1-exp(-KZ))/KZ","State variable","E,KZ","IS_IN_NODE"
+"KdZ","KZ","Light attenation, total (water + Chl-a)","K^Z","(K^W+K^C Chla)L","(KW+KC*Chla)*L","Intermediate result","KW,KC,Chla,L",
+"Graze","piG",,"\pi^G","Z \zeta^I \tau^C \pi^S / (1 + \pi^S)","Z*zetaI*tauC*piS/(1+piS)","Intermediate result","Z, zetaI, tauC, piS",
+"Sat","piS",,"\pi^S","(\zeta^{Cl} P / \zeta^I)^{\pi^K}","pow(zetaCl*P/zetaI, piK)","Intermediate result","zetaCl, P, zetaI, piK",
+"mumaxCT","muCT",,"\mu^{CT}","\mu^C \tau^C","muC*tauC","Intermediate result","muC, tauC",
+"mu","mu","Phytoplankton growth rate","\mu","\mu^{CT} \pi^E \nu^N / (\nu^N + \mu^{CN} \pi^E)","muCT*piE*nuN/(nuN + muCN*piE)","Intermediate result","muCT, piE, nuN, muCN",
+"fE","piE",,"\pi^E","1 - \exp(-\pi^Q \mu^{Ch} E / \mu^C)","1-exp(-piQ*muCh*E/muC)","Intermediate result","piQ, muCh, E, muC",
+"aQ","piQ",,"\pi^Q","\pi^C \pi^{PE}","piC*piPE","Intermediate result","piC, piPE",
+"fN","nuN",,"\nu^N","N/(N + \pi^N / \nu^A)","N/(N + piN/nuA)","Intermediate result","N, piN, nuA",
+"mumaxN","piN",,"\pi^N","\mu^{CT} / \mu^{CN}","muCT/muCN","Intermediate result","muCT, muCN",
+"Zmort","zetaM",,"\zeta^{M}","(\zeta^Q Z + \zeta^L) Z","(zetaQ*Z + zetaL)*Z","Intermediate result","zetaQ, zetaL, Z",
+"Tcorr","tauC",,"\tau^C","(\tau^{10})^{\frac{1}{10} (T - \tau^R)}","pow(tau10, (T - tauR)/10)","Intermediate result","tau10, T, tauR",
+"P","P",,"P","\mu P - \pi^G + \beta^E(\beta^P - P)","mu*P - piG + betaE*(betaP - P)","State variable","mu, P, piG, betaE, betaP","IS_EX_NODE, IS_ODE_FORWARD"
+"Z","Z",,"Z","\pi^G \zeta^E - \zeta^M + \beta^E(\beta^Z - Z)","piG*zetaE - zetaM + betaE*(betaZ - Z)","State variable","piG, zetaE, zetaM, betaE, betaZ, Z","IS_EX_NODE, IS_ODE_FORWARD"
+"D","D",,"D","(1 - \zeta^E) \delta^I \pi^G + \zeta^M - \nu^R*D - \delta^S D/L + \beta^E (\beta^D - D)","(1 - zetaE)*deltaI*piG + zetaM - nuR*D - deltaS*D/L + betaE*(betaD - D)","State variable","zetaE, deltaI, piG, zetaM, nuR, deltaS, D, L, betaE, betaD","IS_EX_NODE, IS_ODE_FORWARD"
+"N","N",,"N","-\mu P + (1 - \zeta^E)(1 - \delta^I)\pi^G + \nu^R*D + \beta^E(\beta^N - N)","-mu*P + (1 - zetaE)*(1 - deltaI)*piG + nuR*D + betaE*(betaN - N)","State variable","mu, P, zetaE, deltaI, piG, nuR, betaE, betaN, N, D","IS_EX_NODE, IS_ODE_FORWARD"
+"Chla","Chla",,"Chla","\frac{P \mu^{Ch} \nu^N}{\pi^R(\nu^N + \pi^{NC} \nu^N)}","P*muCh*nuN/(piR*(nuN+piNC*piE))","State variable","P,muCh,nuN,piR,piNC,piE","IS_IN_NODE, IS_GENERIC_STATIC"

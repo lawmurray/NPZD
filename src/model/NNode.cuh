@@ -14,7 +14,7 @@
 /**
  * \f$N\f$; 
  *
- * \f$-\mu P + (1 - \zeta^E)(1 - \delta^I)\pi^G + \nu^R + \beta^E(\beta^N - N)\f$
+ * \f$-\mu P + (1 - \zeta^E)(1 - \delta^I)\pi^G + \nu^R*D + \beta^E(\beta^N - N)\f$
  */
 class NNode : public bi::BayesNode {
 public:
@@ -63,6 +63,7 @@ inline void NNode::dfdt(const T1 t, const V1& fpax,
   const real_t nuR = inpax[7];
   const real_t betaE = fpax[2];
   const real_t betaN = fpax[3];
+  const real_t D = expax[3];
 
   const real_t tauC = pow(tau10, (T - tauR)/10);
   const real_t muCT = muC*tauC;
@@ -74,7 +75,7 @@ inline void NNode::dfdt(const T1 t, const V1& fpax,
   const real_t piS = pow(zetaCl*P/zetaI, piK);
   const real_t piG = Z*zetaI*tauC*piS/(1+piS);
 
-  dfdt = -mu*P + (1 - zetaE)*(1 - deltaI)*piG + nuR + betaE*(betaN - N);
+  dfdt = -mu*P + (1 - zetaE)*(1 - deltaI)*piG + nuR*D + betaE*(betaN - N);
 }
 
 #endif
