@@ -36,7 +36,7 @@ Graze,piG,,\pi^G,Z \zeta^I \tau^C \pi^S / (1 + \pi^S),Z*zetaI*tauC*piS/(1+piS),I
 Sat,piS,,\pi^S,(\zeta^{Cl} P / \zeta^I)^{\pi^K},"pow(zetaCl*P/zetaI, piK)",Intermediate result,"zetaCl, P, zetaI, piK",
 mumaxCT,muCT,,\mu^{CT},\mu^C \tau^C,muC*tauC,Intermediate result,"muC, tauC",
 mu,mu,Phytoplankton growth rate,\mu,\mu^{CT} \pi^E \nu^N / (\nu^N + \mu^{CN} \pi^E),muCT*piE*nuN/(nuN + muCN*piE),Intermediate result,"muCT, piE, nuN, muCN",
-fE,piE,,\pi^E,1 - \exp(-\pi^Q \mu^{Ch} E / \mu^C),1-exp(-piQ*muCh*EZ/muC),Intermediate result,"piQ, muCh, EZ, muC",
+fE,piE,,\pi^E,1 - \exp(-\pi^Q \mu^{Ch} EZ / \mu^C),1-exp(-piQ*muCh*EZ/muC),Intermediate result,"piQ, muCh, EZ, muC",
 aQ,piQ,,\pi^Q,\pi^C \pi^{PE},piC*piPE,Intermediate result,"piC, piPE",
 fN,nuN,,\nu^N,N/(N + \pi^N / \nu^A),N/(N + piN/nuA),Intermediate result,"N, piN, nuA",
 mumaxN,piN,,\pi^N,\mu^{CT} / \mu^{CN},muCT/muCN,Intermediate result,"muCT, muCN",
