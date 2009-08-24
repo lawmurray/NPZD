@@ -30,6 +30,7 @@ Zeff,zetaE,Zooplankton grazing efficiency,\zeta^E,0.32,0.32,Static parameter,,IS
 Remin,nuR,Remineralisation rate,\nu^R,0.1,0.1,Static parameter,,IS_IN_NODE
 Mq,zetaQ,Z quadratic mortality term,\zeta^Q,0.02,0.02,Static parameter,,IS_IN_NODE
 Ml,zetaL,Z linear mortality term,\zeta^L,0.01,0.01,Static parameter,,IS_IN_NODE
+Ez,EZ,Light at depth,E^Z,\frac{E(1-\exp(-K^Z))}{K^Z},E*(1-exp(-KZ))/KZ,State variable,"E,KZ",IS_IN_NODE
 KdZ,KZ,"Light attenation, total (water + Chl-a)",K^Z,(K^W+K^C Chla)L,(KW+KC*Chla)*L,Intermediate result,"KW,KC,Chla,L",
 Graze,piG,,\pi^G,Z \zeta^I \tau^C \pi^S / (1 + \pi^S),Z*zetaI*tauC*piS/(1+piS),Intermediate result,"Z, zetaI, tauC, piS",
 Sat,piS,,\pi^S,(\zeta^{Cl} P / \zeta^I)^{\pi^K},"pow(zetaCl*P/zetaI, piK)",Intermediate result,"zetaCl, P, zetaI, piK",
@@ -41,9 +42,8 @@ fN,nuN,,\nu^N,N/(N + \pi^N / \nu^A),N/(N + piN/nuA),Intermediate result,"N, piN,
 mumaxN,piN,,\pi^N,\mu^{CT} / \mu^{CN},muCT/muCN,Intermediate result,"muCT, muCN",
 Zmort,zetaM,,\zeta^{M},(\zeta^Q Z + \zeta^L) Z,(zetaQ*Z + zetaL)*Z,Intermediate result,"zetaQ, zetaL, Z",
 Tcorr,tauC,,\tau^C,(\tau^{10})^{\frac{1}{10} (T - \tau^R)},"pow(tau10, (T - tauR)/10)",Intermediate result,"tau10, T, tauR",
-Ez,EZ,Light at depth,E^Z,\frac{E(1-\exp(-K^Z))}{K^Z},E*(1-exp(-KZ))/KZ,State variable,"E,KZ",IS_IN_NODE
 P,P,,P,\mu P - \pi^G + \beta^E(\beta^P - P),mu*P - piG + betaE*(betaP - P),State variable,"mu, P, piG, betaE, betaP","IS_EX_NODE, IS_ODE_FORWARD"
 Z,Z,,Z,\pi^G \zeta^E - \zeta^M + \beta^E(\beta^Z - Z),piG*zetaE - zetaM + betaE*(betaZ - Z),State variable,"piG, zetaE, zetaM, betaE, betaZ, Z","IS_EX_NODE, IS_ODE_FORWARD"
 D,D,,D,(1 - \zeta^E) \delta^I \pi^G + \zeta^M - \nu^R*D - \delta^S D/L + \beta^E (\beta^D - D),(1 - zetaE)*deltaI*piG + zetaM - nuR*D - deltaS*D/L + betaE*(betaD - D),State variable,"zetaE, deltaI, piG, zetaM, nuR, deltaS, D, L, betaE, betaD","IS_EX_NODE, IS_ODE_FORWARD"
-N,N,,N,-\mu P + (1 - \zeta^E)(1 - \delta^I)\pi^G + \nu^R*D + \beta^E(\beta^N - N),-mu*P + (1 - zetaE)*(1 - deltaI)*piG + nuR*D + betaE*(betaN - N),State variable,"mu, P, zetaE, deltaI, piG, nuR, betaE, betaN, N, D","IS_EX_NODE, IS_ODE_FORWARD"
+N,N,,N,-\mu P + (1 - \zeta^E)(1 - \delta^I)\pi^G + \nu^R*D + \beta^E(\beta^N - N),#NAME?,State variable,"mu, P, zetaE, deltaI, piG, nuR, betaE, betaN, N, D","IS_EX_NODE, IS_ODE_FORWARD"
 Chla,Chla,,Chla,\frac{P \mu^{Ch} \nu^N}{\pi^R(\nu^N + \pi^{NC} \nu^N)},P*muCh*nuN/(piR*(nuN+piNC*piE)),State variable,"P,muCh,nuN,piR,piNC,piE","IS_IN_NODE,IS_GENERIC_STATIC"
