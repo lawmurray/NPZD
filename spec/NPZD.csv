@@ -44,6 +44,6 @@ Zmort,zetaM,,\zeta^{M},(\zeta^Q Z + \zeta^L) Z,(zetaQ*Z + zetaL)*Z,Intermediate 
 Tcorr,tauC,,\tau^C,(\tau^{10})^{\frac{1}{10} (T - \tau^R)},"pow(tau10, (T - tauR)/10)",Intermediate result,"tau10, T, tauR",
 P,P,,P,\mu P - \pi^G + \beta^E(\beta^P - P),mu*P - piG + betaE*(betaP - P),State variable,"mu, P, piG, betaE, betaP","IS_EX_NODE, IS_ODE_FORWARD"
 Z,Z,,Z,\pi^G \zeta^E - \zeta^M + \beta^E(\beta^Z - Z),piG*zetaE - zetaM + betaE*(betaZ - Z),State variable,"piG, zetaE, zetaM, betaE, betaZ, Z","IS_EX_NODE, IS_ODE_FORWARD"
-D,D,,D,(1 - \zeta^E) \delta^I \pi^G + \zeta^M - \nu^R - \delta^S D/L + \beta^E (\beta^D - D),(1 - zetaE)*deltaI*piG + zetaM - nuR*D - deltaS*D/L + betaE*(betaD - D),State variable,"zetaE, deltaI, piG, zetaM, nuR, deltaS, D, L, betaE, betaD","IS_EX_NODE, IS_ODE_FORWARD"
-N,N,,N,-\mu P + (1 - \zeta^E)(1 - \delta^I)\pi^G + \nu^R + \beta^E(\beta^N - N),-mu*P + (1 - zetaE)*(1 - deltaI)*piG + nuR + betaE*(betaN - N),State variable,"mu, P, zetaE, deltaI, piG, nuR, betaE, betaN, N","IS_EX_NODE, IS_ODE_FORWARD"
+D,D,,D,(1 - \zeta^E) \delta^I \pi^G + \zeta^M - \nu^R*D - \delta^S D/L + \beta^E (\beta^D - D),(1 - zetaE)*deltaI*piG + zetaM - nuR*D - deltaS*D/L + betaE*(betaD - D),State variable,"zetaE, deltaI, piG, zetaM, nuR, deltaS, D, L, betaE, betaD","IS_EX_NODE, IS_ODE_FORWARD"
+N,N,,N,-\mu P + (1 - \zeta^E)(1 - \delta^I)\pi^G + \nu^R*D + \beta^E(\beta^N - N),-mu*P + (1 - zetaE)*(1 - deltaI)*piG + nuR*D + betaE*(betaN - N),State variable,"mu, P, zetaE, deltaI, piG, nuR, betaE, betaN, N, D","IS_EX_NODE, IS_ODE_FORWARD"
 Chla,Chla,,Chla,\frac{P \mu^{Ch} \nu^N}{\pi^R(\nu^N + \pi^{NC} \nu^N)},P*muCh*nuN/(piR*(nuN+piNC*piE)),State variable,"P,muCh,nuN,piR,piNC,piE","IS_IN_NODE,IS_GENERIC_STATIC"
