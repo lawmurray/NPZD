@@ -149,7 +149,7 @@ sub TopologicalSort {
       ++$i;
     }
     if ($i >= @$nodes) {
-      $i = 0;
+      die('In-nodes have no partial order, loop exists?');
     }
 
     $node = $$nodes[$i];
