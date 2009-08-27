@@ -136,7 +136,7 @@ sub TopologicalSort {
     delete $dependencies->{$key}{$key};
     foreach $node (keys %{$dependencies->{$key}}) {
       if (!exists $dependencies->{$node}) {
-	delete $dependencies->{$key}{$node};
+        delete $dependencies->{$key}{$node};
       }
     }
   }
@@ -149,7 +149,8 @@ sub TopologicalSort {
       ++$i;
     }
     if ($i >= @$nodes) {
-      die('In-nodes have no partial order, loop exists?');
+      $i = 0;
+      warn('In-nodes have no partial order, loop exists?');
     }
 
     $node = $$nodes[$i];

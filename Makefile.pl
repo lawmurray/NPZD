@@ -29,6 +29,11 @@ $CPPDIR = "$SRCDIR/model";
 # Disassembly
 #$CXXFLAGS .= ' -keep';
 
+# Bootstrap
+`mkdir -p $BUILDDIR $CPPDIR`;
+`perl $SPEC2XSRCDIR/csv2sql.pl --model $NAME --outdir $BUILDDIR --srcdir $SPEC2XSRCDIR < $SPECDIR/$SPEC.csv`;
+`perl $SPEC2XSRCDIR/sql2cpp.pl --outdir $CPPDIR --templatedir $SPEC2XCPPTEMPLATEDIR --model $NAME --dbfile $BUILDDIR/$NAME.db`;
+
 # Walk through source
 @files = ($SRCDIR);
 while (@files) {
