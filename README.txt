@@ -54,7 +54,7 @@ Compiling
 
 Run:
 
-perl Makefile.pl > Makefile
+./bootstrap.sh
 
 to generate a Makefile for the project. The following commands may then be
 used:
