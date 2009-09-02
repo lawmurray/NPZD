@@ -6,15 +6,7 @@
 ## $Date$
 ##
 
-$CXX = 'g++';
-$CUDACC = 'nvcc';
-$LINKER = 'nvcc';
-$CXXFLAGS = '-Wall -g -O3 -I"../bi/src" `nc-config --cflags`';
-$CUDACCFLAGS = '-O3 -g -arch=sm_13 -Xptxas="-v" -I"../bi/src" -I"$GSL_ROOT/include" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS';
-$LINKFLAGS = '-L"../bi/build" -lbi -latlas -lf77blas -llapack -lgfortran -lboost_program_options-gcc43-mt -lgslcblas -lgsl `nc-config --libs` -lnetcdf_c++';
-# ^ may need f2c, g2c or nothing in place of gfortran
-$DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
-
+# Settings
 $NAME = 'NPZD';
 $SPEC = 'NPZD';
 $SRCDIR = 'src';
@@ -26,8 +18,30 @@ $SPEC2XCPPTEMPLATEDIR = "$SPEC2XDIR/templates/cpp";
 $SPEC2XTEXTEMPLATEDIR = "$SPEC2XDIR/templates/tex";
 $CPPDIR = "$SRCDIR/model";
 
-# Disassembly
-#$CXXFLAGS .= ' -keep';
+# Compile flags
+$CXX = 'g++';
+$CUDACC = 'nvcc';
+$LINKER = 'nvcc';
+$CXXFLAGS = '-Wall -I"../bi/src" `nc-config --cflags`';
+$CUDACCFLAGS = '-arch=sm_13 -Xptxas="-v" -I"../bi/src" -I"$GSL_ROOT/include" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS';
+$LINKFLAGS = '-L"../bi/build" -lbi -latlas -lf77blas -llapack -lgfortran -lboost_program_options-gcc43-mt -lgslcblas -lgsl `nc-config --libs` -lnetcdf_c++';
+# ^ may need f2c, g2c or nothing in place of gfortran
+$DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
+
+# Release flags
+$CXXFLAGS .= ' -O3 -funroll-loops -fomit-frame-pointer';
+$CUDACCFLAGS .= ' -O3 --compiler-options="-O3 -funroll-loops -fomit-frame-pointer"';
+
+# Debugging flags
+#$CXXFLAGS .= ' -g';
+#$CUDACCFLAGS .= ' -g';
+
+# Profiling flags
+#$CXXFLAGS .= ' -pg';
+#$CUDACCFLAGS .= ' --compiler-options="-pg"';
+
+# Disassembly flags
+#$CUDACCFLAGS .= ' -keep';
 
 # Bootstrap
 `mkdir -p $BUILDDIR $CPPDIR`;
