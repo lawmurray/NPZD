@@ -7,11 +7,7 @@
  */
 #include "<% ClassName %>.cuh"
 
-<% ClassName %>::<% ClassName %>() : bi::BayesNet<
-    GET_NODESPEC(<% InSpecName %>),
-    GET_NODESPEC(<% ExSpecName %>),
-    GET_NODESPEC(<% RSpecName %>),
-    GET_NODESPEC(<% FSpecName %>)>() {
+<% ClassName %>::<% ClassName %>() {
   /* nodes */
   <% NodeDefinitions %>
 

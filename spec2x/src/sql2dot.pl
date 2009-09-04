@@ -25,12 +25,14 @@ my $dbh = DBI->connect("dbi:SQLite:dbname=$dbfile", '', '',
 
 # database statement handles
 my %sth;
-$sth{'GetNodes'} = $dbh->prepare('SELECT Name, LaTeXName, Formula, ' .
-    'LaTeXFormula, Type, Description FROM Node');
-$sth{'GetEdges'} = $dbh->prepare('SELECT ParentNode, ChildNode, Type FROM ' .
-    'Edge, Node WHERE Edge.ChildNode = Node.Name ORDER BY Edge.Position');
+$sth{'GetNodes'} = $dbh->prepare('SELECT Name, LaTeXName, ' .
+    'Category, Description FROM Node');
+$sth{'GetEdges'} = $dbh->prepare('SELECT ParentNode, ChildNode, Category ' .
+    'FROM Edge, Node WHERE Edge.ParentNode = Node.Name ORDER BY Edge.Position');
 $sth{'CheckTrait'} = $dbh->prepare('SELECT 1 FROM NodeTrait WHERE ' .
     'Node = ? AND Trait = ?');
+$sth{'GetNodeFormulae'} = $dbh->prepare('SELECT Function, LaTeXFormula ' .
+    'FROM NodeFormula WHERE Node = ?');
 
 # output header
 print <<End;
@@ -45,6 +47,7 @@ digraph model {
 End
 
 my $fields;
+my $formulafields;
 my $label;
 my $style;
 my $str;
@@ -59,7 +62,7 @@ while ($fields = $sth{'GetNodes'}->fetchrow_hashref) {
   } else {
     $label = $$fields{'Name'};
   }
-  $style = &nodeStyle($$fields{'Type'});
+  $style = &nodeStyle($$fields{'Category'});
   print qq/  $$fields{'Name'} \[texlbl="$label",$style\]\n/;
 
   # description label node
@@ -71,20 +74,34 @@ while ($fields = $sth{'GetNodes'}->fetchrow_hashref) {
     $label .= "\\\\";
   }
 
-  if ($$fields{'LaTeXFormula'} ne '') {
-    $sth{'CheckTrait'}->execute($$fields{'Name'}, 'IS_ODE_FORWARD');
-    if ($sth{'CheckTrait'}->fetchrow_array) {
-      $formula = "\\dot\{$$fields{'LaTeXName'}\} = $$fields{'LaTeXFormula'}";
-    } else {
-      $formula = $$fields{'LaTeXFormula'};
+  # ...add formulae
+  $sth{'GetNodeFormulae'}->execute($$fields{'Name'});
+  while ($formulafields = $sth{'GetNodeFormulae'}->fetchrow_hashref) {
+    if ($$formulafields{'LaTeXFormula'} ne '') {
+      if ($$formulafields{'Function'} eq 'dfdt') {
+        $formula = "\\dot\{$$fields{'LaTeXName'}\} = " .
+            $$formulafields{'LaTeXFormula'};
+      } elsif ($$formulafields{'Function'} eq 'f') {
+        $formula = $$formulafields{'LaTeXFormula'};
+      } else {
+        $formula = "\\dot\{$$formulafields{'Function'}\} = " .
+            $$formulafields{'LaTeXFormula'};
+      }
+      $label .= &mathLabel(&escapeLabel($formula));
+    } elsif ($$formulafields{'Formula'} ne '') {
+      $label .= "$$formulafields{'Function'} = $$formulafields{'Formula'}";
     }
-    $label .= &mathLabel(&escapeLabel($formula));
-  } elsif ($$fields{'Formula'} ne '') {
-    $label .= $$fields{'Formula'};
   }
 
+  # special case formulae
+  $sth{'CheckTrait'}->execute($$fields{'Name'}, 'IS_GAUSSIAN');
+  if ($sth{'CheckTrait'}->fetchrow_array) {
+    $label .= &mathLabel("\\mathcal{N}(0,1)");
+  }
+  $sth{'CheckTrait'}->finish;
+
   if ($label ne '') {
-    $style = labelEdgeStyle($$fields{'Type'});
+    $style = labelEdgeStyle($$fields{'Category'});
     print qq/  $$fields{'Name'}\_label \[texlbl="\\parbox{5cm}{$label}",shape=plaintext\]\n/;
     print qq/  $$fields{'Name'}\_label -> $$fields{'Name'} \[arrowhead=none,len=.1,$style\]\n/;
   }
@@ -93,8 +110,7 @@ while ($fields = $sth{'GetNodes'}->fetchrow_hashref) {
 # output edges
 $sth{'GetEdges'}->execute;
 while ($fields = $sth{'GetEdges'}->fetchrow_hashref) {
-  if ($$fields{'Type'} eq 'Dynamic parameter' &&
-      $$fields{'ParentNode'} =~ /^(?:alpha|sigma|u)/) {
+  if ($$fields{'Category'} eq 'Static variable' || $$fields{'Category'} eq 'Random variate') {
     print qq/  $$fields{'ParentNode'} -> $$fields{'ChildNode'} [len=.1];\n/;
   } else {
     print "  $$fields{'ParentNode'} -> $$fields{'ChildNode'} [len=.3];\n";
@@ -104,13 +120,12 @@ while ($fields = $sth{'GetEdges'}->fetchrow_hashref) {
 # output legend
 my $name;
 my $type;
-my @types = ('Constant', 'Forcing', 'Random variate', 'Dynamic parameter', 'Static parameter', 'State variable', 'Intermediate result');
+my @types = ('Constant', 'Intermediate result', 'Forcing', 'Observation', 'Random variate', 'Static variable', 'Discrete-time variable', 'Continuous-time variable');
 print qq/  subgraph legend {\n/;
 print qq/    label="Legend"\n/;
 foreach $type (@types) {
   $style = nodeStyle($type);
-  $name = $type;
-  $name =~ s/\s/_/g;
+  $name = &safeName($type);
   $label = substr($type, 0, 1);
   print qq/    legend_node_$name \[label="$label",shape=circle,$style\]\n/;
   print qq/    legend_label_$name \[label="$type",shape=plaintext\]\n/;
@@ -131,6 +146,15 @@ print "  }\n";
 # output footer
 print "}\n";
 
+# wrap up
+my $key;
+foreach $key (keys %sth) {
+  $sth{$key}->finish;
+}
+$dbh->commit;
+undef %sth; # workaround for SQLite warning about active statement handles
+$dbh->disconnect;
+
 ##
 ## Escape special characters in a label.
 ##
@@ -146,6 +170,7 @@ sub escapeLabel {
 sub safeName {
   my $str = shift;
   $str =~ s/\s/_/g;
+  $str =~ s/-/_/g;
   return $str;
 }
 
@@ -164,52 +189,47 @@ sub mathLabel {
 sub nodeStyle {
   my $type = shift;
   my %SHAPES = (
-    'State variable' => 'circle',
     'Constant' => 'box',
+    'Random variate' => 'diamond',
     'Forcing' => 'box',
-    'Dynamic parameter' => 'circle',
-    'Static parameter' => 'circle',
+    'Observation' => 'box',
     'Intermediate result' => 'circle',
-    'Random variate' => 'circle'
+    'Static variable' => 'circle',
+    'Discrete-time variable' => 'circle',
+    'Continuous-time variable' => 'circle'
   );  
   my %STYLES = (
-    'State variable' => 'filled',
-    'Constant' => 'filled',
+    'Constant' => 'dashed',
+    'Random variate' => 'filled',
     'Forcing' => 'filled',
-    'Dynamic parameter' => 'filled',
-    'Static parameter' => 'filled',
+    'Observation' => 'filled',
     'Intermediate result' => 'dashed',
-    'Random variate' => 'filled'
+    'Static variable' => 'filled',
+    'Discrete-time variable' => 'filled',
+    'Continuous-time variable' => 'filled'
   );
   my %COLORS = (
-    'State variable' => '#6677FF',
-    'Constant' => '#FFCC33',
+    'Constant' => '#000000',
+    'Random variate' => '#CC79A7',
     'Forcing' => '#FF6666',
-    'Dynamic parameter' => '#66EE77',
-    'Static parameter' => '#66EE77',
+    'Observation' => '#FFCC33',
     'Intermediate result' => '#000000',
-    'Random variate' => '#CC79A7'
+    'Static variable' => '#66EE77',
+    'Discrete-time variable' => '#66EE77',
+    'Continuous-time variable' => '#6677FF'
   );
   my %FILLCOLORS = (
-    'State variable' => '#BBCCFF',
-    'Constant' => '#FFEEAA',
+    'Constant' => '#FFFFFF',
+    'Random variate' => '#FFA9D7',
     'Forcing' => '#FFBBBB',
-    'Dynamic parameter' => '#BBEECC',
-    'Static parameter' => '#FFFFFF',
+    'Observation' => '#FFEEAA',
     'Intermediate result' => '#FFFFFF',
-    'Random variate' => '#FFA9D7'
-  );
-  my %FONTCOLORS = (
-    'State variable' => '#000000',
-    'Constant' => '#000000',
-    'Forcing' => '#000000',
-    'Dynamic parameter' => '#000000',
-    'Static parameter' => '#000000',
-    'Intermediate result' => '#000000',
-    'Random variate' => '#000000'
+    'Static variable' => '#FFFFFF',
+    'Discrete-time variable' => '#BBEECC',
+    'Continuous-time variable' => '#BBCCFF'
   );
 
-  my $style = qq/shape="$SHAPES{$type}",style="$STYLES{$type}",color="$COLORS{$type}",fillcolor="$FILLCOLORS{$type}",fontcolor="$FONTCOLORS{$type}"/;
+  my $style = qq/shape="$SHAPES{$type}",style="$STYLES{$type}",color="$COLORS{$type}",fillcolor="$FILLCOLORS{$type}"/;
 
   return $style;
 }
@@ -220,22 +240,25 @@ sub nodeStyle {
 sub labelEdgeStyle {
   my $type = shift;
   my %STYLES = (
-    'State variable' => 'solid',
-    'Constant' => 'solid',
+    'Constant' => 'dashed',
+    'Random variate' => 'solid',
     'Forcing' => 'solid',
-    'Dynamic parameter' => 'solid',
-    'Static parameter' => 'solid',
-    'Intermediate result' => 'dashed'
+    'Observation' => 'solid',
+    'Intermediate result' => 'dashed',
+    'Static variable' => 'solid',
+    'Discrete-time variable' => 'solid',
+    'Continuous-time variable' => 'solid'
   );
   my %COLORS = (
-    'State variable' => '#6677FF',
-    'Constant' => '#FFCC33',
+    'Constant' => '#000000',
+    'Random variate' => '#CC79A7',
     'Forcing' => '#FF6666',
-    'Dynamic parameter' => '#66EE77',
-    'Static parameter' => '#66EE77',
-    'Intermediate result' => '#000000'
+    'Observation' => '#FFCC33',
+    'Intermediate result' => '#000000',
+    'Static variable' => '#66EE77',
+    'Discrete-time variable' => '#66EE77',
+    'Continuous-time variable' => '#6677FF'
   );
-
   my $style = qq/style="$STYLES{$type}",color="$COLORS{$type}"/;
 
   return $style;

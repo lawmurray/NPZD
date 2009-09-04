@@ -1,3 +1,0 @@
-  template<class T, class V1, class V2, class V3, class V4, class V5>
-  static CUDA_FUNC_BOTH void dfdt(const T t, const V1& fpax,
-      const V2& rpax, const V3& inpax, const V4& expax, V5& dfdt);

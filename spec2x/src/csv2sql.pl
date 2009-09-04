@@ -12,6 +12,7 @@ use DBI;
 use DBD::SQLite;
 use Pod::Usage;
 use Getopt::Long;
+use List::MoreUtils qw/uniq/;
 
 # command line arguments
 my $model = 'MyModel';
@@ -32,9 +33,11 @@ my $dbh = DBI->connect("dbi:SQLite:dbname=$dbfile", '', '', { AutoCommit => 0 })
 # database statement handles
 my %sth;
 $sth{'InsertNode'} = $dbh->prepare('INSERT INTO Node(Name,LaTeXName,' .
-    'Formula,LaTeXFormula,Description,Type) VALUES (?,?,?,?,?,?)');
+    'Description,Category) VALUES (?,?,?,?)');
 $sth{'InsertNodeTrait'} = $dbh->prepare('INSERT INTO NodeTrait(Node,' .
     'Trait) VALUES (?,?)');
+$sth{'InsertNodeFormula'} = $dbh->prepare('INSERT INTO NodeFormula(Node,' .
+    'Function,Formula,LaTeXFormula) VALUES (?,?,?,?)');
 $sth{'InsertEdge'} = $dbh->prepare('INSERT INTO Edge(ParentNode,ChildNode,' .
     'Position) VALUES (?,?,?)');
 $sth{'UpdatePosition'} = $dbh->prepare('UPDATE Node SET Position = ? WHERE ' .
@@ -55,6 +58,10 @@ my @children;
 my @positions;
 my %dependents;
 my $i;
+my %formulae;
+my %latexformulae;
+my $function;
+my $formula;
 
 $fields = $csv->getline_hr($io);
 while (!$csv->eof()) {
@@ -62,8 +69,7 @@ while (!$csv->eof()) {
 
   # insert node
   $sth{'InsertNode'}->execute($$fields{'Name'}, $$fields{'LaTeXName'},
-      $$fields{'Formula'}, $$fields{'LaTeXFormula'}, $$fields{'Description'},
-      $$fields{'Type'}) ||
+      $$fields{'Description'}, $$fields{'Category'}) ||
       warn("Problem with node $$fields{'Name'}");
 
   # insert traits
@@ -72,12 +78,28 @@ while (!$csv->eof()) {
         warn("Problem with trait $val of node $$fields{'Name'}");
   }
 
+  # insert formulas
+  undef %formulae;
+  undef %latexformulae;
+  foreach $val (split /\s*\|\s*/, $$fields{'Formulae'}) {
+    ($function, $formula) = split(/\s*:\s*/, $val);
+    $formulae{$function} = $formula;
+  }
+  foreach $val (split /\s*\|\s*/, $$fields{'LaTeXFormulae'}) {
+    ($function, $formula) = split(/\s*:\s*/, $val);
+    $latexformulae{$function} = $formula;
+  }
+  foreach $function (uniq(keys %formulae, keys %latexformulae)) {
+    $sth{'InsertNodeFormula'}->execute($$fields{'Name'}, $function,
+        $formulae{$function}, $latexformulae{$function});
+  }
+
   # store edges for later
   $pos = 0;
   %{$dependents{$$fields{'Name'}}} = ();
   foreach $val (split /,\s*/, $$fields{'Dependencies'}) {
-    if ($$fields{'Traits'} !~ /\bIS_EX_NODE\b/) {
-      # will need to topologically order
+    if ($$fields{'Traits'} =~ /\bIS_S_NODE\b/) {
+      # need to topologically order
       $dependents{$$fields{'Name'}}{$val} = 1;
     }
     push(@parents, $val);
@@ -98,8 +120,7 @@ for ($i = 0; $i < @sorted; ++$i) {
 
 # insert dependencies as edges
 for ($i = 0; $i < @parents; ++$i) {
-  $sth{'InsertEdge'}->execute($parents[$i], $children[$i],
-       $positions[$i]) ||
+  $sth{'InsertEdge'}->execute($parents[$i], $children[$i], $positions[$i]) ||
        warn("Problem with dependency $parents[$i] of node $children[$i]\n");
 }
 
@@ -109,17 +130,15 @@ foreach $key (keys %sth) {
   $sth{$key}->finish;
 }
 $dbh->commit;
+undef %sth; # workaround for SQLite warning about active statement handles
 $dbh->disconnect;
 
 ##
-## Topologically sort nodes so that no node appears before all of its parents
+## Topologically sort s-nodes so that no node appears before all of its parents
 ## have appeared.
 ##
-## @param dependencies Hash-of-hashes, outside keyed by node, inside
-## list of parents of that node. Destroyed in process. Ex-nodes should
-## not be included, as they needn't be in topological order,
-## although they may be included as dependencies, and will simply be
-## ignored.
+## @param dependencies Hash-of-hashes, outside keyed by s-node, inside
+## list of parents of that node (of any types). Destroyed in process.
 ## 
 ## @return Sorted array of node names.
 ##
@@ -131,7 +150,7 @@ sub TopologicalSort {
   my $node;
   my $i;
 
-  # flush self-dependencies and non in-node dependencies
+  # flush self-dependencies and non s-node dependencies
   foreach $key (keys %$dependencies) {
     delete $dependencies->{$key}{$key};
     foreach $node (keys %{$dependencies->{$key}}) {
@@ -150,7 +169,7 @@ sub TopologicalSort {
     }
     if ($i >= @$nodes) {
       $i = 0;
-      warn('In-nodes have no partial order, loop exists?');
+      warn('S-nodes have no partial order, loop exists?');
     }
 
     $node = $$nodes[$i];

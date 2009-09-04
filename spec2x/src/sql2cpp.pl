@@ -53,12 +53,12 @@ sub OutputModelSources {
   my @parents;
   my $parent;
 
-  my $sth = $dbh->prepare('SELECT Name ' .
-      "FROM Node WHERE Type <> 'Intermediate result' AND Type <> 'Constant' ".
+  my $sth = $dbh->prepare('SELECT Name FROM Node WHERE ' .
+      "Category <> 'Intermediate result' AND Category <> 'Constant' ".
       'ORDER BY Position ASC');
   $sth->execute;
   while ($fields = $sth->fetchrow_hashref) {
-    $type = &NodeType($$fields{'Name'});
+    $type = &NodeCategory($$fields{'Name'});
     push(@nodes, $$fields{'Name'});
     push(@classes, ucfirst($$fields{'Name'}) . 'Node');
     push(@{$nodes{$type}}, $$fields{'Name'});
@@ -67,14 +67,14 @@ sub OutputModelSources {
   $sth->finish;
 
   # header file
-  $tokens{'Guard'} = 'BIM_' . uc($model) . '_' . uc($model) . '_CUH';
+  $tokens{'Guard'} = 'BIM_' . uc($model) . '_' . uc($model) . 'MODEL_CUH';
   $tokens{'ClassName'} = $model . 'Model';
   $tokens{'Includes'} = join("\n", map { &Include("$_.cuh") } @classes);
   $tokens{'NodeDeclarations'} = join("\n  ", map { ucfirst($_) . 'Node ' . $_ . ';' } @nodes);
-  foreach $type ('In', 'Ex', 'R', 'F') {
-    $tokens{"${type}SpecName"} = "${model}${type}Spec";
-    $tokens{"${type}Spec"} = join("\n",
-      "BEGIN_NODESPEC($tokens{\"${type}SpecName\"})",
+  foreach $type ('S', 'D', 'C', 'R', 'F', 'O') {
+    $tokens{"${type}NodeSpecName"} = "${model}${type}NodeSpec";
+    $tokens{"${type}NodeSpec"} = join("\n",
+      "BEGIN_NODESPEC($tokens{\"${type}NodeSpecName\"})",
       join("\n", map { "SINGLE_TYPE(1, $_)" } @{$classes{lc($type)}}),
       'END_NODESPEC()');
   }
@@ -120,9 +120,8 @@ sub OutputNodeSources {
   my %tokens;
   my $source;
 
-  my $sth = $dbh->prepare('SELECT Name, Formula, Type, Description, ' .
-      'LaTeXName, LaTeXFormula ' .
-      "FROM Node WHERE Type <> 'Intermediate result' AND Type <> 'Constant'");
+  my $sth = $dbh->prepare('SELECT Name, LaTeXName, Category, Description FROM Node ' .
+      "WHERE Category <> 'Intermediate result' AND Category <> 'Constant'");
 
   $sth->execute;
   while ($fields = $sth->fetchrow_hashref) {
@@ -130,14 +129,13 @@ sub OutputNodeSources {
     $tokens{'Formula'} = $$fields{'Formula'};
     $tokens{'Description'} = $$fields{'Description'};
     $tokens{'LaTeXName'} = $$fields{'LaTeXName'};
-    $tokens{'LaTeXFormula'} = $$fields{'LaTeXFormula'};
     $tokens{'ClassName'} = ucfirst($$fields{'Name'}) . 'Node';
     $tokens{'Guard'} = 'BIM_' . uc($model) . '_' . uc($tokens{'ClassName'}) .
         '_CUH';
     $tokens{'Includes'} = &Includes($$fields{'Name'});
     $tokens{'TraitDeclarations'} = &TraitDeclarations($$fields{'Name'});
     $tokens{'FunctionDeclarations'} = &FunctionDeclarations($$fields{'Name'});
-    $tokens{'FunctionDefinitions'} = &FunctionDefinitions($fields);
+    $tokens{'FunctionDefinitions'} = &FunctionDefinitions($$fields{'Name'});
 
     $source = &ProcessTemplate('NodeHeader', \%tokens);
     $source = &PrettyPrint($source);
@@ -190,7 +188,7 @@ sub GulpTemplate {
 ##
 ## Process template.
 ##
-## @param template Template contents.
+## @param template Template name.
 ## @param tokens Hash reference of tokens to replace.
 ##
 ## @return Template contents with tokens replaced.
@@ -225,9 +223,9 @@ sub PrettyPrint {
 ##
 ## @param name Name of node.
 ##
-## @return Type of node -- "in", "ex", "r" or "f".
+## @return Category of node -- "s", "d", "c", "r", "f" or "o".
 ##
-sub NodeType {
+sub NodeCategory {
   my $name = shift;
   my $result = 'In';
   my $trait;
@@ -237,14 +235,18 @@ sub NodeType {
 
   $sth->execute($name);
   $trait = $sth->fetchrow_array;
-  if ($trait eq 'IS_IN_NODE') {
-    $result = 'in';
-  } elsif ($trait eq 'IS_EX_NODE') {
-    $result = 'ex';
+  if ($trait eq 'IS_S_NODE') {
+    $result = 's';
+  } elsif ($trait eq 'IS_D_NODE') {
+    $result = 'd';
+  } elsif ($trait eq 'IS_C_NODE') {
+    $result = 'c';
   } elsif ($trait eq 'IS_R_NODE') {
     $result = 'r';
   } elsif ($trait eq 'IS_F_NODE') {
     $result = 'f';
+  } elsif ($trait eq 'IS_O_NODE') {
+    $result = 'o';
   } else {
     die("Node $name not of recognised type");
   }
@@ -259,17 +261,17 @@ sub NodeType {
 ## @param parent Parent name.
 ## @param child Child name.
 ##
-## @return "inpax", "expax" or "inpax" depending on the type of the parent
+## @return "spax", "dpax", "cpax", etc depending on the type of the parent
 ## relationship.
 ##
 sub Pax {
   my $parent = shift;
   my $child = shift;
 
-  my $parenttype = &NodeType($parent);
-  my $childtype = &NodeType($child);
+  my $parenttype = &NodeCategory($parent);
+  my $childtype = &NodeCategory($child);
 
-  if ($childtype ne 'in' and $childtype ne 'ex') {
+  if ($parenttype eq 'o') {
     confess("$parent -> $child, invalid relationship, $parenttype-node -> " .
         $childtype->node);
   }
@@ -308,54 +310,63 @@ sub TraitDeclarations {
 ##
 ## @param name Name of node.
 ##
-## @return Function declarations, based on traits, for inclusion in template.
+## @return Function declarations for inclusion in template.
 ##
 sub FunctionDeclarations {
   my $name = shift;
   my @decs;
+  my %tokens;
+  my $template;
   my $fields;
 
-  my $sth = $dbh->prepare('SELECT Node, Trait FROM NodeTrait ' .
+  my $sth = $dbh->prepare('SELECT Function, Formula, LaTeXFormula FROM NodeFormula ' .
       'WHERE Node = ?');
 
   $sth->execute($name);
   while ($fields = $sth->fetchrow_hashref) {
-    if (exists $templates{"DEC_$$fields{'Trait'}"}) {
-      push(@decs, &ProcessTemplate("DEC_$$fields{'Trait'}", $fields));
-    }
+    $tokens{'ClassName'} = ucfirst($name) . 'Node';
+    $tokens{'ParentAliases'} = &ParentAliases($name);
+    $tokens{'ConstantAliases'} = &ConstantAliases($name);
+    $tokens{'InlineAliases'} = &InlineAliases($name);
+    $tokens{'Formula'} = $$fields{'Formula'};
+    $tokens{'LaTeXFormula'} = $$fields{'LaTeXFormula'};
+
+    $template = 'FunctionDeclaration' . ucfirst($$fields{'Function'});
+    push(@decs, &ProcessTemplate($template, \%tokens));
   }
   $sth->finish;
 
-  return join("\n", @decs);
+  return join("\n\n", @decs);
 }
 
 ##
 ## Function definitions for a node.
 ##
-## @param fields Specification of node.
+## @param name Name of node.
 ##
-## @return Function definitions, based on traits, for inclusion in template.
+## @return Function definitions for inclusion in template.
 ##
 sub FunctionDefinitions {
-  my $fields = shift;
+  my $name = shift;
   my @defs;
   my %tokens;
-  my $trait;
+  my $template;
+  my $fields;
 
-  my $sth = $dbh->prepare('SELECT Node, Trait FROM NodeTrait ' .
+  my $sth = $dbh->prepare('SELECT Function, Formula, LaTeXFormula FROM NodeFormula ' .
       'WHERE Node = ?');
 
-  $sth->execute($$fields{'Name'});
-  while ($trait = $sth->fetchrow_array) {
-    $tokens{'ClassName'} = ucfirst($$fields{'Name'}) . 'Node';
-    $tokens{'ParentAliases'} = &ParentAliases($$fields{'Name'});
-    $tokens{'ConstantAliases'} = &ConstantAliases($$fields{'Name'});
-    $tokens{'InlineAliases'} = &InlineAliases($$fields{'Name'});
+  $sth->execute($name);
+  while ($fields = $sth->fetchrow_hashref) {
+    $tokens{'ClassName'} = ucfirst($name) . 'Node';
+    $tokens{'ParentAliases'} = &ParentAliases($name);
+    $tokens{'ConstantAliases'} = &ConstantAliases($name);
+    $tokens{'InlineAliases'} = &InlineAliases($name);
     $tokens{'Formula'} = $$fields{'Formula'};
+    $tokens{'LaTeXFormula'} = $$fields{'LaTeXFormula'};
 
-    if (exists $templates{"DEF_$trait"}) {
-      push(@defs, &ProcessTemplate("DEF_$trait", \%tokens));
-    }
+    $template = 'FunctionDefinition' . ucfirst($$fields{'Function'});
+    push(@defs, &ProcessTemplate($template, \%tokens));
   }
   $sth->finish;
 
@@ -374,14 +385,14 @@ sub Parents {
 
   my @results;
   my $parent;
-  my $sth = $dbh->prepare('SELECT Name, Formula, Type ' .
+  my $sth = $dbh->prepare('SELECT Name, Category ' .
     'FROM Node, Edge WHERE Edge.ChildNode = ? AND ' .
-    'Edge.ParentNode = Node.Name AND Node.Type <> \'Constant\' ORDER BY ' .
+    'Edge.ParentNode = Node.Name AND Node.Category <> \'Constant\' ORDER BY ' .
     'Edge.Position');
 
   $sth->execute($name);
   while ($parent = $sth->fetchrow_hashref) {
-    if ($$parent{'Type'} eq 'Intermediate result') {
+    if ($$parent{'Category'} eq 'Intermediate result') {
       push(@results, &Parents($$parent{'Name'})); # inline
     } else {
       push(@results, $$parent{'Name'});
@@ -409,21 +420,26 @@ sub ParentAliases {
   my %ctokens;
   my %positions;
   my $fields;
-  $positions{'inpax'} = 0;
-  $positions{'expax'} = 0;
+  $positions{'spax'} = 0;
+  $positions{'dpax'} = 0;
+  $positions{'cpax'} = 0;
   $positions{'rpax'} = 0;
   $positions{'fpax'} = 0;
 
-  my $sth = $dbh->prepare('SELECT Name, Formula, Type FROM Node WHERE ' .
+  my $sth = $dbh->prepare('SELECT Name, Category FROM Node WHERE ' .
       'Name = ?');
+  my $sthc = $dbh->prepare('SELECT Formula FROM NodeFormula WHERE ' .
+      "Node = ? AND Function = 'x'");
 
   foreach $parent (@parents) {
     $sth->execute($parent);
     $fields = $sth->fetchrow_hashref;
-    if ($$fields{'Type'} eq 'Constant') {
+    if ($$fields{'Category'} eq 'Constant') {
       undef %ctokens;
+      $sthc->execute($parent);
       $ctokens{'Name'} = $parent;
-      $ctokens{'Formula'} = $$fields{'Formula'};
+      $ctokens{'Formula'} = $sthc->fetchrow_array;
+      $sthc->finish;
       push(@results, &ProcessTemplate('ConstantAlias', \%ctokens));
     } else {
       $tokens{'Name'} = $parent;
@@ -450,13 +466,13 @@ sub Constants {
 
   my @results;
   my $fields;
-  my $sth = $dbh->prepare('SELECT Name, Type FROM Node, Edge ' .
-      'WHERE (Type = \'Constant\' OR Type = \'Intermediate result\') AND ' .
+  my $sth = $dbh->prepare('SELECT Name, Category FROM Node, Edge ' .
+      'WHERE (Category = \'Constant\' OR Category = \'Intermediate result\') AND ' .
       'Edge.ChildNode = ? AND Edge.ParentNode = Node.Name');
 
   $sth->execute($name);
   while ($fields = $sth->fetchrow_hashref) {
-    if ($$fields{'Type'} eq 'Constant') {
+    if ($$fields{'Category'} eq 'Constant') {
       push(@results, $$fields{'Name'});
     } else {
       push(@results, &Constants($$fields{'Name'}));
@@ -481,8 +497,8 @@ sub ConstantAliases {
   my @results;
   my $constant;
   my $fields;
-  my $sth = $dbh->prepare('SELECT Name, Formula AS Value FROM Node ' .
-      'WHERE Name = ?');
+  my $sth = $dbh->prepare('SELECT Node AS Name, Formula AS Value FROM ' .
+      "NodeFormula WHERE Node = ? AND Function = 'x'");
 
   foreach $constant (@constants) {
     $sth->execute($constant);
@@ -509,7 +525,7 @@ sub Inlines {
   my $inline;
   my $sth = $dbh->prepare('SELECT Name ' .
       'FROM Node, Edge WHERE Edge.ChildNode = ? AND ' .
-      'Node.Type = \'Intermediate result\' AND ' .
+      'Node.Category = \'Intermediate result\' AND ' .
       'Edge.ParentNode = Node.Name ORDER BY Edge.Position');
 
   $sth->execute($name);
@@ -537,13 +553,13 @@ sub InlineAliases {
   my $fields;
   my $inline;
 
-  my $sth = $dbh->prepare('SELECT Name, Formula ' .
-      'FROM Node WHERE Node.Name = ?');
+  my $sth = $dbh->prepare('SELECT Node AS Name, Formula FROM NodeFormula ' .
+      "WHERE Node = ? AND Function = 'x'");
 
   foreach $inline (@inlines) {
     $sth->execute($inline);
     $fields = $sth->fetchrow_hashref;
-    push(@results, &ProcessTemplate('Inline', $fields));
+    push(@results, &ProcessTemplate('InlineAlias', $fields));
     $sth->finish;
   }
 
@@ -560,19 +576,21 @@ sub InlineAliases {
 sub Includes {
   my $name = shift;
 
-  my $type = &NodeType($name);
+  my $type = &NodeCategory($name);
   my @results;
 
-  if ($type eq 'in') {
+  if ($type eq 's') {
     push(@results, &Include('bi/model/NodeStaticTraits.hpp'));
-  } elsif ($type eq 'ex') {
+  } elsif ($type eq 'd' || $type eq 'c') {
     push(@results, &Include('bi/model/NodeForwardTraits.hpp'));
   } elsif ($type eq 'r') {
     push(@results, &Include('bi/model/NodeRandomTraits.hpp'));
   } elsif ($type eq 'f') {
     #
+  } elsif ($type eq 'o') {
+    #
   } else {
-    die("Node $name has unrecognised type");
+    die("Node $name has unrecognised category");
   }
   push(@results, &Include('bi/model/NodeTypeTraits.hpp'));
 

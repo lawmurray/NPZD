@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS Trait (
   Name VARCHAR PRIMARY KEY
 );
 
-CREATE TABLE IF NOT EXISTS NodeType (
+CREATE TABLE IF NOT EXISTS Category (
   Name VARCHAR PRIMARY KEY,
   Description VARCHAR,
   Position INTEGER UNIQUE
@@ -19,17 +19,9 @@ CREATE TABLE IF NOT EXISTS NodeType (
 CREATE TABLE IF NOT EXISTS Node (
   Name VARCHAR PRIMARY KEY,
   LaTeXName VARCHAR,
-  Formula VARCHAR,
-  LaTeXFormula VARCHAR,
   Description VARCHAR,
-  Type VARCHAR NOT NULL REFERENCES NodeType(Name),
+  Category VARCHAR NOT NULL REFERENCES Category(Name),
   Position INTEGER
-);
-
-CREATE TABLE IF NOT EXISTS NodeTrait (
-  Node VARCHAR NOT NULL REFERENCES Node(Name),
-  Trait VARCHAR NOT NULL REFERENCES Trait(Name),
-  PRIMARY KEY (Node, Trait)
 );
 
 CREATE TABLE IF NOT EXISTS Edge (
@@ -40,16 +32,30 @@ CREATE TABLE IF NOT EXISTS Edge (
   UNIQUE (ChildNode, Position)
 );
 
+CREATE TABLE IF NOT EXISTS NodeTrait (
+  Node VARCHAR NOT NULL REFERENCES Node(Name),
+  Trait VARCHAR NOT NULL REFERENCES Trait(Name),
+  PRIMARY KEY (Node, Trait)
+);
+
+CREATE TABLE IF NOT EXISTS NodeFormula (
+  Node VARCHAR NOT NULL REFERENCES Node(Name),
+  Function VARCHAR NOT NULL,
+  Formula VARCHAR NOT NULL,
+  LaTeXFormula VARCHAR,
+  PRIMARY KEY (Node, Function)
+);
+
 --
 -- Foreign keys
 --
 
--- Node.Type -> NodeType.Name
+-- Node.Category -> NodeCategory.Name
 CREATE TRIGGER IF NOT EXISTS NodeInsert AFTER INSERT ON Node
   WHEN
-    (SELECT 1 FROM NodeType WHERE Name = NEW.Type) IS NULL
+    (SELECT 1 FROM Category WHERE Name = NEW.Category) IS NULL
   BEGIN
-    SELECT RAISE(ABORT, 'Type does not exist');
+    SELECT RAISE(ABORT, 'Category does not exist');
   END;
     
 -- NodeTrait.Node -> Node.Name
@@ -121,39 +127,47 @@ CREATE TRIGGER IF NOT EXISTS TraitDelete
 --
 CREATE TRIGGER IF NOT EXISTS FormulaCheck AFTER INSERT ON Edge
   WHEN
-    (SELECT 1 FROM Node, Edge WHERE Name = NEW.ChildNode AND Formula LIKE
-    '%' || NEW.ParentNode || '%') IS NULL
+    (SELECT 1 FROM Node, NodeFormula WHERE Node.Name = NEW.ChildNode AND
+    NodeFormula.Formula LIKE '%' || NEW.ParentNode || '%' AND
+    NodeFormula.Node = Node.Name) IS NULL
   BEGIN
     SELECT RAISE(ABORT, 'Dependency is not mentioned in formula');
   END;
-
 
 --
 -- Clear tables (in case they already existed)
 --
 DELETE FROM Node;
 DELETE FROM Trait;
+DELETE FROM Category;
 DELETE FROM NodeTrait;
-DELETE FROM NodeType;
+DELETE FROM NodeFormula;
 DELETE FROM Edge;
 
 --
 -- Populate Trait
 --
-INSERT INTO Trait VALUES ('IS_IN_NODE');
-INSERT INTO Trait VALUES ('IS_EX_NODE');
+INSERT INTO Trait VALUES ('IS_S_NODE');
+INSERT INTO Trait VALUES ('IS_D_NODE');
+INSERT INTO Trait VALUES ('IS_C_NODE');
 INSERT INTO Trait VALUES ('IS_R_NODE');
 INSERT INTO Trait VALUES ('IS_F_NODE');
+INSERT INTO Trait VALUES ('IS_O_NODE');
 INSERT INTO Trait VALUES ('IS_GENERIC_STATIC');
 INSERT INTO Trait VALUES ('IS_GENERIC_FORWARD');
 INSERT INTO Trait VALUES ('IS_ODE_FORWARD');
 INSERT INTO Trait VALUES ('IS_UNIFORM');
 INSERT INTO Trait VALUES ('IS_GAUSSIAN');
 
-INSERT INTO NodeType VALUES('Constant', '', 1);
-INSERT INTO NodeType VALUES('Forcing', '', 2);
-INSERT INTO NodeType VALUES('Random variate', 'These represent pseudorandom variates required in the update of other variables.', 3);
-INSERT INTO NodeType VALUES('Static parameter', 'Fixed hyperparameters.', 4);
-INSERT INTO NodeType VALUES('Dynamic parameter', 'Autoregressive, stochastic parameters.', 5);
-INSERT INTO NodeType VALUES('Intermediate result', 'These are intermediate calculations that are either used multiple times in the update of variables, or have interpretable meaning in their own right.', 6);
-INSERT INTO NodeType VALUES('State variable', '', 7);
+--
+-- Populate category
+--
+INSERT INTO Category VALUES('Constant', '', 1);
+INSERT INTO Category VALUES('Random variate', 'Representing pseudorandom variates required in the update of other variables.', 2);
+INSERT INTO Category VALUES('Forcing', '', 3);
+INSERT INTO Category VALUES('Observation', '', 4);
+INSERT INTO Category VALUES('Static variable', '.', 5);
+INSERT INTO Category VALUES('Discrete-time variable', '', 6);
+INSERT INTO Category VALUES('Continuous-time variable', '', 7);
+INSERT INTO Category VALUES('Intermediate result', 'Representing intermediate evaluations which may be reused multiple times for convenience. Will be inlined.', 8);
+

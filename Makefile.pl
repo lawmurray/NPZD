@@ -24,17 +24,17 @@ $CUDACC = 'nvcc';
 $LINKER = 'nvcc';
 $CXXFLAGS = '-Wall -I"../bi/src" `nc-config --cflags`';
 $CUDACCFLAGS = '-arch=sm_13 -Xptxas="-v" -I"../bi/src" -I"$GSL_ROOT/include" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS';
-$LINKFLAGS = '-L"../bi/build" -lbi -latlas -lf77blas -llapack -lgfortran -lboost_program_options-gcc43-mt -lgslcblas -lgsl `nc-config --libs` -lnetcdf_c++';
+$LINKFLAGS = '-L"../bi/build" -lbi -latlas -lf77blas -llapack -lgfortran -lboost_program_options-mt -lgslcblas -lgsl `nc-config --libs` -lnetcdf_c++';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 
 # Release flags
-$CXXFLAGS .= ' -O3 -funroll-loops -fomit-frame-pointer';
-$CUDACCFLAGS .= ' -O3 --compiler-options="-O3 -funroll-loops -fomit-frame-pointer"';
+#$CXXFLAGS .= ' -O3 -funroll-loops -fomit-frame-pointer';
+#$CUDACCFLAGS .= ' -O3 --compiler-options="-O3 -funroll-loops -fomit-frame-pointer"';
 
 # Debugging flags
-#$CXXFLAGS .= ' -g';
-#$CUDACCFLAGS .= ' -g';
+$CXXFLAGS .= ' -g';
+$CUDACCFLAGS .= ' -g';
 
 # Profiling flags
 #$CXXFLAGS .= ' -pg';
@@ -190,13 +190,6 @@ pdf: \$(BUILDDIR)/\$(NAME).pdf
 
 End
 
-# Model target
-print <<End;
-\$(BUILDDIR)/\$(NAME).o: cpp
-\t\$(CUDACC) -c -o \$(BUILDDIR)/\$(NAME).o \$(CUDACCFLAGS) \$(CPPDIR)/\$(NAME).cu
-
-End
-
 # Artefact
 print "\$(BUILDDIR)/simulate: cpp ";
 print join(" \\\n    ", @targets);
@@ -218,6 +211,6 @@ foreach $dir (sort keys %dirs) {
 # Clean target
 print <<End;
 clean:
-\trm -rf \$(BUILDDIR) \$(CPPDIR)
+\trm -rf \$(BUILDDIR)
 
 End

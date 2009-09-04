@@ -13,8 +13,6 @@
 
 /**
  * \f$<% LaTeXName %>\f$; <% Description %>
- *
- * \f$<% LaTeXFormula %>\f$
  */
 class <% ClassName %> : public bi::BayesNode {
 public:

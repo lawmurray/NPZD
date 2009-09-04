@@ -14,33 +14,45 @@
 #include "bi/model/BayesNet.hpp"
 
 /**
- * In-net spec.
+ * Nodespec of s-nodes.
  */
-<% InSpec %>
+<% SNodeSpec %>
 
 /**
- * Ex-net spec
+ * Nodespec of d-nodes.
  */
-<% ExSpec %>
+<% DNodeSpec %>
 
 /**
- * R-net spec
+ * Nodespec of c-nodes.
  */
-<% RSpec %>
+<% CNodeSpec %>
 
 /**
- * F-net spec
+ * Nodespec of r-nodes.
  */
-<% FSpec %>
+<% RNodeSpec %>
+
+/**
+ * Nodespec of f-nodes.
+ */
+<% FNodeSpec %>
+
+/**
+ * Nodespec of o-nodes.
+ */
+<% ONodeSpec %>
 
 /**
  * <% Description %>
  */
 class <% ClassName %> : public bi::BayesNet<
-    GET_NODESPEC(<% InSpecName %>),
-    GET_NODESPEC(<% ExSpecName %>),
-    GET_NODESPEC(<% RSpecName %>),
-    GET_NODESPEC(<% FSpecName %>)> {
+    GET_NODESPEC(<% SNodeSpecName %>),
+    GET_NODESPEC(<% DNodeSpecName %>),
+    GET_NODESPEC(<% CNodeSpecName %>),
+    GET_NODESPEC(<% RNodeSpecName %>),
+    GET_NODESPEC(<% FNodeSpecName %>),
+    GET_NODESPEC(<% ONodeSpecName %>)> {
 public:
   /**
    * Constructor.
