@@ -1,5 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 #PBS -l walltime=10:00,nodes=1:ppn=1,gres=gpu
+
+module load cuda boost boost-bindings netcdf gsl atlas intel-cc
 
 ROOT=/home/mur387
 LD_LIBRARY_PATH=$ROOT/bi/build:$LD_LIBRARY_PATH
@@ -12,7 +14,7 @@ SEED=0 # pseudorandom number seed
 OUTPUT=1 # produce output?
 TIME=0 # produce timings?
 
-INPUT_FILE=$ROOT/data/test_input.nc # forcings file
+INPUT_FILE=$ROOT/data/test_input_LC.nc # forcings file
 OUTPUT_FILE=$ROOT/npzd/results/output.nc # output file
 
 $ROOT/npzd/build/simulate --ns $NS -P $P -K $K -T $T --seed $SEED --input-file $INPUT_FILE --output-file $OUTPUT_FILE --output $OUTPUT --time $TIME
