@@ -8,8 +8,8 @@
 "Achl","piC","Chlorophyl absorption","\pi^C","x: 0.04","x: 0.04","Constant",,
 "PE","piPE","Photosynthetic efficiency","\pi^{PE}","x: 1200","x: 1200","Constant",,
 "maxNC","piR","Maximum N:C (Redfield)","\pi^R","x: 0.18","x: 0.18","Constant",,
-"RP","RP","P timescale","R_P","x: 3","x: 0.03","Constant",,
-"RZ","RZ","Z timescale","R_Z","x: 10","x: 10","Constant",,
+"RP","RP","P timescale","R_P","x: 3","X: 3","Constant",,
+"RZ","RZ","Z timescale","R_Z","x: 10","X: 10","Constant",,
 "Grazeexp","piK","Functional response exponent","\pi^K","x: 2","x: 2","Constant",,
 "PBC","betaP","Phytoplankton boundary condition","\beta^P",,,"Forcing",,"IS_F_NODE"
 "ZBC","betaZ","Zooplankton boundary condition","\beta^Z",,,"Forcing",,"IS_F_NODE"
@@ -19,17 +19,19 @@
 "Eir","E","Surface irradience","E",,,"Forcing",,"IS_F_NODE"
 "Depth","L","Mixed layer depth","L",,,"Forcing",,"IS_F_NODE"
 "Exch","betaE","Exchange rate","\beta^E",,,"Forcing",,"IS_F_NODE"
-"mumaxC","muC","Maximum growth rate for C","\mu^C","f: \mu^C(1-R_P) + R_P (\alpha^C + \sigma^C u^C)","f: muC*(1 - RP) + RP*(alphaC + sigmaC*uC)","Discrete-time variable","muC, RP, alphaC, sigmaC, uC","IS_D_NODE, IS_GENERIC_FORWARD"
-"mumCN","muCN","Maximum growth rate for C:N","\mu^{CN}","f: \mu^{CN}(1-R_P) + R_P (\alpha^{CN} + \sigma^{CN} u^{CN})","f: muCN*(1 - RP) + RP*(alphaCN + sigmaCN*uCN)","Discrete-time variable","muCN, RP, alphaCN, sigmaCN, uCN","IS_D_NODE, IS_GENERIC_FORWARD"
-"ChlCmax","muCh","Maximum growth rate for Chl-a:C","\mu^{Ch}","f: \mu^{Ch}(1-R_P) + R_P  (\alpha^{Ch} + \sigma^{Ch} u^{Ch})","f: muCh*(1 - RP) + RP*(alphaCh + sigmaCh*uCh)","Discrete-time variable","muCh, RP, alphaCh, sigmaCh, uCh","IS_D_NODE, IS_GENERIC_FORWARD"
-"maxNaff","nuA","Maximum N affinity","\nu^A","f: \nu^A(1-R_P) + R_P  (\alpha^A + \sigma^A u^A)","f: nuA*(1 - RP) + RP*(alphaA + sigmaA*uA)","Discrete-time variable","nuA, RP, alphaA, sigmaA, uA","IS_D_NODE, IS_GENERIC_FORWARD"
-"minmaxNC","piNC","Min/Max N:C","\pi^{NC}","f: \pi^{NC}(1-R_P) + R_P  (\alpha^{NC} + \sigma^{NC} u^{NC})","f: piNC*(1 - RP) + RP*(alphaNC + sigmaNC*uNC)","Discrete-time variable","piNC, RP, alphaNC, sigmaNC, uNC","IS_D_NODE, IS_GENERIC_FORWARD"
-"Ingmax","zetaI","Max Z ingestion rate","\zeta^I","f: \zeta^I(1-R_Z) + R_Z  (\alpha^I + \sigma^I u^I)","f: zetaI*(1 - RZ) + RZ*(alphaI + sigmaI*uI)","Discrete-time variable","zetaI, RZ, alphaI, sigmaI, uI","IS_D_NODE, IS_GENERIC_FORWARD"
-"Clear","zetaCl","Zooplankton clearance rate","\zeta^{Cl}","f: \zeta^{Cl}(1-R_Z) + R_Z  (\alpha^{Cl} + \sigma^{Cl} u^{Cl})","f: zetaCl*(1 - RZ) + RZ*(alphaCl + sigmaCl*uCl)","Discrete-time variable","zetaCl, RZ, alphaCl, sigmaCl, uCl","IS_D_NODE, IS_GENERIC_FORWARD"
-"Zeff","zetaE","Zooplankton grazing efficiency","\zeta^E","f: \zeta^E(1-R_Z) + R_Z  (\alpha^E + \sigma^E u^E)","f: zetaE*(1 - RZ) + RZ*(alphaE + sigmaE*uE)","Discrete-time variable","zetaE, RZ, alphaE, sigmaE, uE","IS_D_NODE, IS_GENERIC_FORWARD"
-"Remin","nuR","Remineralisation rate","\nu^R","f: \nu^R(1-R_Z) + R_Z  (\alpha^R + \sigma^R u^R)","f: nuR*(1 - RZ) + RZ*(alphaR + sigmaR*uR)","Discrete-time variable","nuR, RZ, alphaR, sigmaR, uR","IS_D_NODE, IS_GENERIC_FORWARD"
-"Mq","zetaQ","Z quadratic mortality term","\zeta^Q","f: \zeta^Q(1-R_Z) + R_Z  (\alpha^Q + \sigma^Q u^Q)","f: zetaQ*(1 - RZ) + RZ*(alphaQ + sigmaQ*uQ)","Discrete-time variable","zetaQ, RZ, alphaQ, sigmaQ, uQ","IS_D_NODE, IS_GENERIC_FORWARD"
-"Ml","zetaL","Z linear mortality term","\zeta^L","f: \zeta^L(1-R_Z) + R_Z  (\alpha^L + \sigma^L u^L)","f: zetaL*(1 - RZ) + RZ*(alphaL + sigmaL*uL)","Discrete-time variable","zetaL, RZ, alphaL, sigmaL, uL","IS_D_NODE, IS_GENERIC_FORWARD"
+"mumaxC","muC","Maximum growth rate for C","\mu^C","f: \mu^C(1-R_P) + R_P (\alpha^C + \theta^C u^C)","f: muC*(1 - 1/RP) + 1/RP*(alphaC*exp(thetaC*uC))","Discrete-time variable","muC, RP, alphaC, thetaC, uC","IS_D_NODE, IS_GENERIC_FORWARD"
+"mumCN","muCN","Maximum growth rate for C:N","\mu^{CN}","f: \mu^{CN}(1-R_P) + R_P (\alpha^{CN} + \theta^{CN} u^{CN})","f: muCN*(1 - 1/RP) + 1/RP*(alphaCN*exp(thetaCN*uCN))","Discrete-time variable","muCN, RP, alphaCN, thetaCN, uCN","IS_D_NODE, IS_GENERIC_FORWARD"
+"ChlCmax","muCh","Maximum growth rate for Chl-a:C","\mu^{Ch}","f: \mu^{Ch}(1-R_P) + R_P  (\alpha^{Ch} + \theta^{Ch} u^{Ch})","f: muCh*(1 - 1/RP) + 1/RP*(alphaCh*exp(thetaCh*uCh))","Discrete-time variable","muCh, RP, alphaCh, thetaCh, uCh","IS_D_NODE, IS_GENERIC_FORWARD"
+"maxNaff","nuA","Maximum N affinity","\nu^A","f: \nu^A(1-R_P) + R_P  (\alpha^A + \theta^A u^A)","f: nuA*(1 - 1/RP) + 1/RP*(alphaA*exp(thetaA*uA))","Discrete-time variable","nuA, RP, alphaA, thetaA, uA","IS_D_NODE, IS_GENERIC_FORWARD"
+"minmaxNC","piNC","Min/Max N:C","\pi^{NC}","f: \pi^{NC}(1-R_P) + R_P  (\alpha^{NC} + \theta^{NC} u^{NC})","f: piNC*(1 - 1/RP) + 1/RP*(alphaNC*exp(thetaNC*uNC))","Discrete-time variable","piNC, RP, alphaNC, thetaNC, uNC","IS_D_NODE, IS_GENERIC_FORWARD"
+"Ingmax","zetaI","Max Z ingestion rate","\zeta^I","f: \zeta^I(1-R_Z) + R_Z  (\alpha^I + \theta^I u^I)","f: zetaI*(1 - 1/RZ) + 1/RZ*(alphaI*exp(thetaI*uI))","Discrete-time variable","zetaI, RZ, alphaI, thetaI, uI","IS_D_NODE, IS_GENERIC_FORWARD"
+"Clear","zetaCl","Zooplankton clearance rate","\zeta^{Cl}","f: \zeta^{Cl}(1-R_Z) + R_Z  (\alpha^{Cl} + \theta^{Cl} u^{Cl})","f: zetaCl*(1 - 1/RZ) + 1/RZ*(alphaCl*exp(thetaCl*uCl))","Discrete-time variable","zetaCl, RZ, alphaCl, thetaCl, uCl","IS_D_NODE, IS_GENERIC_FORWARD"
+"Zeff","zetaE","Zooplankton grazing efficiency","\zeta^E","f: \zeta^E(1-R_Z) + R_Z  (\alpha^E + \theta^E u^E)","f: zetaE*(1 – 1/RZ) + 1/RZ*(alphaE*exp(thetaE*uE))","Discrete-time variable","zetaE, RZ, alphaE, thetaE, uE","IS_D_NODE, IS_GENERIC_FORWARD"
+"Remin","nuR","Remineralisation rate","\nu^R","f: \nu^R(1-R_Z) + R_Z  (\alpha^R + \theta^R u^R)","f: nuR*(1 - 1/RZ) + 1/RZ*(alphaR*exp(thetaR*uR))","Discrete-time variable","nuR, RZ, alphaR, thetaR, uR","IS_D_NODE, IS_GENERIC_FORWARD"
+"Mq","zetaQ","Z quadratic mortality term","\zeta^Q","f: \zeta^Q(1-R_Z) + R_Z  (\alpha^Q + \theta^Q u^Q)","f: zetaQ*(1 - 1/RZ) + 1/RZ*(alphaQ*exp(thetaQ*uQ))","Discrete-time variable","zetaQ, RZ, alphaQ, thetaQ, uQ","IS_D_NODE, IS_GENERIC_FORWARD"
+"Ml","zetaL","Z linear mortality term","\zeta^L","f: \zeta^L(1-R_Z) + R_Z  (\alpha^L + \theta^L u^L)","f: zetaL*(1 - 1/RZ) + 1/RZ*(alphaL*exp(thetaL*uL))","Discrete-time variable","zetaL, RZ, alphaL, thetaL, uL","IS_D_NODE, IS_GENERIC_FORWARD"
+,"P_DF","P Diversity Factor","P_DF",,,"Static variable",,"IS_S_NODE"
+,"Z_DF","Z Diversity Factor","Z_DF",,,"Static variable",,"IS_S_NODE"
 ,"alphaC",,"\alpha^C",,,"Static variable",,"IS_S_NODE"
 ,"sigmaC",,"\sigma^C",,,"Static variable",,"IS_S_NODE"
 ,"alphaCN",,"\alpha^{CN}",,,"Static variable",,"IS_S_NODE"
@@ -63,6 +65,17 @@
 ,"uR",,"u^R",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
 ,"uQ",,"u^Q",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
 ,"uL",,"u^L",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN"
+,"thetaC",,"\theta^C",,"f: 0.5*log(1+(2*RP-1)*P_DF*P_DF*(exp(sigmaC*sigmaC)-1))","Static variable","RP,P_DF,sigmaC","IS_S_NODE"
+,"thetaCN",,"\theta^CN",,"f: 0.5*log(1+(2*RP-1)*P_DF*P_DF*(exp(sigmaCN*sigmaCN)-1))","Static variable","RP,P_DF,sigmaCN","IS_S_NODE"
+,"thetaCh",,"\theta^Ch",,"f: 0.5*log(1+(2*RP-1)*P_DF*P_DF*(exp(sigmaCh*sigmaCh)-1))","Static variable","RP,P_DF,sigmaCh","IS_S_NODE"
+,"thetaA",,"\theta^A",,"f: 0.5*log(1+(2*RP-1)*P_DF*P_DF*(exp(sigmaA*sigmaA)-1))","Static variable","RP,P_DF,sigmaA","IS_S_NODE"
+,"thetaNC",,"\theta^NC",,"f: 0.5*log(1+(2*RP-1)*P_DF*P_DF*(exp(sigmaNC*sigmaNC)-1))","Static variable","RP,P_DF,sigmaNC","IS_S_NODE"
+,"thetaI",,"\theta^I",,"f: 0.5*log(1+(2*RZ-1)*Z_DF*Z_DF*(exp(sigmal*sigmal)-1))","Static variable","RZ,Z_DF,sigmal","IS_S_NODE"
+,"thetaCl",,"\theta^Cl",,"f: 0.5*log(1+(2*RZ-1)*Z_DF*Z_DF*(exp(sigmaCl*sigmaCl)-1))","Static variable","RZ,Z_DF,sigmaCl","IS_S_NODE"
+,"thetaE",,"\theta^E",,"f: 0.5*log(1+(2*RZ-1)*Z_DF*Z_DF*(exp(sigmaE*sigmaE)-1))","Static variable","RZ,Z_DF,sigmaE","IS_S_NODE"
+,"thetaR",,"\theta^R",,"f: 0.5*log(1+(2*RZ-1)*Z_DF*Z_DF*(exp(sigmaR*sigmaR)-1))","Static variable","RZ,Z_DF,sigmaR","IS_S_NODE"
+,"thetaQ",,"\theta^Q",,"f: 0.5*log(1+(2*RZ-1)*Z_DF*Z_DF*(exp(sigmaQ*sigmaQ)-1))","Static variable","RZ,Z_DF,sigmaQ","IS_S_NODE"
+,"thetaL",,"\theta^L",,"f: 0.5*log(1+(2*RZ-1)*Z_DF*Z_DF*(exp(sigmaL*sigmaL)-1))","Static variable","RZ,Z_DF,sigmaL","IS_S_NODE"
 "Ez","EZ","Light at depth","E^Z","s: \frac{E(1-\exp(-K^Z))}{K^Z}","s: E*(1-exp(-KZ))/KZ","Static variable","E,KZ","IS_S_NODE, IS_GENERIC_STATIC"
 "KdZ","KZ","Light attenation, total (water + Chl-a)","K^Z","x: (K^W+K^C Chla)L","x: (KW+KC*Chla)*L","Intermediate result","KW,KC,Chla,L",
 "Graze","piG",,"\pi^G","x: Z \zeta^I \tau^C \pi^S / (1 + \pi^S)","x: Z*zetaI*tauC*piS/(1+piS)","Intermediate result","Z, zetaI, tauC, piS",
