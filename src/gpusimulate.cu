@@ -46,7 +46,7 @@ void simulate(const unsigned P, const unsigned K, const real_t T,
   in.read(s); // initialise state
 
   /* intermediate result buffer */
-  Result r(m, P, K);
+  Result<real_t> r(m, P, K);
 
   /* output */
   NetCDFWriter<real_t> out(m, OUTPUT_FILE, P, 366);
@@ -67,7 +67,7 @@ void simulate(const unsigned P, const unsigned K, const real_t T,
     }
   }
   if (OUTPUT) {
-    out.write(s);
+    out.write(s, sim.getTime());
   }
   gettimeofday(&end, NULL);
 
