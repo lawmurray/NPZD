@@ -579,20 +579,20 @@ sub Includes {
   my $type = &NodeCategory($name);
   my @results;
 
+  push(@results, &Include('bi/traits/type_traits.hpp'));
   if ($type eq 's') {
-    push(@results, &Include('bi/model/NodeStaticTraits.hpp'));
+    push(@results, &Include('bi/traits/static_traits.hpp'));
   } elsif ($type eq 'd' || $type eq 'c') {
-    push(@results, &Include('bi/model/NodeForwardTraits.hpp'));
+    push(@results, &Include('bi/traits/forward_traits.hpp'));
   } elsif ($type eq 'r') {
-    push(@results, &Include('bi/model/NodeRandomTraits.hpp'));
+    push(@results, &Include('bi/traits/random_traits.hpp'));
   } elsif ($type eq 'f') {
     #
   } elsif ($type eq 'o') {
-    #
+    push(@results, &Include('bi/traits/likelihood_traits.hpp'));
   } else {
     die("Node $name has unrecognised category");
   }
-  push(@results, &Include('bi/model/NodeTypeTraits.hpp'));
 
   return join("\n", @results);
 }
