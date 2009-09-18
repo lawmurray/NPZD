@@ -1,0 +1,10 @@
+  /**
+   * @see bi::GaussianLikelihoodMuFunction::sigma
+   * @see bi::LogNormalLikelihoodFunction::sigma
+   *
+   * \f$<% LaTeXFormula %>\f$
+   */
+  template<class V1, class V2, class V3, class V4, class V5, class V6>
+  static CUDA_FUNC_BOTH void sigma(const V1& fpax, const V2& rpax,
+     const V3& spax, const V4& dpax, const V5& cpax, V6& sigma);
+
