@@ -110,7 +110,7 @@ while ($fields = $sth{'GetNodes'}->fetchrow_hashref) {
 # output edges
 $sth{'GetEdges'}->execute;
 while ($fields = $sth{'GetEdges'}->fetchrow_hashref) {
-  if ($$fields{'Category'} eq 'Static variable' || $$fields{'Category'} eq 'Random variate') {
+  if ($$fields{'Category'} eq 'Static variable' || $$fields{'Category'} eq 'Random variate' || $$fields{'Category'} eq 'Parameter' || $$fields{'ChildNode'} =~ /\_obs$/) {
     print qq/  $$fields{'ParentNode'} -> $$fields{'ChildNode'} [len=.1];\n/;
   } else {
     print "  $$fields{'ParentNode'} -> $$fields{'ChildNode'} [len=.3];\n";
@@ -120,7 +120,7 @@ while ($fields = $sth{'GetEdges'}->fetchrow_hashref) {
 # output legend
 my $name;
 my $type;
-my @types = ('Constant', 'Intermediate result', 'Forcing', 'Observation', 'Random variate', 'Static variable', 'Discrete-time variable', 'Continuous-time variable');
+my @types = ('Constant', 'Intermediate result', 'Parameter', 'Forcing', 'Observation', 'Random variate', 'Static variable', 'Discrete-time variable', 'Continuous-time variable');
 print qq/  subgraph legend {\n/;
 print qq/    label="Legend"\n/;
 foreach $type (@types) {
@@ -190,6 +190,7 @@ sub nodeStyle {
   my $type = shift;
   my %SHAPES = (
     'Constant' => 'box',
+    'Parameter' => 'circle',
     'Random variate' => 'diamond',
     'Forcing' => 'box',
     'Observation' => 'box',
@@ -200,6 +201,7 @@ sub nodeStyle {
   );  
   my %STYLES = (
     'Constant' => 'dashed',
+    'Parameter' => 'filled',
     'Random variate' => 'filled',
     'Forcing' => 'filled',
     'Observation' => 'filled',
@@ -210,6 +212,7 @@ sub nodeStyle {
   );
   my %COLORS = (
     'Constant' => '#000000',
+    'Parameter' => '#000000',
     'Random variate' => '#CC79A7',
     'Forcing' => '#FF6666',
     'Observation' => '#FFCC33',
@@ -220,6 +223,7 @@ sub nodeStyle {
   );
   my %FILLCOLORS = (
     'Constant' => '#FFFFFF',
+    'Parameter' => '#FFFFFF',
     'Random variate' => '#FFA9D7',
     'Forcing' => '#FFBBBB',
     'Observation' => '#FFEEAA',
