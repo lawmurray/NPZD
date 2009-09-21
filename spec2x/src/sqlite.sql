@@ -153,6 +153,7 @@ INSERT INTO Trait VALUES ('IS_C_NODE');
 INSERT INTO Trait VALUES ('IS_R_NODE');
 INSERT INTO Trait VALUES ('IS_F_NODE');
 INSERT INTO Trait VALUES ('IS_O_NODE');
+INSERT INTO Trait VALUES ('IS_P_NODE');
 INSERT INTO Trait VALUES ('IS_GENERIC_STATIC');
 INSERT INTO Trait VALUES ('IS_GENERIC_FORWARD');
 INSERT INTO Trait VALUES ('IS_ODE_FORWARD');
@@ -170,11 +171,12 @@ INSERT INTO Trait VALUES ('HAS_COMMON_SIGMA');
 -- Populate category
 --
 INSERT INTO Category VALUES('Constant', '', 1);
-INSERT INTO Category VALUES('Random variate', 'Representing pseudorandom variates required in the update of other variables.', 2);
+INSERT INTO Category VALUES('Parameter', '', 2);
 INSERT INTO Category VALUES('Forcing', '', 3);
 INSERT INTO Category VALUES('Observation', '', 4);
-INSERT INTO Category VALUES('Static variable', '.', 5);
-INSERT INTO Category VALUES('Discrete-time variable', '', 6);
-INSERT INTO Category VALUES('Continuous-time variable', '', 7);
-INSERT INTO Category VALUES('Intermediate result', 'Representing intermediate evaluations which may be reused multiple times for convenience. Will be inlined.', 8);
+INSERT INTO Category VALUES('Random variate', 'Representing pseudorandom variates required in the update of other variables.', 5);
+INSERT INTO Category VALUES('Static variable', '.', 6);
+INSERT INTO Category VALUES('Discrete-time variable', '', 7);
+INSERT INTO Category VALUES('Continuous-time variable', '', 8);
+INSERT INTO Category VALUES('Intermediate result', 'Representing intermediate evaluations which may be reused multiple times for convenience. Will be inlined.', 9);
 

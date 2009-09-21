@@ -44,6 +44,11 @@
 <% ONodeSpec %>
 
 /**
+ * Nodespec of p-nodes.
+ */
+<% PNodeSpec %>
+
+/**
  * <% Description %>
  */
 class <% ClassName %> : public bi::BayesNet<
@@ -52,7 +57,8 @@ class <% ClassName %> : public bi::BayesNet<
     GET_NODESPEC(<% CNodeSpecName %>),
     GET_NODESPEC(<% RNodeSpecName %>),
     GET_NODESPEC(<% FNodeSpecName %>),
-    GET_NODESPEC(<% ONodeSpecName %>)> {
+    GET_NODESPEC(<% ONodeSpecName %>),
+    GET_NODESPEC(<% PNodeSpecName %>)> {
 public:
   /**
    * Constructor.

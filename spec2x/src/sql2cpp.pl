@@ -71,7 +71,7 @@ sub OutputModelSources {
   $tokens{'ClassName'} = $model . 'Model';
   $tokens{'Includes'} = join("\n", map { &Include("$_.cuh") } @classes);
   $tokens{'NodeDeclarations'} = join("\n  ", map { ucfirst($_) . 'Node ' . $_ . ';' } @nodes);
-  foreach $type ('S', 'D', 'C', 'R', 'F', 'O') {
+  foreach $type ('S', 'D', 'C', 'R', 'F', 'O', 'P') {
     $tokens{"${type}NodeSpecName"} = "${model}${type}NodeSpec";
     $tokens{"${type}NodeSpec"} = join("\n",
       "BEGIN_NODESPEC($tokens{\"${type}NodeSpecName\"})",
@@ -223,7 +223,7 @@ sub PrettyPrint {
 ##
 ## @param name Name of node.
 ##
-## @return Category of node -- "s", "d", "c", "r", "f" or "o".
+## @return Category of node -- "s", "d", "c", "r", "f", "o" or "p".
 ##
 sub NodeCategory {
   my $name = shift;
@@ -247,6 +247,8 @@ sub NodeCategory {
     $result = 'f';
   } elsif ($trait eq 'IS_O_NODE') {
     $result = 'o';
+  } elsif ($trait eq 'IS_P_NODE') {
+    $result = 'p';
   } else {
     die("Node $name not of recognised type");
   }
@@ -276,7 +278,7 @@ sub Pax {
         $childtype->node);
   }
 
-  return "${parenttype}pax";
+  return "pax.$parenttype";
 }
 
 ##
@@ -420,11 +422,12 @@ sub ParentAliases {
   my %ctokens;
   my %positions;
   my $fields;
-  $positions{'spax'} = 0;
-  $positions{'dpax'} = 0;
-  $positions{'cpax'} = 0;
-  $positions{'rpax'} = 0;
-  $positions{'fpax'} = 0;
+  $positions{'pax.s'} = 0;
+  $positions{'pax.d'} = 0;
+  $positions{'pax.c'} = 0;
+  $positions{'pax.r'} = 0;
+  $positions{'pax.f'} = 0;
+  $positions{'pax.p'} = 0;
 
   my $sth = $dbh->prepare('SELECT Name, Category FROM Node WHERE ' .
       'Name = ?');
@@ -590,8 +593,10 @@ sub Includes {
     #
   } elsif ($type eq 'o') {
     push(@results, &Include('bi/traits/likelihood_traits.hpp'));
+  } elsif ($type eq 'p') {
+    #
   } else {
-    die("Node $name has unrecognised category");
+    die("Node $name has unrecognised type");
   }
 
   return join("\n", @results);

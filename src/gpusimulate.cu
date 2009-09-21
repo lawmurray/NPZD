@@ -42,7 +42,7 @@ void simulate(const unsigned P, const unsigned K, const real_t T,
 
   /* state */
   State s(m, P);
-  NetCDFReader<real_t,true,true,true,false,false,false> in(m, INIT_FILE, NS);
+  NetCDFReader<real_t,true,true,true,false,false,false,true> in(m, INIT_FILE, NS);
   in.read(s); // initialise state
 
   /* intermediate result buffer */

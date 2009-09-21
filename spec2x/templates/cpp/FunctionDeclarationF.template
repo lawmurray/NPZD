@@ -3,9 +3,7 @@
    *
    * \f$<% LaTeXFormula %>\f$
    */
-  template<class T, class V1, class V2, class V3, class V4, class V5,
-      class V6>
-  static CUDA_FUNC_BOTH void f(const T t, const V1& fpax, const V2& rpax,
-      const V3& spax, const V4& dpax, const V5& cpax, const T tnxt,
-      V6& xnxt);
+  template<class T, class V1, class V2>
+  static CUDA_FUNC_BOTH void f(const T t, const V1& pax, const T tnxt,
+      V2& xnxt);
 
