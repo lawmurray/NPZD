@@ -1,7 +1,7 @@
 #!/bin/sh
 #PBS -l walltime=10:00,nodes=1:ppn=1,gres=gpu
 
-#module load cuda boost boost-bindings netcdf gsl atlas intel-cc
+module load cuda boost boost-bindings netcdf gsl atlas intel-cc
 
 ROOT=/home/mur387/workspace
 LD_LIBRARY_PATH=$ROOT/bi/build:$LD_LIBRARY_PATH
