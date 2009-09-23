@@ -1,4 +1,4 @@
-OriginalName,Name,Description,LaTeXName,LaTeXFormulae,Formulae,Category,Dependencies,Traits,Prior Mean,Prior CV,Prior Dist
+OriginalName,Name,Description,LaTeXName,LaTeXFormulae,Formulae,Category,Dependencies,Traits,PriorMean,PriorCV,PriorDist
 Kd,KW,"Light attenuation, water",K^W,x: 0.03,,Parameter,,IS_P_NODE,0.03,0.2,LogNormalPdf
 Kchla,KC,"Light attenuation, Chl-a",K^C,x: 0.04,,Parameter,,IS_P_NODE,0.04,0.3,LogNormalPdf
 Sink,deltaS,Detrital sinking rate,\delta^S,x: 0.1,,Parameter,,IS_P_NODE,5,1,GaussianPdf
