@@ -1,8 +1,8 @@
 OriginalName,Name,Description,LaTeXName,LaTeXFormulae,Formulae,Category,Dependencies,Traits,PriorMean,PriorCV,PriorDist
-Kd,KW,"Light attenuation, water",K^W,x: 0.03,,Parameter,,IS_P_NODE,0.03,0.2,LogNormalPdf
-Kchla,KC,"Light attenuation, Chl-a",K^C,x: 0.04,,Parameter,,IS_P_NODE,0.04,0.3,LogNormalPdf
-Sink,deltaS,Detrital sinking rate,\delta^S,x: 0.1,,Parameter,,IS_P_NODE,5,1,GaussianPdf
-FDG,deltaI,Detrital growth inefficiency,\delta^I,x: 0.5,,Parameter,,IS_P_NODE,0.5,0.1,LogNormalPdf
+Kd,KW,"Light attenuation, water",K^W,,,Parameter,,IS_P_NODE,0.03,0.2,LogNormalPdf
+Kchla,KC,"Light attenuation, Chl-a",K^C,,,Parameter,,IS_P_NODE,0.04,0.3,LogNormalPdf
+Sink,deltaS,Detrital sinking rate,\delta^S,,,Parameter,,IS_P_NODE,5,1,GaussianPdf
+FDG,deltaI,Detrital growth inefficiency,\delta^I,,,Parameter,,IS_P_NODE,0.5,0.1,LogNormalPdf
 Q10,tau10,,\tau^{10},x: 2,x: 2,Constant,,,,,
 Tref,tauR,Reference temperature (10 deg. C),\tau^R,x: 15,x: 15,Constant,,,,,
 Achl,piC,Chlorophyl absorption,\pi^C,x: 0.04,x: 0.04,Constant,,,,,
