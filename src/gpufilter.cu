@@ -38,13 +38,13 @@ void filter(const unsigned P, const unsigned K, const real_t T,
   ode_set_h0(CUDA_REAL(0.2));
   ode_set_rtoler(CUDA_REAL(1.0e-3));
   ode_set_atoler(CUDA_REAL(1.0e-3));
-  ode_set_nsteps(CUDA_REAL(100));
+  ode_set_nsteps(CUDA_REAL(1000));
 
   /* model */
   NPZDModel m;
 
   /* output */
-  NetCDFWriter<real_t> out(m, OUTPUT_FILE, P, 1826);
+  NetCDFWriter<real_t,true,true,true,true,true,true,true> out(m, OUTPUT_FILE, P, 365);
 
   /* state */
   State s(m, P);
@@ -83,9 +83,9 @@ void filter(const unsigned P, const unsigned K, const real_t T,
     pf.advance(T, stream);
     pf.weight(stream);
     pf.resample(stream);
-    pf.download(stream);
-    cudaStreamSynchronize(stream);
     if (OUTPUT) {
+      pf.download(stream);
+      cudaStreamSynchronize(stream);
       out.write(s, pf.getTime());
     }
   }

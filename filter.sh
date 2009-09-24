@@ -8,9 +8,9 @@ ROOT=/home/mur387/workspace
 LD_LIBRARY_PATH=$ROOT/bi/build:$LD_LIBRARY_PATH
 
 NS=1
-P=128 # no. trajectories
+P=1024 # no. trajectories
 K=10 # size of intermediate result buffer
-T=1826.0 # time to simulate
+T=365.0 # time to simulate
 SEED=0 # pseudorandom number seed
 OUTPUT=1 # produce output?
 TIME=0 # produce timings?
