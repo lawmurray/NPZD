@@ -23,8 +23,8 @@ $CXX = 'g++';
 $CUDACC = 'nvcc';
 $LINKER = 'nvcc';
 $CXXFLAGS = '-Wall -I"../bi/src" `nc-config --cflags`';
-$CUDACCFLAGS = '-arch=sm_13 -Xptxas="-v" -I"../bi/src" -I"$GSL_ROOT/include" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS';
-$LINKFLAGS = '-L"../bi/build" -lbi -latlas -lf77blas -llapack -lgfortran -lboost_program_options-gcc43-mt -lgslcblas -lgsl `nc-config --libs` -lnetcdf_c++';
+$CUDACCFLAGS = '-arch=sm_13 -Xptxas="-v" -I"../bi/src" -I"$GSL_ROOT/include" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS -I/usr/local/include/thrust';
+$LINKFLAGS = '-L"../bi/build" -lbi -latlas -lf77blas -llapack -lgfortran -lboost_program_options-mt -lgslcblas -lgsl `nc-config --libs` -lnetcdf_c++';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 
@@ -190,14 +190,12 @@ pdf: \$(BUILDDIR)/\$(NAME).pdf
 
 End
 
-# Artefact
-print "\$(BUILDDIR)/simulate: cpp ";
-print join(" \\\n    ", @targets);
-print "\n";
-#print "\tar -r \$(BUILDDIR)/simulate \$(LINKFLAGS) " . join(' ', @targets);
-print "\t\$(LINKER) -o $BUILDDIR/simulate \$(LINKFLAGS) " . join(' ', @targets);
+# Artefacts
+print "\$(BUILDDIR)/simulate: build/simulate.o build/gpusimulate.o build/model/NPZDModel.o\n";
+print "\t\$(LINKER) -o $BUILDDIR/simulate \$(LINKFLAGS) build/simulate.o build/gpusimulate.o build/model/NPZDModel.o\n\n";
 
-print "\n\n";
+print "\$(BUILDDIR)/filter: build/filter.o build/gpufilter.o build/model/NPZDModel.o\n";
+print "\t\$(LINKER) -o $BUILDDIR/filter \$(LINKFLAGS) build/filter.o build/gpufilter.o build/model/NPZDModel.o\n\n";
 
 # Targets
 print join("\n", @commands);
