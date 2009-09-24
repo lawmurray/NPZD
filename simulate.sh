@@ -2,9 +2,9 @@
 #PBS -l walltime=10:00,nodes=1:ppn=1,gres=gpu
 #PBS -j oe
 
-#module load cuda boost boost-bindings netcdf gsl atlas intel-cc
+module load cuda boost boost-bindings netcdf gsl atlas intel-cc
 
-ROOT=/home/mur387/workspace
+ROOT=/home/mur387
 LD_LIBRARY_PATH=$ROOT/bi/build:$LD_LIBRARY_PATH
 
 NS=0

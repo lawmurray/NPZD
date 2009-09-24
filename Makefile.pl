@@ -23,8 +23,8 @@ $CXX = 'g++';
 $CUDACC = 'nvcc';
 $LINKER = 'nvcc';
 $CXXFLAGS = '-Wall -I"../bi/src" `nc-config --cflags`';
-$CUDACCFLAGS = '-arch=sm_13 -Xptxas="-v" -I"../bi/src" -I"$GSL_ROOT/include" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS -I/usr/local/include/thrust';
-$LINKFLAGS = '-L"../bi/build" -lbi -latlas -lf77blas -llapack -lgfortran -lboost_program_options-mt -lgslcblas -lgsl `nc-config --libs` -lnetcdf_c++';
+$CUDACCFLAGS = '-arch=sm_13 -Xptxas="-v" -I"../bi/src" -I"$GSL_ROOT/include" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS -I/tools/thrust/1.1.1';
+$LINKFLAGS = '-L"../bi/build" -lbi -latlas -lf77blas -llapack -lgfortran -lboost_program_options-gcc43-mt -lgslcblas -lgsl `nc-config --libs` -lnetcdf_c++';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 
@@ -137,9 +137,9 @@ endif
 
 End
 
-# Default target
+# Default targets
 print <<End;
-default: \$(BUILDDIR)/simulate
+default: \$(BUILDDIR)/simulate \$(BUILDDIR)/filter
 
 End
 
