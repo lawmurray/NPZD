@@ -69,7 +69,7 @@ sub OutputModelSources {
   # header file
   $tokens{'Guard'} = 'BIM_' . uc($model) . '_' . uc($model) . 'MODEL_CUH';
   $tokens{'ClassName'} = $model . 'Model';
-  $tokens{'Includes'} = join("\n", map { &Include("$_.cuh") } @classes);
+  $tokens{'Includes'} = join("\n", map { &Include("$_.hpp") } @classes);
   $tokens{'NodeDeclarations'} = join("\n  ", map { ucfirst($_) . 'Node ' . $_ . ';' } @nodes);
   foreach $type ('S', 'D', 'C', 'R', 'F', 'O', 'P') {
     $tokens{"${type}NodeSpecName"} = "${model}${type}NodeSpec";
@@ -82,8 +82,8 @@ sub OutputModelSources {
   $source = &ProcessTemplate('ModelHeader', \%tokens);
   $source = &PrettyPrint($source);
 
-  open(SOURCE, ">$outdir/$tokens{'ClassName'}.cuh") ||
-      confess("Could not open $outdir/$tokens{'ClassName'}.cuh");
+  open(SOURCE, ">$outdir/$tokens{'ClassName'}.hpp") ||
+      confess("Could not open $outdir/$tokens{'ClassName'}.hpp");
   print SOURCE $source;
   print SOURCE "\n";
   close SOURCE;
@@ -104,8 +104,8 @@ sub OutputModelSources {
   $source = &ProcessTemplate('ModelSource', \%tokens);
   $source = &PrettyPrint($source);
 
-  open(SOURCE, ">$outdir/$tokens{'ClassName'}.cu") ||
-      confess("Could not open $outdir/$tokens{'ClassName'}.cu");
+  open(SOURCE, ">$outdir/$tokens{'ClassName'}.cpp") ||
+      confess("Could not open $outdir/$tokens{'ClassName'}.cpp");
   print SOURCE $source;
   print SOURCE "\n";
   close SOURCE;
@@ -140,8 +140,8 @@ sub OutputNodeSources {
     $source = &ProcessTemplate('NodeHeader', \%tokens);
     $source = &PrettyPrint($source);
 
-    open(SOURCE, ">$outdir/$tokens{'ClassName'}.cuh") ||
-        confess("Could not open $outdir/$tokens{'ClassName'}.cuh");
+    open(SOURCE, ">$outdir/$tokens{'ClassName'}.hpp") ||
+        confess("Could not open $outdir/$tokens{'ClassName'}.hpp");
     print SOURCE $source;
     print SOURCE "\n";
     close SOURCE;

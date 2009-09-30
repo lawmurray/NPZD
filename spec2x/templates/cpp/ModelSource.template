@@ -5,7 +5,7 @@
  * $Rev$
  * $Date$
  */
-#include "<% ClassName %>.cuh"
+#include "<% ClassName %>.hpp"
 
 <% ClassName %>::<% ClassName %>() {
   /* nodes */

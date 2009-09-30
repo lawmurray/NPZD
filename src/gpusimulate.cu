@@ -2,10 +2,10 @@
  * @file
  *
  * @author Lawrence Murray <lawrence.murray@csiro.au>
- * $Rev$
- * $Date$
+ * $Rev: 309 $
+ * $Date: 2009-09-24 12:54:13 +0800 (Thu, 24 Sep 2009) $
  */
-#include "model/NPZDModel.cuh"
+#include "model/NPZDModel.hpp"
 
 #include "bi/cuda/cuda.hpp"
 #include "bi/cuda/ode/IntegratorConstants.cuh"
@@ -14,7 +14,7 @@
 #include "bi/method/FUpdater.hpp"
 #include "bi/method/OUpdater.hpp"
 #include "bi/io/NetCDFReader.hpp"
-#include "bi/io/NetCDFWriter.cuh"
+#include "bi/io/NetCDFWriter.hpp"
 
 #include <string>
 #include "sys/time.h"

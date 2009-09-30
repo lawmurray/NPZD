@@ -11,6 +11,8 @@
 #include "bi/model/BayesNode.hpp"
 #include "bi/cuda/cuda.hpp"
 
+#include <cmath>
+
 /**
  * \f$<% LaTeXName %>\f$; <% Description %>
  */
