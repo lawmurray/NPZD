@@ -5,7 +5,7 @@
  * $Rev: 293 $
  * $Date: 2009-09-21 11:25:09 +0800 (Mon, 21 Sep 2009) $
  */
-#include "filter.hpp"
+#include "filter.cuh"
 
 #include "bi/cuda/ode/IntegratorConstants.cuh"
 #include "bi/method/ParticleFilter.cuh"
@@ -49,4 +49,7 @@ void filter(const real_t T, NPZDModel& m, State& s, Random& rng,
     }
   }
   std::cerr << std::endl;
+
+  cudaStreamSynchronize(stream);
+  CUDA_CHECKED_CALL(cudaStreamDestroy(stream));
 }
