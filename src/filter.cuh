@@ -17,4 +17,3 @@
 #include "bi/io/NetCDFWriter.hpp"
 
 #endif
-

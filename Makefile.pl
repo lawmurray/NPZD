@@ -29,16 +29,17 @@ $LINKFLAGS = '-L"../bi/build" -L"/usr/local/atlas/lib" -lbi -latlas -lf77blas -l
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 
 # Release flags
-#$CXXFLAGS .= ' -O3 -funroll-loops -fomit-frame-pointer';
-#$CUDACCFLAGS .= ' -O3 --compiler-options="-O3 -funroll-loops -fomit-frame-pointer"';
+$CXXFLAGS .= ' -O3 -funroll-loops -fomit-frame-pointer';
+$CUDACCFLAGS .= ' -O3 --compiler-options="-O3 -funroll-loops -fomit-frame-pointer"';
 
 # Debugging flags
-$CXXFLAGS .= ' -g';
-$CUDACCFLAGS .= ' -g';
+#$CXXFLAGS .= ' -g';
+#$CUDACCFLAGS .= ' -g -G';
 
 # Profiling flags
-#$CXXFLAGS .= ' -pg';
-#$CUDACCFLAGS .= ' --compiler-options="-pg"';
+#$CXXFLAGS .= ' -O3 -funroll-loops -pg';
+#$CUDACCFLAGS .= ' -O3 --compiler-options="-O3 -funroll-loops -pg"';
+#$LINKFLAGS .= ' -pg';
 
 # Disassembly flags
 #$CUDACCFLAGS .= ' -keep';
