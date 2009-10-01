@@ -5,26 +5,18 @@
  * $Rev:234 $
  * $Date:2009-08-17 11:10:31 +0800 (Mon, 17 Aug 2009) $
  */
-#include "model/NPZDModel.hpp"
-
-#include "bi/cuda/cuda.hpp"
-#include "bi/pdf/LogNormalPdf.hpp"
+#include "filter.hpp"
 
 #include "boost/program_options.hpp"
+#include "boost/typeof/typeof.hpp"
 
 #include <iostream>
 #include <string>
+#include <sys/time.h>
 
 namespace po = boost::program_options;
 
 using namespace bi;
-
-LogNormalPdf<vector,banded_matrix> buildPPrior(NPZDModel& m);
-
-extern void filter(const unsigned P, const unsigned K, const real_t T,
-    const unsigned NS, const int SEED, const std::string& INIT_FILE,
-    const std::string& FORCE_FILE, const std::string& OBS_FILE,
-    const std::string& OUTPUT_FILE, const bool OUTPUT, const bool TIME);
 
 int main(int argc, char* argv[]) {
   /* handle command line arguments */
@@ -63,45 +55,83 @@ int main(int argc, char* argv[]) {
     return 0;
   }
 
-  /* priors */
+  /* random number generator */
+  Random rng(SEED);
+
+  /* report missing variables in NetCDF, but don't die */
+  NcError ncErr(NcError::verbose_nonfatal);
+
+  /* model */
+  NPZDModel m;
+
+  /* state and intermediate results */
+  State s(m, P);
+  Result<real_t> r(m, P, K);
+
+  /* initialise from file... */
+  NetCDFReader<real_t,false,false,false,false,false,false,true> in(m, INIT_FILE, NS);
+  in.read(s);
+
+  /* ...and/or initialise from prior */
   //BOOST_AUTO(p0, buildPPrior(m));
-  //BOOST_AUTO(buildDPrior(m), d0);
-  //BOOST_AUTO(buildCPrior(m), c0);
+  BOOST_AUTO(d0, buildDPrior(m));
+  BOOST_AUTO(c0, buildCPrior(m));
 
   //p0.sample(s.pState, rng);
-  //d0.sample(s.dState, rng);
-  //c0.sample(s.cState, rng);
+  d0.sample(s.dState, rng);
+  c0.sample(s.cState, rng);
 
-  /* run filter */
-  filter(P, K, T, NS, SEED, INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE, OUTPUT, TIME);
+  /* forcings, observations */
+  FUpdater<> fUpdater(m, FORCE_FILE, s, NS);
+  OUpdater<> oUpdater(m, OBS_FILE, s, NS);
+
+  /* output */
+  NetCDFWriter<>* out;
+  if (OUTPUT) {
+    out = new NetCDFWriter<>(m, OUTPUT_FILE, P, oUpdater.numUniqueTimes() + 1);
+  } else {
+    out = NULL;
+  }
+
+  /* filter */
+  timeval start, end;
+  gettimeofday(&start, NULL);
+
+  filter(T, m, s, rng, &r, &fUpdater, &oUpdater, out);
+
+  gettimeofday(&end, NULL);
+  if (TIME) {
+    int elapsed = (end.tv_sec-start.tv_sec)*1e6 + (end.tv_usec-start.tv_usec);
+    std::cout << elapsed << std::endl;
+  }
 
   return 0;
 }
 
-LogNormalPdf<vector,banded_matrix> buildPPrior(NPZDModel& m) {
+LogNormalPdf<vector,diagonal_matrix> buildPPrior(NPZDModel& m) {
   const unsigned N = m.getPSize();
 
   vector mu(N);
-  banded_matrix sigma(N,N);
+  diagonal_matrix sigma(N,N);
   BOOST_AUTO(sigmad, diag(sigma));
 
-  mu[m.getPNode("KW")->getId()] = 0.03;
-  mu[m.getPNode("KC")->getId()] = 0.04;
-  mu[m.getPNode("deltaS")->getId()] = 5.0; // should be Gaussian!
-  mu[m.getPNode("deltaI")->getId()] = 0.5;
-  mu[m.getPNode("P_DF")->getId()] = 0.4;
-  mu[m.getPNode("Z_DF")->getId()] = 0.4;
-  mu[m.getPNode("alphaC")->getId()] = 1.2;
-  mu[m.getPNode("alphaCN")->getId()] = 0.4;
-  mu[m.getPNode("alphaCh")->getId()] = 0.03;
-  mu[m.getPNode("alphaA")->getId()] = 0.3;
-  mu[m.getPNode("alphaNC")->getId()] = 0.25;
-  mu[m.getPNode("alphaI")->getId()] = 4.7;
-  mu[m.getPNode("alphaCl")->getId()] = 0.2;
-  mu[m.getPNode("alphaE")->getId()] = 0.32;
-  mu[m.getPNode("alphaR")->getId()] = 0.1;
-  mu[m.getPNode("alphaQ")->getId()] = 0.01;
-  mu[m.getPNode("alphaL")->getId()] = 0.0;
+  mu[m.getPNode("KW")->getId()] = log(0.03);
+  mu[m.getPNode("KC")->getId()] = log(0.04);
+  mu[m.getPNode("deltaS")->getId()] = log(5.0); // should be Gaussian!
+  mu[m.getPNode("deltaI")->getId()] = log(0.5);
+  mu[m.getPNode("P_DF")->getId()] = log(0.4);
+  mu[m.getPNode("Z_DF")->getId()] = log(0.4);
+  mu[m.getPNode("alphaC")->getId()] = log(1.2);
+  mu[m.getPNode("alphaCN")->getId()] = log(0.4);
+  mu[m.getPNode("alphaCh")->getId()] = log(0.03);
+  mu[m.getPNode("alphaA")->getId()] = log(0.3);
+  mu[m.getPNode("alphaNC")->getId()] = log(0.25);
+  mu[m.getPNode("alphaI")->getId()] = log(4.7);
+  mu[m.getPNode("alphaCl")->getId()] = log(0.2);
+  mu[m.getPNode("alphaE")->getId()] = log(0.32);
+  mu[m.getPNode("alphaR")->getId()] = log(0.1);
+  mu[m.getPNode("alphaQ")->getId()] = log(0.01);
+  mu[m.getPNode("alphaL")->getId()] = log(0.0);
 
   sigmad[m.getPNode("KW")->getId()] = 0.2;
   sigmad[m.getPNode("KC")->getId()] = 0.3;
@@ -121,5 +151,61 @@ LogNormalPdf<vector,banded_matrix> buildPPrior(NPZDModel& m) {
   sigmad[m.getPNode("alphaQ")->getId()] = 1.0;
   sigmad[m.getPNode("alphaL")->getId()] = 0.0;
 
-  return LogNormalPdf<vector,banded_matrix>(mu, sigma);
+  return LogNormalPdf<vector,diagonal_matrix>(mu, sigma);
+}
+
+LogNormalPdf<vector,diagonal_matrix> buildDPrior(NPZDModel& m) {
+  const unsigned N = m.getDSize();
+
+  vector mu(N);
+  diagonal_matrix sigma(N,N);
+  BOOST_AUTO(sigmad, diag(sigma));
+
+  mu[m.getDNode("muC")->getId()] = log(1.2);
+  mu[m.getDNode("muCN")->getId()] = log(0.4);
+  mu[m.getDNode("muCh")->getId()] = log(0.033);
+  mu[m.getDNode("nuA")->getId()] = log(0.3);
+  mu[m.getDNode("piNC")->getId()] = log(0.25);
+  mu[m.getDNode("zetaI")->getId()] = log(1.0);
+  mu[m.getDNode("zetaCl")->getId()] = log(0.2);
+  mu[m.getDNode("zetaE")->getId()] = log(0.32);
+  mu[m.getDNode("nuR")->getId()] = log(0.1);
+  mu[m.getDNode("zetaQ")->getId()] = log(0.005);
+  mu[m.getDNode("zetaL")->getId()] = log(0.01);
+  mu[m.getDNode("Chla")->getId()] = log(1.020);
+
+  sigmad[m.getDNode("muC")->getId()] = 0.1;
+  sigmad[m.getDNode("muCN")->getId()] = 0.1;
+  sigmad[m.getDNode("muCh")->getId()] = 0.1;
+  sigmad[m.getDNode("nuA")->getId()] = 0.1;
+  sigmad[m.getDNode("piNC")->getId()] = 0.1;
+  sigmad[m.getDNode("zetaI")->getId()] = 0.1;
+  sigmad[m.getDNode("zetaCl")->getId()] = 0.1;
+  sigmad[m.getDNode("zetaE")->getId()] = 0.1;
+  sigmad[m.getDNode("nuR")->getId()] = 0.1;
+  sigmad[m.getDNode("zetaQ")->getId()] = 0.1;
+  sigmad[m.getDNode("zetaL")->getId()] = 0.1;
+  sigmad[m.getDNode("Chla")->getId()] = 0.1;
+
+  return LogNormalPdf<vector,diagonal_matrix>(mu, sigma);
+}
+
+LogNormalPdf<vector,diagonal_matrix> buildCPrior(NPZDModel& m) {
+  const unsigned N = m.getCSize();
+
+  vector mu(N);
+  diagonal_matrix sigma(N,N);
+  BOOST_AUTO(sigmad, diag(sigma));
+
+  mu[m.getCNode("P")->getId()] = log(13.49);
+  mu[m.getCNode("Z")->getId()] = log(0.4298);
+  mu[m.getCNode("D")->getId()] = log(0.3306);
+  mu[m.getCNode("N")->getId()] = log(0.6581);
+
+  sigmad[m.getCNode("P")->getId()] = 0.1;
+  sigmad[m.getCNode("Z")->getId()] = 0.1;
+  sigmad[m.getCNode("D")->getId()] = 0.1;
+  sigmad[m.getCNode("N")->getId()] = 0.1;
+
+  return LogNormalPdf<vector,diagonal_matrix>(mu, sigma);
 }

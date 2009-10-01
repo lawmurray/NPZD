@@ -57,7 +57,14 @@ while (@files) {
     opendir(DIR, $file);
     push(@files, map { "$file/$_" } grep { !/^\./ } readdir(DIR));
     closedir(DIR);
-  } elsif (-f $file && $file =~ /\.(?:cu|c|cpp)$/) {
+  } elsif (-f $file && $file =~ /\.(cu|c|cpp)$/) {
+    $ext = $1;
+
+    # target name
+    $target = $file;
+    $target =~ s/^$SRCDIR/$BUILDDIR/;
+    $target =~ s/\.\w+$/.$ext.o/;
+
     # determine compiler and appropriate flags
     if ($file =~ /\.cu$/) {
       $cc = $CUDACC;
@@ -72,15 +79,13 @@ while (@files) {
     }
     
     # determine dependencies of this source and construct Makefile target
-    $target = $file;
-    $target =~ s/^$SRCDIR/$BUILDDIR/;
-    $target =~ s/\.\w+$/.o/;
-
     $target =~ /(.*)\//;
     $dir = $1;
     $dirs{$dir} = 1;
 
-    $command = "$dir/" . `$cc $flags -M $file`;
+    $command = `$cc $flags -M $file`;
+    $command =~ s/.*?\:\w*//;
+    $command = "$target: " . $command;
     chomp $command;
     $command .= " \\\n    $dir\n";
     $command .= "\t$ccstr -o $target $flagstr -c $file\n";
@@ -191,11 +196,11 @@ pdf: \$(BUILDDIR)/\$(NAME).pdf
 End
 
 # Artefacts
-print "\$(BUILDDIR)/simulate: build/simulate.o build/gpusimulate.o build/model/NPZDModel.o\n";
-print "\t\$(LINKER) -o $BUILDDIR/simulate \$(LINKFLAGS) build/simulate.o build/gpusimulate.o build/model/NPZDModel.o\n\n";
+print "\$(BUILDDIR)/simulate: build/simulate.cpp.o build/simulate.cu.o build/model/NPZDModel.cpp.o\n";
+print "\t\$(LINKER) -o $BUILDDIR/simulate \$(LINKFLAGS) build/simulate.cpp.o build/simulate.cu.o build/model/NPZDModel.cpp.o\n\n";
 
-print "\$(BUILDDIR)/filter: build/filter.o build/gpufilter.o build/model/NPZDModel.o\n";
-print "\t\$(LINKER) -o $BUILDDIR/filter \$(LINKFLAGS) build/filter.o build/gpufilter.o build/model/NPZDModel.o\n\n";
+print "\$(BUILDDIR)/filter: build/filter.cpp.o build/filter.cu.o build/model/NPZDModel.cpp.o\n";
+print "\t\$(LINKER) -o $BUILDDIR/filter \$(LINKFLAGS) build/filter.cpp.o build/filter.cu.o build/model/NPZDModel.cpp.o\n\n";
 
 # Targets
 print join("\n", @commands);
