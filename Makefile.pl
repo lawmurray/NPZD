@@ -30,11 +30,11 @@ $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 
 # Release flags
 $RELEASE_CXXFLAGS = ' -O3 -funroll-loops -fomit-frame-pointer';
-$RELEASE_CUDACCFLAGS = ' -O3 --compiler-options="-O3 -funroll-loops -fomit-frame-pointer"';
+$RELEASE_CUDACCFLAGS = ' -O3 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer"';
 
 # Debugging flags
 $DEBUG_CXXFLAGS = ' -g';
-$DEBUG_CUDACCFLAGS = ' -g -G';
+$DEBUG_CUDACCFLAGS = ' -g';
 
 # Profiling flags
 $PROFILE_CXXFLAGS = ' -O3 -funroll-loops -pg';
