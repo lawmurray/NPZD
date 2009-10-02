@@ -35,13 +35,18 @@ void filter(const real_t T, NPZDModel& m, State& s, Random& rng,
   CUDA_CHECKED_CALL(cudaStreamCreate(&stream));
 
   /* filter */
+  real_t ess;
   pf.bind(stream);
   pf.upload(stream);
   while (pf.getTime() < T) {
-    std::cerr << pf.getTime() << ' ';
+    BI_LOG("t = " << pf.getTime());
     pf.advance(T, stream);
     pf.weight(stream);
-    pf.resample(stream);
+    ess = pf.ess(stream);
+    BI_LOG("ess = " << ess);
+    if (ess < 0.5*s.P) {
+      pf.resample(stream);
+    }
     if (out != NULL) {
       pf.download(stream);
       cudaStreamSynchronize(stream);
