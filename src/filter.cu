@@ -12,12 +12,12 @@
 
 using namespace bi;
 
-void filter(const real_t T, NPZDModel& m, State& s, Random& rng,
-    Result<>* r, FUpdater<>* fUpdater, OUpdater<>* oUpdater,
+void filter(const real_t T, const real_t h, NPZDModel& m, State& s,
+    Random& rng, Result<>* r, FUpdater<>* fUpdater, OUpdater<>* oUpdater,
     NetCDFWriter<>* out) {
   /* parameters for ODE integrator on GPU */
   ode_init();
-  ode_set_h0(CUDA_REAL(0.2));
+  ode_set_h0(CUDA_REAL(h));
   ode_set_rtoler(CUDA_REAL(1.0e-3));
   ode_set_atoler(CUDA_REAL(1.0e-3));
   ode_set_nsteps(CUDA_REAL(1000));
@@ -35,11 +35,12 @@ void filter(const real_t T, NPZDModel& m, State& s, Random& rng,
   CUDA_CHECKED_CALL(cudaStreamCreate(&stream));
 
   /* filter */
-  real_t ess;
+  //real_t ess;
   pf.bind(stream);
   pf.upload(stream);
   while (pf.getTime() < T) {
-    BI_LOG("t = " << pf.getTime());
+    //BI_LOG("t = " << pf.getTime());
+    std::cerr << "t = " << pf.getTime() << std::endl;
     pf.advance(T, stream);
     pf.weight(stream);
     //ess = pf.ess(stream);

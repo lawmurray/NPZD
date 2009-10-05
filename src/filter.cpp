@@ -20,7 +20,7 @@ using namespace bi;
 
 int main(int argc, char* argv[]) {
   /* handle command line arguments */
-  real_t T;
+  real_t T, h;
   unsigned P, K, NS;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE;
@@ -32,7 +32,9 @@ int main(int argc, char* argv[]) {
     (",P", po::value(&P), "no. particles")
     (",K", po::value(&K), "size of intermediate result buffer")
     (",T", po::value(&T), "simulation time for each trajectory")
-    ("seed", po::value(&SEED)->default_value(time(NULL)),
+    (",h", po::value(&h)->default_value(0.2),
+        "suggested first step size for each trajectory")
+    ("seed", po::value(&SEED)->default_value(0),
         "pseudorandom number seed")
     ("init-file", po::value(&INIT_FILE),
         "input file containing initial values")
@@ -97,7 +99,7 @@ int main(int argc, char* argv[]) {
   timeval start, end;
   gettimeofday(&start, NULL);
 
-  filter(T, m, s, rng, &r, &fUpdater, &oUpdater, out);
+  filter(T, h, m, s, rng, &r, &fUpdater, &oUpdater, out);
 
   gettimeofday(&end, NULL);
   if (TIME) {

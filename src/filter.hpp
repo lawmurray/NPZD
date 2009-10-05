@@ -36,6 +36,7 @@ bi::LogNormalPdf<bi::vector,bi::diagonal_matrix> buildCPrior(NPZDModel& m);
  * Run particle filter.
  *
  * @param T Time to filter.
+ * @param h Initial step size.
  * @param m Model.
  * @param s State.
  * @param rng Random number generator.
@@ -44,8 +45,8 @@ bi::LogNormalPdf<bi::vector,bi::diagonal_matrix> buildCPrior(NPZDModel& m);
  * @param oUpdater Updater for o-nodes.
  * @param out Output, NULL for no output.
  */
-void filter(const real_t T, NPZDModel& m, bi::State& s, bi::Random& rng,
-    bi::Result<>* r, bi::FUpdater<>* fUpdater, bi::OUpdater<>* oUpdater,
-    bi::NetCDFWriter<>* out = NULL);
+void filter(const real_t T, const real_t h, NPZDModel& m, bi::State& s,
+    bi::Random& rng, bi::Result<>* r, bi::FUpdater<>* fUpdater,
+    bi::OUpdater<>* oUpdater, bi::NetCDFWriter<>* out = NULL);
 
 #endif
