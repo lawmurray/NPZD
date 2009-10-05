@@ -42,11 +42,11 @@ void filter(const real_t T, NPZDModel& m, State& s, Random& rng,
     BI_LOG("t = " << pf.getTime());
     pf.advance(T, stream);
     pf.weight(stream);
-    ess = pf.ess(stream);
-    BI_LOG("ess = " << ess);
-    if (ess < 0.5*s.P) {
-      pf.resample(stream);
-    }
+    //ess = pf.ess(stream);
+    //BI_LOG("ess = " << ess);
+    //if (ess < 0.5*s.P) {
+      pf.resample(0.5*s.P, stream);
+    //}
     if (out != NULL) {
       pf.download(stream);
       cudaStreamSynchronize(stream);
