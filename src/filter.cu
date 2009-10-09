@@ -20,7 +20,7 @@ void filter(const real_t T, const real_t h, NPZDModel& m, State& s,
   ode_set_h0(CUDA_REAL(h));
   ode_set_rtoler(CUDA_REAL(1.0e-3));
   ode_set_atoler(CUDA_REAL(1.0e-3));
-  ode_set_nsteps(CUDA_REAL(1000));
+  ode_set_nsteps(CUDA_REAL(200));
 
   /* particle filter */
   ParticleFilter<NPZDModel,real_t> pf(m, s, rng, r, fUpdater, oUpdater);
@@ -35,18 +35,19 @@ void filter(const real_t T, const real_t h, NPZDModel& m, State& s,
   CUDA_CHECKED_CALL(cudaStreamCreate(&stream));
 
   /* filter */
-  //real_t ess;
+  real_t ess;
   pf.bind(stream);
   pf.upload(stream);
   while (pf.getTime() < T) {
-    //BI_LOG("t = " << pf.getTime());
-    std::cerr << "t = " << pf.getTime() << std::endl;
+    BI_LOG("t = " << pf.getTime());
     pf.advance(T, stream);
     pf.weight(stream);
     //ess = pf.ess(stream);
+    //std::cout << ess << std::endl;
     //BI_LOG("ess = " << ess);
     //if (ess < 0.5*s.P) {
-      pf.resample(0.5*s.P, stream);
+    pf.resample(0.5*s.P, stream);
+    //pf.resample(stream);
     //}
     if (out != NULL) {
       pf.download(stream);
@@ -54,7 +55,7 @@ void filter(const real_t T, const real_t h, NPZDModel& m, State& s,
       out->write(s, pf.getTime());
     }
   }
-  std::cerr << std::endl;
+  //std::cerr << std::endl;
 
   cudaStreamSynchronize(stream);
   CUDA_CHECKED_CALL(cudaStreamDestroy(stream));

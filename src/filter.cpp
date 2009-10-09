@@ -21,7 +21,7 @@ using namespace bi;
 int main(int argc, char* argv[]) {
   /* handle command line arguments */
   real_t T, h;
-  unsigned P, K, NS;
+  unsigned P, K, INIT_NS, FORCE_NS, OBS_NS;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE;
   bool OUTPUT, TIME;
@@ -44,8 +44,12 @@ int main(int argc, char* argv[]) {
         "input file containing observations")
     ("output-file", po::value(&OUTPUT_FILE),
         "output file to contain results")
-    ("ns", po::value(&NS)->default_value(0),
-        "index along ns dimension in input file to use")
+    ("init-ns", po::value(&INIT_NS)->default_value(0),
+        "index along ns dimension of initial value file to use")
+    ("force-ns", po::value(&FORCE_NS)->default_value(0),
+        "index along ns dimension of forcings file to use")
+    ("obs-ns", po::value(&OBS_NS)->default_value(0),
+        "index along ns dimension of observations file to use")
     ("output", po::value(&OUTPUT)->default_value(false), "enable output")
     ("time", po::value(&TIME)->default_value(false), "enable timing output");
   po::variables_map vm;
@@ -61,17 +65,21 @@ int main(int argc, char* argv[]) {
   Random rng(SEED);
 
   /* report missing variables in NetCDF, but don't die */
+  #ifndef NDEBUG
   NcError ncErr(NcError::verbose_nonfatal);
+  #else
+  NcError ncErr(NcError::silent_nonfatal);
+  #endif
 
   /* model */
   NPZDModel m;
 
   /* state and intermediate results */
   State s(m, P);
-  Result<real_t> r(m, P, K);
+  //Result<real_t> r(m, P, K);
 
   /* initialise from file... */
-  NetCDFReader<real_t,false,false,false,false,false,false,true> in(m, INIT_FILE, NS);
+  NetCDFReader<real_t,true,true,true,false,true,true,true> in(m, INIT_FILE, INIT_NS);
   in.read(s);
 
   /* ...and/or initialise from prior */
@@ -84,8 +92,8 @@ int main(int argc, char* argv[]) {
   c0.sample(s.cState, rng);
 
   /* forcings, observations */
-  FUpdater<> fUpdater(m, FORCE_FILE, s, NS);
-  OUpdater<> oUpdater(m, OBS_FILE, s, NS);
+  FUpdater<> fUpdater(m, FORCE_FILE, s, FORCE_NS);
+  OUpdater<> oUpdater(m, OBS_FILE, s, OBS_NS);
 
   /* output */
   NetCDFWriter<>* out;
@@ -99,7 +107,7 @@ int main(int argc, char* argv[]) {
   timeval start, end;
   gettimeofday(&start, NULL);
 
-  filter(T, h, m, s, rng, &r, &fUpdater, &oUpdater, out);
+  filter(T, h, m, s, rng, NULL, &fUpdater, &oUpdater, out);
 
   gettimeofday(&end, NULL);
   if (TIME) {
@@ -168,13 +176,13 @@ LogNormalPdf<vector,diagonal_matrix> buildDPrior(NPZDModel& m) {
   mu[m.getDNode("muCh")->getId()] = log(0.033);
   mu[m.getDNode("nuA")->getId()] = log(0.3);
   mu[m.getDNode("piNC")->getId()] = log(0.25);
-  mu[m.getDNode("zetaI")->getId()] = log(1.0);
+  mu[m.getDNode("zetaI")->getId()] = log(4.7);
   mu[m.getDNode("zetaCl")->getId()] = log(0.2);
   mu[m.getDNode("zetaE")->getId()] = log(0.32);
   mu[m.getDNode("nuR")->getId()] = log(0.1);
-  mu[m.getDNode("zetaQ")->getId()] = log(0.005);
-  mu[m.getDNode("zetaL")->getId()] = log(0.01);
-  mu[m.getDNode("Chla")->getId()] = log(1.020);
+  mu[m.getDNode("zetaQ")->getId()] = log(0.01);
+  mu[m.getDNode("zetaL")->getId()] = log(0.0);
+  mu[m.getDNode("Chla")->getId()] = log(0.28);
 
   sigmad[m.getDNode("muC")->getId()] = 0.1;
   sigmad[m.getDNode("muCN")->getId()] = 0.1;
@@ -199,10 +207,10 @@ LogNormalPdf<vector,diagonal_matrix> buildCPrior(NPZDModel& m) {
   diagonal_matrix sigma(N,N);
   BOOST_AUTO(sigmad, diag(sigma));
 
-  mu[m.getCNode("P")->getId()] = log(13.49);
-  mu[m.getCNode("Z")->getId()] = log(0.4298);
-  mu[m.getCNode("D")->getId()] = log(0.3306);
-  mu[m.getCNode("N")->getId()] = log(0.6581);
+  mu[m.getCNode("P")->getId()] = log(1.64);
+  mu[m.getCNode("Z")->getId()] = log(1.91);
+  mu[m.getCNode("D")->getId()] = log(1.3);
+  mu[m.getCNode("N")->getId()] = log(9.3);
 
   sigmad[m.getCNode("P")->getId()] = 0.1;
   sigmad[m.getCNode("Z")->getId()] = 0.1;
