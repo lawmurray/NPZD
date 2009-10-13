@@ -10,55 +10,55 @@
 
 <% Includes %>
 
-#include "bi/model/NodeSpec.hpp"
+#include "bi/typelist/TypeList.hpp"
 #include "bi/model/BayesNet.hpp"
 
 /**
- * Nodespec of s-nodes.
+ * Type list for s-nodes.
  */
-<% SNodeSpec %>
+<% STypeList %>
 
 /**
- * Nodespec of d-nodes.
+ * Type list for d-nodes.
  */
-<% DNodeSpec %>
+<% DTypeList %>
 
 /**
- * Nodespec of c-nodes.
+ * Type list for c-nodes.
  */
-<% CNodeSpec %>
+<% CTypeList %>
 
 /**
- * Nodespec of r-nodes.
+ * Type list for r-nodes.
  */
-<% RNodeSpec %>
+<% RTypeList %>
 
 /**
- * Nodespec of f-nodes.
+ * Type list for f-nodes.
  */
-<% FNodeSpec %>
+<% FTypeList %>
 
 /**
- * Nodespec of o-nodes.
+ * Type list for o-nodes.
  */
-<% ONodeSpec %>
+<% OTypeList %>
 
 /**
- * Nodespec of p-nodes.
+ * Type list for p-nodes.
  */
-<% PNodeSpec %>
+<% PTypeList %>
 
 /**
  * <% Description %>
  */
 class <% ClassName %> : public bi::BayesNet<
-    GET_NODESPEC(<% SNodeSpecName %>),
-    GET_NODESPEC(<% DNodeSpecName %>),
-    GET_NODESPEC(<% CNodeSpecName %>),
-    GET_NODESPEC(<% RNodeSpecName %>),
-    GET_NODESPEC(<% FNodeSpecName %>),
-    GET_NODESPEC(<% ONodeSpecName %>),
-    GET_NODESPEC(<% PNodeSpecName %>)> {
+    GET_TYPELIST(<% STypeListName %>),
+    GET_TYPELIST(<% DTypeListName %>),
+    GET_TYPELIST(<% CTypeListName %>),
+    GET_TYPELIST(<% RTypeListName %>),
+    GET_TYPELIST(<% FTypeListName %>),
+    GET_TYPELIST(<% OTypeListName %>),
+    GET_TYPELIST(<% PTypeListName %>)> {
 public:
   /**
    * Constructor.

@@ -72,11 +72,11 @@ sub OutputModelSources {
   $tokens{'Includes'} = join("\n", map { &Include("$_.hpp") } @classes);
   $tokens{'NodeDeclarations'} = join("\n  ", map { ucfirst($_) . 'Node ' . $_ . ';' } @nodes);
   foreach $type ('S', 'D', 'C', 'R', 'F', 'O', 'P') {
-    $tokens{"${type}NodeSpecName"} = "${model}${type}NodeSpec";
-    $tokens{"${type}NodeSpec"} = join("\n",
-      "BEGIN_NODESPEC($tokens{\"${type}NodeSpecName\"})",
+    $tokens{"${type}TypeListName"} = "${model}${type}TypeList";
+    $tokens{"${type}TypeList"} = join("\n",
+      "BEGIN_TYPELIST($tokens{\"${type}TypeListName\"})",
       join("\n", map { "SINGLE_TYPE(1, $_)" } @{$classes{lc($type)}}),
-      'END_NODESPEC()');
+      'END_TYPELIST()');
   }
 
   $source = &ProcessTemplate('ModelHeader', \%tokens);
