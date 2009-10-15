@@ -33,27 +33,27 @@
 ,"P_DF","P Diversity Factor","P_DF",,,"Parameter",,"IS_P_NODE",0.4,0.2,"LogNormalPdf"
 ,"Z_DF","Z Diversity Factor","Z_DF",,,"Parameter",,"IS_P_NODE",0.4,0.2,"LogNormalPdf"
 ,"alphaC",,"\alpha^C",,,"Parameter",,"IS_P_NODE",1.2,0.63,"LogNormalPdf"
-,"sigmaC",,"\sigma^C",,,"Parameter",,"IS_P_NODE",,,
+,"sigmaC",,"\sigma^C","x: 0.63","x: 0.63","Constant",,,,,
 ,"alphaCN",,"\alpha^{CN}",,,"Parameter",,"IS_P_NODE",0.4,0.2,"LogNormalPdf"
-,"sigmaCN",,"\sigma^{CN}",,,"Parameter",,"IS_P_NODE",,,
+,"sigmaCN",,"\sigma^{CN}","x: 0.2","x: 0.2","Constant",,,,,
 ,"alphaCh",,"\alpha^{Ch}",,,"Parameter",,"IS_P_NODE",0.03,0.37,"LogNormalPdf"
-,"sigmaCh",,"\sigma^{Ch}",,,"Parameter",,"IS_P_NODE",,,
+,"sigmaCh",,"\sigma^{Ch}","x: 0.37","x: 0.37","Constant",,,,,
 ,"alphaA",,"\alpha^A",,,"Parameter",,"IS_P_NODE",0.3,1,"LogNormalPdf"
-,"sigmaA",,"\sigma^A",,,"Parameter",,"IS_P_NODE",,,
+,"sigmaA",,"\sigma^A","x: 1.0","x: 1.0","Constant",,,,,
 ,"alphaNC",,"\alpha^{NC}",,,"Parameter",,"IS_P_NODE",0.25,0.3,"LogNormalPdf"
-,"sigmaNC",,"\sigma^{NC}",,,"Parameter",,"IS_P_NODE",,,
+,"sigmaNC",,"\sigma^{NC}","x: 0.3","x: 0.3","Constant",,,,,
 ,"alphaI",,"\alpha^I",,,"Parameter",,"IS_P_NODE",4.7,0.7,"LogNormalPdf"
-,"sigmaI",,"\sigma^I",,,"Parameter",,"IS_P_NODE",,,
+,"sigmaI",,"\sigma^I","x: 0.7","x: 0.7","Constant",,,,,
 ,"alphaCl",,"\alpha^{Cl}",,,"Parameter",,"IS_P_NODE",0.2,1.3,"LogNormalPdf"
-,"sigmaCl",,"\sigma^{Cl}",,,"Parameter",,"IS_P_NODE",,,
+,"sigmaCl",,"\sigma^{Cl}","x: 1.31","x: 1.31","Constant",,,,,
 ,"alphaE",,"\alpha^E",,,"Parameter",,"IS_P_NODE",0.32,0.25,"LogNormalPdf"
-,"sigmaE",,"\sigma^E",,,"Parameter",,"IS_P_NODE",,,
+,"sigmaE",,"\sigma^E","x: 0.25","x: 0.25","Constant",,,,,
 ,"alphaR",,"\alpha^R",,,"Parameter",,"IS_P_NODE",0.1,0.5,"LogNormalPdf"
-,"sigmaR",,"\sigma^R",,,"Parameter",,"IS_P_NODE",,,
+,"sigmaR",,"\sigma^R","x: 0.5","x: 0.5","Constant",,,,,
 ,"alphaQ",,"\alpha^Q",,,"Parameter",,"IS_P_NODE",0.01,1,"LogNormalPdf"
-,"sigmaQ",,"\sigma^Q",,,"Parameter",,"IS_P_NODE",,,
+,"sigmaQ",,"\sigma^Q","x: 0.5","x: 0.5","Constant",,,,,
 ,"alphaL",,"\alpha^L",,,"Parameter",,"IS_P_NODE",0,0,"LogNormalPdf"
-,"sigmaL",,"\sigma^L",,,"Parameter",,"IS_P_NODE",,,
+,"sigmaL",,"\sigma^L","x: 0.5","x: 0.5","Constant",,,,,
 ,"uC",,"u^C",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN_VARIATE",,,
 ,"uCN",,"u^{CN}",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN_VARIATE",,,
 ,"uCh",,"u^{Ch}",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN_VARIATE",,,

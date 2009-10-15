@@ -235,8 +235,11 @@ End
 print "\$(BUILDDIR)/simulate: build/simulate.cpp.o build/simulate.cu.o build/model/NPZDModel.cpp.o\n";
 print "\t\$(LINKER) -o $BUILDDIR/simulate \$(LINKFLAGS) build/simulate.cpp.o build/simulate.cu.o build/model/NPZDModel.cpp.o\n\n";
 
-print "\$(BUILDDIR)/filter: build/filter.cpp.o build/filter.cu.o build/model/NPZDModel.cpp.o\n";
-print "\t\$(LINKER) -o $BUILDDIR/filter \$(LINKFLAGS) build/filter.cpp.o build/filter.cu.o build/model/NPZDModel.cpp.o\n\n";
+print "\$(BUILDDIR)/filter: build/filter.cpp.o build/filter.cu.o build/prior.cpp.o build/model/NPZDModel.cpp.o\n";
+print "\t\$(LINKER) -o $BUILDDIR/filter \$(LINKFLAGS) build/filter.cpp.o build/filter.cu.o build/prior.cpp.o build/model/NPZDModel.cpp.o\n\n";
+
+print "\$(BUILDDIR)/mcmc: build/mcmc.cpp.o build/mcmc.cu.o build/prior.cpp.o build/model/NPZDModel.cpp.o\n";
+print "\t\$(LINKER) -o $BUILDDIR/mcmc \$(LINKFLAGS) build/mcmc.cpp.o build/mcmc.cu.o build/prior.cpp.o build/model/NPZDModel.cpp.o\n\n";
 
 # Targets
 print join("\n", @commands);
