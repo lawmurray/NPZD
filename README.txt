@@ -26,7 +26,7 @@ and the following Perl modules:
 The following is optional for building source code documentation:
 
   * Doxygen <www.doxygen.org>,
-  
+
 and the following for the model visualisation:
 
   * pdflatex,
@@ -74,11 +74,14 @@ automatic in Eclipse, as it is registered as a project dependency.
 The following macros may be defined during compilation to adjust behaviour,
 set these with, e.g. 'make USE_DOUBLE=1'
 
-* NDEBUG will disable assertion checking.
-* USE_DOUBLE will use double precision arithmetic on the GPU, otherwise single
-  precision is used.
-* USE_FAST_MATH will use intrinsic CUDA functions throughout, as long as
-  USE_DOUBLE is not defined (intrinsics are available only for single
+* NDEBUG=1 will disable assertion checking.
+* USE_DOUBLE=1 will use double precision arithmetic on the GPU, otherwise
+  single precision is used.
+* USE_FAST_MATH=1 will use intrinsic CUDA functions throughout, as long as
+  USE_DOUBLE=1 is not defined (intrinsics are available only for single
   precision). No intrinsics are used by default.
-* USE_DOPRI5 will use the DOPRI5 integrator for ordinary differential
+* USE_DOPRI5=1 will use the DOPRI5 integrator for ordinary differential
   equations, otherwise RK4(3)5[2R+]C is used.
+* DEBUG=1 builds in debug mode.
+* RELEASE=1 builds in release mode.
+* PROFILE=1 builds in profile mode.
