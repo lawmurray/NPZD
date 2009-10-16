@@ -180,7 +180,7 @@ End
 
 # Default targets
 print <<End;
-default: \$(BUILDDIR)/simulate \$(BUILDDIR)/filter
+default: \$(BUILDDIR)/simulate \$(BUILDDIR)/filter \$(BUILDDIR)/mcmc
 
 End
 
