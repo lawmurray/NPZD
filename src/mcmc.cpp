@@ -24,7 +24,7 @@ using namespace bi;
 
 int main(int argc, char* argv[]) {
   /* handle command line arguments */
-  real_t T, H, SCALE, MIN_ESS;
+  real_t T, H, SCALE, MIN_ESS, TEMPERATURE;
   unsigned P, INIT_NS, FORCE_NS, OBS_NS, B, I, L;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE;
@@ -40,6 +40,8 @@ int main(int argc, char* argv[]) {
     (",B", po::value(&B)->default_value(0), "no. burn steps")
     (",I", po::value(&I)->default_value(1), "interval for sample drawings")
     (",L", po::value(&L), "no. samples to draw")
+    ("temperature", po::value(&TEMPERATURE)->default_value(1.0),
+        "temperature")
     ("scale", po::value(&SCALE), "scale of proposal relative to prior")
     ("min-ess", po::value(&MIN_ESS),
         "minimum (proportion of P) ESS at each step to avoid resampling")
@@ -141,22 +143,21 @@ int main(int argc, char* argv[]) {
       /* first proposal, accept */
       theta1 = theta2;
       l1 = l2;
-      std::cerr << "accept" << std::endl;
+      std::cerr << "***accept***";
     } else {
       /* accept or reject */
       alpha = rng.uniform(0.0,1.0);
-      lr = exp(l2 - l1);
-      num = p0(theta2)*q(theta2,theta1);
-      den = p0(theta1)*q(theta1,theta2);
+      lr = pow(exp(l2 - l1), pow(TEMPERATURE,-1));
+      num = pow(p0(theta2), pow(TEMPERATURE,-1))*q(theta2,theta1);
+      den = pow(p0(theta1), pow(TEMPERATURE,-1))*q(theta1,theta2);
       if (alpha < lr*num/den) {
         /* accept */
         theta1 = theta2;
         l1 = l2;
-        std::cerr << "accept" << std::endl;
-      } else {
-        std::cerr << "reject" << std::endl;
+        std::cerr << "***accept***";
       }
     }
+    std::cerr << std::endl;
 
     /* output */
     if (out != NULL && i >= B && (i - B) % I == 0) {
