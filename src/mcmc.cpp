@@ -24,7 +24,7 @@ using namespace bi;
 
 int main(int argc, char* argv[]) {
   /* handle command line arguments */
-  real_t T, H, SCALE;
+  real_t T, H, SCALE, MIN_ESS;
   unsigned P, INIT_NS, FORCE_NS, OBS_NS, B, I, L;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE;
@@ -41,6 +41,8 @@ int main(int argc, char* argv[]) {
     (",I", po::value(&I)->default_value(1), "interval for sample drawings")
     (",L", po::value(&L), "no. samples to draw")
     ("scale", po::value(&SCALE), "scale of proposal relative to prior")
+    ("min-ess", po::value(&MIN_ESS),
+        "minimum (proportion of P) ESS at each step to avoid resampling")
     ("seed", po::value(&SEED)->default_value(0),
         "pseudorandom number seed")
     ("init-file", po::value(&INIT_FILE),
@@ -70,7 +72,8 @@ int main(int argc, char* argv[]) {
 
   /* NetCDF error reporting */
   #ifndef NDEBUG
-  NcError ncErr(NcError::verbose_nonfatal);
+  //NcError ncErr(NcError::verbose_nonfatal);
+  NcError ncErr(NcError::silent_nonfatal);
   #else
   NcError ncErr(NcError::silent_nonfatal);
   #endif
@@ -86,6 +89,7 @@ int main(int argc, char* argv[]) {
 
   /* priors */
   BOOST_AUTO(p0, buildPPrior(m));
+  BOOST_AUTO(s0, buildSPrior(m));
   BOOST_AUTO(d0, buildDPrior(m));
   BOOST_AUTO(c0, buildCPrior(m));
 
@@ -99,8 +103,7 @@ int main(int argc, char* argv[]) {
   /* output */
   NetCDFWriter<real_t,false,false,false,false,false,false,true>* out;
   if (OUTPUT) {
-    out = new NetCDFWriter<real_t,false,false,false,false,false,false,true>(m,
-        OUTPUT_FILE, 1, 1, L);
+    out = new NetCDFWriter<real_t,false,false,false,false,false,false,true>(m, OUTPUT_FILE, P, 1, L);
   } else {
     out = NULL;
   }
@@ -119,12 +122,18 @@ int main(int argc, char* argv[]) {
 
   p0.sample(rng, s.pState);
   for (i = 0; i < B+I*L; ++i) {
-    /* sample initial conditions */
+    //rng.seed(SEED); // ensures prior samples same between runs
+    s0.sample(rng, s.sState);
     d0.sample(rng, s.dState);
     c0.sample(rng, s.cState);
 
+    if (out != NULL && i >= B && (i - B) % I == 0) {
+      out->reset();
+      out->write(s, 0.0, (i - B) / I);
+    }
+
     /* calculate likelihood */
-    l2 = filter(T, 0.5*P);
+    l2 = filter(T, MIN_ESS*P);
 
     std::cerr << i << ": log(L) = " << l2 << ' ';
 
@@ -157,7 +166,6 @@ int main(int argc, char* argv[]) {
 
     /* next parameter configuration */
     q.sample(rng, theta1, theta2);
-    //p0.sample(rng, theta2);
   }
 
   /* final timing results */

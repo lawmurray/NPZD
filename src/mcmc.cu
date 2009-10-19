@@ -27,7 +27,9 @@ void init(const real_t h, NPZDModel& m, State& s, Random& rng,
 
 real_t filter(const real_t T, const real_t minEss) {
   pf->reset();
-  return pf->filter(T, minEss);
+  real_t l = pf->filter(T, minEss);
+
+  return l;
 }
 
 void destroy() {

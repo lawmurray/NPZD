@@ -49,6 +49,11 @@ bi::ConditionalFactoredPdf<GET_TYPELIST(proposalP)> buildPProposal(
     NPZDModel& m, const double scale);
 
 /**
+ * Build prior for s-nodes.
+ */
+bi::GaussianPdf<bi::zero_vector,bi::diagonal_matrix> buildSPrior(NPZDModel& m);
+
+/**
  * Build prior for d-nodes.
  */
 bi::LogNormalPdf<bi::vector,bi::diagonal_matrix> buildDPrior(NPZDModel& m);

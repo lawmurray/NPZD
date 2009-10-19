@@ -58,6 +58,16 @@ ConditionalFactoredPdf<GET_TYPELIST(proposalP)> buildPProposal(NPZDModel& m,
   return p;
 }
 
+GaussianPdf<zero_vector,diagonal_matrix> buildSPrior(NPZDModel& m) {
+  const unsigned N = m.getSSize();
+
+  zero_vector mu(N);
+  diagonal_matrix sigma(N,N);
+  sigma.clear();
+
+  return GaussianPdf<zero_vector,diagonal_matrix>(mu, sigma);
+}
+
 LogNormalPdf<vector,diagonal_matrix> buildDPrior(NPZDModel& m) {
   const unsigned N = m.getDSize();
 
