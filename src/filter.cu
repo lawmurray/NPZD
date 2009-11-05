@@ -10,6 +10,8 @@
 #include "bi/cuda/ode/IntegratorConstants.cuh"
 #include "bi/method/ParticleFilter.cuh"
 
+#include <fstream>
+
 using namespace bi;
 
 void filter(const real_t T, const real_t h, NPZDModel& m, State& s,
@@ -34,6 +36,9 @@ void filter(const real_t T, const real_t h, NPZDModel& m, State& s,
   cudaStream_t stream;
   CUDA_CHECKED_CALL(cudaStreamCreate(&stream));
 
+  /* ESS output */
+  std::ofstream essOut("ess.txt");
+
   /* filter */
   real_t ess;
   pf.bind(stream);
@@ -42,8 +47,8 @@ void filter(const real_t T, const real_t h, NPZDModel& m, State& s,
     BI_LOG("t = " << pf.getTime());
     pf.advance(T, stream);
     pf.weight(stream);
-    //ess = pf.ess(stream);
-    //std::cout << ess << std::endl;
+    ess = pf.ess(stream);
+    essOut << ess << std::endl;
     //BI_LOG("ess = " << ess);
     //if (ess < 0.5*s.P) {
     pf.resample(0.5*s.P, stream);
@@ -58,5 +63,6 @@ void filter(const real_t T, const real_t h, NPZDModel& m, State& s,
   //std::cerr << std::endl;
 
   cudaStreamSynchronize(stream);
+  pf.unbind();
   CUDA_CHECKED_CALL(cudaStreamDestroy(stream));
 }

@@ -22,9 +22,9 @@ $CPPDIR = "$SRCDIR/model";
 $CXX = 'g++';
 $CUDACC = 'nvcc';
 $LINKER = 'nvcc';
-$CXXFLAGS = '-Wall -I"../bi/src" `nc-config --cflags`';
-$CUDACCFLAGS = '-arch=sm_13 -Xptxas="-v" -I"../bi/src" -I"$GSL_ROOT/include" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS -I/tools/thrust/1.1.1 -I/usr/local/include/thrust';
-$LINKFLAGS = '-L"../bi/build" -L"/usr/local/atlas/lib" -lbi -latlas -lf77blas -llapack -lgfortran -lboost_program_options-gcc43-mt -lgslcblas -lgsl `nc-config --libs` -lnetcdf_c++';
+$CXXFLAGS = '-Wall -fopenmp -I"../bi/src" `nc-config --cflags`';
+$CUDACCFLAGS = '-arch=sm_13 -Xptxas="-v" -Xcompiler="-Wall -fopenmp" -I"../bi/src" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS -I/tools/thrust/1.1.1 -I/usr/local/include/thrust';
+$LINKFLAGS = '-L"../bi/build" -L"/usr/local/atlas/lib" -lbi -latlas -lf77blas -llapack -lgfortran -lboost_program_options-mt -lgslcblas -lgsl -lgomp -lpthread `nc-config --libs` -lnetcdf_c++';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 
@@ -43,6 +43,9 @@ $PROFILE_LINKFLAGS = ' -pg';
 
 # Disassembly flags
 $DISASSEMBLE_CUDACCFLAGS = ' -keep';
+
+# Ocelot flags
+$OCELOT_LINKFLAGS = '-L/usr/local/ocelot/lib -lOcelotIr -lOcelotParser -lOcelotExecutive -lOcelotTrace -lOcelotAnalysis -lhydrazine';
 
 # Bootstrap
 `mkdir -p $BUILDDIR $CPPDIR`;
@@ -133,6 +136,10 @@ DISASSEMBLE_CXXFLAGS=$DISASSEMBLE_CXXFLAGS
 DISASSEMBLE_CUDACCFLAGS=$DISASSEMBLE_CUDACCFLAGS
 DISASSEMBLE_LINKFLAGS=$DISASSEMBLE_LINKFLAGS
 
+OCELOT_CXXFLAGS=$OCELOT_CXXFLAGS
+OCELOT_CUDACCFLAGS=$OCELOT_CUDACCFLAGS
+OCELOT_LINKFLAGS=$OCELOT_LINKFLAGS
+
 ifdef USE_DOUBLE
 CUDACCFLAGS += -DUSE_DOUBLE
 CXXFLAGS += -DUSE_DOUBLE
@@ -145,6 +152,11 @@ endif
 ifdef USE_DOPRI5
 CUDACCFLAGS += -DUSE_DOPRI5
 CXXFLAGS += -DUSE_DOPRI5
+endif
+
+ifdef USE_TEXTURE
+CUDACCFLAGS += -DUSE_TEXTURE
+CXXFLAGS += -DUSE_TEXTURE
 endif
 
 ifdef NDEBUG
@@ -174,6 +186,12 @@ ifdef DISASSEMBLE
 CUDACCFLAGS += \$(DISASSEMBLE_CUDACCFLAGS)
 CXXFLAGS += \$(DISASSEMBLE_CXXFLAGS)
 LINKFLAGS += \$(DISASSEMBLE_LINKFLAGS)
+endif
+
+ifdef OCELOT
+CUDACCFLAGS += \$(OCELOT_CUDACCFLAGS)
+CXXFLAGS += \$(OCELOT_CXXFLAGS)
+LINKFLAGS += \$(OCELOT_LINKFLAGS)
 endif
 
 End

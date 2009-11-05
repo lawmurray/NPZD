@@ -12,6 +12,7 @@
 
 #include "bi/cuda/cuda.hpp"
 #include "bi/random/Random.hpp"
+#include "bi/method/RUpdater.hpp"
 #include "bi/method/FUpdater.hpp"
 #include "bi/method/OUpdater.hpp"
 #include "bi/io/NetCDFWriter.hpp"

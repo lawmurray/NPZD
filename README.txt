@@ -82,6 +82,8 @@ set these with, e.g. 'make USE_DOUBLE=1'
   precision). No intrinsics are used by default.
 * USE_DOPRI5=1 will use the DOPRI5 integrator for ordinary differential
   equations, otherwise RK4(3)5[2R+]C is used.
+* USE_TEXTURE=1 will use textures for some variables during ODE integration,
+  which may or may not improve performance.
 * DEBUG=1 builds in debug mode.
 * RELEASE=1 builds in release mode.
 * PROFILE=1 builds in profile mode.

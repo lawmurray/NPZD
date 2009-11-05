@@ -12,12 +12,12 @@ K=8 # size of intermediate result buffer
 T=365.0 # time to simulate
 H=0.3 # initial step size
 SEED=0 # pseudorandom number seed
-OUTPUT=0 # produce output?
+OUTPUT=1 # produce output?
 TIME=0 # produce timings?
 
 INIT_FILE=$ROOT/npzd/data/GPUinput_OSP_0D.nc # initial values file
 FORCE_FILE=$ROOT/npzd/data/GPUinput_OSP_0D.nc # forcings file
-OBS_FILE=$ROOT/npzd/data/GPUobs_EQ.nc # observations file
+OBS_FILE=$ROOT/npzd/data/GPUobs_NEQ.nc # observations file
 OUTPUT_FILE=$ROOT/npzd/results/pf.nc # output file
 
 INIT_NS=0

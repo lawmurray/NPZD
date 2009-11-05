@@ -2,8 +2,8 @@
  * @file
  *
  * @author Lawrence Murray <lawrence.murray@csiro.au>
- * $Rev: 309 $
- * $Date: 2009-09-24 12:54:13 +0800 (Thu, 24 Sep 2009) $
+ * $Rev$
+ * $Date$
  */
 #include "model/NPZDModel.hpp"
 
@@ -49,7 +49,10 @@ void simulate(const unsigned P, const unsigned K, const real_t T,
   Result<real_t> r(m, P, K);
 
   /* output */
-  NetCDFWriter<real_t> out(m, OUTPUT_FILE, P, 366);
+  NetCDFWriter<real_t>* out;
+  if (OUTPUT) {
+    out = new NetCDFWriter<real_t>(m, OUTPUT_FILE, P, 366);
+  }
 
   /* simulator */
   FUpdater<real_t> fUpdater(m, FORCE_FILE, s, NS);
@@ -63,11 +66,11 @@ void simulate(const unsigned P, const unsigned K, const real_t T,
   while (sim.getTime() < T) {
     k = sim.simulate(T);
     if (OUTPUT) {
-      out.write(r, k);
+      out->write(r, k);
     }
   }
   if (OUTPUT) {
-    out.write(s, sim.getTime());
+    out->write(s, sim.getTime());
   }
   gettimeofday(&end, NULL);
 

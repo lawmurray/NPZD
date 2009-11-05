@@ -166,7 +166,7 @@ int main(int argc, char* argv[]) {
     }
 
     /* next parameter configuration */
-    q.sample(rng, theta1, theta2);
+    //q.sample(rng, theta1, theta2);
   }
 
   /* final timing results */
@@ -178,6 +178,7 @@ int main(int argc, char* argv[]) {
 
   /* clean up */
   destroy();
+  delete out;
 
   return 0;
 }

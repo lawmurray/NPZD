@@ -11,6 +11,8 @@
 #include "boost/program_options.hpp"
 #include "boost/typeof/typeof.hpp"
 
+#include "omp.h"
+
 #include <iostream>
 #include <string>
 #include <sys/time.h>
