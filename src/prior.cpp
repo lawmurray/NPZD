@@ -86,7 +86,7 @@ LogNormalPdf<vector,diagonal_matrix> buildDPrior(NPZDModel& m) {
   mu[m.getDNode("nuR")->getId()] = log(0.1);
   mu[m.getDNode("zetaQ")->getId()] = log(0.01);
   mu[m.getDNode("zetaL")->getId()] = log(0.0);
-  mu[m.getDNode("Chla")->getId()] = log(0.28);
+  mu[m.getDNode("Chla")->getId()] = log(0.39);
 
   sigmad[m.getDNode("muC")->getId()] = 0.1;
   sigmad[m.getDNode("muCN")->getId()] = 0.1;
@@ -111,10 +111,10 @@ LogNormalPdf<vector,diagonal_matrix> buildCPrior(NPZDModel& m) {
   diagonal_matrix sigma(N,N);
   BOOST_AUTO(sigmad, diag(sigma));
 
-  mu[m.getCNode("P")->getId()] = log(1.64);
-  mu[m.getCNode("Z")->getId()] = log(1.91);
-  mu[m.getCNode("D")->getId()] = log(1.3);
-  mu[m.getCNode("N")->getId()] = log(9.3);
+  mu[m.getCNode("P")->getId()] = log(2.8);
+  mu[m.getCNode("Z")->getId()] = log(3.26);
+  mu[m.getCNode("D")->getId()] = log(2.57);
+  mu[m.getCNode("N")->getId()] = log(196.96);
 
   sigmad[m.getCNode("P")->getId()] = 0.1;
   sigmad[m.getCNode("Z")->getId()] = 0.1;
