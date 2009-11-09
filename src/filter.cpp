@@ -79,7 +79,6 @@ int main(int argc, char* argv[]) {
 
   /* state and intermediate results */
   State s(m, P);
-  //Result<real_t> r(m, P, K);
 
   /* initialise from file... */
   NetCDFReader<real_t,true,true,true,false,true,true,true> in(m, INIT_FILE, INIT_NS);
@@ -87,8 +86,8 @@ int main(int argc, char* argv[]) {
 
   /* ...and/or initialise from prior */
   //BOOST_AUTO(p0, buildPPrior(m));
-  BOOST_AUTO(d0, buildDPrior(m));
-  BOOST_AUTO(c0, buildCPrior(m));
+  BOOST_AUTO(d0, m.getDPrior());
+  BOOST_AUTO(c0, m.getCPrior());
 
   //p0.sample(rng, s.pState);
   d0.sample(rng, s.dState);
@@ -110,7 +109,7 @@ int main(int argc, char* argv[]) {
   timeval start, end;
   gettimeofday(&start, NULL);
 
-  filter(T, h, m, s, rng, NULL, &fUpdater, &oUpdater, out);
+  filter(T, h, m, s, rng, &fUpdater, &oUpdater, out);
 
   gettimeofday(&end, NULL);
   if (TIME) {

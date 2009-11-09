@@ -15,7 +15,7 @@
 using namespace bi;
 
 void filter(const real_t T, const real_t h, NPZDModel& m, State& s,
-    Random& rng, Result<>* r, FUpdater<>* fUpdater, OUpdater<>* oUpdater,
+    Random& rng, FUpdater<>* fUpdater, OUpdater<>* oUpdater,
     NetCDFWriter<>* out) {
   /* parameters for ODE integrator on GPU */
   ode_init();
@@ -25,7 +25,7 @@ void filter(const real_t T, const real_t h, NPZDModel& m, State& s,
   ode_set_nsteps(CUDA_REAL(200));
 
   /* particle filter */
-  ParticleFilter<NPZDModel,real_t> pf(m, s, rng, r, fUpdater, oUpdater);
+  ParticleFilter<NPZDModel,real_t> pf(m, s, rng, fUpdater, oUpdater);
 
   /* output initial state */
   if (out != NULL) {

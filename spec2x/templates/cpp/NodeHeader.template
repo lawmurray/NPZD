@@ -10,6 +10,8 @@
 
 #include "bi/model/BayesNode.hpp"
 #include "bi/cuda/cuda.hpp"
+#include "bi/pdf/GaussianPdf.hpp"
+#include "bi/pdf/LogNormalPdf.hpp"
 
 #include <cmath>
 
@@ -23,16 +25,14 @@ public:
    */
   <% ClassName %>();
 
+<% PriorDeclaration %>
+
 <% FunctionDeclarations %>
 };
 
 <% Includes %>
 
 <% TraitDeclarations %>
-
-inline <% ClassName %>::<% ClassName %>() {
-  setName("<% Name %>");
-}
 
 <% FunctionDefinitions %>
 

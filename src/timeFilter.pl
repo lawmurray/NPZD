@@ -20,6 +20,7 @@ $OBS_NS = 1;
 my %exps;
 $exps{'single'} = 'RELEASE=1 NDEBUG=1';
 $exps{'double'} = 'RELEASE=1 USE_DOUBLE=1 NDEBUG=1';
+$exps{'texture'} = 'RELEASE=1 USE_TEXTURE=1 NDEBUG=1';
 
 foreach $exp (keys %exps) {
   # compile library

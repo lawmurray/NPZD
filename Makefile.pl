@@ -21,10 +21,10 @@ $CPPDIR = "$SRCDIR/model";
 # Compile flags
 $CXX = 'g++';
 $CUDACC = 'nvcc';
-$LINKER = 'nvcc';
-$CXXFLAGS = '-Wall -fopenmp -I"../bi/src" `nc-config --cflags`';
-$CUDACCFLAGS = '-arch=sm_13 -Xptxas="-v" -Xcompiler="-Wall -fopenmp" -I"../bi/src" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS -I/tools/thrust/1.1.1 -I/usr/local/include/thrust';
-$LINKFLAGS = '-L"../bi/build" -L"/usr/local/atlas/lib" -lbi -latlas -lf77blas -llapack -lgfortran -lboost_program_options-gcc43-mt -lgslcblas -lgsl -lgomp -lpthread `nc-config --libs` -lnetcdf_c++';
+$LINKER = 'g++';
+$CXXFLAGS = '-Wall -fopenmp -I"../bi/src" `nc-config --cflags` `mpic++ -showme:compile`';
+$CUDACCFLAGS = '-arch=sm_13 -Xptxas="-v" -Xcompiler="-Wall -fopenmp `mpic++ -showme:compile`" -I"../bi/src" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS -I/tools/thrust/1.1.1 -I/usr/local/include/thrust';
+$LINKFLAGS = '-L"../bi/build" -L"/usr/local/atlas/lib" -lbi -latlas -lf77blas -llapack -lgfortran -lgslcblas -lgsl `nc-config --libs` -lnetcdf_c++ -lcuda -lcudart -lgomp -lpthread -lboost_program_options-gcc43-mt -lboost_mpi-mt `mpic++ -showme:link`';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 
@@ -90,12 +90,14 @@ while (@files) {
     $command = `$cc $flags -M $file`;
     $command =~ s/.*?\:\w*//;
     $command = "$target: " . $command;
-    chomp $command;
-    $command .= " \\\n    $dir\n";
+    $command .= "\tmkdir -p $dir\n";
     $command .= "\t$ccstr -o $target $flagstr -c $file\n";
     $command .= "\trm -f *.linkinfo\n";
     push(@targets, $target);
     push(@commands, $command);
+    if ($dir eq "$BUILDDIR/model") {
+      push(@models, $target);
+    }
   }
 }
 
@@ -250,14 +252,16 @@ pdf: \$(BUILDDIR)/\$(NAME).pdf
 End
 
 # Artefacts
-print "\$(BUILDDIR)/simulate: build/simulate.cpp.o build/simulate.cu.o build/model/NPZDModel.cpp.o\n";
-print "\t\$(LINKER) -o $BUILDDIR/simulate \$(LINKFLAGS) build/simulate.cpp.o build/simulate.cu.o build/model/NPZDModel.cpp.o\n\n";
+my $models = join(' ', @models);
 
-print "\$(BUILDDIR)/filter: build/filter.cpp.o build/filter.cu.o build/prior.cpp.o build/model/NPZDModel.cpp.o\n";
-print "\t\$(LINKER) -o $BUILDDIR/filter \$(LINKFLAGS) build/filter.cpp.o build/filter.cu.o build/prior.cpp.o build/model/NPZDModel.cpp.o\n\n";
+print "\$(BUILDDIR)/simulate: \$(BUILDDIR)/simulate.cpp.o \$(BUILDDIR)/simulate.cu.o $models\n";
+print "\t\$(LINKER) -o $BUILDDIR/simulate \$(LINKFLAGS) \$(BUILDDIR)/simulate.cpp.o \$(BUILDDIR)/simulate.cu.o $models\n\n";
 
-print "\$(BUILDDIR)/mcmc: build/mcmc.cpp.o build/mcmc.cu.o build/prior.cpp.o build/model/NPZDModel.cpp.o\n";
-print "\t\$(LINKER) -o $BUILDDIR/mcmc \$(LINKFLAGS) build/mcmc.cpp.o build/mcmc.cu.o build/prior.cpp.o build/model/NPZDModel.cpp.o\n\n";
+print "\$(BUILDDIR)/filter: \$(BUILDDIR)/filter.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o $models\n";
+print "\t\$(LINKER) -o $BUILDDIR/filter \$(LINKFLAGS) \$(BUILDDIR)/filter.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o $models\n\n";
+
+print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/mcmc.cpp.o \$(BUILDDIR)/mcmc.cu.o \$(BUILDDIR)/prior.cpp.o \$(BUILDDIR)/device.cu.o $models\n";
+print "\t\$(LINKER) -o $BUILDDIR/mcmc \$(LINKFLAGS) \$(BUILDDIR)/mcmc.cpp.o \$(BUILDDIR)/mcmc.cu.o \$(BUILDDIR)/prior.cpp.o \$(BUILDDIR)/device.cu.o $models\n\n";
 
 # Targets
 print join("\n", @commands);

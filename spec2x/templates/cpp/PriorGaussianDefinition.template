@@ -1,0 +1,4 @@
+bi::GaussianPdf<> <% ClassName %>::getPrior() {
+  return bi::GaussianPdf<>(mu0(), sigma0());
+}
+

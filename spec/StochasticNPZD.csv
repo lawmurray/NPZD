@@ -1,111 +1,111 @@
-OriginalName,Name,Description,LaTeXName,LaTeXFormulae,Formulae,Category,Dependencies,Traits,PriorMean,PriorCV,PriorDist
-Kd,KW,"Light attenuation, water",K^W,,,Parameter,,IS_P_NODE,0.03,0.2,LogNormalPdf
-Kchla,KC,"Light attenuation, Chl-a",K^C,,,Parameter,,IS_P_NODE,0.04,0.3,LogNormalPdf
-Sink,deltaS,Detrital sinking rate,\delta^S,,,Parameter,,IS_P_NODE,5,1,GaussianPdf
-FDG,deltaI,Detrital growth inefficiency,\delta^I,,,Parameter,,IS_P_NODE,0.5,0.1,LogNormalPdf
-Q10,tau10,,\tau^{10},x: 2,x: 2,Constant,,,,,
-Tref,tauR,Reference temperature (10 deg. C),\tau^R,x: 15,x: 15,Constant,,,,,
-Achl,piC,Chlorophyl absorption,\pi^C,x: 0.04,x: 0.04,Constant,,,,,
-PE,piPE,Photosynthetic efficiency,\pi^{PE},x: 1200,x: 1200,Constant,,,,,
-maxNC,piR,Maximum N:C (Redfield),\pi^R,x: 0.18,x: 0.18,Constant,,,,,
-RP,RP,P timescale,R_P,x: 10,x: 10,Constant,,,,,
-RZ,RZ,Z timescale,R_Z,x: 30,x: 30,Constant,,,,,
-Grazeexp,piK,Functional response exponent,\pi^K,x: 2,x: 2,Constant,,,,,
-PBC,betaP,Phytoplankton boundary condition,\beta^P,,,Forcing,,IS_F_NODE,,,
-ZBC,betaZ,Zooplankton boundary condition,\beta^Z,,,Forcing,,IS_F_NODE,,,
-NBC,betaN,Nitrogen boundary condition,\beta^N,,,Forcing,,IS_F_NODE,,,
-DBC,betaD,Detritus boundary condition,\beta^D,,,Forcing,,IS_F_NODE
-T,T,Water temperature,T,,,Forcing,,IS_F_NODE
-Eir,E,Surface irradience,E,,,Forcing,,IS_F_NODE
-Depth,L,Mixed layer depth,L,,,Forcing,,IS_F_NODE
-Exch,betaE,Exchange rate,\beta^E,,,Forcing,,IS_F_NODE
-mumaxC,muC,Maximum growth rate for C,\mu^C,f: \mu^C(1-R_P) + R_P (\alpha^C + \theta^C u^C),"f: muC*(CUDA_REAL(1.0) - CUDA_POW(RP,  - CUDA_REAL(1.0))) + CUDA_POW(RP,  - CUDA_REAL(1.0))*(gammaC*CUDA_EXP(thetaC*uC))",Discrete-time variable,"muC, RP, gammaC, thetaC, uC","IS_D_NODE, IS_GENERIC_FORWARD"
-mumCN,muCN,Maximum growth rate for C:N,\mu^{CN},f: \mu^{CN}(1-R_P) + R_P (\alpha^{CN} + \theta^{CN} u^{CN}),"f: muCN*(CUDA_REAL(1.0) - CUDA_POW(RP,  - CUDA_REAL(1.0))) + CUDA_POW(RP,  - CUDA_REAL(1.0))*(gammaCN*CUDA_EXP(thetaCN*uCN))",Discrete-time variable,"muCN, RP, gammaCN, thetaCN, uCN","IS_D_NODE, IS_GENERIC_FORWARD"
-ChlCmax,muCh,Maximum growth rate for Chl-a:C,\mu^{Ch},f: \mu^{Ch}(1-R_P) + R_P  (\alpha^{Ch} + \theta^{Ch} u^{Ch}),"f: muCh*(CUDA_REAL(1.0) - CUDA_POW(RP,  - CUDA_REAL(1.0))) + CUDA_POW(RP,  - CUDA_REAL(1.0))*(gammaCh*CUDA_EXP(thetaCh*uCh))",Discrete-time variable,"muCh, RP, gammaCh, thetaCh, uCh","IS_D_NODE, IS_GENERIC_FORWARD"
-maxNaff,nuA,Maximum N affinity,\nu^A,f: \nu^A(1-R_P) + R_P  (\alpha^A + \theta^A u^A),"f: nuA*(CUDA_REAL(1.0) - CUDA_POW(RP,  - CUDA_REAL(1.0))) + CUDA_POW(RP,  - CUDA_REAL(1.0))*(gammaA*CUDA_EXP(thetaA*uA))",Discrete-time variable,"nuA, RP, gammaA, thetaA, uA","IS_D_NODE, IS_GENERIC_FORWARD"
-minmaxNC,piNC,Min/Max N:C,\pi^{NC},f: \pi^{NC}(1-R_P) + R_P  (\alpha^{NC} + \theta^{NC} u^{NC}),"f: piNC*(CUDA_REAL(1.0) - CUDA_POW(RP,  - CUDA_REAL(1.0))) + CUDA_POW(RP,  - CUDA_REAL(1.0))*(gammaNC*CUDA_EXP(thetaNC*uNC))",Discrete-time variable,"piNC, RP, gammaNC, thetaNC, uNC","IS_D_NODE, IS_GENERIC_FORWARD"
-Ingmax,zetaI,Max Z ingestion rate,\zeta^I,f: \zeta^I(1-R_Z) + R_Z  (\alpha^I + \theta^I u^I),"f: zetaI*(CUDA_REAL(1.0) - CUDA_POW(RZ,  - CUDA_REAL(1.0))) + CUDA_POW(RZ,  - CUDA_REAL(1.0))*(gammaI*CUDA_EXP(thetaI*uI))",Discrete-time variable,"zetaI, RZ, gammaI, thetaI, uI","IS_D_NODE, IS_GENERIC_FORWARD"
-Clear,zetaCl,Zooplankton clearance rate,\zeta^{Cl},f: \zeta^{Cl}(1-R_Z) + R_Z  (\alpha^{Cl} + \theta^{Cl} u^{Cl}),"f: zetaCl*(CUDA_REAL(1.0) - CUDA_POW(RZ,  - CUDA_REAL(1.0))) + CUDA_POW(RZ,  - CUDA_REAL(1.0))*(gammaCl*CUDA_EXP(thetaCl*uCl))",Discrete-time variable,"zetaCl, RZ, gammaCl, thetaCl, uCl","IS_D_NODE, IS_GENERIC_FORWARD"
-Zeff,zetaE,Zooplankton grazing efficiency,\zeta^E,f: \zeta^E(1-R_Z) + R_Z  (\alpha^E + \theta^E u^E),"f: zetaE*(CUDA_REAL(1.0) - CUDA_POW(RZ,  - CUDA_REAL(1.0))) + CUDA_POW(RZ,  - CUDA_REAL(1.0))*(gammaE*CUDA_EXP(thetaE*uE))",Discrete-time variable,"zetaE, RZ, gammaE, thetaE, uE","IS_D_NODE, IS_GENERIC_FORWARD"
-Remin,nuR,Remineralisation rate,\nu^R,f: \nu^R(1-R_Z) + R_Z  (\alpha^R + \theta^R u^R),"f: nuR*(CUDA_REAL(1.0) - CUDA_POW(RZ,  - CUDA_REAL(1.0))) + CUDA_POW(RZ,  - CUDA_REAL(1.0))*(gammaR*CUDA_EXP(thetaR*uR))",Discrete-time variable,"nuR, RZ, gammaR, thetaR, uR","IS_D_NODE, IS_GENERIC_FORWARD"
-Mq,zetaQ,Z quadratic mortality term,\zeta^Q,f: \zeta^Q(1-R_Z) + R_Z  (\alpha^Q + \theta^Q u^Q),"f: zetaQ*(CUDA_REAL(1.0) - CUDA_POW(RZ,  - CUDA_REAL(1.0))) + CUDA_POW(RZ,  - CUDA_REAL(1.0))*(gammaQ*CUDA_EXP(thetaQ*uQ))",Discrete-time variable,"zetaQ, RZ, gammaQ, thetaQ, uQ","IS_D_NODE, IS_GENERIC_FORWARD"
-Ml,zetaL,Z linear mortality term,\zeta^L,f: \zeta^L(1-R_Z) + R_Z  (\alpha^L + \theta^L u^L),"f: zetaL*(CUDA_REAL(1.0) - CUDA_POW(RZ,  - CUDA_REAL(1.0))) + CUDA_POW(RZ,  - CUDA_REAL(1.0))*(gammaL*CUDA_EXP(thetaL*uL))",Discrete-time variable,"zetaL, RZ, gammaL, thetaL, uL","IS_D_NODE, IS_GENERIC_FORWARD"
-,P_DF,P Diversity Factor,P_DF,,,Parameter,,IS_P_NODE,0.4,0.2,LogNormalPdf
-,Z_DF,Z Diversity Factor,Z_DF,,,Parameter,,IS_P_NODE,0.4,0.2,LogNormalPdf
-,alphaC,,\alpha^C,,,Parameter,,IS_P_NODE,1.2,0.63,LogNormalPdf
-,sigmaC,,\sigma^C,x: 0.63,x: 0.63,Constant,,,,,
-,alphaCN,,\alpha^{CN},,,Parameter,,IS_P_NODE,0.4,0.2,LogNormalPdf
-,sigmaCN,,\sigma^{CN},x: 0.2,x: 0.2,Constant,,,,,
-,alphaCh,,\alpha^{Ch},,,Parameter,,IS_P_NODE,0.03,0.37,LogNormalPdf
-,sigmaCh,,\sigma^{Ch},x: 0.37,x: 0.37,Constant,,,,,
-,alphaA,,\alpha^A,,,Parameter,,IS_P_NODE,0.3,1,LogNormalPdf
-,sigmaA,,\sigma^A,x: 1.0,x: 1.0,Constant,,,,,
-,alphaNC,,\alpha^{NC},,,Parameter,,IS_P_NODE,0.25,0.3,LogNormalPdf
-,sigmaNC,,\sigma^{NC},x: 0.3,x: 0.3,Constant,,,,,
-,alphaI,,\alpha^I,,,Parameter,,IS_P_NODE,4.7,0.7,LogNormalPdf
-,sigmaI,,\sigma^I,x: 0.7,x: 0.7,Constant,,,,,
-,alphaCl,,\alpha^{Cl},,,Parameter,,IS_P_NODE,0.2,1.3,LogNormalPdf
-,sigmaCl,,\sigma^{Cl},x: 1.31,x: 1.31,Constant,,,,,
-,alphaE,,\alpha^E,,,Parameter,,IS_P_NODE,0.32,0.25,LogNormalPdf
-,sigmaE,,\sigma^E,x: 0.25,x: 0.25,Constant,,,,,
-,alphaR,,\alpha^R,,,Parameter,,IS_P_NODE,0.1,0.5,LogNormalPdf
-,sigmaR,,\sigma^R,x: 0.5,x: 0.5,Constant,,,,,
-,alphaQ,,\alpha^Q,,,Parameter,,IS_P_NODE,0.01,1,LogNormalPdf
-,sigmaQ,,\sigma^Q,x: 0.5,x: 0.5,Constant,,,,,
-,alphaL,,\alpha^L,,,Parameter,,IS_P_NODE,0,0,LogNormalPdf
-,sigmaL,,\sigma^L,x: 0.5,x: 0.5,Constant,,,,,
-,uC,,u^C,,,Random variate,,"IS_R_NODE, IS_GAUSSIAN_VARIATE",,,
-,uCN,,u^{CN},,,Random variate,,"IS_R_NODE, IS_GAUSSIAN_VARIATE",,,
-,uCh,,u^{Ch},,,Random variate,,"IS_R_NODE, IS_GAUSSIAN_VARIATE",,,
-,uA,,u^A,,,Random variate,,"IS_R_NODE, IS_GAUSSIAN_VARIATE",,,
-,uNC,,u^{NC},,,Random variate,,"IS_R_NODE, IS_GAUSSIAN_VARIATE",,,
-,uI,,u^I,,,Random variate,,"IS_R_NODE, IS_GAUSSIAN_VARIATE",,,
-,uCl,,u^{Cl},,,Random variate,,"IS_R_NODE, IS_GAUSSIAN_VARIATE",,,
-,uE,,u^E,,,Random variate,,"IS_R_NODE, IS_GAUSSIAN_VARIATE",,,
-,uR,,u^R,,,Random variate,,"IS_R_NODE, IS_GAUSSIAN_VARIATE"
-,uQ,,u^Q,,,Random variate,,"IS_R_NODE, IS_GAUSSIAN_VARIATE"
-,uL,,u^L,,,Random variate,,"IS_R_NODE, IS_GAUSSIAN_VARIATE"
-,thetaC,,\theta^C,,s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RP - CUDA_REAL(1.0))*P_DF*P_DF*(CUDA_EXP(sigmaC*sigmaC) - CUDA_REAL(1.0)))),Static variable,"RP,P_DF,sigmaC","IS_S_NODE, IS_GENERIC_STATIC"
-,thetaCN,,\theta^CN,,s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RP - CUDA_REAL(1.0))*P_DF*P_DF*(CUDA_EXP(sigmaCN*sigmaCN) - CUDA_REAL(1.0)))),Static variable,"RP,P_DF,sigmaCN","IS_S_NODE, IS_GENERIC_STATIC"
-,thetaCh,,\theta^Ch,,s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RP - CUDA_REAL(1.0))*P_DF*P_DF*(CUDA_EXP(sigmaCh*sigmaCh) - CUDA_REAL(1.0)))),Static variable,"RP,P_DF,sigmaCh","IS_S_NODE, IS_GENERIC_STATIC"
-,thetaA,,\theta^A,,s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RP - CUDA_REAL(1.0))*P_DF*P_DF*(CUDA_EXP(sigmaA*sigmaA) - CUDA_REAL(1.0)))),Static variable,"RP,P_DF,sigmaA","IS_S_NODE, IS_GENERIC_STATIC"
-,thetaNC,,\theta^NC,,s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RP - CUDA_REAL(1.0))*P_DF*P_DF*(CUDA_EXP(sigmaNC*sigmaNC) - CUDA_REAL(1.0)))),Static variable,"RP,P_DF,sigmaNC","IS_S_NODE, IS_GENERIC_STATIC"
-,thetaI,,\theta^I,,s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RZ - CUDA_REAL(1.0))*Z_DF*Z_DF*(CUDA_EXP(sigmaI*sigmaI) - CUDA_REAL(1.0)))),Static variable,"RZ,Z_DF,sigmaI","IS_S_NODE, IS_GENERIC_STATIC"
-,thetaCl,,\theta^Cl,,s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RZ - CUDA_REAL(1.0))*Z_DF*Z_DF*(CUDA_EXP(sigmaCl*sigmaCl) - CUDA_REAL(1.0)))),Static variable,"RZ, Z_DF, sigmaCl","IS_S_NODE, IS_GENERIC_STATIC"
-,thetaE,,\theta^E,,s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RZ - CUDA_REAL(1.0))*Z_DF*Z_DF*(CUDA_EXP(sigmaE*sigmaE) - CUDA_REAL(1.0)))),Static variable,"RZ,Z_DF,sigmaE","IS_S_NODE, IS_GENERIC_STATIC"
-,thetaR,,\theta^R,,s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RZ - CUDA_REAL(1.0))*Z_DF*Z_DF*(CUDA_EXP(sigmaR*sigmaR) - CUDA_REAL(1.0)))),Static variable,"RZ,Z_DF,sigmaR","IS_S_NODE, IS_GENERIC_STATIC"
-,thetaQ,,\theta^Q,,s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RZ - CUDA_REAL(1.0))*Z_DF*Z_DF*(CUDA_EXP(sigmaQ*sigmaQ) - CUDA_REAL(1.0)))),Static variable,"RZ,Z_DF,sigmaQ","IS_S_NODE, IS_GENERIC_STATIC"
-,thetaL,,\theta^L,,s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RZ - CUDA_REAL(1.0))*Z_DF*Z_DF*(CUDA_EXP(sigmaL*sigmaL) - CUDA_REAL(1.0)))),Static variable,"RZ,Z_DF,sigmaL","IS_S_NODE, IS_GENERIC_STATIC"
-,gammaC,,\gamma^C,,"s: CUDA_EXP(CUDA_LOG(alphaC)+CUDA_POW(sigmaC, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaC, CUDA_REAL(2.0)) / CUDA_REAL(2.0))",Static variable,"alphaC,sigmaC,thetaC","IS_S_NODE, IS_GENERIC_STATIC"
-,gammaCN,,\gamma^CN,,"s: CUDA_EXP(CUDA_LOG(alphaCN)+CUDA_POW(sigmaCN, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaCN, CUDA_REAL(2.0)) / CUDA_REAL(2.0))",Static variable,"alphaCN,sigmaCN,thetaCN","IS_S_NODE, IS_GENERIC_STATIC"
-,gammaCh,,\gamma^Ch,,"s: CUDA_EXP(CUDA_LOG(alphaCh)+CUDA_POW(sigmaCh, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaCh, CUDA_REAL(2.0)) / CUDA_REAL(2.0))",Static variable,"alphaCh,sigmaCh,thetaCh","IS_S_NODE, IS_GENERIC_STATIC"
-,gammaA,,\gamma^A,,"s: CUDA_EXP(CUDA_LOG(alphaA)+CUDA_POW(sigmaA, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaA, CUDA_REAL(2.0)) / CUDA_REAL(2.0))",Static variable,"alphaA,sigmaA,thetaA","IS_S_NODE, IS_GENERIC_STATIC"
-,gammaNC,,\gamma^NC,,"s: CUDA_EXP(CUDA_LOG(alphaNC)+CUDA_POW(sigmaNC, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaNC, CUDA_REAL(2.0)) / CUDA_REAL(2.0))",Static variable,"alphaNC,sigmaNC,thetaNC","IS_S_NODE, IS_GENERIC_STATIC"
-,gammaI,,\gamma^I,,"s: CUDA_EXP(CUDA_LOG(alphaI)+CUDA_POW(sigmaI, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaI, CUDA_REAL(2.0)) / CUDA_REAL(2.0))",Static variable,"alphaI,sigmaI,thetaI","IS_S_NODE, IS_GENERIC_STATIC"
-,gammaCl,,\gamma^Cl,,"s: CUDA_EXP(CUDA_LOG(alphaCl)+CUDA_POW(sigmaCl, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaCl, CUDA_REAL(2.0)) / CUDA_REAL(2.0))",Static variable,"alphaCl,sigmaCl,thetaCl","IS_S_NODE, IS_GENERIC_STATIC"
-,gammaE,,\gamma^E,,"s: CUDA_EXP(CUDA_LOG(alphaE)+CUDA_POW(sigmaE, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaE, CUDA_REAL(2.0)) / CUDA_REAL(2.0))",Static variable,"alphaE,sigmaE,thetaE","IS_S_NODE, IS_GENERIC_STATIC"
-,gammaR,,\gamma^R,,"s: CUDA_EXP(CUDA_LOG(alphaR)+CUDA_POW(sigmaR, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaR, CUDA_REAL(2.0)) / CUDA_REAL(2.0))",Static variable,"alphaR,sigmaR,thetaR","IS_S_NODE, IS_GENERIC_STATIC"
-,gammaQ,,\gamma^Q,,"s: CUDA_EXP(CUDA_LOG(alphaQ)+CUDA_POW(sigmaQ, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaQ, CUDA_REAL(2.0)) / CUDA_REAL(2.0))",Static variable,"alphaQ,sigmaQ,thetaQ","IS_S_NODE, IS_GENERIC_STATIC"
-,gammaL,,\gamma^L,,"s: CUDA_EXP(CUDA_LOG(alphaL)+CUDA_POW(sigmaL, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaL, CUDA_REAL(2.0)) / CUDA_REAL(2.0))",Static variable,"alphaL,sigmaL,thetaL","IS_S_NODE, IS_GENERIC_STATIC"
-Ez,EZ,Light at depth,E^Z,s: \frac{E(1-\CUDA_EXP(-K^Z))}{K^Z},s: E*(CUDA_REAL(1.0)-CUDA_EXP(-KZ))/KZ,Static variable,"E,KZ","IS_S_NODE, IS_GENERIC_STATIC"
-KdZ,KZ,"Light attenation, total (water + Chl-a)",K^Z,x: (K^W+K^C Chla)L,x: (KW+KC*Chla)*L,Intermediate result,"KW,KC,Chla,L",
-Graze,piG,,\pi^G,x: Z \zeta^I \tau^C \pi^S / (1 + \pi^S),x: Z*zetaI*tauC*piS/(CUDA_REAL(1.0)+piS),Intermediate result,"Z, zetaI, tauC, piS",
-Sat,piS,,\pi^S,x: (\zeta^{Cl} P / \zeta^I)^{\pi^K},"x: CUDA_POW(zetaCl*P/zetaI, piK)",Intermediate result,"zetaCl, P, zetaI, piK",
-mumaxCT,muCT,,\mu^{CT},x: \mu^C \tau^C,x: muC*tauC,Intermediate result,"muC, tauC",
-mu,mu,Phytoplankton growth rate,\mu,x: \mu^{CT} \pi^E \nu^N / (\nu^N + \mu^{CN} \pi^E),x: muCT*piE*nuN/(nuN + muCN*piE),Intermediate result,"muCT, piE, nuN, muCN",
-fE,piE,,\pi^E,x: 1 - \CUDA_EXP(-\pi^Q \mu^{Ch} EZ / \mu^C),x: CUDA_REAL(1.0)-CUDA_EXP(-piQ*muCh*EZ/muC),Intermediate result,"piQ, muCh, EZ, muC",
-aQ,piQ,,\pi^Q,x: \pi^C \pi^{PE},x: piC*piPE,Intermediate result,"piC, piPE",
-fN,nuN,,\nu^N,x: N/(N + \pi^N / \nu^A),x: N/(N + piN/nuA),Intermediate result,"N, piN, nuA",
-mumaxN,piN,,\pi^N,x: \mu^{CT} / \mu^{CN},x: muCT/muCN,Intermediate result,"muCT, muCN",
-Zmort,zetaM,,\zeta^{M},x: (\zeta^Q Z + \zeta^L) Z,x: (zetaQ*Z + zetaL)*Z,Intermediate result,"zetaQ, zetaL, Z",
-Tcorr,tauC,,\tau^C,x: (\tau^{10})^{\frac{1}{10} (T - \tau^R)},"x: CUDA_POW(tau10, (T - tauR)/10)",Intermediate result,"tau10, T, tauR",
-P,P,,P,dfdt: \mu P - \pi^G + \beta^E(\beta^P - P),dfdt: mu*P - piG + betaE*(betaP - P),Continuous-time variable,"mu, P, piG, betaE, betaP","IS_C_NODE, IS_ODE_FORWARD"
-Z,Z,,Z,dfdt: \pi^G \zeta^E - \zeta^M + \beta^E(\beta^Z - Z),dfdt: piG*zetaE - zetaM + betaE*(betaZ - Z),Continuous-time variable,"piG, zetaE, zetaM, betaE, betaZ, Z","IS_C_NODE, IS_ODE_FORWARD"
-D,D,,D,dfdt: (1 - \zeta^E) \delta^I \pi^G + \zeta^M - \nu^R D - \delta^S D/L + \beta^E (\beta^D - D),dfdt: (CUDA_REAL(1.0) - zetaE)*deltaI*piG + zetaM - nuR*D - deltaS*D/L + betaE*(betaD - D),Continuous-time variable,"zetaE, deltaI, piG, zetaM, nuR, deltaS, D, L, betaE, betaD","IS_C_NODE, IS_ODE_FORWARD"
-N,N,,N,dfdt: -\mu P + (1 - \zeta^E)(1 - \delta^I)\pi^G + \nu^R D + \beta^E(\beta^N - N),dfdt: -mu*P + (CUDA_REAL(1.0) - zetaE)*(CUDA_REAL(1.0) - deltaI)*piG + nuR*D + betaE*(betaN - N),Continuous-time variable,"mu, P, zetaE, deltaI, piG, nuR, betaE, betaN, N, D","IS_C_NODE, IS_ODE_FORWARD"
-Chla,Chla,,Chla,f: \frac{P \mu^{Ch} \nu^N}{\pi^R(\nu^N + \pi^{NC} \nu^N)},f: P*muCh*nuN/(piR*(nuN+piNC*piE)),Discrete-time variable,"P, muCh, nuN, piR, piNC, piE","IS_D_NODE, IS_GENERIC_FORWARD"
-,P_obs,,y^P,mu: P | sigma: 0.1 P,mu: CUDA_LOG(P) | sigma: 0.1,Observation,P,"IS_O_NODE, IS_LOG_NORMAL_LIKELIHOOD, HAS_COMMON_SIGMA"
-,Z_obs,,y^Z,mu: Z | sigma: 0.1 Z,mu: CUDA_LOG(Z) | sigma: 0.1,Observation,Z,"IS_O_NODE, IS_LOG_NORMAL_LIKELIHOOD, HAS_COMMON_SIGMA"
-,D_obs,,y^D,mu: D | sigma: 0.1 D,mu: CUDA_LOG(D) | sigma: 0.1,Observation,D,"IS_O_NODE, IS_LOG_NORMAL_LIKELIHOOD, HAS_COMMON_SIGMA"
-,N_obs,,y^N,mu: N | sigma: 0.1 N,mu: CUDA_LOG(N) | sigma: 0.1,Observation,N,"IS_O_NODE, IS_LOG_NORMAL_LIKELIHOOD, HAS_COMMON_SIGMA"
-,Chla_obs,,y^{Chla},mu: Chla | sigma: 0.1 Chla,mu: CUDA_LOG(Chla) | sigma: 0.1,Observation,Chla,"IS_O_NODE, IS_LOG_NORMAL_LIKELIHOOD, HAS_COMMON_SIGMA"
+"OriginalName","Name","Description","LaTeXName","LaTeXFormulae","Formulae","Category","Dependencies","Traits"
+"Kd","KW","Light attenuation, water","K^W",,"mu0: log(0.03) | sigma0: 0.2","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+"Kchla","KC","Light attenuation, Chl-a","K^C",,"mu0: log(0.04) | sigma0: 0.3","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+"Sink","deltaS","Detrital sinking rate","\delta^S",,"mu0: log(5.0) | sigma0: 1.0","Parameter",,"IS_P_NODE, HAS_GAUSSIAN_PRIOR"
+"FDG","deltaI","Detrital growth inefficiency","\delta^I",,"mu0: log(0.5) | sigma0: 0.1","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+"Q10","tau10",,"\tau^{10}","x: 2","x: 2","Constant",,
+"Tref","tauR","Reference temperature (10 deg. C)","\tau^R","x: 15","x: 15","Constant",,
+"Achl","piC","Chlorophyl absorption","\pi^C","x: 0.04","x: 0.04","Constant",,
+"PE","piPE","Photosynthetic efficiency","\pi^{PE}","x: 1200","x: 1200","Constant",,
+"maxNC","piR","Maximum N:C (Redfield)","\pi^R","x: 0.18","x: 0.18","Constant",,
+"RP","RP","P timescale","R_P","x: 10","x: 10","Constant",,
+"RZ","RZ","Z timescale","R_Z","x: 30","x: 30","Constant",,
+"Grazeexp","piK","Functional response exponent","\pi^K","x: 2","x: 2","Constant",,
+"PBC","betaP","Phytoplankton boundary condition","\beta^P",,,"Forcing",,"IS_F_NODE"
+"ZBC","betaZ","Zooplankton boundary condition","\beta^Z",,,"Forcing",,"IS_F_NODE"
+"NBC","betaN","Nitrogen boundary condition","\beta^N",,,"Forcing",,"IS_F_NODE"
+"DBC","betaD","Detritus boundary condition","\beta^D",,,"Forcing",,"IS_F_NODE"
+"T","T","Water temperature","T",,,"Forcing",,"IS_F_NODE"
+"Eir","E","Surface irradience","E",,,"Forcing",,"IS_F_NODE"
+"Depth","L","Mixed layer depth","L",,,"Forcing",,"IS_F_NODE"
+"Exch","betaE","Exchange rate","\beta^E",,,"Forcing",,"IS_F_NODE"
+"mumaxC","muC","Maximum growth rate for C","\mu^C","f: \mu^C(1-R_P) + R_P (\alpha^C + \theta^C u^C)","f: muC*(CUDA_REAL(1.0) - CUDA_POW(RP,  - CUDA_REAL(1.0))) + CUDA_POW(RP,  - CUDA_REAL(1.0))*(gammaC*CUDA_EXP(thetaC*uC)) | mu0: log(1.2) | sigma0: 0.1","Discrete-time variable","muC, RP, gammaC, thetaC, uC","IS_D_NODE, IS_GENERIC_FORWARD, HAS_LOG_NORMAL_PRIOR"
+"mumCN","muCN","Maximum growth rate for C:N","\mu^{CN}","f: \mu^{CN}(1-R_P) + R_P (\alpha^{CN} + \theta^{CN} u^{CN})","f: muCN*(CUDA_REAL(1.0) - CUDA_POW(RP,  - CUDA_REAL(1.0))) + CUDA_POW(RP,  - CUDA_REAL(1.0))*(gammaCN*CUDA_EXP(thetaCN*uCN)) | mu0: log(0.4) | sigma0: 0.1","Discrete-time variable","muCN, RP, gammaCN, thetaCN, uCN","IS_D_NODE, IS_GENERIC_FORWARD, HAS_LOG_NORMAL_PRIOR"
+"ChlCmax","muCh","Maximum growth rate for Chl-a:C","\mu^{Ch}","f: \mu^{Ch}(1-R_P) + R_P  (\alpha^{Ch} + \theta^{Ch} u^{Ch})","f: muCh*(CUDA_REAL(1.0) - CUDA_POW(RP,  - CUDA_REAL(1.0))) + CUDA_POW(RP,  - CUDA_REAL(1.0))*(gammaCh*CUDA_EXP(thetaCh*uCh)) | mu0: log(0.033) | sigma0: 0.1","Discrete-time variable","muCh, RP, gammaCh, thetaCh, uCh","IS_D_NODE, IS_GENERIC_FORWARD, HAS_LOG_NORMAL_PRIOR"
+"maxNaff","nuA","Maximum N affinity","\nu^A","f: \nu^A(1-R_P) + R_P  (\alpha^A + \theta^A u^A)","f: nuA*(CUDA_REAL(1.0) - CUDA_POW(RP,  - CUDA_REAL(1.0))) + CUDA_POW(RP,  - CUDA_REAL(1.0))*(gammaA*CUDA_EXP(thetaA*uA)) | mu0: log(0.3) | sigma0: 0.1","Discrete-time variable","nuA, RP, gammaA, thetaA, uA","IS_D_NODE, IS_GENERIC_FORWARD, HAS_LOG_NORMAL_PRIOR"
+"minmaxNC","piNC","Min/Max N:C","\pi^{NC}","f: \pi^{NC}(1-R_P) + R_P  (\alpha^{NC} + \theta^{NC} u^{NC})","f: piNC*(CUDA_REAL(1.0) - CUDA_POW(RP,  - CUDA_REAL(1.0))) + CUDA_POW(RP,  - CUDA_REAL(1.0))*(gammaNC*CUDA_EXP(thetaNC*uNC)) | mu0: log(0.25) | sigma0: 0.1","Discrete-time variable","piNC, RP, gammaNC, thetaNC, uNC","IS_D_NODE, IS_GENERIC_FORWARD, HAS_LOG_NORMAL_PRIOR"
+"Ingmax","zetaI","Max Z ingestion rate","\zeta^I","f: \zeta^I(1-R_Z) + R_Z  (\alpha^I + \theta^I u^I)","f: zetaI*(CUDA_REAL(1.0) - CUDA_POW(RZ,  - CUDA_REAL(1.0))) + CUDA_POW(RZ,  - CUDA_REAL(1.0))*(gammaI*CUDA_EXP(thetaI*uI)) | mu0: log(4.7) | sigma0: 0.1","Discrete-time variable","zetaI, RZ, gammaI, thetaI, uI","IS_D_NODE, IS_GENERIC_FORWARD, HAS_LOG_NORMAL_PRIOR"
+"Clear","zetaCl","Zooplankton clearance rate","\zeta^{Cl}","f: \zeta^{Cl}(1-R_Z) + R_Z  (\alpha^{Cl} + \theta^{Cl} u^{Cl})","f: zetaCl*(CUDA_REAL(1.0) - CUDA_POW(RZ,  - CUDA_REAL(1.0))) + CUDA_POW(RZ,  - CUDA_REAL(1.0))*(gammaCl*CUDA_EXP(thetaCl*uCl)) | mu0: log(0.2) | sigma0: 0.1","Discrete-time variable","zetaCl, RZ, gammaCl, thetaCl, uCl","IS_D_NODE, IS_GENERIC_FORWARD, HAS_LOG_NORMAL_PRIOR"
+"Zeff","zetaE","Zooplankton grazing efficiency","\zeta^E","f: \zeta^E(1-R_Z) + R_Z  (\alpha^E + \theta^E u^E)","f: zetaE*(CUDA_REAL(1.0) - CUDA_POW(RZ,  - CUDA_REAL(1.0))) + CUDA_POW(RZ,  - CUDA_REAL(1.0))*(gammaE*CUDA_EXP(thetaE*uE)) | mu0: log(0.32) | sigma0: 0.1","Discrete-time variable","zetaE, RZ, gammaE, thetaE, uE","IS_D_NODE, IS_GENERIC_FORWARD, HAS_LOG_NORMAL_PRIOR"
+"Remin","nuR","Remineralisation rate","\nu^R","f: \nu^R(1-R_Z) + R_Z  (\alpha^R + \theta^R u^R)","f: nuR*(CUDA_REAL(1.0) - CUDA_POW(RZ,  - CUDA_REAL(1.0))) + CUDA_POW(RZ,  - CUDA_REAL(1.0))*(gammaR*CUDA_EXP(thetaR*uR)) | mu0: log(0.1) | sigma0: 0.1","Discrete-time variable","nuR, RZ, gammaR, thetaR, uR","IS_D_NODE, IS_GENERIC_FORWARD, HAS_LOG_NORMAL_PRIOR"
+"Mq","zetaQ","Z quadratic mortality term","\zeta^Q","f: \zeta^Q(1-R_Z) + R_Z  (\alpha^Q + \theta^Q u^Q)","f: zetaQ*(CUDA_REAL(1.0) - CUDA_POW(RZ,  - CUDA_REAL(1.0))) + CUDA_POW(RZ,  - CUDA_REAL(1.0))*(gammaQ*CUDA_EXP(thetaQ*uQ)) | mu0: log(0.01) | sigma0: 0.1","Discrete-time variable","zetaQ, RZ, gammaQ, thetaQ, uQ","IS_D_NODE, IS_GENERIC_FORWARD, HAS_LOG_NORMAL_PRIOR"
+"Ml","zetaL","Z linear mortality term","\zeta^L","f: \zeta^L(1-R_Z) + R_Z  (\alpha^L + \theta^L u^L)","f: zetaL*(CUDA_REAL(1.0) - CUDA_POW(RZ,  - CUDA_REAL(1.0))) + CUDA_POW(RZ,  - CUDA_REAL(1.0))*(gammaL*CUDA_EXP(thetaL*uL)) | mu0: log(0.0) | sigma0: 0.1","Discrete-time variable","zetaL, RZ, gammaL, thetaL, uL","IS_D_NODE, IS_GENERIC_FORWARD, HAS_LOG_NORMAL_PRIOR"
+,"P_DF","P Diversity Factor","P_DF",,"mu0: log(0.4) | sigma0: 0.2","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+,"Z_DF","Z Diversity Factor","Z_DF",,"mu0: log(0.4) | sigma0: 0.1","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+,"alphaC",,"\alpha^C",,"mu0: log(1.2) | sigma0: 0.63","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+,"sigmaC",,"\sigma^C","x: 0.63","x: 0.63","Constant",,
+,"alphaCN",,"\alpha^{CN}",,"mu0: log(0.4) | sigma0: 0.2","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+,"sigmaCN",,"\sigma^{CN}","x: 0.2","x: 0.2","Constant",,
+,"alphaCh",,"\alpha^{Ch}",,"mu0: log(0.03) | sigma0: 0.37","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+,"sigmaCh",,"\sigma^{Ch}","x: 0.37","x: 0.37","Constant",,
+,"alphaA",,"\alpha^A",,"mu0: log(0.3) | sigma0: 1.0","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+,"sigmaA",,"\sigma^A","x: 1.0","x: 1.0","Constant",,
+,"alphaNC",,"\alpha^{NC}",,"mu0: log(0.25) | sigma0: 0.3","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+,"sigmaNC",,"\sigma^{NC}","x: 0.3","x: 0.3","Constant",,
+,"alphaI",,"\alpha^I",,"mu0: log(4.7) | sigma0: 0.7","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+,"sigmaI",,"\sigma^I","x: 0.7","x: 0.7","Constant",,
+,"alphaCl",,"\alpha^{Cl}",,"mu0: log(0.2) | sigma0: 1.3","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+,"sigmaCl",,"\sigma^{Cl}","x: 1.31","x: 1.31","Constant",,
+,"alphaE",,"\alpha^E",,"mu0: log(0.32) | sigma0: 0.25","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+,"sigmaE",,"\sigma^E","x: 0.25","x: 0.25","Constant",,
+,"alphaR",,"\alpha^R",,"mu0: log(0.1) | sigma0: 0.5","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+,"sigmaR",,"\sigma^R","x: 0.5","x: 0.5","Constant",,
+,"alphaQ",,"\alpha^Q",,"mu0: log(0.01) | sigma0: 1.0","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+,"sigmaQ",,"\sigma^Q","x: 0.5","x: 0.5","Constant",,
+,"alphaL",,"\alpha^L",,"mu0: log(0.01) | sigma0: 0.1","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
+,"sigmaL",,"\sigma^L","x: 0.5","x: 0.5","Constant",,
+,"uC",,"u^C",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN_VARIATE"
+,"uCN",,"u^{CN}",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN_VARIATE"
+,"uCh",,"u^{Ch}",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN_VARIATE"
+,"uA",,"u^A",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN_VARIATE"
+,"uNC",,"u^{NC}",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN_VARIATE"
+,"uI",,"u^I",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN_VARIATE"
+,"uCl",,"u^{Cl}",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN_VARIATE"
+,"uE",,"u^E",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN_VARIATE"
+,"uR",,"u^R",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN_VARIATE"
+,"uQ",,"u^Q",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN_VARIATE"
+,"uL",,"u^L",,,"Random variate",,"IS_R_NODE, IS_GAUSSIAN_VARIATE"
+,"thetaC",,"\theta^C",,"s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RP - CUDA_REAL(1.0))*P_DF*P_DF*(CUDA_EXP(sigmaC*sigmaC) - CUDA_REAL(1.0))))","Static variable","RP,P_DF,sigmaC","IS_S_NODE, IS_GENERIC_STATIC"
+,"thetaCN",,"\theta^CN",,"s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RP - CUDA_REAL(1.0))*P_DF*P_DF*(CUDA_EXP(sigmaCN*sigmaCN) - CUDA_REAL(1.0))))","Static variable","RP,P_DF,sigmaCN","IS_S_NODE, IS_GENERIC_STATIC"
+,"thetaCh",,"\theta^Ch",,"s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RP - CUDA_REAL(1.0))*P_DF*P_DF*(CUDA_EXP(sigmaCh*sigmaCh) - CUDA_REAL(1.0))))","Static variable","RP,P_DF,sigmaCh","IS_S_NODE, IS_GENERIC_STATIC"
+,"thetaA",,"\theta^A",,"s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RP - CUDA_REAL(1.0))*P_DF*P_DF*(CUDA_EXP(sigmaA*sigmaA) - CUDA_REAL(1.0))))","Static variable","RP,P_DF,sigmaA","IS_S_NODE, IS_GENERIC_STATIC"
+,"thetaNC",,"\theta^NC",,"s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RP - CUDA_REAL(1.0))*P_DF*P_DF*(CUDA_EXP(sigmaNC*sigmaNC) - CUDA_REAL(1.0))))","Static variable","RP,P_DF,sigmaNC","IS_S_NODE, IS_GENERIC_STATIC"
+,"thetaI",,"\theta^I",,"s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RZ - CUDA_REAL(1.0))*Z_DF*Z_DF*(CUDA_EXP(sigmaI*sigmaI) - CUDA_REAL(1.0))))","Static variable","RZ,Z_DF,sigmaI","IS_S_NODE, IS_GENERIC_STATIC"
+,"thetaCl",,"\theta^Cl",,"s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RZ - CUDA_REAL(1.0))*Z_DF*Z_DF*(CUDA_EXP(sigmaCl*sigmaCl) - CUDA_REAL(1.0))))","Static variable","RZ, Z_DF, sigmaCl","IS_S_NODE, IS_GENERIC_STATIC"
+,"thetaE",,"\theta^E",,"s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RZ - CUDA_REAL(1.0))*Z_DF*Z_DF*(CUDA_EXP(sigmaE*sigmaE) - CUDA_REAL(1.0))))","Static variable","RZ,Z_DF,sigmaE","IS_S_NODE, IS_GENERIC_STATIC"
+,"thetaR",,"\theta^R",,"s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RZ - CUDA_REAL(1.0))*Z_DF*Z_DF*(CUDA_EXP(sigmaR*sigmaR) - CUDA_REAL(1.0))))","Static variable","RZ,Z_DF,sigmaR","IS_S_NODE, IS_GENERIC_STATIC"
+,"thetaQ",,"\theta^Q",,"s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RZ - CUDA_REAL(1.0))*Z_DF*Z_DF*(CUDA_EXP(sigmaQ*sigmaQ) - CUDA_REAL(1.0))))","Static variable","RZ,Z_DF,sigmaQ","IS_S_NODE, IS_GENERIC_STATIC"
+,"thetaL",,"\theta^L",,"s: CUDA_SQRT(CUDA_LOG(CUDA_REAL(1.0)+(CUDA_REAL(2.0)*RZ - CUDA_REAL(1.0))*Z_DF*Z_DF*(CUDA_EXP(sigmaL*sigmaL) - CUDA_REAL(1.0))))","Static variable","RZ,Z_DF,sigmaL","IS_S_NODE, IS_GENERIC_STATIC"
+,"gammaC",,"\gamma^C",,"s: CUDA_EXP(CUDA_LOG(alphaC)+CUDA_POW(sigmaC, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaC, CUDA_REAL(2.0)) / CUDA_REAL(2.0))","Static variable","alphaC,sigmaC,thetaC","IS_S_NODE, IS_GENERIC_STATIC"
+,"gammaCN",,"\gamma^CN",,"s: CUDA_EXP(CUDA_LOG(alphaCN)+CUDA_POW(sigmaCN, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaCN, CUDA_REAL(2.0)) / CUDA_REAL(2.0))","Static variable","alphaCN,sigmaCN,thetaCN","IS_S_NODE, IS_GENERIC_STATIC"
+,"gammaCh",,"\gamma^Ch",,"s: CUDA_EXP(CUDA_LOG(alphaCh)+CUDA_POW(sigmaCh, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaCh, CUDA_REAL(2.0)) / CUDA_REAL(2.0))","Static variable","alphaCh,sigmaCh,thetaCh","IS_S_NODE, IS_GENERIC_STATIC"
+,"gammaA",,"\gamma^A",,"s: CUDA_EXP(CUDA_LOG(alphaA)+CUDA_POW(sigmaA, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaA, CUDA_REAL(2.0)) / CUDA_REAL(2.0))","Static variable","alphaA,sigmaA,thetaA","IS_S_NODE, IS_GENERIC_STATIC"
+,"gammaNC",,"\gamma^NC",,"s: CUDA_EXP(CUDA_LOG(alphaNC)+CUDA_POW(sigmaNC, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaNC, CUDA_REAL(2.0)) / CUDA_REAL(2.0))","Static variable","alphaNC,sigmaNC,thetaNC","IS_S_NODE, IS_GENERIC_STATIC"
+,"gammaI",,"\gamma^I",,"s: CUDA_EXP(CUDA_LOG(alphaI)+CUDA_POW(sigmaI, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaI, CUDA_REAL(2.0)) / CUDA_REAL(2.0))","Static variable","alphaI,sigmaI,thetaI","IS_S_NODE, IS_GENERIC_STATIC"
+,"gammaCl",,"\gamma^Cl",,"s: CUDA_EXP(CUDA_LOG(alphaCl)+CUDA_POW(sigmaCl, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaCl, CUDA_REAL(2.0)) / CUDA_REAL(2.0))","Static variable","alphaCl,sigmaCl,thetaCl","IS_S_NODE, IS_GENERIC_STATIC"
+,"gammaE",,"\gamma^E",,"s: CUDA_EXP(CUDA_LOG(alphaE)+CUDA_POW(sigmaE, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaE, CUDA_REAL(2.0)) / CUDA_REAL(2.0))","Static variable","alphaE,sigmaE,thetaE","IS_S_NODE, IS_GENERIC_STATIC"
+,"gammaR",,"\gamma^R",,"s: CUDA_EXP(CUDA_LOG(alphaR)+CUDA_POW(sigmaR, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaR, CUDA_REAL(2.0)) / CUDA_REAL(2.0))","Static variable","alphaR,sigmaR,thetaR","IS_S_NODE, IS_GENERIC_STATIC"
+,"gammaQ",,"\gamma^Q",,"s: CUDA_EXP(CUDA_LOG(alphaQ)+CUDA_POW(sigmaQ, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaQ, CUDA_REAL(2.0)) / CUDA_REAL(2.0))","Static variable","alphaQ,sigmaQ,thetaQ","IS_S_NODE, IS_GENERIC_STATIC"
+,"gammaL",,"\gamma^L",,"s: CUDA_EXP(CUDA_LOG(alphaL)+CUDA_POW(sigmaL, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaL, CUDA_REAL(2.0)) / CUDA_REAL(2.0))","Static variable","alphaL,sigmaL,thetaL","IS_S_NODE, IS_GENERIC_STATIC"
+"Ez","EZ","Light at depth","E^Z","s: \frac{E(1-\CUDA_EXP(-K^Z))}{K^Z}","s: E*(CUDA_REAL(1.0)-CUDA_EXP(-KZ))/KZ","Static variable","E,KZ","IS_S_NODE, IS_GENERIC_STATIC"
+"KdZ","KZ","Light attenation, total (water + Chl-a)","K^Z","x: (K^W+K^C Chla)L","x: (KW+KC*Chla)*L","Intermediate result","KW,KC,Chla,L",
+"Graze","piG",,"\pi^G","x: Z \zeta^I \tau^C \pi^S / (1 + \pi^S)","x: Z*zetaI*tauC*piS/(CUDA_REAL(1.0)+piS)","Intermediate result","Z, zetaI, tauC, piS",
+"Sat","piS",,"\pi^S","x: (\zeta^{Cl} P / \zeta^I)^{\pi^K}","x: CUDA_POW(zetaCl*P/zetaI, piK)","Intermediate result","zetaCl, P, zetaI, piK",
+"mumaxCT","muCT",,"\mu^{CT}","x: \mu^C \tau^C","x: muC*tauC","Intermediate result","muC, tauC",
+"mu","mu","Phytoplankton growth rate","\mu","x: \mu^{CT} \pi^E \nu^N / (\nu^N + \mu^{CN} \pi^E)","x: muCT*piE*nuN/(nuN + muCN*piE)","Intermediate result","muCT, piE, nuN, muCN",
+"fE","piE",,"\pi^E","x: 1 - \CUDA_EXP(-\pi^Q \mu^{Ch} EZ / \mu^C)","x: CUDA_REAL(1.0)-CUDA_EXP(-piQ*muCh*EZ/muC)","Intermediate result","piQ, muCh, EZ, muC",
+"aQ","piQ",,"\pi^Q","x: \pi^C \pi^{PE}","x: piC*piPE","Intermediate result","piC, piPE",
+"fN","nuN",,"\nu^N","x: N/(N + \pi^N / \nu^A)","x: N/(N + piN/nuA)","Intermediate result","N, piN, nuA",
+"mumaxN","piN",,"\pi^N","x: \mu^{CT} / \mu^{CN}","x: muCT/muCN","Intermediate result","muCT, muCN",
+"Zmort","zetaM",,"\zeta^{M}","x: (\zeta^Q Z + \zeta^L) Z","x: (zetaQ*Z + zetaL)*Z","Intermediate result","zetaQ, zetaL, Z",
+"Tcorr","tauC",,"\tau^C","x: (\tau^{10})^{\frac{1}{10} (T - \tau^R)}","x: CUDA_POW(tau10, (T - tauR)/10)","Intermediate result","tau10, T, tauR",
+"P","P",,"P","dfdt: \mu P - \pi^G + \beta^E(\beta^P - P)","dfdt: mu*P - piG + betaE*(betaP - P) | mu0: log(2.8) | sigma0: 0.1","Continuous-time variable","mu, P, piG, betaE, betaP","IS_C_NODE, IS_ODE_FORWARD, HAS_LOG_NORMAL_PRIOR"
+"Z","Z",,"Z","dfdt: \pi^G \zeta^E - \zeta^M + \beta^E(\beta^Z - Z)","dfdt: piG*zetaE - zetaM + betaE*(betaZ - Z) | mu0: log(3.26) | sigma0: 0.1","Continuous-time variable","piG, zetaE, zetaM, betaE, betaZ, Z","IS_C_NODE, IS_ODE_FORWARD, HAS_LOG_NORMAL_PRIOR"
+"D","D",,"D","dfdt: (1 - \zeta^E) \delta^I \pi^G + \zeta^M - \nu^R D - \delta^S D/L + \beta^E (\beta^D - D)","dfdt: (CUDA_REAL(1.0) - zetaE)*deltaI*piG + zetaM - nuR*D - deltaS*D/L + betaE*(betaD - D) | mu0: log(2.57) | sigma0: 0.1","Continuous-time variable","zetaE, deltaI, piG, zetaM, nuR, deltaS, D, L, betaE, betaD","IS_C_NODE, IS_ODE_FORWARD, HAS_LOG_NORMAL_PRIOR"
+"N","N",,"N","dfdt: -\mu P + (1 - \zeta^E)(1 - \delta^I)\pi^G + \nu^R D + \beta^E(\beta^N - N)","dfdt: -mu*P + (CUDA_REAL(1.0) - zetaE)*(CUDA_REAL(1.0) - deltaI)*piG + nuR*D + betaE*(betaN - N) | mu0: log(196.96) | sigma0: 0.1","Continuous-time variable","mu, P, zetaE, deltaI, piG, nuR, betaE, betaN, N, D","IS_C_NODE, IS_ODE_FORWARD, HAS_LOG_NORMAL_PRIOR"
+"Chla","Chla",,"Chla","f: \frac{P \mu^{Ch} \nu^N}{\pi^R(\nu^N + \pi^{NC} \nu^N)}","f: P*muCh*nuN/(piR*(nuN+piNC*piE)) | mu0: log(0.39) | sigma0: 0.1","Discrete-time variable","P, muCh, nuN, piR, piNC, piE","IS_D_NODE, IS_GENERIC_FORWARD, HAS_LOG_NORMAL_PRIOR"
+,"P_obs",,"y^P","mu: P | sigma: 0.1 P","mu: CUDA_LOG(P) | sigma: 0.1","Observation","P","IS_O_NODE, IS_LOG_NORMAL_LIKELIHOOD, HAS_COMMON_SIGMA"
+,"Z_obs",,"y^Z","mu: Z | sigma: 0.1 Z","mu: CUDA_LOG(Z) | sigma: 0.1","Observation","Z","IS_O_NODE, IS_LOG_NORMAL_LIKELIHOOD, HAS_COMMON_SIGMA"
+,"D_obs",,"y^D","mu: D | sigma: 0.1 D","mu: CUDA_LOG(D) | sigma: 0.1","Observation","D","IS_O_NODE, IS_LOG_NORMAL_LIKELIHOOD, HAS_COMMON_SIGMA"
+,"N_obs",,"y^N","mu: N | sigma: 0.1 N","mu: CUDA_LOG(N) | sigma: 0.1","Observation","N","IS_O_NODE, IS_LOG_NORMAL_LIKELIHOOD, HAS_COMMON_SIGMA"
+,"Chla_obs",,"y^{Chla}","mu: Chla | sigma: 0.1 Chla","mu: CUDA_LOG(Chla) | sigma: 0.1","Observation","Chla","IS_O_NODE, IS_LOG_NORMAL_LIKELIHOOD, HAS_COMMON_SIGMA"

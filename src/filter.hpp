@@ -31,7 +31,7 @@
  * @param out Output, NULL for no output.
  */
 void filter(const real_t T, const real_t h, NPZDModel& m, bi::State& s,
-    bi::Random& rng, bi::Result<>* r, bi::FUpdater<>* fUpdater,
-    bi::OUpdater<>* oUpdater, bi::NetCDFWriter<>* out = NULL);
+    bi::Random& rng, bi::FUpdater<>* fUpdater, bi::OUpdater<>* oUpdater,
+    bi::NetCDFWriter<>* out = NULL);
 
 #endif

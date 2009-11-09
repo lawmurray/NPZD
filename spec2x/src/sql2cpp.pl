@@ -47,7 +47,9 @@ sub OutputModelSources {
   my @classes;
   my %nodes;
   my %classes;
+  my %priors;
   my $type;
+  my $prior;
   my $node;
   my $source;
   my @parents;
@@ -59,10 +61,16 @@ sub OutputModelSources {
   $sth->execute;
   while ($fields = $sth->fetchrow_hashref) {
     $type = &NodeCategory($$fields{'Name'});
+    if ($type =~ /^[sdcp]$/) {
+      $prior = &NodePrior($$fields{'Name'});
+    } else {
+      $prior = '';
+    }
     push(@nodes, $$fields{'Name'});
     push(@classes, ucfirst($$fields{'Name'}) . 'Node');
     push(@{$nodes{$type}}, $$fields{'Name'});
     push(@{$classes{$type}}, ucfirst($$fields{'Name'}) . 'Node');
+    push(@{$priors{$type}}, $prior);
   }
   $sth->finish;
 
@@ -76,6 +84,14 @@ sub OutputModelSources {
     $tokens{"${type}TypeList"} = join("\n",
       "BEGIN_TYPELIST($tokens{\"${type}TypeListName\"})",
       join("\n", map { "SINGLE_TYPE(1, $_)" } @{$classes{lc($type)}}),
+      'END_TYPELIST()');
+  }
+
+  foreach $type ('S', 'D', 'C', 'P') {
+    $tokens{"${type}PriorListName"} = "${model}${type}PriorList";
+    $tokens{"${type}PriorList"} = join("\n",
+      "BEGIN_TYPELIST($tokens{\"${type}PriorListName\"})",
+      &PriorList($priors{lc($type)}),
       'END_TYPELIST()');
   }
 
@@ -100,6 +116,10 @@ sub OutputModelSources {
 
   $tokens{'NodeDefinitions'} = join("\n  ", map { "addNode(${_});" } @nodes);
   $tokens{'EdgeDefinitions'} = join("\n  ", @edges);
+  $tokens{'SPriorDefinitions'} = join("\n  ", map { &NodePrior($_) ne '' ? "p0.set($_.getId(), $_.getPrior());" : '' } @{$nodes{'s'}});
+  $tokens{'DPriorDefinitions'} = join("\n  ", map { &NodePrior($_) ne '' ? "p0.set($_.getId(), $_.getPrior());" : '' } @{$nodes{'d'}});
+  $tokens{'CPriorDefinitions'} = join("\n  ", map { &NodePrior($_) ne '' ? "p0.set($_.getId(), $_.getPrior());" : '' } @{$nodes{'c'}});
+  $tokens{'PPriorDefinitions'} = join("\n  ", map { &NodePrior($_) ne '' ? "p0.set($_.getId(), $_.getPrior());" : '' } @{$nodes{'p'}});
 
   $source = &ProcessTemplate('ModelSource', \%tokens);
   $source = &PrettyPrint($source);
@@ -136,12 +156,28 @@ sub OutputNodeSources {
     $tokens{'TraitDeclarations'} = &TraitDeclarations($$fields{'Name'});
     $tokens{'FunctionDeclarations'} = &FunctionDeclarations($$fields{'Name'});
     $tokens{'FunctionDefinitions'} = &FunctionDefinitions($$fields{'Name'});
+    if (&NodeCategory($$fields{'Name'}) =~ /^[sdcp]$/) {
+      $tokens{'PriorDeclaration'} = &PriorDeclaration($$fields{'Name'});
+      $tokens{'PriorDefinition'} = &PriorDefinition($$fields{'Name'});
+    } else {
+      undef $tokens{'PriorDeclaration'};
+      undef $tokens{'PriorDefinition'};
+    }
 
     $source = &ProcessTemplate('NodeHeader', \%tokens);
     $source = &PrettyPrint($source);
 
     open(SOURCE, ">$outdir/$tokens{'ClassName'}.hpp") ||
         confess("Could not open $outdir/$tokens{'ClassName'}.hpp");
+    print SOURCE $source;
+    print SOURCE "\n";
+    close SOURCE;
+
+    $source = &ProcessTemplate('NodeSource', \%tokens);
+    $source = &PrettyPrint($source);
+
+    open(SOURCE, ">$outdir/$tokens{'ClassName'}.cpp") ||
+        confess("Could not open $outdir/$tokens{'ClassName'}.cpp");
     print SOURCE $source;
     print SOURCE "\n";
     close SOURCE;
@@ -227,7 +263,7 @@ sub PrettyPrint {
 ##
 sub NodeCategory {
   my $name = shift;
-  my $result = 'In';
+  my $result;
   my $trait;
 
   my $sth = $dbh->prepare('SELECT Trait FROM NodeTrait WHERE ' .
@@ -251,6 +287,36 @@ sub NodeCategory {
     $result = 'p';
   } else {
     die("Node $name not of recognised type");
+  }
+  $sth->finish;
+
+  return $result;
+}
+
+##
+## Check prior type of node.
+##
+## @param name Name of node.
+##
+## @return Prior type.
+##
+sub NodePrior {
+  my $name = shift;
+  my $result;
+  my $trait;
+
+  my $sth = $dbh->prepare('SELECT Trait FROM NodeTrait WHERE ' .
+      "Node = ? AND Trait LIKE 'HAS\_%\_PRIOR'");
+
+  $sth->execute($name);
+  $trait = $sth->fetchrow_array;
+  if ($trait eq 'HAS_GAUSSIAN_PRIOR' || $trait eq 'HAS_NORMAL_PRIOR') {
+    $result = 'Gaussian';
+  } elsif ($trait eq 'HAS_LOG_NORMAL_PRIOR') {
+    $result = 'LogNormal';
+  } else {
+    warn("Node $name does not have prior of recognised type");
+    $result = '';
   }
   $sth->finish;
 
@@ -373,6 +439,82 @@ sub FunctionDefinitions {
   $sth->finish;
 
   return join("\n\n", @defs);
+}
+
+##
+## Prior type list for model.
+##
+## @param Individual types.
+##
+## @return Type list for inclusion in template.
+##
+sub PriorList {
+  my $types = shift;
+  my $type;
+  my $lasttype = '';
+  my $reps = 0;
+  my @result;
+
+  foreach $type (@{$types}) {
+    if ($lasttype eq '') {
+      $lasttype = $type;
+      $reps = 1;
+    } elsif ($type eq $lasttype) {
+      $reps++;
+    } else {
+      push(@result, "SINGLE_TYPE($reps, bi::${lasttype}Pdf<>)");
+      $lasttype = $type;
+      $reps = 1;
+    }
+  }
+  if ($lasttype ne '') {
+    push(@result, "SINGLE_TYPE($reps, bi::${lasttype}Pdf<>)");
+  }
+
+  return join("\n", @result);
+}
+
+##
+## Prior declaration for a node.
+##
+## @param name Name of node.
+##
+## @return Prior declaration for inclusion in template.
+##
+sub PriorDeclaration {
+  my $name = shift;
+  my %tokens;
+  my $template;
+
+  $tokens{'ClassName'} = ucfirst($name) . 'Node';
+  $template = 'Prior' . &NodePrior($name) . 'Declaration';
+
+  return &ProcessTemplate($template, \%tokens);
+}
+
+##
+## Function definitions for a node.
+##
+## @param name Name of node.
+##
+## @return Function definitions for inclusion in template.
+##
+sub PriorDefinition {
+  my $name = shift;
+  my %tokens;
+  my $template;
+
+  $tokens{'ClassName'} = ucfirst($name) . 'Node';
+  $template = 'Prior' . &NodePrior($name) . 'Definition';
+
+  return &ProcessTemplate($template, \%tokens);
+}
+
+##
+##
+##
+sub PriorDeclarations {
+  my $name = shift;
 }
 
 ##
@@ -585,8 +727,10 @@ sub Includes {
   push(@results, &Include('bi/traits/type_traits.hpp'));
   if ($type eq 's') {
     push(@results, &Include('bi/traits/static_traits.hpp'));
+    push(@results, &Include('bi/traits/prior_traits.hpp'));
   } elsif ($type eq 'd' || $type eq 'c') {
     push(@results, &Include('bi/traits/forward_traits.hpp'));
+    push(@results, &Include('bi/traits/prior_traits.hpp'));
   } elsif ($type eq 'r') {
     push(@results, &Include('bi/traits/random_traits.hpp'));
   } elsif ($type eq 'f') {
@@ -594,7 +738,7 @@ sub Includes {
   } elsif ($type eq 'o') {
     push(@results, &Include('bi/traits/likelihood_traits.hpp'));
   } elsif ($type eq 'p') {
-    #
+    push(@results, &Include('bi/traits/prior_traits.hpp'));
   } else {
     die("Node $name has unrecognised type");
   }
