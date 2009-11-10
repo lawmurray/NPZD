@@ -35,7 +35,9 @@ my %templates;
 
 # output sources
 &OutputModelSources;
+&OutputModelPrior;
 &OutputNodeSources;
+&OutputNodePriors;
 
 ##
 ## Output source files for model.
@@ -47,9 +49,7 @@ sub OutputModelSources {
   my @classes;
   my %nodes;
   my %classes;
-  my %priors;
   my $type;
-  my $prior;
   my $node;
   my $source;
   my @parents;
@@ -61,21 +61,15 @@ sub OutputModelSources {
   $sth->execute;
   while ($fields = $sth->fetchrow_hashref) {
     $type = &NodeCategory($$fields{'Name'});
-    if ($type =~ /^[sdcp]$/) {
-      $prior = &NodePrior($$fields{'Name'});
-    } else {
-      $prior = '';
-    }
     push(@nodes, $$fields{'Name'});
     push(@classes, ucfirst($$fields{'Name'}) . 'Node');
     push(@{$nodes{$type}}, $$fields{'Name'});
     push(@{$classes{$type}}, ucfirst($$fields{'Name'}) . 'Node');
-    push(@{$priors{$type}}, $prior);
   }
   $sth->finish;
 
   # header file
-  $tokens{'Guard'} = 'BIM_' . uc($model) . '_' . uc($model) . 'MODEL_CUH';
+  $tokens{'Guard'} = 'BIM_' . uc($model) . '_' . uc($model) . 'MODEL_HPP';
   $tokens{'ClassName'} = $model . 'Model';
   $tokens{'Includes'} = join("\n", map { &Include("$_.hpp") } @classes);
   $tokens{'NodeDeclarations'} = join("\n  ", map { ucfirst($_) . 'Node ' . $_ . ';' } @nodes);
@@ -84,14 +78,6 @@ sub OutputModelSources {
     $tokens{"${type}TypeList"} = join("\n",
       "BEGIN_TYPELIST($tokens{\"${type}TypeListName\"})",
       join("\n", map { "SINGLE_TYPE(1, $_)" } @{$classes{lc($type)}}),
-      'END_TYPELIST()');
-  }
-
-  foreach $type ('S', 'D', 'C', 'P') {
-    $tokens{"${type}PriorListName"} = "${model}${type}PriorList";
-    $tokens{"${type}PriorList"} = join("\n",
-      "BEGIN_TYPELIST($tokens{\"${type}PriorListName\"})",
-      &PriorList($priors{lc($type)}),
       'END_TYPELIST()');
   }
 
@@ -116,10 +102,6 @@ sub OutputModelSources {
 
   $tokens{'NodeDefinitions'} = join("\n  ", map { "addNode(${_});" } @nodes);
   $tokens{'EdgeDefinitions'} = join("\n  ", @edges);
-  $tokens{'SPriorDefinitions'} = join("\n  ", map { &NodePrior($_) ne '' ? "p0.set($_.getId(), $_.getPrior());" : '' } @{$nodes{'s'}});
-  $tokens{'DPriorDefinitions'} = join("\n  ", map { &NodePrior($_) ne '' ? "p0.set($_.getId(), $_.getPrior());" : '' } @{$nodes{'d'}});
-  $tokens{'CPriorDefinitions'} = join("\n  ", map { &NodePrior($_) ne '' ? "p0.set($_.getId(), $_.getPrior());" : '' } @{$nodes{'c'}});
-  $tokens{'PPriorDefinitions'} = join("\n  ", map { &NodePrior($_) ne '' ? "p0.set($_.getId(), $_.getPrior());" : '' } @{$nodes{'p'}});
 
   $source = &ProcessTemplate('ModelSource', \%tokens);
   $source = &PrettyPrint($source);
@@ -130,6 +112,88 @@ sub OutputModelSources {
   print SOURCE "\n";
   close SOURCE;
 
+}
+
+##
+## Output source files for prior.
+##
+sub OutputModelPrior {
+  my $fields;
+  my %tokens;
+  my @nodes;
+  my @classes;
+  my %nodes;
+  my %classes;
+  my %priors;
+  my $type;
+  my $prior;
+  my $node;
+  my $source;
+  my @parents;
+  my $parent;
+  my $i;
+
+  my $sth = $dbh->prepare('SELECT Name FROM Node WHERE ' .
+      "Category <> 'Intermediate result' AND Category <> 'Constant' ".
+      'ORDER BY Position ASC');
+  $sth->execute;
+  while ($fields = $sth->fetchrow_hashref) {
+    $type = &NodeCategory($$fields{'Name'});
+    if ($type =~ /^[sdcp]$/) {
+      $prior = &NodePrior($$fields{'Name'});
+    } else {
+      $prior = '';
+    }
+    push(@nodes, $$fields{'Name'});
+    push(@classes, ucfirst($$fields{'Name'}) . 'Prior');
+    push(@{$nodes{$type}}, $$fields{'Name'});
+    push(@{$classes{$type}}, ucfirst($$fields{'Name'}) . 'Prior');
+    push(@{$priors{$type}}, $prior);
+  }
+  $sth->finish;
+
+  # header file
+  $tokens{'Guard'} = 'BIM_' . uc($model) . '_' . uc($model) . 'PRIOR_HPP';
+  $tokens{'ClassName'} = $model . 'Prior';
+  $tokens{'Includes'} = join("\n", map { &Include("${_}.hpp") } @classes);
+  $tokens{'NodeDeclarations'} = join("\n  ", map { ucfirst($_) . 'Prior ' . $_ . ';' } @nodes);
+
+  foreach $type ('S', 'D', 'C', 'P') {
+    $tokens{"${type}PriorListName"} = "${model}${type}PriorList";
+    $tokens{"${type}PriorList"} = join("\n",
+      "BEGIN_TYPELIST($tokens{\"${type}PriorListName\"})",
+      &PriorList($priors{lc($type)}),
+      'END_TYPELIST()');
+  }
+
+  $source = &ProcessTemplate('ModelPriorHeader', \%tokens);
+  $source = &PrettyPrint($source);
+
+  open(SOURCE, ">$outdir/$tokens{'ClassName'}.hpp") ||
+      confess("Could not open $outdir/$tokens{'ClassName'}.hpp");
+  print SOURCE $source;
+  print SOURCE "\n";
+  close SOURCE;
+
+  # source file
+  foreach $type ('s', 'd', 'c', 'p') {
+    $i = 0;
+    foreach $node (@{$nodes{$type}}) {
+      if (&NodePrior($node) ne '') {
+        $tokens{uc($type) . 'PriorDefinitions'} .= "  p0.set($i, $node.getPrior());\n";
+      }
+      $i++;
+    }
+  }
+
+  $source = &ProcessTemplate('ModelPriorSource', \%tokens);
+  $source = &PrettyPrint($source);
+
+  open(SOURCE, ">$outdir/$tokens{'ClassName'}.cpp") ||
+      confess("Could not open $outdir/$tokens{'ClassName'}.cpp");
+  print SOURCE $source;
+  print SOURCE "\n";
+  close SOURCE;
 }
 
 ##
@@ -151,18 +215,11 @@ sub OutputNodeSources {
     $tokens{'LaTeXName'} = $$fields{'LaTeXName'};
     $tokens{'ClassName'} = ucfirst($$fields{'Name'}) . 'Node';
     $tokens{'Guard'} = 'BIM_' . uc($model) . '_' . uc($tokens{'ClassName'}) .
-        '_CUH';
+        '_HPP';
     $tokens{'Includes'} = &Includes($$fields{'Name'});
     $tokens{'TraitDeclarations'} = &TraitDeclarations($$fields{'Name'});
-    $tokens{'FunctionDeclarations'} = &FunctionDeclarations($$fields{'Name'});
-    $tokens{'FunctionDefinitions'} = &FunctionDefinitions($$fields{'Name'});
-    if (&NodeCategory($$fields{'Name'}) =~ /^[sdcp]$/) {
-      $tokens{'PriorDeclaration'} = &PriorDeclaration($$fields{'Name'});
-      $tokens{'PriorDefinition'} = &PriorDefinition($$fields{'Name'});
-    } else {
-      undef $tokens{'PriorDeclaration'};
-      undef $tokens{'PriorDefinition'};
-    }
+    $tokens{'FunctionDeclarations'} = &FunctionDeclarations($$fields{'Name'}, 0);
+    $tokens{'FunctionDefinitions'} = &FunctionDefinitions($$fields{'Name'}, 0);
 
     $source = &ProcessTemplate('NodeHeader', \%tokens);
     $source = &PrettyPrint($source);
@@ -174,6 +231,59 @@ sub OutputNodeSources {
     close SOURCE;
 
     $source = &ProcessTemplate('NodeSource', \%tokens);
+    $source = &PrettyPrint($source);
+
+    open(SOURCE, ">$outdir/$tokens{'ClassName'}.cpp") ||
+        confess("Could not open $outdir/$tokens{'ClassName'}.cpp");
+    print SOURCE $source;
+    print SOURCE "\n";
+    close SOURCE;
+  }
+}
+
+##
+## Output source files for node priors.
+##
+sub OutputNodePriors {
+  my $fields;
+  my %tokens;
+  my $source;
+  my $key;
+
+  my $sth = $dbh->prepare('SELECT Name, LaTeXName, Category, Description FROM Node ' .
+      "WHERE Category <> 'Intermediate result' AND Category <> 'Constant'");
+
+  $sth->execute;
+  while ($fields = $sth->fetchrow_hashref) {
+    $tokens{'Name'} = $$fields{'Name'};
+    $tokens{'Formula'} = $$fields{'Formula'};
+    $tokens{'Description'} = $$fields{'Description'};
+    $tokens{'LaTeXName'} = $$fields{'LaTeXName'};
+    $tokens{'ClassName'} = ucfirst($$fields{'Name'}) . 'Prior';
+    $tokens{'Guard'} = 'BIM_' . uc($model) . '_' . uc($tokens{'ClassName'}) .
+        '_HPP';
+    #$tokens{'Includes'} = &PriorIncludes($$fields{'Name'});
+    $tokens{'FunctionDeclarations'} = &FunctionDeclarations($$fields{'Name'}, 1);
+    $tokens{'FunctionDefinitions'} = &FunctionDefinitions($$fields{'Name'}, 1);
+
+    if (&NodeCategory($$fields{'Name'}) =~ /^[sdcp]$/) {
+      $tokens{'PriorDeclaration'} = &PriorDeclaration($$fields{'Name'});
+      $tokens{'PriorDefinition'} = &PriorDefinition($$fields{'Name'});
+    } else {
+      undef $tokens{'PriorDeclaration'};
+      undef $tokens{'PriorDefinition'};
+    }
+
+    $source = &ProcessTemplate('NodePriorHeader', \%tokens);
+    $source = &PrettyPrint($source);
+
+    open(SOURCE, ">$outdir/$tokens{'ClassName'}.hpp") ||
+        confess("Could not open $outdir/$tokens{'ClassName'}.hpp");
+    print SOURCE $source;
+    print SOURCE "\n";
+    close SOURCE;
+
+    $source = &ProcessTemplate('NodePriorSource', \%tokens);
     $source = &PrettyPrint($source);
 
     open(SOURCE, ">$outdir/$tokens{'ClassName'}.cpp") ||
@@ -377,30 +487,40 @@ sub TraitDeclarations {
 ## Function declarations for a node.
 ##
 ## @param name Name of node.
+## @param prior True to keep prior-related functions, false to keep others.
 ##
 ## @return Function declarations for inclusion in template.
 ##
 sub FunctionDeclarations {
   my $name = shift;
+  my $prior = shift;
   my @decs;
   my %tokens;
   my $template;
   my $fields;
+  my $continue;
 
   my $sth = $dbh->prepare('SELECT Function, Formula, LaTeXFormula FROM NodeFormula ' .
       'WHERE Node = ?');
 
   $sth->execute($name);
   while ($fields = $sth->fetchrow_hashref) {
-    $tokens{'ClassName'} = ucfirst($name) . 'Node';
-    $tokens{'ParentAliases'} = &ParentAliases($name);
-    $tokens{'ConstantAliases'} = &ConstantAliases($name);
-    $tokens{'InlineAliases'} = &InlineAliases($name);
-    $tokens{'Formula'} = $$fields{'Formula'};
-    $tokens{'LaTeXFormula'} = $$fields{'LaTeXFormula'};
+    $continue = ($$fields{'Function'} eq 'mu0' || $$fields{'Function'} eq 'sigma0');
+    if (($continue && $prior) || (!$continue && !$prior)) {
+      if ($prior) {
+        $tokens{'ClassName'} = ucfirst($name) . 'Prior';
+      } else {
+        $tokens{'ClassName'} = ucfirst($name) . 'Node';
+      }
+      $tokens{'ParentAliases'} = &ParentAliases($name);
+      $tokens{'ConstantAliases'} = &ConstantAliases($name);
+      $tokens{'InlineAliases'} = &InlineAliases($name);
+      $tokens{'Formula'} = $$fields{'Formula'};
+      $tokens{'LaTeXFormula'} = $$fields{'LaTeXFormula'};
 
-    $template = 'FunctionDeclaration' . ucfirst($$fields{'Function'});
-    push(@decs, &ProcessTemplate($template, \%tokens));
+      $template = 'FunctionDeclaration' . ucfirst($$fields{'Function'});
+      push(@decs, &ProcessTemplate($template, \%tokens));
+    }
   }
   $sth->finish;
 
@@ -411,30 +531,40 @@ sub FunctionDeclarations {
 ## Function definitions for a node.
 ##
 ## @param name Name of node.
+## @param prior True to keep prior-related functions, false to keep others.
 ##
 ## @return Function definitions for inclusion in template.
 ##
 sub FunctionDefinitions {
   my $name = shift;
+  my $prior = shift;
   my @defs;
   my %tokens;
   my $template;
   my $fields;
+  my $continue;
 
   my $sth = $dbh->prepare('SELECT Function, Formula, LaTeXFormula FROM NodeFormula ' .
       'WHERE Node = ?');
 
   $sth->execute($name);
   while ($fields = $sth->fetchrow_hashref) {
-    $tokens{'ClassName'} = ucfirst($name) . 'Node';
-    $tokens{'ParentAliases'} = &ParentAliases($name);
-    $tokens{'ConstantAliases'} = &ConstantAliases($name);
-    $tokens{'InlineAliases'} = &InlineAliases($name);
-    $tokens{'Formula'} = $$fields{'Formula'};
-    $tokens{'LaTeXFormula'} = $$fields{'LaTeXFormula'};
+    $continue = ($$fields{'Function'} eq 'mu0' || $$fields{'Function'} eq 'sigma0');
+    if (($continue && $prior) || (!$continue && !$prior)) {
+      if ($prior) {
+        $tokens{'ClassName'} = ucfirst($name) . 'Prior';
+      } else {
+        $tokens{'ClassName'} = ucfirst($name) . 'Node';
+      }
+      $tokens{'ParentAliases'} = &ParentAliases($name);
+      $tokens{'ConstantAliases'} = &ConstantAliases($name);
+      $tokens{'InlineAliases'} = &InlineAliases($name);
+      $tokens{'Formula'} = $$fields{'Formula'};
+      $tokens{'LaTeXFormula'} = $$fields{'LaTeXFormula'};
 
-    $template = 'FunctionDefinition' . ucfirst($$fields{'Function'});
-    push(@defs, &ProcessTemplate($template, \%tokens));
+      $template = 'FunctionDefinition' . ucfirst($$fields{'Function'});
+      push(@defs, &ProcessTemplate($template, \%tokens));
+    }
   }
   $sth->finish;
 
@@ -486,7 +616,7 @@ sub PriorDeclaration {
   my %tokens;
   my $template;
 
-  $tokens{'ClassName'} = ucfirst($name) . 'Node';
+  $tokens{'ClassName'} = ucfirst($name) . 'Prior';
   $template = 'Prior' . &NodePrior($name) . 'Declaration';
 
   return &ProcessTemplate($template, \%tokens);
@@ -504,7 +634,7 @@ sub PriorDefinition {
   my %tokens;
   my $template;
 
-  $tokens{'ClassName'} = ucfirst($name) . 'Node';
+  $tokens{'ClassName'} = ucfirst($name) . 'Prior';
   $template = 'Prior' . &NodePrior($name) . 'Definition';
 
   return &ProcessTemplate($template, \%tokens);

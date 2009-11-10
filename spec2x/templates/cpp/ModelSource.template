@@ -7,41 +7,11 @@
  */
 #include "<% ClassName %>.hpp"
 
-using namespace bi;
-
 <% ClassName %>::<% ClassName %>() {
   /* nodes */
   <% NodeDefinitions %>
 
   /* edges */
   <% EdgeDefinitions %>
-}
-
-FactoredPdf<GET_TYPELIST(<% SPriorListName %>)> <% ClassName %>::getSPrior() {
-  FactoredPdf<GET_TYPELIST(<% SPriorListName %>)> p0;
-  <% SPriorDefinitions %>
-
-  return p0;
-}
-
-FactoredPdf<GET_TYPELIST(<% DPriorListName %>)> <% ClassName %>::getDPrior() {
-  FactoredPdf<GET_TYPELIST(<% DPriorListName %>)> p0;
-  <% DPriorDefinitions %>
-
-  return p0;
-}
-
-FactoredPdf<GET_TYPELIST(<% CPriorListName %>)> <% ClassName %>::getCPrior() {
-  FactoredPdf<GET_TYPELIST(<% CPriorListName %>)> p0;
-  <% CPriorDefinitions %>
-
-  return p0;
-}
-
-FactoredPdf<GET_TYPELIST(<% PPriorListName %>)> <% ClassName %>::getPPrior() {
-  FactoredPdf<GET_TYPELIST(<% PPriorListName %>)> p0;
-  <% PPriorDefinitions %>
-
-  return p0;
 }
 

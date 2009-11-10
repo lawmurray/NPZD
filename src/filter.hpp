@@ -9,6 +9,7 @@
 #define FILTER_HPP
 
 #include "model/NPZDModel.hpp"
+#include "model/NPZDPrior.hpp"
 
 #include "bi/cuda/cuda.hpp"
 #include "bi/random/Random.hpp"

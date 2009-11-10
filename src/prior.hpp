@@ -10,9 +10,6 @@
 
 #include "model/NPZDModel.hpp"
 
-#include "bi/pdf/LogNormalPdf.hpp"
-#include "bi/pdf/GaussianPdf.hpp"
-#include "bi/pdf/FactoredPdf.hpp"
 #include "bi/pdf/MultiplicativeLogNormalPdf.hpp"
 #include "bi/pdf/AdditiveGaussianPdf.hpp"
 #include "bi/pdf/ConditionalFactoredPdf.hpp"

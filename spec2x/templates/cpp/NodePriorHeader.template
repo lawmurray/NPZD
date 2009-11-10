@@ -8,27 +8,22 @@
 #ifndef <% Guard %>
 #define <% Guard %>
 
-#include "bi/model/BayesNode.hpp"
 #include "bi/cuda/cuda.hpp"
+#include "bi/pdf/GaussianPdf.hpp"
+#include "bi/pdf/LogNormalPdf.hpp"
 
 #include <cmath>
 
 /**
  * \f$<% LaTeXName %>\f$; <% Description %>
  */
-class <% ClassName %> : public bi::BayesNode {
+class <% ClassName %> {
 public:
-  /**
-   * Constructor.
-   */
-  <% ClassName %>();
+<% PriorDeclaration %>
 
 <% FunctionDeclarations %>
+
 };
-
-<% Includes %>
-
-<% TraitDeclarations %>
 
 <% FunctionDefinitions %>
 

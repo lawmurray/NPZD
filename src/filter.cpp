@@ -77,6 +77,9 @@ int main(int argc, char* argv[]) {
   /* model */
   NPZDModel m;
 
+  /* prior */
+  NPZDPrior prior;
+
   /* state and intermediate results */
   State s(m, P);
 
@@ -86,8 +89,8 @@ int main(int argc, char* argv[]) {
 
   /* ...and/or initialise from prior */
   //BOOST_AUTO(p0, buildPPrior(m));
-  BOOST_AUTO(d0, m.getDPrior());
-  BOOST_AUTO(c0, m.getCPrior());
+  BOOST_AUTO(d0, prior.getDPrior());
+  BOOST_AUTO(c0, prior.getCPrior());
 
   //p0.sample(rng, s.pState);
   d0.sample(rng, s.dState);

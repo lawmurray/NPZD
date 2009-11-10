@@ -12,7 +12,6 @@
 
 #include "bi/typelist/TypeList.hpp"
 #include "bi/model/BayesNet.hpp"
-#include "bi/pdf/FactoredPdf.hpp"
 
 /**
  * Type list for s-nodes.
@@ -50,26 +49,6 @@
 <% PTypeList %>
 
 /**
- * Prior type list for s-nodes.
- */
-<% SPriorList %>
-
-/**
- * Prior type list for d-nodes.
- */
-<% DPriorList %>
-
-/**
- * Prior type list for c-nodes.
- */
-<% CPriorList %>
-
-/**
- * Prior type list for p-nodes.
- */
-<% PPriorList %>
-
-/**
  * <% Description %>
  */
 class <% ClassName %> : public bi::BayesNet<
@@ -85,26 +64,6 @@ public:
    * Constructor.
    */
   <% ClassName %>();
-
-  /**
-   * Prior over s-nodes.
-   */
-  bi::FactoredPdf<GET_TYPELIST(<% SPriorListName %>)> getSPrior();
-
-  /**
-   * Prior over d-nodes.
-   */
-  bi::FactoredPdf<GET_TYPELIST(<% DPriorListName %>)> getDPrior();
-
-  /**
-   * Prior over c-nodes.
-   */
-  bi::FactoredPdf<GET_TYPELIST(<% CPriorListName %>)> getCPrior();
-
-  /**
-   * Prior over p-nodes.
-   */
-  bi::FactoredPdf<GET_TYPELIST(<% PPriorListName %>)> getPPrior();
 
   /*
    * Nodes.
