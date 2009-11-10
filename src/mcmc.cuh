@@ -12,6 +12,6 @@
 
 #include "bi/method/ParticleFilter.cuh"
 
-bi::ParticleFilter<NPZDModel,real_t>* pf;
+bi::ParticleFilter<NPZDModel>* pf;
 
 #endif

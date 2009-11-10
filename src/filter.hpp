@@ -16,7 +16,8 @@
 #include "bi/method/RUpdater.hpp"
 #include "bi/method/FUpdater.hpp"
 #include "bi/method/OUpdater.hpp"
-#include "bi/io/NetCDFWriter.hpp"
+#include "bi/io/ForwardNetCDFReader.hpp"
+#include "bi/io/ForwardNetCDFWriter.hpp"
 
 /**
  * Run particle filter.
@@ -32,7 +33,7 @@
  * @param out Output, NULL for no output.
  */
 void filter(const real_t T, const real_t h, NPZDModel& m, bi::State& s,
-    bi::Random& rng, bi::FUpdater<>* fUpdater, bi::OUpdater<>* oUpdater,
-    bi::NetCDFWriter<>* out = NULL);
+    bi::Random& rng, bi::FUpdater* fUpdater, bi::OUpdater* oUpdater,
+    bi::ForwardNetCDFWriter* out = NULL);
 
 #endif

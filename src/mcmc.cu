@@ -13,7 +13,7 @@
 using namespace bi;
 
 void init(const real_t h, NPZDModel& m, State& s, Random& rng,
-    FUpdater<>* fUpdater, OUpdater<>* oUpdater) {
+    FUpdater* fUpdater, OUpdater* oUpdater) {
   /* parameters for ODE integrator on GPU */
   ode_init();
   ode_set_h0(CUDA_REAL(h));
@@ -21,7 +21,7 @@ void init(const real_t h, NPZDModel& m, State& s, Random& rng,
   ode_set_atoler(CUDA_REAL(1.0e-3));
   ode_set_nsteps(200);
 
-  pf = new ParticleFilter<NPZDModel,real_t>(m, s, rng, fUpdater, oUpdater);
+  pf = new ParticleFilter<NPZDModel>(m, s, rng, fUpdater, oUpdater);
 }
 
 real_t filter(const real_t T, const real_t minEss) {

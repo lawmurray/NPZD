@@ -16,7 +16,7 @@
 #include "bi/random/Random.hpp"
 #include "bi/method/FUpdater.hpp"
 #include "bi/method/OUpdater.hpp"
-#include "bi/io/NetCDFWriter.hpp"
+#include "bi/io/MCMCNetCDFWriter.hpp"
 
 /**
  * Initialise GPU particle filter.
@@ -29,7 +29,7 @@
  * @param oUpdater Updater for o-nodes.
  */
 void init(const real_t h, NPZDModel& m, bi::State& s, bi::Random& rng,
-    bi::FUpdater<>* fUpdater, bi::OUpdater<>* oUpdater);
+    bi::FUpdater* fUpdater, bi::OUpdater* oUpdater);
 
 /**
  * Run particle filter to calculate log-likelihood.

@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
   State s(m, P);
 
   /* initialise from file... */
-  NetCDFReader<real_t,true,true,true,false,true,true,true> in(m, INIT_FILE, INIT_NS);
+  ForwardNetCDFReader<true,true,true,false,true,true,true> in(m, INIT_FILE, INIT_NS);
   in.read(s);
 
   /* ...and/or initialise from prior */
@@ -97,13 +97,13 @@ int main(int argc, char* argv[]) {
   c0.sample(rng, s.cState);
 
   /* forcings, observations */
-  FUpdater<> fUpdater(m, FORCE_FILE, s, FORCE_NS);
-  OUpdater<> oUpdater(m, OBS_FILE, s, OBS_NS);
+  FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
+  OUpdater oUpdater(m, OBS_FILE, s, OBS_NS);
 
   /* output */
-  NetCDFWriter<>* out;
+  ForwardNetCDFWriter* out;
   if (OUTPUT) {
-    out = new NetCDFWriter<>(m, OUTPUT_FILE, P, oUpdater.numUniqueTimes() + 1);
+    out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, oUpdater.numUniqueTimes() + 1);
   } else {
     out = NULL;
   }

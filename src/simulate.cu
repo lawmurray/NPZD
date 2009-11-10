@@ -13,8 +13,8 @@
 #include "bi/random/Random.hpp"
 #include "bi/method/FUpdater.hpp"
 #include "bi/method/OUpdater.hpp"
-#include "bi/io/NetCDFReader.hpp"
-#include "bi/io/NetCDFWriter.hpp"
+#include "bi/io/ForwardNetCDFReader.hpp"
+#include "bi/io/ForwardNetCDFWriter.hpp"
 
 #include <string>
 #include "sys/time.h"
@@ -42,22 +42,22 @@ void simulate(const unsigned P, const unsigned K, const real_t T,
 
   /* state */
   State s(m, P);
-  NetCDFReader<real_t,true,true,true,false,false,false,true> in(m, INIT_FILE, NS);
+  ForwardNetCDFReader<true,true,true,false,false,false,true> in(m, INIT_FILE, NS);
   in.read(s); // initialise state
 
   /* intermediate result buffer */
-  Result<real_t> r(m, P, K);
+  Result r(m, P, K);
 
   /* output */
-  NetCDFWriter<real_t>* out;
+  ForwardNetCDFWriter* out;
   if (OUTPUT) {
-    out = new NetCDFWriter<real_t>(m, OUTPUT_FILE, P, 366);
+    out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, 366);
   }
 
   /* simulator */
-  FUpdater<real_t> fUpdater(m, FORCE_FILE, s, NS);
-  OUpdater<real_t> oUpdater(m, OBS_FILE, s, NS);
-  MultiSimulator<NPZDModel,real_t> sim(m, s, rng, &r, &fUpdater, &oUpdater);
+  FUpdater fUpdater(m, FORCE_FILE, s, NS);
+  OUpdater oUpdater(m, OBS_FILE, s, NS);
+  MultiSimulator<NPZDModel> sim(m, s, rng, &r, &fUpdater, &oUpdater);
 
   /* simulate and output */
   timeval start, end;

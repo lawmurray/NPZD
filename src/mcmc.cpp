@@ -137,13 +137,13 @@ int main(int argc, char* argv[]) {
   BOOST_AUTO(q, buildPProposal(m, SCALE));
 
   /* forcings, observations */
-  FUpdater<> fUpdater(m, FORCE_FILE, s, FORCE_NS);
-  OUpdater<> oUpdater(m, OBS_FILE, s, OBS_NS);
+  FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
+  OUpdater oUpdater(m, OBS_FILE, s, OBS_NS);
 
   /* output */
-  NetCDFWriter<real_t,false,false,false,false,false,false,true>* out;
+  MCMCNetCDFWriter* out;
   if (OUTPUT) {
-    out = new NetCDFWriter<real_t,false,false,false,false,false,false,true>(m, OUTPUT_FILE, P, 1, L);
+    out = new MCMCNetCDFWriter(m, OUTPUT_FILE, L);
   } else {
     out = NULL;
   }
@@ -168,8 +168,7 @@ int main(int argc, char* argv[]) {
     c0.sample(rng, s.cState);
 
     if (out != NULL && i >= B && (i - B) % I == 0) {
-      out->reset();
-      out->write(s, 0.0, (i - B) / I);
+      out->write(s, (i - B) / I);
     }
 
     /* calculate likelihood */
@@ -200,7 +199,7 @@ int main(int argc, char* argv[]) {
     /* output */
     if (out != NULL && i >= B && (i - B) % I == 0) {
       theta2 = theta1;
-      out->write(s, 0.0, (i - B) / I);
+      out->write(s, (i - B) / I);
     }
 
     /* next parameter configuration */
