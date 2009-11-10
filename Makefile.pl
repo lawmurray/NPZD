@@ -24,7 +24,7 @@ $CUDACC = 'nvcc';
 $LINKER = 'g++';
 $CXXFLAGS = '-Wall -fopenmp -I"../bi/src" `nc-config --cflags` `mpic++ -showme:compile`';
 $CUDACCFLAGS = '-arch=sm_13 -Xptxas="-v" -Xcompiler="-Wall -fopenmp `mpic++ -showme:compile`" -I"../bi/src" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS -I/tools/thrust/1.1.1 -I/usr/local/include/thrust';
-$LINKFLAGS = '-L"../bi/build" -L"/usr/local/atlas/lib" -lbi -latlas -lf77blas -llapack -lgfortran -lgslcblas -lgsl `nc-config --libs` -lnetcdf_c++ -lcuda -lcudart -lgomp -lpthread -lboost_program_options-gcc43-mt -lboost_mpi-mt `mpic++ -showme:link`';
+$LINKFLAGS = '-L"../bi/build" -L"/usr/local/atlas/lib" -lbi -latlas -lf77blas -llapack -lgfortran -lgslcblas -lgsl `nc-config --libs` -lnetcdf_c++ -lcudart -lgomp -lpthread -lboost_program_options-gcc43-mt -lboost_mpi-gcc43-mt `mpic++ -showme:link`';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 
