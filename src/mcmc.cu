@@ -5,7 +5,6 @@
  * $Rev$
  * $Date$
  */
-#include "mcmc.hpp"
 #include "mcmc.cuh"
 
 #include "bi/cuda/ode/IntegratorConstants.cuh"
