@@ -22,7 +22,7 @@ void init(const real_t h, NPZDModel& m, State& s, Random& rng,
   ode_set_atoler(CUDA_REAL(1.0e-3));
   ode_set_nsteps(200);
 
-  pf = new ParticleFilter<NPZDModel,real_t>(m, s, rng, NULL, fUpdater, oUpdater);
+  pf = new ParticleFilter<NPZDModel,real_t>(m, s, rng, fUpdater, oUpdater);
 }
 
 real_t filter(const real_t T, const real_t minEss) {

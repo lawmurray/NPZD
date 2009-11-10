@@ -121,14 +121,17 @@ int main(int argc, char* argv[]) {
   /* model */
   NPZDModel m;
 
+  /* prior */
+  NPZDPrior prior;
+
   /* state */
   State s(m, P);
 
   /* priors */
-  BOOST_AUTO(p0, buildPPrior(m));
-  BOOST_AUTO(s0, buildSPrior(m));
-  BOOST_AUTO(d0, buildDPrior(m));
-  BOOST_AUTO(c0, buildCPrior(m));
+  BOOST_AUTO(p0, prior.getPPrior());
+  BOOST_AUTO(s0, prior.getSPrior());
+  BOOST_AUTO(d0, prior.getDPrior());
+  BOOST_AUTO(c0, prior.getCPrior());
 
   /* proposal */
   BOOST_AUTO(q, buildPProposal(m, SCALE));
