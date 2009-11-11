@@ -36,32 +36,89 @@
 <% PPriorList %>
 
 /**
+ * Model prior.
+ *
  * <% Description %>
  */
 class <% ClassName %> {
 public:
   /**
+   * Constructor.
+   */
+  <% ClassName %>();
+
+  /**
+   * Get prior over s-nodes.
+   *
+   * @return Prior over s-nodes.
+   */
+  bi::FactoredPdf<GET_TYPELIST(<% SPriorListName %>)>& getSPrior();
+
+  /**
+   * Get prior over d-nodes.
+   *
+   * @return Prior over d-nodes.
+   */
+  bi::FactoredPdf<GET_TYPELIST(<% DPriorListName %>)>& getDPrior();
+
+  /**
+   * Get prior over c-nodes.
+   *
+   * @return Prior over c-nodes.
+   */
+  bi::FactoredPdf<GET_TYPELIST(<% CPriorListName %>)>& getCPrior();
+
+  /**
+   * Get prior over p-nodes.
+   *
+   * @return Prior over p-nodes.
+   */
+  bi::FactoredPdf<GET_TYPELIST(<% PPriorListName %>)>& getPPrior();
+
+  <% NodeDeclarations %>
+
+private:
+  /**
    * Prior over s-nodes.
    */
-  bi::FactoredPdf<GET_TYPELIST(<% SPriorListName %>)> getSPrior();
+  bi::FactoredPdf<GET_TYPELIST(<% SPriorListName %>)> s0;
 
   /**
    * Prior over d-nodes.
    */
-  bi::FactoredPdf<GET_TYPELIST(<% DPriorListName %>)> getDPrior();
+  bi::FactoredPdf<GET_TYPELIST(<% DPriorListName %>)> d0;
 
   /**
    * Prior over c-nodes.
    */
-  bi::FactoredPdf<GET_TYPELIST(<% CPriorListName %>)> getCPrior();
+  bi::FactoredPdf<GET_TYPELIST(<% CPriorListName %>)> c0;
 
   /**
    * Prior over p-nodes.
    */
-  bi::FactoredPdf<GET_TYPELIST(<% PPriorListName %>)> getPPrior();
+  bi::FactoredPdf<GET_TYPELIST(<% PPriorListName %>)> p0;
 
-  <% NodeDeclarations %>
 };
+
+inline bi::FactoredPdf<GET_TYPELIST(<% SPriorListName %>)>&
+    <% ClassName %>::getSPrior() {
+  return s0;
+}
+
+inline bi::FactoredPdf<GET_TYPELIST(<% DPriorListName %>)>&
+    <% ClassName %>::getDPrior() {
+  return d0;
+}
+
+inline bi::FactoredPdf<GET_TYPELIST(<% CPriorListName %>)>&
+    <% ClassName %>::getCPrior() {
+  return c0;
+}
+
+inline bi::FactoredPdf<GET_TYPELIST(<% PPriorListName %>)>&
+    <% ClassName %>::getPPrior() {
+  return p0;
+}
 
 #endif
 

@@ -7,8 +7,7 @@
  */
 #include "<% ClassName %>.hpp"
 
-#include "bi/pdf/GaussianPdf.hpp"
-#include "bi/pdf/LogNormalPdf.hpp"
-
-<% PriorDefinition %>
+<% ClassName %>::<% ClassName %>() : p0(mu0(), sigma0()) {
+  //
+}
 

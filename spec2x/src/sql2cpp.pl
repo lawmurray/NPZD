@@ -133,9 +133,11 @@ sub OutputModelPrior {
   my $parent;
   my $i;
 
-  my $sth = $dbh->prepare('SELECT Name FROM Node WHERE ' .
-      "Category <> 'Intermediate result' AND Category <> 'Constant' ".
-      'ORDER BY Position ASC');
+  my $sth = $dbh->prepare('SELECT Name ' .
+      "FROM Node, NodeTrait WHERE Category <> 'Intermediate result' AND " .
+      "Category <> 'Constant' AND Trait LIKE '\%PRIOR\%' AND " .
+      'NodeTrait.Node = Node.Name ORDER BY Position ASC');
+
   $sth->execute;
   while ($fields = $sth->fetchrow_hashref) {
     $type = &NodeCategory($$fields{'Name'});
@@ -180,7 +182,7 @@ sub OutputModelPrior {
     $i = 0;
     foreach $node (@{$nodes{$type}}) {
       if (&NodePrior($node) ne '') {
-        $tokens{uc($type) . 'PriorDefinitions'} .= "  p0.set($i, $node.getPrior());\n";
+        $tokens{uc($type) . 'PriorDefinitions'} .= "  ${type}0.set($i, $node.getPrior());\n";
       }
       $i++;
     }
@@ -250,8 +252,10 @@ sub OutputNodePriors {
   my $source;
   my $key;
 
-  my $sth = $dbh->prepare('SELECT Name, LaTeXName, Category, Description FROM Node ' .
-      "WHERE Category <> 'Intermediate result' AND Category <> 'Constant'");
+  my $sth = $dbh->prepare('SELECT Name, LaTeXName, Category, Description ' .
+      "FROM Node, NodeTrait WHERE Category <> 'Intermediate result' AND " .
+      "Category <> 'Constant' AND Trait LIKE '\%PRIOR\%' AND " .
+      'NodeTrait.Node = Node.Name');
 
   $sth->execute;
   while ($fields = $sth->fetchrow_hashref) {
@@ -265,14 +269,7 @@ sub OutputNodePriors {
     #$tokens{'Includes'} = &PriorIncludes($$fields{'Name'});
     $tokens{'FunctionDeclarations'} = &FunctionDeclarations($$fields{'Name'}, 1);
     $tokens{'FunctionDefinitions'} = &FunctionDefinitions($$fields{'Name'}, 1);
-
-    if (&NodeCategory($$fields{'Name'}) =~ /^[sdcp]$/) {
-      $tokens{'PriorDeclaration'} = &PriorDeclaration($$fields{'Name'});
-      $tokens{'PriorDefinition'} = &PriorDefinition($$fields{'Name'});
-    } else {
-      undef $tokens{'PriorDeclaration'};
-      undef $tokens{'PriorDefinition'};
-    }
+    $tokens{'PriorType'} = &NodePriorType($$fields{'Name'});
 
     $source = &ProcessTemplate('NodePriorHeader', \%tokens);
     $source = &PrettyPrint($source);
@@ -424,6 +421,36 @@ sub NodePrior {
     $result = 'Gaussian';
   } elsif ($trait eq 'HAS_LOG_NORMAL_PRIOR') {
     $result = 'LogNormal';
+  } else {
+    warn("Node $name does not have prior of recognised type");
+    $result = '';
+  }
+  $sth->finish;
+
+  return $result;
+}
+
+##
+## Get prior type of node.
+##
+## @param name Name of node.
+##
+## @return Prior type.
+##
+sub NodePriorType {
+  my $name = shift;
+  my $result;
+  my $trait;
+
+  my $sth = $dbh->prepare('SELECT Trait FROM NodeTrait WHERE ' .
+      "Node = ? AND Trait LIKE 'HAS\_%\_PRIOR'");
+
+  $sth->execute($name);
+  $trait = $sth->fetchrow_array;
+  if ($trait eq 'HAS_GAUSSIAN_PRIOR' || $trait eq 'HAS_NORMAL_PRIOR') {
+    $result = 'bi::GaussianPdf<>';
+  } elsif ($trait eq 'HAS_LOG_NORMAL_PRIOR') {
+    $result = 'bi::LogNormalPdf<>';
   } else {
     warn("Node $name does not have prior of recognised type");
     $result = '';

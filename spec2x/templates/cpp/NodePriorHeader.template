@@ -19,11 +19,30 @@
  */
 class <% ClassName %> {
 public:
-<% PriorDeclaration %>
+  /**
+   * Constructor.
+   */
+  <% ClassName %>();
+
+  /**
+   * Get prior.
+   *
+   * @return Prior.
+   */
+  const <% PriorType %>& getPrior();
 
 <% FunctionDeclarations %>
 
+private:
+  /**
+   * Prior.
+   */
+  <% PriorType %> p0;
 };
+
+inline const <% PriorType %>& <% ClassName %>::getPrior() {
+  return p0;
+}
 
 <% FunctionDefinitions %>
 
