@@ -87,13 +87,13 @@
 ,"gammaR",,"\gamma^R",,"s: CUDA_EXP(CUDA_LOG(alphaR)+CUDA_POW(sigmaR, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaR, CUDA_REAL(2.0)) / CUDA_REAL(2.0))","Static variable","alphaR,sigmaR,thetaR","IS_S_NODE, IS_GENERIC_STATIC"
 ,"gammaQ",,"\gamma^Q",,"s: CUDA_EXP(CUDA_LOG(alphaQ)+CUDA_POW(sigmaQ, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaQ, CUDA_REAL(2.0)) / CUDA_REAL(2.0))","Static variable","alphaQ,sigmaQ,thetaQ","IS_S_NODE, IS_GENERIC_STATIC"
 ,"gammaL",,"\gamma^L",,"s: CUDA_EXP(CUDA_LOG(alphaL)+CUDA_POW(sigmaL, CUDA_REAL(2.0)) / CUDA_REAL(2.0) - CUDA_POW(thetaL, CUDA_REAL(2.0)) / CUDA_REAL(2.0))","Static variable","alphaL,sigmaL,thetaL","IS_S_NODE, IS_GENERIC_STATIC"
-"Ez","EZ","Light at depth","E^Z","s: \frac{E(1-\CUDA_EXP(-K^Z))}{K^Z}","s: E*(CUDA_REAL(1.0)-CUDA_EXP(-KZ))/KZ","Static variable","E,KZ","IS_S_NODE, IS_GENERIC_STATIC"
+"Ez","EZ","Light at depth","E^Z","s: \frac{E(1-\exp(-K^Z))}{K^Z}","s: E*(CUDA_REAL(1.0)-CUDA_EXP(-KZ))/KZ","Static variable","E,KZ","IS_S_NODE, IS_GENERIC_STATIC"
 "KdZ","KZ","Light attenation, total (water + Chl-a)","K^Z","x: (K^W+K^C Chla)L","x: (KW+KC*Chla)*L","Intermediate result","KW,KC,Chla,L",
 "Graze","piG",,"\pi^G","x: Z \zeta^I \tau^C \pi^S / (1 + \pi^S)","x: Z*zetaI*tauC*piS/(CUDA_REAL(1.0)+piS)","Intermediate result","Z, zetaI, tauC, piS",
 "Sat","piS",,"\pi^S","x: (\zeta^{Cl} P / \zeta^I)^{\pi^K}","x: CUDA_POW(zetaCl*P/zetaI, piK)","Intermediate result","zetaCl, P, zetaI, piK",
 "mumaxCT","muCT",,"\mu^{CT}","x: \mu^C \tau^C","x: muC*tauC","Intermediate result","muC, tauC",
 "mu","mu","Phytoplankton growth rate","\mu","x: \mu^{CT} \pi^E \nu^N / (\nu^N + \mu^{CN} \pi^E)","x: muCT*piE*nuN/(nuN + muCN*piE)","Intermediate result","muCT, piE, nuN, muCN",
-"fE","piE",,"\pi^E","x: 1 - \CUDA_EXP(-\pi^Q \mu^{Ch} EZ / \mu^C)","x: CUDA_REAL(1.0)-CUDA_EXP(-piQ*muCh*EZ/muC)","Intermediate result","piQ, muCh, EZ, muC",
+"fE","piE",,"\pi^E","x: 1 - \exp(-\pi^Q \mu^{Ch} EZ / \mu^C)","x: CUDA_REAL(1.0)-CUDA_EXP(-piQ*muCh*EZ/muC)","Intermediate result","piQ, muCh, EZ, muC",
 "aQ","piQ",,"\pi^Q","x: \pi^C \pi^{PE}","x: piC*piPE","Intermediate result","piC, piPE",
 "fN","nuN",,"\nu^N","x: N/(N + \pi^N / \nu^A)","x: N/(N + piN/nuA)","Intermediate result","N, piN, nuA",
 "mumaxN","piN",,"\pi^N","x: \mu^{CT} / \mu^{CN}","x: muCT/muCN","Intermediate result","muCT, muCN",
