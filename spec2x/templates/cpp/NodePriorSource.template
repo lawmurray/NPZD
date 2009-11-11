@@ -7,6 +7,8 @@
  */
 #include "<% ClassName %>.hpp"
 
+#include "bi/pdf/FactoredPdf.ipp"
+
 <% ClassName %>::<% ClassName %>() : p0(mu0(), sigma0()) {
   //
 }

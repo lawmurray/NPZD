@@ -7,6 +7,9 @@
  */
 #include "prior.hpp"
 
+#include "bi/pdf/FactoredPdf.ipp"
+#include "bi/pdf/ConditionalFactoredPdf.ipp"
+
 using namespace bi;
 
 ConditionalFactoredPdf<GET_TYPELIST(proposalP)> buildPProposal(NPZDModel& m,
