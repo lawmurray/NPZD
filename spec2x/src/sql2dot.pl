@@ -26,24 +26,25 @@ my $dbh = DBI->connect("dbi:SQLite:dbname=$dbfile", '', '',
 # database statement handles
 my %sth;
 $sth{'GetNodes'} = $dbh->prepare('SELECT Name, LaTeXName, ' .
-    'Category, Description FROM Node');
+    'Category, Description FROM Node WHERE Category <> \'Constant\'');
 $sth{'GetEdges'} = $dbh->prepare('SELECT ParentNode, ChildNode, Category ' .
-    'FROM Edge, Node WHERE Edge.ParentNode = Node.Name ORDER BY Edge.Position');
+    'FROM Edge, Node WHERE Edge.ParentNode = Node.Name AND Category <> ' .
+    '\'Constant\'ORDER BY Edge.Position');
 $sth{'CheckTrait'} = $dbh->prepare('SELECT 1 FROM NodeTrait WHERE ' .
     'Node = ? AND Trait = ?');
 $sth{'GetNodeFormulae'} = $dbh->prepare('SELECT Function, LaTeXFormula ' .
-    'FROM NodeFormula WHERE Node = ?');
+    'FROM NodeFormula WHERE Node = ? AND NOT (Function IN (\'mu0\', \'sigma0\'))');
 
 # output header
 print <<End;
 digraph model {
   overlap=scale;
   splines=true;
-  sep=.4;
-  d2tgraphstyle="scale=0.8"
-  nslimit=2.0;
-  mclimit=2.0;
-  ratio=0.71;  # for A4 landscape
+  sep=.2;
+  d2tgraphstyle="scale=0.6"
+  nslimit=4.0;
+  mclimit=4.0;
+  #ratio=0.71;  # for A4 landscape
 End
 
 my $fields;
@@ -82,12 +83,17 @@ while ($fields = $sth{'GetNodes'}->fetchrow_hashref) {
         $formula = "\\dot\{$$fields{'LaTeXName'}\} = " .
             $$formulafields{'LaTeXFormula'};
       } elsif ($$formulafields{'Function'} eq 'f') {
-        $formula = $$formulafields{'LaTeXFormula'};
+        $formula = "$$fields{'LaTeXName'} = " .
+            $$formulafields{'LaTeXFormula'};
+      } elsif ($$formulafields{'Function'} eq 'mu' ||
+          $$formulafields{'Function'} eq 'sigma') {
+        $formula = "\\$$formulafields{'Function'} = " .
+            $$formulafields{'LaTeXFormula'};
       } else {
-        $formula = "\\dot\{$$formulafields{'Function'}\} = " .
+        $formula = "$$formulafields{'Function'}: " .
             $$formulafields{'LaTeXFormula'};
       }
-      $label .= &mathLabel(&escapeLabel($formula));
+      $label .= &mathLabel(&escapeLabel($formula)) . "\\\\";
     } elsif ($$formulafields{'Formula'} ne '') {
       $label .= "$$formulafields{'Function'} = $$formulafields{'Formula'}";
     }
@@ -202,7 +208,7 @@ sub nodeStyle {
   my %STYLES = (
     'Constant' => 'dashed',
     'Parameter' => 'filled',
-    'Random variate' => 'filled',
+    'Random variate' => 'dashed',
     'Forcing' => 'filled',
     'Observation' => 'filled',
     'Intermediate result' => 'dashed',
@@ -212,8 +218,8 @@ sub nodeStyle {
   );
   my %COLORS = (
     'Constant' => '#000000',
-    'Parameter' => '#000000',
-    'Random variate' => '#CC79A7',
+    'Parameter' => '#CC79A7',
+    'Random variate' => '#000000',
     'Forcing' => '#FF6666',
     'Observation' => '#FFCC33',
     'Intermediate result' => '#000000',
@@ -223,8 +229,8 @@ sub nodeStyle {
   );
   my %FILLCOLORS = (
     'Constant' => '#FFFFFF',
-    'Parameter' => '#FFFFFF',
-    'Random variate' => '#FFA9D7',
+    'Parameter' => '#FFA9D7',
+    'Random variate' => '#FFFFFF',
     'Forcing' => '#FFBBBB',
     'Observation' => '#FFEEAA',
     'Intermediate result' => '#FFFFFF',
@@ -245,7 +251,8 @@ sub labelEdgeStyle {
   my $type = shift;
   my %STYLES = (
     'Constant' => 'dashed',
-    'Random variate' => 'solid',
+    'Parameter' => 'solid',
+    'Random variate' => 'dashed',
     'Forcing' => 'solid',
     'Observation' => 'solid',
     'Intermediate result' => 'dashed',
@@ -255,7 +262,8 @@ sub labelEdgeStyle {
   );
   my %COLORS = (
     'Constant' => '#000000',
-    'Random variate' => '#CC79A7',
+    'Parameter' => '#FFA9D7',
+    'Random variate' => '#000000',
     'Forcing' => '#FF6666',
     'Observation' => '#FFCC33',
     'Intermediate result' => '#000000',
