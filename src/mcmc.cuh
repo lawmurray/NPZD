@@ -12,7 +12,7 @@
 #include "model/NPZDModel.hpp"
 #include "model/NPZDPrior.hpp"
 
-#include "bi/method/ParticleMCMC.cuh"
+//#include "bi/method/ParticleMCMC.cuh"
 #include "bi/pdf/ConditionalFactoredPdf.hpp"
 
 bi::ParticleMCMC<NPZDModel,NPZDPrior,bi::ConditionalFactoredPdf<GET_TYPELIST(proposalP)> >* mcmc;

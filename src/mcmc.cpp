@@ -9,7 +9,7 @@
 #include "prior.hpp"
 #include "device.hpp"
 
-#include "bi/method/MultiSimulator.cuh"
+#include "bi/method/Simulator.hpp"
 #include "bi/math/vector.hpp"
 #include "bi/math/matrix.hpp"
 

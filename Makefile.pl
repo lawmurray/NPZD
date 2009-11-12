@@ -17,15 +17,15 @@ $SPEC2XSRCDIR = "$SPEC2XDIR/src";
 $SPEC2XCPPTEMPLATEDIR = "$SPEC2XDIR/templates/cpp";
 $SPEC2XTEXTEMPLATEDIR = "$SPEC2XDIR/templates/tex";
 $CPPDIR = "$SRCDIR/model";
-$CUDADIR = '/usr/local/cuda';
 
 # Compile flags
 $CXX = 'g++';
 $CUDACC = 'nvcc';
 $LINKER = 'g++';
-$CXXFLAGS = "-Wall -fopenmp -I\"../bi/src\" -I\"$CUDADIR/include\" `nc-config --cflags` `mpic++ -showme:compile`";
-$CUDACCFLAGS = '-arch=sm_13 -Xptxas="-v" -Xcompiler="-Wall -fopenmp `mpic++ -showme:compile`" -I"../bi/src" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS -I/tools/thrust/1.1.1 -I/usr/local/include/thrust';
-$LINKFLAGS = '-L"../bi/build" -L"/usr/local/atlas/lib" -lbi -latlas -lf77blas -llapack -lgfortran -lgslcblas -lgsl `nc-config --libs` -lnetcdf_c++ -lcuda -lcudart -lgomp -lpthread -lboost_program_options-mt -lboost_mpi-mt `mpic++ -showme:link`';
+$CPPINCLUDES = '-I../bi/src -I/usr/local/cuda/include -I/tools/thrust/1.1.1 -I/usr/local/include/thrust';
+$CXXFLAGS = "-Wall -fopenmp `nc-config --cflags` `mpic++ -showme:compile` $CPPINCLUDES";
+$CUDACCFLAGS = "-arch=sm_13 -Xptxas=\"-v\" -Xcompiler=\"-Wall -fopenmp `mpic++ -showme:compile`\" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS $CPPINCLUDES";
+$LINKFLAGS = '-L"../bi/build" -L"/usr/local/atlas/lib" -lbi -lblas -llapack -lgfortran -lgslcblas -lgsl -lnetcdf_c++ `nc-config --libs` -lcudart -lgomp -lpthread -lboost_program_options-mt -lboost_mpi-mt `mpic++ -showme:link`';
 # ^ may need f2c, g2c or nothing in place of gfortran
 # ^ may need to add -lcuda as well as -lcudart
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check

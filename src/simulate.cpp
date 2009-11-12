@@ -5,22 +5,29 @@
  * $Rev:234 $
  * $Date:2009-08-17 11:10:31 +0800 (Mon, 17 Aug 2009) $
  */
+#include "model/NPZDModel.hpp"
+
 #include "bi/cuda/cuda.hpp"
+#include "bi/cuda/ode/IntegratorConstants.hpp"
+#include "bi/random/Random.hpp"
+#include "bi/method/FUpdater.hpp"
+#include "bi/method/OUpdater.hpp"
+#include "bi/method/Simulator.hpp"
+#include "bi/io/ForwardNetCDFReader.hpp"
+#include "bi/io/ForwardNetCDFWriter.hpp"
 
 #include "boost/program_options.hpp"
 
 #include <iostream>
 #include <string>
+#include <sys/time.h>
 
-extern void simulate(const unsigned P, const unsigned K, const real_t T,
-    const unsigned NS, const int SEED, const std::string& INIT_FILE,
-    const std::string& FORCE_FILE, const std::string& OBS_FILE,
-    const std::string& OUTPUT_FILE, const bool OUTPUT, const bool TIME);
+using namespace bi;
 
 int main(int argc, char* argv[]) {
   namespace po = boost::program_options;
 
-  /* handle command line arguments */
+  /* command line arguments */
   real_t T;
   unsigned P, K, NS;
   int SEED;
@@ -56,9 +63,60 @@ int main(int argc, char* argv[]) {
     return 0;
   }
 
-  /* run simulation */
-  simulate(P, K, T, NS, SEED, INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE,
-      OUTPUT, TIME);
+  /* random number generator */
+  Random rng(SEED);
+
+  /* report missing variables in NetCDF, but don't die */
+  NcError ncErr(NcError::verbose_nonfatal);
+
+  /* parameters for ODE integrator on GPU */
+  ode_init();
+  ode_set_h0(CUDA_REAL(0.2));
+  ode_set_rtoler(CUDA_REAL(1.0e-3));
+  ode_set_atoler(CUDA_REAL(1.0e-3));
+
+  /* model */
+  NPZDModel m;
+
+  /* state */
+  State s(m, P);
+  ForwardNetCDFReader<true,true,true,false,false,false,true> in(m, INIT_FILE, NS);
+  in.read(s); // initialise state
+
+  /* intermediate result buffer */
+  Result r(m, P, K);
+
+  /* output */
+  ForwardNetCDFWriter* out;
+  if (OUTPUT) {
+    out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, 366);
+  }
+
+  /* simulator */
+  FUpdater fUpdater(m, FORCE_FILE, s, NS);
+  OUpdater oUpdater(m, OBS_FILE, s, NS);
+  Simulator<NPZDModel> sim(m, s, rng, &r, &fUpdater, &oUpdater);
+
+  /* simulate and output */
+  timeval start, end;
+  gettimeofday(&start, NULL);
+  unsigned k;
+  while (sim.getTime() < T) {
+    k = sim.simulate(T);
+    if (OUTPUT) {
+      out->write(r, k);
+    }
+  }
+  if (OUTPUT) {
+    out->write(s, sim.getTime());
+  }
+  gettimeofday(&end, NULL);
+
+  /* output timing results */
+  if (TIME) {
+    int elapsed = (end.tv_sec-start.tv_sec)*1000000 + (end.tv_usec-start.tv_usec);
+    std::cout << elapsed << std::endl;
+  }
 
   return 0;
 }

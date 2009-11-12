@@ -5,15 +5,25 @@
  * $Rev:234 $
  * $Date:2009-08-17 11:10:31 +0800 (Mon, 17 Aug 2009) $
  */
-#include "filter.hpp"
 #include "prior.hpp"
+#include "model/NPZDModel.hpp"
+#include "model/NPZDPrior.hpp"
+
+#include "bi/cuda/cuda.hpp"
+#include "bi/cuda/ode/IntegratorConstants.hpp"
+#include "bi/method/ParticleFilter.hpp"
+#include "bi/random/Random.hpp"
+#include "bi/method/RUpdater.hpp"
+#include "bi/method/FUpdater.hpp"
+#include "bi/method/OUpdater.hpp"
+#include "bi/io/ForwardNetCDFReader.hpp"
+#include "bi/io/ForwardNetCDFWriter.hpp"
 
 #include "boost/program_options.hpp"
 #include "boost/typeof/typeof.hpp"
 
-#include "omp.h"
-
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <sys/time.h>
 
@@ -23,7 +33,7 @@ using namespace bi;
 
 int main(int argc, char* argv[]) {
   /* handle command line arguments */
-  real_t T, h;
+  real_t T, H, MIN_ESS;
   unsigned P, K, INIT_NS, FORCE_NS, OBS_NS;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE;
@@ -35,8 +45,10 @@ int main(int argc, char* argv[]) {
     (",P", po::value(&P), "no. particles")
     (",K", po::value(&K), "size of intermediate result buffer")
     (",T", po::value(&T), "simulation time for each trajectory")
-    (",h", po::value(&h)->default_value(0.2),
+    (",h", po::value(&H)->default_value(0.2),
         "suggested first step size for each trajectory")
+    ("min-ess", po::value(&MIN_ESS)->default_value(1.0),
+        "minimum ESS (as proportion of P) at each step to avoid resampling")
     ("seed", po::value(&SEED)->default_value(0),
         "pseudorandom number seed")
     ("init-file", po::value(&INIT_FILE),
@@ -66,10 +78,10 @@ int main(int argc, char* argv[]) {
 
   /* parameters for ODE integrator on GPU */
   ode_init();
-  ode_set_h0(CUDA_REAL(h));
-  ode_set_rtoler(CUDA_REAL(1.0e-3));
-  ode_set_atoler(CUDA_REAL(1.0e-3));
-  ode_set_nsteps(CUDA_REAL(200));
+  ode_set_h0(H);
+  ode_set_rtoler(1.0e-3);
+  ode_set_atoler(1.0e-3);
+  ode_set_nsteps(200);
 
   /* random number generator */
   Random rng(SEED);
@@ -95,11 +107,8 @@ int main(int argc, char* argv[]) {
   in.read(s);
 
   /* ...and/or initialise from prior */
-  //BOOST_AUTO(p0, buildPPrior(m));
   BOOST_AUTO(d0, prior.getDPrior());
   BOOST_AUTO(c0, prior.getCPrior());
-
-  //p0.sample(rng, s.pState);
   d0.sample(rng, s.dState);
   c0.sample(rng, s.cState);
 
@@ -107,19 +116,28 @@ int main(int argc, char* argv[]) {
   FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
   OUpdater oUpdater(m, OBS_FILE, s, OBS_NS);
 
-  /* output */
+  /* outputs */
   ForwardNetCDFWriter* out;
   if (OUTPUT) {
     out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, oUpdater.numUniqueTimes() + 1);
   } else {
     out = NULL;
   }
+  std::ofstream essOut("ess.txt");
 
   /* filter */
   timeval start, end;
   gettimeofday(&start, NULL);
 
-  filter(T, h, m, s, rng, &fUpdater, &oUpdater, out);
+  unsigned t;
+  real_t ess;
+  ParticleFilter<NPZDModel> pf(m, s, rng, &fUpdater, &oUpdater);
+  for (t = 0; t < T; ++t) {
+    pf.filter(t, MIN_ESS*P);
+    //ess = pf.ess(stream);
+    //essOut << ess << std::endl;
+    out->write(s, pf.getTime());
+  }
 
   gettimeofday(&end, NULL);
   if (TIME) {
