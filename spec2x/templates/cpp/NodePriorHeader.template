@@ -29,7 +29,7 @@ public:
    *
    * @return Prior.
    */
-  const <% PriorType %>& getPrior();
+  <% PriorType %>& getPrior();
 
 <% FunctionDeclarations %>
 
@@ -39,10 +39,6 @@ private:
    */
   <% PriorType %> p0;
 };
-
-inline const <% PriorType %>& <% ClassName %>::getPrior() {
-  return p0;
-}
 
 <% FunctionDefinitions %>
 

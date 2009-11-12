@@ -10,39 +10,48 @@
 
 #include "model/NPZDModel.hpp"
 #include "model/NPZDPrior.hpp"
+#include "prior.hpp"
 
 #include "bi/cuda/cuda.hpp"
+#include "bi/cuda/ode/IntegratorConstants.hpp"
 #include "bi/state/State.hpp"
+#include "bi/pdf/ConditionalFactoredPdf.hpp"
 #include "bi/random/Random.hpp"
 #include "bi/method/FUpdater.hpp"
 #include "bi/method/OUpdater.hpp"
 #include "bi/io/MCMCNetCDFWriter.hpp"
 
 /**
- * Initialise GPU particle filter.
+ * Initialise MCMC process.
  *
- * @param h Initial step size.
  * @param m Model.
+ * @param x0 Prior.
+ * @param q Proposal.
  * @param s State.
  * @param rng Random number generator.
  * @param fUpdater Updater for f-nodes.
  * @param oUpdater Updater for o-nodes.
  */
-void init(const real_t h, NPZDModel& m, bi::State& s, bi::Random& rng,
-    bi::FUpdater* fUpdater, bi::OUpdater* oUpdater);
+void init(NPZDModel& m, NPZDPrior& x0,
+    bi::ConditionalFactoredPdf<GET_TYPELIST(proposalP)>& q, bi::State& s,
+    bi::Random& rng, bi::FUpdater* fUpdater, bi::OUpdater* oUpdater);
 
 /**
- * Run particle filter to calculate log-likelihood.
+ * Take one step of chain.
  *
  * @param T Time to filter.
  * @param minEss ESS threshold.
+ * @param lambda Temperature.
+ * @param[out] theta State.
+ * @param[out] l Log-likelihood of state.
  *
- * @return Log-likelihood.
+ * @return True if proposal accepted, false otherwise.
  */
-real_t filter(const real_t T, const real_t minEss);
+bool step(const real_t T, const real_t minEss, const double lambda,
+    bi::state_vector& theta, double& l);
 
 /**
- * Destroy particle filter.
+ * Destroy MCMC process.
  */
 void destroy();
 

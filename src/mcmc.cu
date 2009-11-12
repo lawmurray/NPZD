@@ -7,30 +7,27 @@
  */
 #include "mcmc.cuh"
 
-#include "bi/cuda/ode/IntegratorConstants.cuh"
-#include "bi/method/ParticleFilter.cuh"
-
 using namespace bi;
 
-void init(const real_t h, NPZDModel& m, State& s, Random& rng,
+void init(NPZDModel& m, NPZDPrior& x0,
+    ConditionalFactoredPdf<GET_TYPELIST(proposalP)>& q, State& s, Random& rng,
     FUpdater* fUpdater, OUpdater* oUpdater) {
-  /* parameters for ODE integrator on GPU */
-  ode_init();
-  ode_set_h0(CUDA_REAL(h));
-  ode_set_rtoler(CUDA_REAL(1.0e-3));
-  ode_set_atoler(CUDA_REAL(1.0e-3));
-  ode_set_nsteps(200);
-
-  pf = new ParticleFilter<NPZDModel>(m, s, rng, fUpdater, oUpdater);
+  mcmc = new ParticleMCMC<NPZDModel,NPZDPrior,
+      ConditionalFactoredPdf<GET_TYPELIST(proposalP)> >(m, x0, q, s, rng,
+      fUpdater, oUpdater);
 }
 
-real_t filter(const real_t T, const real_t minEss) {
-  pf->reset();
-  real_t l = pf->filter(T, minEss);
+bool step(const real_t T, const real_t minEss, const double lambda,
+    bi::state_vector& theta, double& l) {
+  bool result;
 
-  return l;
+  result = mcmc->step(T, minEss, lambda);
+  theta = mcmc->getState();
+  l = mcmc->getLogLikelihood();
+
+  return result;
 }
 
 void destroy() {
-  delete pf;
+  delete mcmc;
 }

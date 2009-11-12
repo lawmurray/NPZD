@@ -9,6 +9,7 @@
 #include "prior.hpp"
 #include "device.hpp"
 
+#include "bi/method/MultiSimulator.cuh"
 #include "bi/math/vector.hpp"
 #include "bi/math/matrix.hpp"
 
@@ -37,7 +38,7 @@ int main(int argc, char* argv[]) {
   unsigned P, INIT_NS, FORCE_NS, OBS_NS, B, I, L;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE, PROPOSAL_FILE;
-  bool OUTPUT, TIME;
+  bool OUTPUT;
 
   po::options_description pfOptions("Particle filter options");
   pfOptions.add_options()
@@ -84,8 +85,7 @@ int main(int argc, char* argv[]) {
         "index along ns dimension of forcings file to use")
     ("obs-ns", po::value(&OBS_NS)->default_value(0),
         "index along ns dimension of observations file to use")
-    ("output", po::value(&OUTPUT)->default_value(false), "enable output")
-    ("time", po::value(&TIME)->default_value(false), "enable timing output");
+    ("output", po::value(&OUTPUT)->default_value(false), "enable output");
 
   po::options_description desc("General options");
   desc.add_options()
@@ -106,7 +106,8 @@ int main(int argc, char* argv[]) {
   }
 
   /* select CUDA device */
-  chooseDevice(rank);
+  int dev = chooseDevice(rank);
+  std::cerr << "Rank " << rank << " using device " << dev << std::endl;
 
   /* NetCDF error reporting */
   #ifdef NDEBUG
@@ -115,6 +116,13 @@ int main(int argc, char* argv[]) {
   NcError ncErr(NcError::verbose_nonfatal);
   #endif
 
+  /* parameters for ODE integrator on GPU */
+  ode_init();
+  ode_set_h0(CUDA_REAL(H));
+  ode_set_rtoler(CUDA_REAL(1.0e-3));
+  ode_set_atoler(CUDA_REAL(1.0e-3));
+  ode_set_nsteps(CUDA_REAL(200));
+
   /* random number generator */
   Random rng(SEED);
 
@@ -122,19 +130,27 @@ int main(int argc, char* argv[]) {
   NPZDModel m;
 
   /* prior */
-  NPZDPrior prior;
-
-  /* state */
-  State s(m, P);
-
-  /* priors */
-  BOOST_AUTO(p0, prior.getPPrior());
-  BOOST_AUTO(s0, prior.getSPrior());
-  BOOST_AUTO(d0, prior.getDPrior());
-  BOOST_AUTO(c0, prior.getCPrior());
+  NPZDPrior x0;
 
   /* proposal */
   BOOST_AUTO(q, buildPProposal(m, SCALE));
+
+  /* temperature */
+  double lambda;
+  if (vm.count("temp")) {
+    lambda = TEMP;
+  } else if (vm.count("min-temp") && vm.count("max-temp")) {
+    if (size > 1) {
+      lambda = MIN_TEMP + rank*(MAX_TEMP - MIN_TEMP) / (size - 1);
+    } else {
+      lambda = MIN_TEMP;
+    }
+  } else {
+    lambda = 1.0;
+  }
+
+  /* state */
+  State s(m, P);
 
   /* forcings, observations */
   FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
@@ -148,69 +164,27 @@ int main(int argc, char* argv[]) {
     out = NULL;
   }
 
-  /* initialise particle filter */
-  init(H, m, s, rng, &fUpdater, &oUpdater);
+  /* initialise MCMC */
+  init(m, x0, q, s, rng, &fUpdater, &oUpdater);
 
-  /* MCMC */
-  double l1, l2, lr, alpha, num, den;
+  /* do MCMC */
+  double l;
+  State s2(m, 1);
+  state_vector theta(s2.pState);
+  bool accepted;
   unsigned i;
-  vector theta1(m.getPSize());
-  state_vector theta2(s.pState);
 
-  timeval start, end;
-  gettimeofday(&start, NULL);
-
-  p0.sample(rng, s.pState);
   for (i = 0; i < B+I*L; ++i) {
-    //rng.seed(SEED); // ensures prior samples same between runs
-    s0.sample(rng, s.sState);
-    d0.sample(rng, s.dState);
-    c0.sample(rng, s.cState);
-
+    accepted = step(T, MIN_ESS*P, lambda, theta, l);
     if (out != NULL && i >= B && (i - B) % I == 0) {
-      out->write(s, (i - B) / I);
+      out->write(s2, l);
     }
 
-    /* calculate likelihood */
-    l2 = filter(T, MIN_ESS*P);
-
-    std::cerr << i << ": log(L) = " << l2 << ' ';
-
-    if (i == 0) {
-      /* first proposal, accept */
-      theta1 = theta2;
-      l1 = l2;
-      std::cerr << "***accept***";
-    } else {
-      /* accept or reject */
-      alpha = rng.uniform(0.0,1.0);
-      lr = pow(exp(l2 - l1), pow(TEMP,-1));
-      num = pow(p0(theta2), pow(TEMP,-1))*q(theta2,theta1);
-      den = pow(p0(theta1), pow(TEMP,-1))*q(theta1,theta2);
-      if (alpha < lr*num/den) {
-        /* accept */
-        theta1 = theta2;
-        l1 = l2;
-        std::cerr << "***accept***";
-      }
+    std::cerr << i << ": " << l;
+    if (accepted) {
+      std::cerr << " ***accepted***";
     }
     std::cerr << std::endl;
-
-    /* output */
-    if (out != NULL && i >= B && (i - B) % I == 0) {
-      theta2 = theta1;
-      out->write(s, (i - B) / I);
-    }
-
-    /* next parameter configuration */
-    q.sample(rng, theta1, theta2);
-  }
-
-  /* final timing results */
-  gettimeofday(&end, NULL);
-  if (TIME) {
-    int elapsed = (end.tv_sec-start.tv_sec)*1e6 + (end.tv_usec-start.tv_usec);
-    std::cout << elapsed << std::endl;
   }
 
   /* clean up */

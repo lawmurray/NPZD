@@ -7,7 +7,6 @@
  */
 #include "filter.cuh"
 
-#include "bi/cuda/ode/IntegratorConstants.cuh"
 #include "bi/method/ParticleFilter.cuh"
 
 #include <fstream>
@@ -17,13 +16,6 @@ using namespace bi;
 void filter(const real_t T, const real_t h, NPZDModel& m, State& s,
     Random& rng, FUpdater* fUpdater, OUpdater* oUpdater,
     ForwardNetCDFWriter* out) {
-  /* parameters for ODE integrator on GPU */
-  ode_init();
-  ode_set_h0(CUDA_REAL(h));
-  ode_set_rtoler(CUDA_REAL(1.0e-3));
-  ode_set_atoler(CUDA_REAL(1.0e-3));
-  ode_set_nsteps(CUDA_REAL(200));
-
   /* particle filter */
   ParticleFilter<NPZDModel> pf(m, s, rng, fUpdater, oUpdater);
 

@@ -13,3 +13,7 @@
   //
 }
 
+<% PriorType %>& <% ClassName %>::getPrior() {
+  return p0;
+}
+

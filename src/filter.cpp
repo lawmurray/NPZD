@@ -64,6 +64,13 @@ int main(int argc, char* argv[]) {
     return 0;
   }
 
+  /* parameters for ODE integrator on GPU */
+  ode_init();
+  ode_set_h0(CUDA_REAL(h));
+  ode_set_rtoler(CUDA_REAL(1.0e-3));
+  ode_set_atoler(CUDA_REAL(1.0e-3));
+  ode_set_nsteps(CUDA_REAL(200));
+
   /* random number generator */
   Random rng(SEED);
 

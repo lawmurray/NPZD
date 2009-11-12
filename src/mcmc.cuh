@@ -8,10 +8,13 @@
 #ifndef MCMC_CUH
 #define MCMC_CUH
 
+#include "prior.hpp"
 #include "model/NPZDModel.hpp"
+#include "model/NPZDPrior.hpp"
 
-#include "bi/method/ParticleFilter.cuh"
+#include "bi/method/ParticleMCMC.cuh"
+#include "bi/pdf/ConditionalFactoredPdf.hpp"
 
-bi::ParticleFilter<NPZDModel>* pf;
+bi::ParticleMCMC<NPZDModel,NPZDPrior,bi::ConditionalFactoredPdf<GET_TYPELIST(proposalP)> >* mcmc;
 
 #endif

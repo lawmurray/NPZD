@@ -12,6 +12,7 @@
 #include "model/NPZDPrior.hpp"
 
 #include "bi/cuda/cuda.hpp"
+#include "bi/cuda/ode/IntegratorConstants.hpp"
 #include "bi/random/Random.hpp"
 #include "bi/method/RUpdater.hpp"
 #include "bi/method/FUpdater.hpp"

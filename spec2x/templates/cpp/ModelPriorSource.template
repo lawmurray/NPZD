@@ -26,3 +26,23 @@ template class FactoredPdf<GET_TYPELIST(<% PPriorListName %>)>;
 <% PPriorDefinitions %>
 }
 
+bi::FactoredPdf<GET_TYPELIST(<% SPriorListName %>)>&
+    <% ClassName %>::getSPrior() {
+  return s0;
+}
+
+bi::FactoredPdf<GET_TYPELIST(<% DPriorListName %>)>&
+    <% ClassName %>::getDPrior() {
+  return d0;
+}
+
+bi::FactoredPdf<GET_TYPELIST(<% CPriorListName %>)>&
+    <% ClassName %>::getCPrior() {
+  return c0;
+}
+
+bi::FactoredPdf<GET_TYPELIST(<% PPriorListName %>)>&
+    <% ClassName %>::getPPrior() {
+  return p0;
+}
+

@@ -7,10 +7,12 @@
  */
 #include "prior.hpp"
 
-#include "bi/pdf/FactoredPdf.ipp"
 #include "bi/pdf/ConditionalFactoredPdf.ipp"
+#include "bi/pdf/FactoredPdf.ipp"
 
 using namespace bi;
+
+template class ConditionalFactoredPdf<GET_TYPELIST(proposalP)>;
 
 ConditionalFactoredPdf<GET_TYPELIST(proposalP)> buildPProposal(NPZDModel& m,
     const double scale) {
