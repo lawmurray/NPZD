@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
     (",B", po::value(&B)->default_value(0), "no. burn steps")
     (",I", po::value(&I)->default_value(1), "interval for drawing samples")
     (",L", po::value(&L), "no. samples to draw")
-    ("prior-scale", po::value(&SCALE),
+    ("scale", po::value(&SCALE),
         "scale of proposal relative to prior")
     ("temp", po::value(&TEMP)->default_value(1.0),
         "temperature of chain, if min-temp and max-temp not given")
@@ -111,7 +111,6 @@ int main(int argc, char* argv[]) {
 
   /* select CUDA device */
   int dev = chooseDevice(rank);
-  std::cerr << "Rank " << rank << " using device " << dev << std::endl;
 
   /* NetCDF error reporting */
   #ifdef NDEBUG
@@ -163,12 +162,16 @@ int main(int argc, char* argv[]) {
     lambda = 1.0;
   }
 
+  /* report... */
+  std::cerr << "Rank " << rank << " using device " << dev << ", temperature "
+      << lambda << std::endl;
+
   /* MCMC */
   ParticleMCMC<NPZDModel,NPZDPrior,
       ConditionalFactoredPdf<GET_TYPELIST(proposalP)> > mcmc(m, x0, q, s, rng,
           &fUpdater, &oUpdater);
 
-  double l;
+  real_t l;
   State s2(m, 1);
   state_vector theta(s2.pState);
   bool accepted;

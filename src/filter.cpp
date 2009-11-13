@@ -78,6 +78,13 @@ int main(int argc, char* argv[]) {
     return 0;
   }
 
+  /* report missing variables in NetCDF, but don't die */
+  #ifndef NDEBUG
+  NcError ncErr(NcError::verbose_nonfatal);
+  #else
+  NcError ncErr(NcError::silent_nonfatal);
+  #endif
+
   /* parameters for ODE integrator on GPU */
   ode_init();
   ode_set_h0(H);
@@ -87,13 +94,6 @@ int main(int argc, char* argv[]) {
 
   /* random number generator */
   Random rng(SEED);
-
-  /* report missing variables in NetCDF, but don't die */
-  #ifndef NDEBUG
-  NcError ncErr(NcError::verbose_nonfatal);
-  #else
-  NcError ncErr(NcError::silent_nonfatal);
-  #endif
 
   /* model */
   NPZDModel m;
@@ -109,10 +109,8 @@ int main(int argc, char* argv[]) {
   in.read(s);
 
   /* ...and/or initialise from prior */
-  BOOST_AUTO(d0, prior.getDPrior());
-  BOOST_AUTO(c0, prior.getCPrior());
-  d0.sample(rng, s.dState);
-  c0.sample(rng, s.cState);
+  prior.getDPrior().sample(rng, s.dState);
+  prior.getCPrior().sample(rng, s.cState);
 
   /* forcings, observations */
   FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
@@ -134,13 +132,30 @@ int main(int argc, char* argv[]) {
   unsigned t;
   real_t ess;
   ParticleFilter<NPZDModel> pf(m, s, rng, &fUpdater, &oUpdater);
-  for (t = 0; t < T; ++t) {
-    pf.filter(t, MIN_ESS*P);
-    //ess = pf.ess(stream);
-    //essOut << ess << std::endl;
-    out->write(s, pf.getTime());
-  }
 
+  /* filter */
+  cudaStream_t stream;
+  CUDA_CHECKED_CALL(cudaStreamCreate(&stream));
+  pf.bind(stream);
+  pf.upload(stream);
+  while (pf.getTime() < T) {
+    BI_LOG("t = " << pf.getTime());
+    pf.advance(T, stream);
+    pf.weight(stream);
+    ess = pf.ess(stream);
+    essOut << ess << std::endl;
+    pf.resample(MIN_ESS*s.P, stream);
+    if (out != NULL) {
+      pf.download(stream);
+      cudaStreamSynchronize(stream);
+      out->write(s, pf.getTime());
+    }
+  }
+  cudaStreamSynchronize(stream);
+  pf.unbind();
+  CUDA_CHECKED_CALL(cudaStreamDestroy(stream));
+
+  /* wrap up timing */
   gettimeofday(&end, NULL);
   if (TIME) {
     int elapsed = (end.tv_sec-start.tv_sec)*1e6 + (end.tv_usec-start.tv_usec);
