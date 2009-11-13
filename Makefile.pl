@@ -22,7 +22,7 @@ $CPPDIR = "$SRCDIR/model";
 $CXX = 'g++';
 $CUDACC = 'nvcc';
 $LINKER = 'g++';
-$CPPINCLUDES = '-I../bi/src -I/usr/local/cuda/include -I/tools/thrust/1.1.1 -I/usr/local/include/thrust';
+$CPPINCLUDES = '-I../bi/src -I/usr/local/cuda/include -I/tools/cuda/2.3/cuda/include/ -I/tools/thrust/1.1.1 -I/usr/local/include/thrust';
 $CXXFLAGS = "-Wall -fopenmp `nc-config --cflags` `mpic++ -showme:compile` $CPPINCLUDES";
 $CUDACCFLAGS = "-arch=sm_13 -Xptxas=\"-v\" -Xcompiler=\"-Wall -fopenmp `mpic++ -showme:compile`\" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS $CPPINCLUDES";
 $LINKFLAGS = '-L"../bi/build" -L"/usr/local/atlas/lib" -lbi -latlas -lf77blas -llapack -lgfortran -lgslcblas -lgsl -lnetcdf_c++ `nc-config --libs` -lcudart -lgomp -lpthread -lboost_program_options-mt -lboost_mpi-mt `mpic++ -showme:link`';
