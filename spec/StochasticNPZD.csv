@@ -1,7 +1,7 @@
 "OriginalName","Name","Description","LaTeXName","LaTeXFormulae","Formulae","Category","Dependencies","Traits"
 "Kd","KW","Light attenuation, water","K^W",,"mu0: log(0.03) | sigma0: 0.2","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
 "Kchla","KC","Light attenuation, Chl-a","K^C",,"mu0: log(0.04) | sigma0: 0.3","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
-"Sink","deltaS","Detrital sinking rate","\delta^S",,"mu0: log(5.0) | sigma0: 1.0","Parameter",,"IS_P_NODE, HAS_GAUSSIAN_PRIOR"
+"Sink","deltaS","Detrital sinking rate","\delta^S",,"mu0: 5.0 | sigma0: 1.0","Parameter",,"IS_P_NODE, HAS_GAUSSIAN_PRIOR"
 "FDG","deltaI","Detrital growth inefficiency","\delta^I",,"mu0: log(0.5) | sigma0: 0.1","Parameter",,"IS_P_NODE, HAS_LOG_NORMAL_PRIOR"
 "Q10","tau10",,"\tau^{10}","x: 2","x: 2","Constant",,
 "Tref","tauR","Reference temperature (10 deg. C)","\tau^R","x: 15","x: 15","Constant",,
