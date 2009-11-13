@@ -262,8 +262,8 @@ print "\t\$(LINKER) -o $BUILDDIR/simulate \$(LINKFLAGS) \$(BUILDDIR)/simulate.cp
 print "\$(BUILDDIR)/filter: \$(BUILDDIR)/filter.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o $models\n";
 print "\t\$(LINKER) -o $BUILDDIR/filter \$(LINKFLAGS) \$(BUILDDIR)/filter.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o $models\n\n";
 
-print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/mcmc.cpp.o \$(BUILDDIR)/mcmc.cu.o \$(BUILDDIR)/prior.cpp.o \$(BUILDDIR)/device.cu.o $models\n";
-print "\t\$(LINKER) -o $BUILDDIR/mcmc \$(LINKFLAGS) \$(BUILDDIR)/mcmc.cpp.o \$(BUILDDIR)/mcmc.cu.o \$(BUILDDIR)/prior.cpp.o \$(BUILDDIR)/device.cu.o $models\n\n";
+print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/mcmc.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o \$(BUILDDIR)/device.cu.o $models\n";
+print "\t\$(LINKER) -o $BUILDDIR/mcmc \$(LINKFLAGS) \$(BUILDDIR)/mcmc.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o \$(BUILDDIR)/device.cu.o $models\n\n";
 
 # Targets
 print join("\n", @commands);
