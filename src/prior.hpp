@@ -13,8 +13,6 @@
 #include "bi/pdf/MultiplicativeLogNormalPdf.hpp"
 #include "bi/pdf/AdditiveGaussianPdf.hpp"
 #include "bi/pdf/ConditionalFactoredPdf.hpp"
-#include "bi/math/vector.hpp"
-#include "bi/math/matrix.hpp"
 
 /*
  * Type list for proposal over parameters.

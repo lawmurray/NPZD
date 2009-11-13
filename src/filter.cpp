@@ -19,6 +19,8 @@
 #include "bi/io/ForwardNetCDFReader.hpp"
 #include "bi/io/ForwardNetCDFWriter.hpp"
 
+#include "cuda_runtime.h"
+
 #include "boost/program_options.hpp"
 #include "boost/typeof/typeof.hpp"
 

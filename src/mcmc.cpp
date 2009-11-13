@@ -5,13 +5,19 @@
  * $Rev:234 $
  * $Date:2009-08-17 11:10:31 +0800 (Mon, 17 Aug 2009) $
  */
-#include "mcmc.hpp"
 #include "prior.hpp"
 #include "device.hpp"
+#include "model/NPZDModel.hpp"
+#include "model/NPZDPrior.hpp"
 
-#include "bi/method/Simulator.hpp"
-#include "bi/math/vector.hpp"
-#include "bi/math/matrix.hpp"
+#include "bi/cuda/cuda.hpp"
+#include "bi/cuda/ode/IntegratorConstants.hpp"
+#include "bi/state/State.hpp"
+#include "bi/random/Random.hpp"
+#include "bi/method/ParticleMCMC.hpp"
+#include "bi/method/FUpdater.hpp"
+#include "bi/method/OUpdater.hpp"
+#include "bi/io/MCMCNetCDFWriter.hpp"
 
 #include "boost/program_options.hpp"
 #include "boost/typeof/typeof.hpp"
@@ -38,7 +44,6 @@ int main(int argc, char* argv[]) {
   unsigned P, INIT_NS, FORCE_NS, OBS_NS, B, I, L;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE, PROPOSAL_FILE;
-  bool OUTPUT;
 
   po::options_description pfOptions("Particle filter options");
   pfOptions.add_options()
@@ -84,8 +89,7 @@ int main(int argc, char* argv[]) {
     ("force-ns", po::value(&FORCE_NS)->default_value(0),
         "index along ns dimension of forcings file to use")
     ("obs-ns", po::value(&OBS_NS)->default_value(0),
-        "index along ns dimension of observations file to use")
-    ("output", po::value(&OUTPUT)->default_value(false), "enable output");
+        "index along ns dimension of observations file to use");
 
   po::options_description desc("General options");
   desc.add_options()
@@ -135,6 +139,16 @@ int main(int argc, char* argv[]) {
   /* proposal */
   BOOST_AUTO(q, buildPProposal(m, SCALE));
 
+  /* state */
+  State s(m, P);
+
+  /* forcings, observations */
+  FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
+  OUpdater oUpdater(m, OBS_FILE, s, OBS_NS);
+
+  /* output */
+  MCMCNetCDFWriter out(m, OUTPUT_FILE, L);
+
   /* temperature */
   double lambda;
   if (vm.count("temp")) {
@@ -149,25 +163,11 @@ int main(int argc, char* argv[]) {
     lambda = 1.0;
   }
 
-  /* state */
-  State s(m, P);
+  /* MCMC */
+  ParticleMCMC<NPZDModel,NPZDPrior,
+      ConditionalFactoredPdf<GET_TYPELIST(proposalP)> > mcmc(m, x0, q, s, rng,
+          &fUpdater, &oUpdater);
 
-  /* forcings, observations */
-  FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
-  OUpdater oUpdater(m, OBS_FILE, s, OBS_NS);
-
-  /* output */
-  MCMCNetCDFWriter* out;
-  if (OUTPUT) {
-    out = new MCMCNetCDFWriter(m, OUTPUT_FILE, L);
-  } else {
-    out = NULL;
-  }
-
-  /* initialise MCMC */
-  init(m, x0, q, s, rng, &fUpdater, &oUpdater);
-
-  /* do MCMC */
   double l;
   State s2(m, 1);
   state_vector theta(s2.pState);
@@ -175,9 +175,12 @@ int main(int argc, char* argv[]) {
   unsigned i;
 
   for (i = 0; i < B+I*L; ++i) {
-    accepted = step(T, MIN_ESS*P, lambda, theta, l);
-    if (out != NULL && i >= B && (i - B) % I == 0) {
-      out->write(s2, l);
+    accepted = mcmc.step(T, MIN_ESS*P, lambda);
+    theta = mcmc.getState();
+    l = mcmc.getLogLikelihood();
+
+    if (i >= B && (i - B) % I == 0) {
+      out.write(s2, l);
     }
 
     std::cerr << i << ": " << l;
@@ -186,10 +189,6 @@ int main(int argc, char* argv[]) {
     }
     std::cerr << std::endl;
   }
-
-  /* clean up */
-  destroy();
-  delete out;
 
   return 0;
 }
