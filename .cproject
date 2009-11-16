@@ -36,7 +36,6 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.745445750" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.115499010" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 <option id="gnu.cpp.link.option.paths.525385329" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
 </option>
@@ -62,7 +61,6 @@
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 </externalSetting>
 </externalSettings>
 </storageModule>
@@ -1046,7 +1044,6 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.293944563" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.328509506" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 <option id="gnu.cpp.link.option.paths.1803685423" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
 </option>
@@ -1072,7 +1069,6 @@
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 </externalSetting>
 </externalSettings>
 </storageModule>
@@ -2056,7 +2052,6 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.1888312080" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1255498055" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 <option id="gnu.cpp.link.option.paths.206622522" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
 </option>
@@ -2082,7 +2077,6 @@
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 </externalSetting>
 </externalSettings>
 </storageModule>
@@ -3066,7 +3060,6 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.350058304" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1229299904" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 <option id="gnu.cpp.link.option.paths.1761726187" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
 </option>
@@ -3092,7 +3085,6 @@
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 </externalSetting>
 </externalSettings>
 </storageModule>
@@ -4076,7 +4068,6 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.390055138" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.323006053" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 <option id="gnu.cpp.link.option.paths.1468384071" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
 </option>
@@ -4102,7 +4093,6 @@
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 </externalSetting>
 </externalSettings>
 </storageModule>

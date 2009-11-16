@@ -14,7 +14,7 @@
 #include "bi/cuda/ode/IntegratorConstants.hpp"
 #include "bi/state/State.hpp"
 #include "bi/random/Random.hpp"
-#include "bi/method/ParticleMCMC.hpp"
+#include "bi/method/ParallelParticleMCMC.hpp"
 #include "bi/method/FUpdater.hpp"
 #include "bi/method/OUpdater.hpp"
 #include "bi/io/MCMCNetCDFWriter.hpp"
@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
 
   /* handle command line arguments */
   real_t T, H, MIN_ESS;
-  double SCALE, TEMP, MIN_TEMP, MAX_TEMP, ALPHA, BETA;
+  double SCALE, TEMP, MIN_TEMP, MAX_TEMP, ALPHA;
   unsigned P, INIT_NS, FORCE_NS, OBS_NS, B, I, L;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE, PROPOSAL_FILE;
@@ -61,16 +61,14 @@ int main(int argc, char* argv[]) {
     (",L", po::value(&L), "no. samples to draw")
     ("scale", po::value(&SCALE),
         "scale of proposal relative to prior")
-    ("temp", po::value(&TEMP)->default_value(1.0),
+    ("temp", po::value(&TEMP),
         "temperature of chain, if min-temp and max-temp not given")
     ("min-temp", po::value(&MIN_TEMP)->default_value(1.0),
         "minimum temperature in parallel tempering pool")
     ("max-temp", po::value(&MAX_TEMP),
         "maximum temperature in parallel tempering pool")
     ("alpha", po::value(&ALPHA)->default_value(0.05),
-        "probability of non-local live proposal at each step")
-    ("beta", po::value(&BETA)->default_value(0.05),
-        "probability of non-local file proposal at each step");
+        "probability of non-local proposal at each step");
 
   po::options_description ioOptions("I/O options");
   ioOptions.add_options()
@@ -146,7 +144,9 @@ int main(int argc, char* argv[]) {
   OUpdater oUpdater(m, OBS_FILE, s, OBS_NS);
 
   /* output */
-  MCMCNetCDFWriter out(m, OUTPUT_FILE, L);
+  std::stringstream file;
+  file << OUTPUT_FILE << '.' << rank;
+  MCMCNetCDFWriter out(m, file.str().c_str(), L);
 
   /* temperature */
   double lambda;
@@ -163,13 +163,13 @@ int main(int argc, char* argv[]) {
   }
 
   /* report... */
-  std::cerr << "Rank " << rank << " using device " << dev << ", temperature "
+  std::cerr << "Rank " << rank << ": using device " << dev << ", temperature "
       << lambda << std::endl;
 
   /* MCMC */
-  ParticleMCMC<NPZDModel,NPZDPrior,
-      ConditionalFactoredPdf<GET_TYPELIST(proposalP)> > mcmc(m, x0, q, s, rng,
-          &fUpdater, &oUpdater);
+  ParallelParticleMCMC<NPZDModel,NPZDPrior,
+      ConditionalFactoredPdf<GET_TYPELIST(proposalP)> > mcmc(m, x0, q, ALPHA,
+          s, rng, &fUpdater, &oUpdater);
 
   real_t l;
   State s2(m, 1);
@@ -186,12 +186,23 @@ int main(int argc, char* argv[]) {
       out.write(s2, l);
     }
 
-    std::cerr << i << ": " << l;
+    std::cerr << rank << '.' << i << ": " << l;
     if (accepted) {
       std::cerr << " ***accepted***";
     }
     std::cerr << std::endl;
   }
+
+  /* output diagnostics */
+  std::cout << "Rank " << rank << ": " << mcmc.getNumAccepted() << " of " <<
+      mcmc.getNumSteps() << " proposals accepted" << std::endl;
+  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalAccepts() <<
+      " of " << mcmc.getNumNonLocal() << " non-local accepted" << std::endl;
+  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalResponses() <<
+      " of " << mcmc.getNumNonLocalRequests() << " outgoing furnished" <<
+      std::endl;
+  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalFurnishes() <<
+      " incoming furnished" << std::endl;
 
   return 0;
 }
