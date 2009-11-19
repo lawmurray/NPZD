@@ -9,7 +9,9 @@
 
 #include "bi/pdf/FactoredPdf.ipp"
 
-<% ClassName %>::<% ClassName %>() : p0(mu0(), sigma0()) {
+#include <cmath>
+
+<% ClassName %>::<% ClassName %>() : p0(mu0(), std::pow(sigma0(),2)) {
   //
 }
 
