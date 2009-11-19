@@ -29,23 +29,10 @@
 #include <sys/time.h>
 
 namespace po = boost::program_options;
+namespace ublas = boost::numeric::ublas;
 
 using namespace bi;
 
-/**
- * Adapt proposal distribution.
- *
- * @param x New sample.
- * @param i Step number.
- * @param[in,out] mu Mean of samples to date.
- * @param[in,out] Sigma Covariance of proposal.
- */
-void adapt(const vector& x, const unsigned i, vector& mu,
-    symmetric_matrix& Sigma);
-
-/**
- * Main.
- */
 int main(int argc, char* argv[]) {
   /* mpi */
   boost::mpi::environment env(argc, argv);
@@ -151,7 +138,6 @@ int main(int argc, char* argv[]) {
   NPZDPrior x0;
 
   /* proposal */
-  vector mu(m.getPSize());
   symmetric_matrix Sigma(m.getPSize());
   Sigma.clear();
   BOOST_AUTO(d, diag(Sigma));
@@ -177,8 +163,6 @@ int main(int argc, char* argv[]) {
   d *= SCALE;
   d = element_prod(d,d); // square to get variances
 
-  std::cerr << "Rank " << rank << ": " << d << std::endl;
-
   unsigned i;
   std::set<unsigned> logs;
   for (i = 0; i < m.getPSize(); ++i) {
@@ -187,6 +171,14 @@ int main(int argc, char* argv[]) {
     }
   }
   AdditiveExpGaussianPdf<> q(Sigma, logs);
+
+  /* proposal adaptation */
+  vector mu(m.getPSize());
+  vector sumMu(m.getPSize());
+  symmetric_matrix sumSigma(m.getPSize());
+  identity_matrix Id(m.getPSize());
+  sumMu.clear();
+  sumSigma.clear();
 
   /* state */
   State s(m, P);
@@ -243,10 +235,16 @@ int main(int argc, char* argv[]) {
     std::cerr << std::endl;
 
     /* adapt proposal */
-    adapt(theta, i + 1, mu, Sigma);
-    BOOST_AUTO(d, diag(Sigma));
-    std::cerr << "Rank " << rank << ": " << d << std::endl;
+    //adapt(theta, i + 1, mu, Sigma);
+    noalias(sumMu) += theta;
+    noalias(sumSigma) += ublas::outer_prod(theta,theta);
+
     if (i > A) {
+      const double epsilon = 1.0e-4;
+      const double sd = std::pow(2.4,2) / m.getPSize();
+
+      noalias(mu) = sumMu / (i + 1.0);
+      noalias(Sigma) = sd*((sumSigma - (i + 1.0)*ublas::outer_prod(mu,mu))/i + epsilon*Id);
       q.setCov(Sigma);
       mcmc.setProposal(q);
     }
@@ -264,34 +262,4 @@ int main(int argc, char* argv[]) {
       " incoming furnished" << std::endl;
 
   return 0;
-}
-
-void adapt(const vector& x, const unsigned i, vector& mu,
-    symmetric_matrix& Sigma) {
-  /* pre-condition */
-  assert (i > 0);
-
-  namespace ublas = boost::numeric::ublas;
-
-  const unsigned N = mu.size();
-  const double sd = std::pow(2.4,2) / N;
-  const double epsilon = 0.0;
-
-  if (i == 1) {
-    mu = x;
-  } else {
-    vector mu2(N);
-    identity_matrix I(N,N);
-
-    mu2 = ((i - 1.0)*mu + x) / i;
-    if (i == 2) {
-      Sigma.clear();
-    } else {
-      double n = i;
-      Sigma = ((n - 1.0)*Sigma + sd*(n*ublas::outer_prod(mu,mu) -
-          (n + 1.0)*ublas::outer_prod(mu2,mu2) + ublas::outer_prod(x,x) +
-          epsilon*I))/n;
-    }
-    noalias(mu) = mu2;
-  }
 }
