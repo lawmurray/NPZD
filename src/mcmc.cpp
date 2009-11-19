@@ -18,6 +18,7 @@
 #include "bi/method/FUpdater.hpp"
 #include "bi/method/OUpdater.hpp"
 #include "bi/io/MCMCNetCDFWriter.hpp"
+#include "bi/pdf/AdditiveExpGaussianPdf.hpp"
 
 #include "boost/program_options.hpp"
 #include "boost/typeof/typeof.hpp"
@@ -31,6 +32,20 @@ namespace po = boost::program_options;
 
 using namespace bi;
 
+/**
+ * Adapt proposal distribution.
+ *
+ * @param x New sample.
+ * @param i Step number.
+ * @param[in,out] mu Mean of samples to date.
+ * @param[in,out] Sigma Covariance of proposal.
+ */
+void adapt(const vector& x, const unsigned i, vector& mu,
+    symmetric_matrix& Sigma);
+
+/**
+ * Main.
+ */
 int main(int argc, char* argv[]) {
   /* mpi */
   boost::mpi::environment env(argc, argv);
@@ -41,7 +56,7 @@ int main(int argc, char* argv[]) {
   /* handle command line arguments */
   real_t T, H, MIN_ESS;
   double SCALE, TEMP, MIN_TEMP, MAX_TEMP, ALPHA;
-  unsigned P, INIT_NS, FORCE_NS, OBS_NS, B, I, L;
+  unsigned P, INIT_NS, FORCE_NS, OBS_NS, B, I, L, A;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE, PROPOSAL_FILE;
 
@@ -59,6 +74,8 @@ int main(int argc, char* argv[]) {
     (",B", po::value(&B)->default_value(0), "no. burn steps")
     (",I", po::value(&I)->default_value(1), "interval for drawing samples")
     (",L", po::value(&L), "no. samples to draw")
+    (",A", po::value(&A)->default_value(100),
+        "no. samples to drawn before adapting proposal")
     ("scale", po::value(&SCALE),
         "scale of proposal relative to prior")
     ("temp", po::value(&TEMP),
@@ -134,7 +151,42 @@ int main(int argc, char* argv[]) {
   NPZDPrior x0;
 
   /* proposal */
-  BOOST_AUTO(q, buildPProposal(m, SCALE));
+  vector mu(m.getPSize());
+  symmetric_matrix Sigma(m.getPSize());
+  Sigma.clear();
+  BOOST_AUTO(d, diag(Sigma));
+
+  d(m.KW.id) = 0.2;
+  d(m.KC.id) = 0.3;
+  d(m.deltaS.id) = 1.0;
+  d(m.deltaI.id) = 0.1;
+  d(m.P_DF.id) = 0.2;
+  d(m.Z_DF.id) = 0.1;
+  d(m.alphaC.id) = 0.63;
+  d(m.alphaCN.id) = 0.2;
+  d(m.alphaCh.id) = 0.37;
+  d(m.alphaA.id) = 1.0;
+  d(m.alphaNC.id) = 0.3;
+  d(m.alphaI.id) = 0.7;
+  d(m.alphaCl.id) = 1.3;
+  d(m.alphaE.id) = 0.25;
+  d(m.alphaR.id) = 0.5;
+  d(m.alphaQ.id) = 1.0;
+  d(m.alphaL.id) = 0.1;
+
+  d *= SCALE;
+  d = element_prod(d,d); // square to get variances
+
+  std::cerr << "Rank " << rank << ": " << d << std::endl;
+
+  unsigned i;
+  std::set<unsigned> logs;
+  for (i = 0; i < m.getPSize(); ++i) {
+    if (i != m.deltaS.id) { // all are log-normal besides deltaS
+      logs.insert(i);
+    }
+  }
+  AdditiveExpGaussianPdf<> q(Sigma, logs);
 
   /* state */
   State s(m, P);
@@ -167,15 +219,13 @@ int main(int argc, char* argv[]) {
       << lambda << std::endl;
 
   /* MCMC */
-  ParallelParticleMCMC<NPZDModel,NPZDPrior,
-      ConditionalFactoredPdf<GET_TYPELIST(proposalP)> > mcmc(m, x0, q, ALPHA,
-          s, rng, &fUpdater, &oUpdater);
+  ParallelParticleMCMC<NPZDModel,NPZDPrior,AdditiveExpGaussianPdf<> > mcmc(m,
+      x0, q, ALPHA, s, rng, &fUpdater, &oUpdater);
 
   real_t l;
   State s2(m, 1);
   state_vector theta(s2.pState);
   bool accepted;
-  unsigned i;
 
   for (i = 0; i < B+I*L; ++i) {
     accepted = mcmc.step(T, MIN_ESS*P, lambda);
@@ -191,6 +241,15 @@ int main(int argc, char* argv[]) {
       std::cerr << " ***accepted***";
     }
     std::cerr << std::endl;
+
+    /* adapt proposal */
+    adapt(theta, i + 1, mu, Sigma);
+    BOOST_AUTO(d, diag(Sigma));
+    std::cerr << "Rank " << rank << ": " << d << std::endl;
+    if (i > A) {
+      q.setCov(Sigma);
+      mcmc.setProposal(q);
+    }
   }
 
   /* output diagnostics */
@@ -205,4 +264,34 @@ int main(int argc, char* argv[]) {
       " incoming furnished" << std::endl;
 
   return 0;
+}
+
+void adapt(const vector& x, const unsigned i, vector& mu,
+    symmetric_matrix& Sigma) {
+  /* pre-condition */
+  assert (i > 0);
+
+  namespace ublas = boost::numeric::ublas;
+
+  const unsigned N = mu.size();
+  const double sd = std::pow(2.4,2) / N;
+  const double epsilon = 0.0;
+
+  if (i == 1) {
+    mu = x;
+  } else {
+    vector mu2(N);
+    identity_matrix I(N,N);
+
+    mu2 = ((i - 1.0)*mu + x) / i;
+    if (i == 2) {
+      Sigma.clear();
+    } else {
+      double n = i;
+      Sigma = ((n - 1.0)*Sigma + sd*(n*ublas::outer_prod(mu,mu) -
+          (n + 1.0)*ublas::outer_prod(mu2,mu2) + ublas::outer_prod(x,x) +
+          epsilon*I))/n;
+    }
+    noalias(mu) = mu2;
+  }
 }

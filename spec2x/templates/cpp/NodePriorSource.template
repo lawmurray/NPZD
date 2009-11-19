@@ -7,8 +7,6 @@
  */
 #include "<% ClassName %>.hpp"
 
-#include "bi/pdf/FactoredPdf.ipp"
-
 #include <cmath>
 
 <% ClassName %>::<% ClassName %>() : p0(mu0(), std::pow(sigma0(),2)) {

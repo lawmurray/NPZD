@@ -7,14 +7,7 @@
  */
 #include "<% ClassName %>.hpp"
 
-#include "bi/pdf/FactoredPdf.ipp"
-
 using namespace bi;
-
-template class FactoredPdf<GET_TYPELIST(<% SPriorListName %>)>;
-template class FactoredPdf<GET_TYPELIST(<% DPriorListName %>)>;
-template class FactoredPdf<GET_TYPELIST(<% CPriorListName %>)>;
-template class FactoredPdf<GET_TYPELIST(<% PPriorListName %>)>;
 
 <% ClassName %>::<% ClassName %>() {
 <% SPriorDefinitions %>
