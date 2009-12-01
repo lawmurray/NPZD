@@ -30,19 +30,20 @@
 
 namespace po = boost::program_options;
 namespace ublas = boost::numeric::ublas;
+namespace mpi = boost::mpi;
 
 using namespace bi;
 
 int main(int argc, char* argv[]) {
   /* mpi */
-  boost::mpi::environment env(argc, argv);
-  boost::mpi::communicator world;
+  mpi::environment env(argc, argv);
+  mpi::communicator world;
   const unsigned rank = world.rank();
   const unsigned size = world.size();
 
   /* handle command line arguments */
   real_t T, H, MIN_ESS;
-  double SCALE, TEMP, MIN_TEMP, MAX_TEMP, ALPHA;
+  double SCALE, TEMP, MIN_TEMP, MAX_TEMP, ALPHA, SD;
   unsigned P, INIT_NS, FORCE_NS, OBS_NS, B, I, L, A;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE, PROPOSAL_FILE;
@@ -72,7 +73,9 @@ int main(int argc, char* argv[]) {
     ("max-temp", po::value(&MAX_TEMP),
         "maximum temperature in parallel tempering pool")
     ("alpha", po::value(&ALPHA)->default_value(0.05),
-        "probability of non-local proposal at each step");
+        "probability of non-local proposal at each step")
+    ("sd", po::value(&SD)->default_value(0.0),
+        "s_d parameter for proposal adaptation. Defaults to 2.4^2/d");
 
   po::options_description ioOptions("I/O options");
   ioOptions.add_options()
@@ -176,7 +179,6 @@ int main(int argc, char* argv[]) {
   vector mu(m.getPSize());
   vector sumMu(m.getPSize());
   symmetric_matrix sumSigma(m.getPSize());
-  identity_matrix Id(m.getPSize());
   sumMu.clear();
   sumSigma.clear();
 
@@ -217,6 +219,7 @@ int main(int argc, char* argv[]) {
   real_t l;
   State s2(m, 1);
   state_vector theta(s2.pState);
+  vector x(m.getPSize());
   bool accepted;
 
   for (i = 0; i < B+I*L; ++i) {
@@ -236,15 +239,19 @@ int main(int argc, char* argv[]) {
 
     /* adapt proposal */
     //adapt(theta, i + 1, mu, Sigma);
-    noalias(sumMu) += theta;
-    noalias(sumSigma) += ublas::outer_prod(theta,theta);
+    noalias(x) = theta;
+    q.log(x);
+    noalias(sumMu) += x;
+    noalias(sumSigma) += ublas::outer_prod(x,x);
 
     if (i > A) {
-      const double epsilon = 1.0e-4;
-      const double sd = std::pow(2.4,2) / m.getPSize();
+      double sd = SD;
+      if (sd <= 0.0) {
+	sd = std::pow(2.4,2) / m.getPSize();
+      }
 
       noalias(mu) = sumMu / (i + 1.0);
-      noalias(Sigma) = sd*((sumSigma - (i + 1.0)*ublas::outer_prod(mu,mu))/i + epsilon*Id);
+      noalias(Sigma) = sd*((sumSigma - (i + 1.0)*ublas::outer_prod(mu,mu))/i);
       q.setCov(Sigma);
       mcmc.setProposal(q);
     }
