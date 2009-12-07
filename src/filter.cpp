@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
 
   /* handle command line arguments */
   real_t T, H, MIN_ESS;
-  unsigned P, K, INIT_NS, FORCE_NS, OBS_NS;
+  unsigned P, INIT_NS, FORCE_NS, OBS_NS;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE;
   bool OUTPUT, TIME;
@@ -50,7 +50,6 @@ int main(int argc, char* argv[]) {
   desc.add_options()
     ("help", "produce help message")
     (",P", po::value(&P), "no. particles")
-    (",K", po::value(&K), "size of intermediate result buffer")
     (",T", po::value(&T), "simulation time for each trajectory")
     (",h", po::value(&H)->default_value(0.2),
         "suggested first step size for each trajectory")
@@ -93,8 +92,8 @@ int main(int argc, char* argv[]) {
   /* parameters for ODE integrator on GPU */
   ode_init();
   ode_set_h0(CUDA_REAL(H));
-  ode_set_rtoler(CUDA_REAL(1.0e-9));
-  ode_set_atoler(CUDA_REAL(1.0e-9));
+  ode_set_rtoler(CUDA_REAL(1.0e-3));
+  ode_set_atoler(CUDA_REAL(1.0e-3));
   ode_set_nsteps(1000);
 
   /* random number generator */
