@@ -23,6 +23,7 @@
 
 #include "boost/program_options.hpp"
 #include "boost/typeof/typeof.hpp"
+#include "boost/mpi.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -30,10 +31,14 @@
 #include <sys/time.h>
 
 namespace po = boost::program_options;
+namespace mpi = boost::mpi;
 
 using namespace bi;
 
 int main(int argc, char* argv[]) {
+  /* mpi */
+  mpi::environment env(argc, argv);
+
   /* handle command line arguments */
   real_t T, H, MIN_ESS;
   unsigned P, K, INIT_NS, FORCE_NS, OBS_NS;
@@ -87,10 +92,10 @@ int main(int argc, char* argv[]) {
 
   /* parameters for ODE integrator on GPU */
   ode_init();
-  ode_set_h0(H);
-  ode_set_rtoler(1.0e-3);
-  ode_set_atoler(1.0e-3);
-  ode_set_nsteps(200);
+  ode_set_h0(CUDA_REAL(H));
+  ode_set_rtoler(CUDA_REAL(1.0e-9));
+  ode_set_atoler(CUDA_REAL(1.0e-9));
+  ode_set_nsteps(1000);
 
   /* random number generator */
   Random rng(SEED);
@@ -119,7 +124,7 @@ int main(int argc, char* argv[]) {
   /* outputs */
   ForwardNetCDFWriter* out;
   if (OUTPUT) {
-    out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, oUpdater.numUniqueTimes() + 1);
+    out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, oUpdater.numUniqueTimes());
   } else {
     out = NULL;
   }
