@@ -13,19 +13,25 @@
 #include "bi/method/FUpdater.hpp"
 #include "bi/method/OUpdater.hpp"
 #include "bi/method/Simulator.hpp"
+#include "bi/method/Sampler.hpp"
 #include "bi/io/ForwardNetCDFReader.hpp"
 #include "bi/io/ForwardNetCDFWriter.hpp"
 
 #include "boost/program_options.hpp"
+#include "boost/mpi.hpp"
 
 #include <iostream>
 #include <string>
 #include <sys/time.h>
 
+namespace po = boost::program_options;
+namespace mpi = boost::mpi;
+
 using namespace bi;
 
 int main(int argc, char* argv[]) {
-  namespace po = boost::program_options;
+  /* mpi */
+  mpi::environment env(argc, argv);
 
   /* command line arguments */
   real_t T;
@@ -92,17 +98,19 @@ int main(int argc, char* argv[]) {
     out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, 366);
   }
 
-  /* simulator */
+  /* static sampler & dynamic simulator */
   FUpdater fUpdater(m, FORCE_FILE, s, NS);
   OUpdater oUpdater(m, OBS_FILE, s, NS);
+  Sampler<NPZDModel> sam(m, s, rng);
   Simulator<NPZDModel> sim(m, s, rng, &r, &fUpdater, &oUpdater);
 
   /* simulate and output */
   timeval start, end;
   gettimeofday(&start, NULL);
   unsigned k;
+  sam.sample(); // set static variables
   while (sim.getTime() < T) {
-    k = sim.simulate(T);
+    k = sim.simulate(T); // simulate dynamic variables
     if (OUTPUT) {
       out->write(r, k);
     }

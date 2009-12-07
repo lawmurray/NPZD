@@ -82,7 +82,7 @@ while ($fields = $sth{'GetNodes'}->fetchrow_hashref) {
       if ($$formulafields{'Function'} eq 'dfdt') {
         $formula = "\\dot\{$$fields{'LaTeXName'}\} = " .
             $$formulafields{'LaTeXFormula'};
-      } elsif ($$formulafields{'Function'} eq 'f') {
+      } elsif ($$formulafields{'Function'} eq 'f' || $$formulafields{'Function'} eq 's') {
         $formula = "$$fields{'LaTeXName'} = " .
             $$formulafields{'LaTeXFormula'};
       } elsif ($$formulafields{'Function'} eq 'mu' ||
