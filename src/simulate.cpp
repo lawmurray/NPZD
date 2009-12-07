@@ -95,7 +95,7 @@ int main(int argc, char* argv[]) {
   /* output */
   ForwardNetCDFWriter* out;
   if (OUTPUT) {
-    out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, 366);
+    out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, K + 1);
   }
 
   /* static sampler & dynamic simulator */
@@ -107,15 +107,10 @@ int main(int argc, char* argv[]) {
   /* simulate and output */
   timeval start, end;
   gettimeofday(&start, NULL);
-  unsigned k;
   sam.sample(); // set static variables
-  while (sim.getTime() < T) {
-    k = sim.simulate(T); // simulate dynamic variables
-    if (OUTPUT) {
-      out->write(r, k);
-    }
-  }
+  sim.simulate(T); // simulate dynamic variables
   if (OUTPUT) {
+    out->write(r, K);
     out->write(s, sim.getTime());
   }
   gettimeofday(&end, NULL);
@@ -126,5 +121,6 @@ int main(int argc, char* argv[]) {
     std::cout << elapsed << std::endl;
   }
 
+  delete out;
   return 0;
 }

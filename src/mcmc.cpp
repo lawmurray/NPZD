@@ -247,7 +247,7 @@ int main(int argc, char* argv[]) {
     if (i > A) {
       double sd = SD;
       if (sd <= 0.0) {
-	sd = std::pow(2.4,2) / m.getPSize();
+        sd = std::pow(2.4,2) / m.getPSize();
       }
 
       noalias(mu) = sumMu / (i + 1.0);

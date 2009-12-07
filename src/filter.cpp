@@ -145,7 +145,7 @@ int main(int argc, char* argv[]) {
   pf.upload(stream);
   while (pf.getTime() < T) {
     BI_LOG("t = " << pf.getTime());
-    pf.advance(T, stream);
+    pf.filter(T, stream);
     pf.weight(stream);
     ess = pf.ess(stream);
     essOut << ess << std::endl;
@@ -167,5 +167,6 @@ int main(int argc, char* argv[]) {
     std::cout << elapsed << std::endl;
   }
 
+  delete out;
   return 0;
 }
