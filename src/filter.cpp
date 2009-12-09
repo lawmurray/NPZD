@@ -11,9 +11,10 @@
 
 #include "bi/cuda/cuda.hpp"
 #include "bi/cuda/ode/IntegratorConstants.hpp"
-#include "bi/method/ParticleFilter.hpp"
 #include "bi/random/Random.hpp"
-#include "bi/method/RUpdater.hpp"
+#include "bi/method/ParticleFilter.hpp"
+#include "bi/method/StratifiedResampler.hpp"
+#include "bi/method/MetropolisResampler.hpp"
 #include "bi/method/FUpdater.hpp"
 #include "bi/method/OUpdater.hpp"
 #include "bi/io/ForwardNetCDFReader.hpp"
@@ -27,6 +28,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <string>
 #include <sys/time.h>
 
@@ -128,14 +130,17 @@ int main(int argc, char* argv[]) {
     out = NULL;
   }
   std::ofstream essOut("ess.txt");
+  std::ofstream lwsOut("lws.txt");
+  lwsOut << std::setprecision(16);
 
   /* filter */
   timeval start, end;
   gettimeofday(&start, NULL);
 
-  unsigned t;
   real_t ess;
-  ParticleFilter<NPZDModel> pf(m, s, rng, &fUpdater, &oUpdater);
+  StratifiedResampler resam(s, rng);
+  //MetropolisResampler resam(s, rng, 20);
+  ParticleFilter<NPZDModel> pf(m, s, rng, &resam, &fUpdater, &oUpdater);
 
   /* filter */
   cudaStream_t stream;
@@ -146,8 +151,19 @@ int main(int argc, char* argv[]) {
     BI_LOG("t = " << pf.getTime());
     pf.filter(T, stream);
     pf.weight(stream);
-    ess = pf.ess(stream);
-    essOut << ess << std::endl;
+    //ess = pf.ess(stream);
+    //essOut << ess << std::endl;
+
+    /* output log-weights */
+    //pf.download(stream);
+    //cudaStreamSynchronize(stream);
+    //unsigned i;
+    //const thrust::host_vector<real_t>& lws = pf.getWeights();
+    //for (i = 0; i < lws.size(); ++i) {
+    //  lwsOut << lws[i] << ' ';
+    //}
+    //lwsOut << std::endl;
+
     pf.resample(MIN_ESS*s.P, stream);
     if (out != NULL) {
       pf.download(stream);
