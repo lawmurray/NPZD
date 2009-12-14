@@ -43,9 +43,9 @@ int main(int argc, char* argv[]) {
 
   /* handle command line arguments */
   real_t T, H, MIN_ESS;
-  unsigned P, INIT_NS, FORCE_NS, OBS_NS;
+  unsigned P, L, INIT_NS, FORCE_NS, OBS_NS;
   int SEED;
-  std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE;
+  std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE, RESAMPLER;
   bool OUTPUT, TIME;
 
   po::options_description desc("Allowed options");
@@ -59,6 +59,10 @@ int main(int argc, char* argv[]) {
         "minimum ESS (as proportion of P) at each step to avoid resampling")
     ("seed", po::value(&SEED)->default_value(0),
         "pseudorandom number seed")
+    ("resampler", po::value(&RESAMPLER)->default_value("stratified"),
+        "resampling strategy, 'stratified' or 'metropolis'")
+    (",L", po::value(&L)->default_value(1),
+        "no. steps for Metropolis resampler")
     ("init-file", po::value(&INIT_FILE),
         "input file containing initial values")
     ("force-file", po::value(&FORCE_FILE),
@@ -133,14 +137,25 @@ int main(int argc, char* argv[]) {
   std::ofstream lwsOut("lws.txt");
   lwsOut << std::setprecision(16);
 
+  /* resamplers */
+  bool isStratified, isMetropolis;
+  Resampler* resam;
+  if (RESAMPLER.compare("stratified") == 0) {
+    isStratified = true;
+    isMetropolis = false;
+    resam = new StratifiedResampler(s, rng);
+  } else {
+    isStratified = false;
+    isMetropolis = true;
+    resam = new MetropolisResampler(s, rng, L);
+  }
+
   /* filter */
   timeval start, end;
   gettimeofday(&start, NULL);
 
   real_t ess;
-  StratifiedResampler resam(s, rng);
-  //MetropolisResampler resam(s, rng, 20);
-  ParticleFilter<NPZDModel> pf(m, s, rng, &resam, &fUpdater, &oUpdater);
+  ParticleFilter<NPZDModel> pf(m, s, rng, resam, &fUpdater, &oUpdater);
 
   /* filter */
   cudaStream_t stream;
@@ -151,6 +166,7 @@ int main(int argc, char* argv[]) {
     BI_LOG("t = " << pf.getTime());
     pf.filter(T, stream);
     pf.weight(stream);
+
     //ess = pf.ess(stream);
     //essOut << ess << std::endl;
 
@@ -164,7 +180,15 @@ int main(int argc, char* argv[]) {
     //}
     //lwsOut << std::endl;
 
-    pf.resample(MIN_ESS*s.P, stream);
+    if (isMetropolis) {
+      ess = pf.ess(stream);
+      if (ess < MIN_ESS*s.P) {
+        pf.resample(stream);
+      }
+    } else {
+      pf.resample(MIN_ESS*s.P, stream);
+    }
+
     if (out != NULL) {
       pf.download(stream);
       cudaStreamSynchronize(stream);
