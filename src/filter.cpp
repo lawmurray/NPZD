@@ -167,7 +167,10 @@ int main(int argc, char* argv[]) {
     pf.filter(T, stream);
     pf.weight(stream);
 
-    //ess = pf.ess(stream);
+    cudaStreamSynchronize(stream);
+    ess = pf.ess();
+
+    /* output ess */
     //essOut << ess << std::endl;
 
     /* output log-weights */
@@ -180,13 +183,8 @@ int main(int argc, char* argv[]) {
     //}
     //lwsOut << std::endl;
 
-    if (isMetropolis) {
-      ess = pf.ess(stream);
-      if (ess < MIN_ESS*s.P) {
-        pf.resample(stream);
-      }
-    } else {
-      pf.resample(MIN_ESS*s.P, stream);
+    if (ess < MIN_ESS*s.P) {
+      pf.resample(stream);
     }
 
     if (out != NULL) {

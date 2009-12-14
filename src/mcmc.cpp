@@ -15,6 +15,8 @@
 #include "bi/state/State.hpp"
 #include "bi/random/Random.hpp"
 #include "bi/method/ParallelParticleMCMC.hpp"
+#include "bi/method/StratifiedResampler.hpp"
+#include "bi/method/MetropolisResampler.hpp"
 #include "bi/method/FUpdater.hpp"
 #include "bi/method/OUpdater.hpp"
 #include "bi/io/MCMCNetCDFWriter.hpp"
@@ -44,14 +46,19 @@ int main(int argc, char* argv[]) {
   /* handle command line arguments */
   real_t T, H, MIN_ESS;
   double SCALE, TEMP, MIN_TEMP, MAX_TEMP, ALPHA, SD;
-  unsigned P, INIT_NS, FORCE_NS, OBS_NS, B, I, L, A;
+  unsigned P, INIT_NS, FORCE_NS, OBS_NS, B, I, C, A, L;
   int SEED;
-  std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE, PROPOSAL_FILE;
+  std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE, PROPOSAL_FILE,
+      RESAMPLER;
 
   po::options_description pfOptions("Particle filter options");
   pfOptions.add_options()
     (",P", po::value(&P), "no. particles")
     (",T", po::value(&T), "total time to filter")
+    ("resampler", po::value(&RESAMPLER)->default_value("metropolis"),
+        "resampling strategy, 'stratified' or 'metropolis'")
+    (",L", po::value(&L)->default_value(15),
+        "no. steps for Metropolis resampler")
     (",h", po::value(&H),
         "suggested first step size for numerical integration")
     ("min-ess", po::value(&MIN_ESS)->default_value(1.0),
@@ -61,7 +68,7 @@ int main(int argc, char* argv[]) {
   mcmcOptions.add_options()
     (",B", po::value(&B)->default_value(0), "no. burn steps")
     (",I", po::value(&I)->default_value(1), "interval for drawing samples")
-    (",L", po::value(&L), "no. samples to draw")
+    (",C", po::value(&C), "no. samples to draw")
     (",A", po::value(&A)->default_value(100),
         "no. samples to drawn before adapting proposal")
     ("scale", po::value(&SCALE),
@@ -212,9 +219,17 @@ int main(int argc, char* argv[]) {
   std::cerr << "Rank " << rank << ": using device " << dev << ", temperature "
       << lambda << std::endl;
 
+  /* resamplers */
+  Resampler* resam;
+  if (RESAMPLER.compare("stratified") == 0) {
+    resam = new StratifiedResampler(s, rng);
+  } else {
+    resam = new MetropolisResampler(s, rng, L);
+  }
+
   /* MCMC */
   ParallelParticleMCMC<NPZDModel,NPZDPrior,AdditiveExpGaussianPdf<> > mcmc(m,
-      x0, q, ALPHA, s, rng, &fUpdater, &oUpdater);
+      x0, q, ALPHA, s, rng, resam, &fUpdater, &oUpdater);
 
   real_t l;
   State s2(m, 1);
@@ -222,7 +237,7 @@ int main(int argc, char* argv[]) {
   vector x(m.getPSize());
   bool accepted;
 
-  for (i = 0; i < B+I*L; ++i) {
+  for (i = 0; i < B+I*C; ++i) {
     accepted = mcmc.step(T, MIN_ESS*P, lambda);
     theta = mcmc.getState();
     l = mcmc.getLogLikelihood();
