@@ -228,14 +228,16 @@ int main(int argc, char* argv[]) {
   }
 
   /* MCMC */
-  ParallelParticleMCMC<NPZDModel,NPZDPrior,AdditiveExpGaussianPdf<> > mcmc(m,
-      x0, q, ALPHA, s, rng, resam, &fUpdater, &oUpdater);
-
   real_t l;
   State s2(m, 1);
   state_vector theta(s2.pState);
   vector x(m.getPSize());
   bool accepted;
+
+  x0.getPPrior().sample(theta); // initialise chain
+
+  ParallelParticleMCMC<NPZDModel,NPZDPrior,AdditiveExpGaussianPdf<> > mcmc(m,
+      x0, q, ALPHA, s, rng, resam, &fUpdater, &oUpdater);
 
   for (i = 0; i < B+I*C; ++i) {
     accepted = mcmc.step(T, MIN_ESS*P, lambda);
