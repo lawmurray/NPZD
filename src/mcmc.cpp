@@ -253,7 +253,6 @@ int main(int argc, char* argv[]) {
     std::cerr << std::endl;
 
     /* adapt proposal */
-    //adapt(theta, i + 1, mu, Sigma);
     noalias(x) = theta;
     q.log(x);
     noalias(sumMu) += x;
