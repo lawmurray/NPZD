@@ -234,7 +234,7 @@ int main(int argc, char* argv[]) {
   vector x(m.getPSize());
   bool accepted;
 
-  x0.getPPrior().sample(rng, theta); // initialise chain
+  x0.getPPrior().sample(rng, s.pState); // initialise chain
 
   ParallelParticleMCMC<NPZDModel,NPZDPrior,AdditiveExpGaussianPdf<> > mcmc(m,
       x0, q, ALPHA, s, rng, resam, &fUpdater, &oUpdater);
