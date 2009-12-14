@@ -199,7 +199,7 @@ int main(int argc, char* argv[]) {
   /* output */
   std::stringstream file;
   file << OUTPUT_FILE << '.' << rank;
-  MCMCNetCDFWriter out(m, file.str().c_str(), L);
+  MCMCNetCDFWriter out(m, file.str().c_str(), C);
 
   /* temperature */
   double lambda;
