@@ -28,7 +28,8 @@ set xlabel "No. trajectories (P)"
 set ylabel "Wallclock time (s)"
 set xtics 1024
 
-plot "results/timeFilter_double.csv" using 1:($2/1e6) title "Double precision" linestyle 1, \
-"results/timeFilter_single.csv" using 1:($2/1e6) title "Single precision" linestyle 2, \
-"results/timeFilter_texture.csv" using 1:($2/1e6) title "Single precision with textures" linestyle 3
+plot "results/time_stratified_double.csv" using 1:($2/1e6) title "Stratified, double precision" linestyle 1, \
+"results/time_stratified_single.csv" using 1:($2/1e6) title "Stratified, single precision" linestyle 2, \
+"results/time_metropolis_double.csv" using 1:($2/1e6) title "Metropolis, double precision" linestyle 3, \
+"results/time_metropolis_single.csv" using 1:($2/1e6) title "Metropolis, single precision" linestyle 4
 
