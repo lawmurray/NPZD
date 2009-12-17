@@ -27,6 +27,7 @@
 #include "boost/mpi.hpp"
 
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <sys/time.h>
 
@@ -134,8 +135,8 @@ int main(int argc, char* argv[]) {
   /* parameters for ODE integrator on GPU */
   ode_init();
   ode_set_h0(CUDA_REAL(H));
-  ode_set_rtoler(CUDA_REAL(1.0e-3));
-  ode_set_atoler(CUDA_REAL(1.0e-3));
+  ode_set_rtoler(CUDA_REAL(1.0e-5));
+  ode_set_atoler(CUDA_REAL(1.0e-5));
   ode_set_nsteps(CUDA_REAL(200));
 
   /* random number generator */
@@ -235,7 +236,6 @@ int main(int argc, char* argv[]) {
   bool accepted;
 
   x0.getPPrior().sample(rng, s.pState); // initialise chain
-
   ParallelParticleMCMC<NPZDModel,NPZDPrior,AdditiveExpGaussianPdf<> > mcmc(m,
       x0, q, ALPHA, s, rng, resam, &fUpdater, &oUpdater);
 
