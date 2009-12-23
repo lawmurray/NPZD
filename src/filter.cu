@@ -8,5 +8,7 @@
 #include "model/NPZDModel.hpp"
 
 #include "bi/cuda/method/ParticleFilter.cuh"
+#include "bi/cuda/method/UnscentedKalmanFilter.cuh"
 
 template class bi::ParticleFilter<NPZDModel>;
+template class bi::UnscentedKalmanFilter<NPZDModel>;

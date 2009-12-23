@@ -9,8 +9,8 @@
 #define <% Guard %>
 
 #include "bi/cuda/cuda.hpp"
-#include "bi/pdf/GaussianPdf.hpp"
-#include "bi/pdf/LogNormalPdf.hpp"
+#include "bi/math/vector.hpp"
+#include "bi/math/matrix.hpp"
 
 #include <cmath>
 
@@ -19,25 +19,9 @@
  */
 class <% ClassName %> {
 public:
-  /**
-   * Constructor.
-   */
-  <% ClassName %>();
-
-  /**
-   * Get prior.
-   *
-   * @return Prior.
-   */
-  <% PriorType %>& getPrior();
 
 <% FunctionDeclarations %>
 
-private:
-  /**
-   * Prior.
-   */
-  <% PriorType %> p0;
 };
 
 <% FunctionDefinitions %>

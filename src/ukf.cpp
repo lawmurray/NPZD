@@ -11,10 +11,7 @@
 
 #include "bi/cuda/cuda.hpp"
 #include "bi/cuda/ode/IntegratorConstants.hpp"
-#include "bi/random/Random.hpp"
-#include "bi/method/ParticleFilter.hpp"
-#include "bi/method/StratifiedResampler.hpp"
-#include "bi/method/MetropolisResampler.hpp"
+#include "bi/method/UnscentedKalmanFilter.hpp"
 #include "bi/method/FUpdater.hpp"
 #include "bi/method/OUpdater.hpp"
 #include "bi/io/ForwardNetCDFReader.hpp"
@@ -42,8 +39,8 @@ int main(int argc, char* argv[]) {
   mpi::environment env(argc, argv);
 
   /* handle command line arguments */
-  real_t T, H, MIN_ESS;
-  unsigned P, L, INIT_NS, FORCE_NS, OBS_NS;
+  real_t T, H;
+  unsigned INIT_NS, FORCE_NS, OBS_NS;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE, RESAMPLER;
   bool OUTPUT, TIME;
@@ -51,18 +48,11 @@ int main(int argc, char* argv[]) {
   po::options_description desc("Allowed options");
   desc.add_options()
     ("help", "produce help message")
-    (",P", po::value(&P), "no. particles")
     (",T", po::value(&T), "simulation time for each trajectory")
     (",h", po::value(&H)->default_value(0.2),
         "suggested first step size for each trajectory")
-    ("min-ess", po::value(&MIN_ESS)->default_value(1.0),
-        "minimum ESS (as proportion of P) at each step to avoid resampling")
     ("seed", po::value(&SEED)->default_value(0),
         "pseudorandom number seed")
-    ("resampler", po::value(&RESAMPLER)->default_value("metropolis"),
-        "resampling strategy, 'stratified' or 'metropolis'")
-    (",L", po::value(&L)->default_value(20),
-        "no. steps for Metropolis resampler")
     ("init-file", po::value(&INIT_FILE),
         "input file containing initial values")
     ("force-file", po::value(&FORCE_FILE),
@@ -102,9 +92,6 @@ int main(int argc, char* argv[]) {
   ode_set_atoler(CUDA_REAL(1.0e-5));
   ode_set_nsteps(1000);
 
-  /* random number generator */
-  Random rng(SEED);
-
   /* model */
   NPZDModel m;
 
@@ -112,16 +99,8 @@ int main(int argc, char* argv[]) {
   NPZDPrior prior;
 
   /* state and intermediate results */
+  unsigned P = 2*(m.getDSize() + m.getCSize() + m.getRSize()) + 1;
   State s(m, P);
-
-  /* initialise from file... */
-  ForwardNetCDFReader<true,true,true,false,true,true,true> in(m, INIT_FILE, INIT_NS);
-  in.read(s);
-
-  /* ...and/or initialise from prior */
-  prior.getDPrior().sample(rng, s.dState);
-  prior.getCPrior().sample(rng, s.cState);
-  prior.getPPrior().sample(rng, s.pState);
 
   /* forcings, observations */
   FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
@@ -134,68 +113,52 @@ int main(int argc, char* argv[]) {
   } else {
     out = NULL;
   }
-  std::ofstream essOut("ess.txt");
-  std::ofstream lwsOut("lws.txt");
-  lwsOut << std::setprecision(16);
 
-  /* resamplers */
-  bool isStratified, isMetropolis;
-  Resampler* resam;
-  if (RESAMPLER.compare("stratified") == 0) {
-    isStratified = true;
-    isMetropolis = false;
-    resam = new StratifiedResampler(s, rng);
-  } else {
-    isStratified = false;
-    isMetropolis = true;
-    resam = new MetropolisResampler(s, rng, L);
+  /* prior */
+  const unsigned D = m.getDSize();
+  const unsigned C = m.getCSize();
+  const unsigned N = D + C;
+  unsigned i;
+  real_t mu[N];
+  real_t Sigma[N*N];
+  for (i = 0; i < N*N; ++i) {
+    Sigma[i] = CUDA_REAL(0.0);
+  }
+  for (i = 0; i < D; ++i) {
+    mu[i] = prior.getDPrior().mean()(i);
+    Sigma[i*N+i] = prior.getDPrior().cov()(i,i);
+  }
+  for (i = D; i < N; ++i) {
+    mu[i] = prior.getCPrior().mean()(i - D);
+    Sigma[i*N+i] = prior.getCPrior().cov()(i - D, i - D);
   }
 
   /* filter */
   timeval start, end;
   gettimeofday(&start, NULL);
 
-  real_t ess;
-  ParticleFilter<NPZDModel> pf(m, s, rng, resam, &fUpdater, &oUpdater);
+  UnscentedKalmanFilter<NPZDModel> ukf(m, mu, Sigma, s, &fUpdater, &oUpdater);
+  cudaThreadSynchronize();
 
   /* filter */
   cudaStream_t stream;
   CUDA_CHECKED_CALL(cudaStreamCreate(&stream));
-  pf.bind(stream);
-  pf.upload(stream);
-  while (pf.getTime() < T) {
-    BI_LOG("t = " << pf.getTime());
-    pf.filter(T, stream);
-    pf.weight(stream);
-
-    cudaStreamSynchronize(stream);
-    ess = pf.ess();
-
-    /* output ess */
-    //essOut << ess << std::endl;
-
-    /* output log-weights */
-    //pf.download(stream);
-    //cudaStreamSynchronize(stream);
-    //unsigned i;
-    //const thrust::host_vector<real_t>& lws = pf.getWeights();
-    //for (i = 0; i < lws.size(); ++i) {
-    //  lwsOut << lws[i] << ' ';
-    //}
-    //lwsOut << std::endl;
-
-    if (ess < MIN_ESS*s.P) {
-      pf.resample(stream);
-    }
+  ukf.bind(stream);
+  ukf.upload(stream);
+  //while (ukf.getTime() < T) {
+    BI_LOG("t = " << ukf.getTime());
+    ukf.predict(T, stream);
+    ukf.correct(stream);
 
     if (out != NULL) {
-      pf.download(stream);
+      cudaThreadSynchronize();
+      ukf.download(stream);
       cudaStreamSynchronize(stream);
-      out->write(s, pf.getTime());
+      out->write(s, ukf.getTime());
     }
-  }
+  //}
   cudaStreamSynchronize(stream);
-  pf.unbind();
+  ukf.unbind();
   CUDA_CHECKED_CALL(cudaStreamDestroy(stream));
 
   /* wrap up timing */

@@ -132,6 +132,8 @@ sub OutputModelPrior {
   my @parents;
   my $parent;
   my $i;
+  my $size;
+  my $token;
 
   my $sth = $dbh->prepare('SELECT Name ' .
       "FROM Node, NodeTrait WHERE Category <> 'Intermediate result' AND " .
@@ -155,6 +157,7 @@ sub OutputModelPrior {
   $sth->finish;
 
   # header file
+  $tokens{'Name'} = $model;
   $tokens{'Guard'} = 'BIM_' . uc($model) . '_' . uc($model) . 'PRIOR_HPP';
   $tokens{'ClassName'} = $model . 'Prior';
   $tokens{'Includes'} = join("\n", map { &Include("${_}.hpp") } @classes);
@@ -179,13 +182,20 @@ sub OutputModelPrior {
 
   # source file
   foreach $type ('s', 'd', 'c', 'p') {
+    $size = "${model}Model::get" . uc($type) . "Size()";
+    $token = uc($type) . 'PriorDefinitions';
+    $tokens{$token} = "  bi::vector mu_$type($size);\n";
+    $tokens{$token} .= "  bi::diagonal_matrix Sigma_$type($size,$size);\n";
     $i = 0;
     foreach $node (@{$nodes{$type}}) {
       if (&NodePrior($node) ne '') {
-        $tokens{uc($type) . 'PriorDefinitions'} .= "  ${type}0.set($i, $node.getPrior());\n";
+        $tokens{$token} .= "  mu_$type($i) = $node.mu0();\n";
+        $tokens{$token} .= "  Sigma_$type($i,$i) = std::pow($node.sigma0(), 2);\n";
       }
       $i++;
     }
+    $tokens{$token} .= "  ${type}0.setMean(mu_$type);\n";
+    $tokens{$token} .= "  ${type}0.setCov(Sigma_$type);\n";
   }
 
   $source = &ProcessTemplate('ModelPriorSource', \%tokens);
@@ -280,14 +290,14 @@ sub OutputNodePriors {
     print SOURCE "\n";
     close SOURCE;
 
-    $source = &ProcessTemplate('NodePriorSource', \%tokens);
-    $source = &PrettyPrint($source);
+    #$source = &ProcessTemplate('NodePriorSource', \%tokens);
+    #$source = &PrettyPrint($source);
 
-    open(SOURCE, ">$outdir/$tokens{'ClassName'}.cpp") ||
-        confess("Could not open $outdir/$tokens{'ClassName'}.cpp");
-    print SOURCE $source;
-    print SOURCE "\n";
-    close SOURCE;
+    #open(SOURCE, ">$outdir/$tokens{'ClassName'}.cpp") ||
+    #    confess("Could not open $outdir/$tokens{'ClassName'}.cpp");
+    #print SOURCE $source;
+    #print SOURCE "\n";
+    #close SOURCE;
   }
 }
 

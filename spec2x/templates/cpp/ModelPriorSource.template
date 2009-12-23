@@ -9,7 +9,11 @@
 
 using namespace bi;
 
-<% ClassName %>::<% ClassName %>() {
+<% ClassName %>::<% ClassName %>() :
+    s0(<% Name %>Model::getSSize()),
+    d0(<% Name %>Model::getDSize()),
+    c0(<% Name %>Model::getCSize()),
+    p0(<% Name %>Model::getPSize()) {
 <% SPriorDefinitions %>
 
 <% DPriorDefinitions %>
@@ -19,22 +23,22 @@ using namespace bi;
 <% PPriorDefinitions %>
 }
 
-bi::FactoredPdf<GET_TYPELIST(<% SPriorListName %>)>&
+bi::ExpGaussianPdf<bi::vector,bi::diagonal_matrix>&
     <% ClassName %>::getSPrior() {
   return s0;
 }
 
-bi::FactoredPdf<GET_TYPELIST(<% DPriorListName %>)>&
+bi::ExpGaussianPdf<bi::vector,bi::diagonal_matrix>&
     <% ClassName %>::getDPrior() {
   return d0;
 }
 
-bi::FactoredPdf<GET_TYPELIST(<% CPriorListName %>)>&
+bi::ExpGaussianPdf<bi::vector,bi::diagonal_matrix>&
     <% ClassName %>::getCPrior() {
   return c0;
 }
 
-bi::FactoredPdf<GET_TYPELIST(<% PPriorListName %>)>&
+bi::ExpGaussianPdf<bi::vector,bi::diagonal_matrix>&
     <% ClassName %>::getPPrior() {
   return p0;
 }
