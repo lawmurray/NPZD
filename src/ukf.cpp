@@ -102,6 +102,10 @@ int main(int argc, char* argv[]) {
   unsigned P = 2*(m.getDSize() + m.getCSize() + m.getRSize()) + 1;
   State s(m, P);
 
+  /* initialise from file... */
+  ForwardNetCDFReader<true,true,true,false,true,true,true> in(m, INIT_FILE, INIT_NS);
+  in.read(s);
+
   /* forcings, observations */
   FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
   OUpdater oUpdater(m, OBS_FILE, s, OBS_NS);
@@ -145,18 +149,17 @@ int main(int argc, char* argv[]) {
   CUDA_CHECKED_CALL(cudaStreamCreate(&stream));
   ukf.bind(stream);
   ukf.upload(stream);
-  //while (ukf.getTime() < T) {
+  while (ukf.getTime() < T) {
     BI_LOG("t = " << ukf.getTime());
     ukf.predict(T, stream);
     ukf.correct(stream);
 
     if (out != NULL) {
-      cudaThreadSynchronize();
       ukf.download(stream);
       cudaStreamSynchronize(stream);
       out->write(s, ukf.getTime());
     }
-  //}
+  }
   cudaStreamSynchronize(stream);
   ukf.unbind();
   CUDA_CHECKED_CALL(cudaStreamDestroy(stream));

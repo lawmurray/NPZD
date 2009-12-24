@@ -123,7 +123,7 @@ int main(int argc, char* argv[]) {
   prior.getCPrior().sample(rng, s.cState);
   prior.getPPrior().sample(rng, s.pState);
 
-  /* forcings, observations */
+  /* randoms, forcings, observations */
   FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
   OUpdater oUpdater(m, OBS_FILE, s, OBS_NS);
 

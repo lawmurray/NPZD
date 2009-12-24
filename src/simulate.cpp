@@ -10,6 +10,7 @@
 #include "bi/cuda/cuda.hpp"
 #include "bi/cuda/ode/IntegratorConstants.hpp"
 #include "bi/random/Random.hpp"
+#include "bi/method/StochasticRUpdater.hpp"
 #include "bi/method/FUpdater.hpp"
 #include "bi/method/OUpdater.hpp"
 #include "bi/method/Simulator.hpp"
@@ -99,10 +100,11 @@ int main(int argc, char* argv[]) {
   }
 
   /* static sampler & dynamic simulator */
+  StochasticRUpdater<NPZDModel> rUpdater(s, rng);
   FUpdater fUpdater(m, FORCE_FILE, s, NS);
   OUpdater oUpdater(m, OBS_FILE, s, NS);
-  Sampler<NPZDModel> sam(m, s, rng);
-  Simulator<NPZDModel> sim(m, s, rng, &r, &fUpdater, &oUpdater);
+  Sampler<NPZDModel> sam(m, s, &rUpdater);
+  Simulator<NPZDModel> sim(m, s, &r, &rUpdater, &fUpdater, &oUpdater);
 
   /* simulate and output */
   timeval start, end;
