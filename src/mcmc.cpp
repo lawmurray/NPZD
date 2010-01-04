@@ -18,7 +18,7 @@
 #include "bi/method/StratifiedResampler.hpp"
 #include "bi/method/MetropolisResampler.hpp"
 #include "bi/method/FUpdater.hpp"
-#include "bi/method/OUpdater.hpp"
+#include "bi/method/YUpdater.hpp"
 #include "bi/io/MCMCNetCDFWriter.hpp"
 #include "bi/pdf/AdditiveExpGaussianPdf.hpp"
 
@@ -195,7 +195,7 @@ int main(int argc, char* argv[]) {
 
   /* forcings, observations */
   FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
-  OUpdater oUpdater(m, OBS_FILE, s, OBS_NS);
+  YUpdater yUpdater(m, OBS_FILE, s, OBS_NS);
 
   /* output */
   std::stringstream file;
@@ -237,7 +237,7 @@ int main(int argc, char* argv[]) {
 
   x0.getPPrior().sample(rng, s.pState); // initialise chain
   ParallelParticleMCMC<NPZDModel,NPZDPrior,AdditiveExpGaussianPdf<> > mcmc(m,
-      x0, q, ALPHA, s, rng, resam, &fUpdater, &oUpdater);
+      x0, q, ALPHA, s, rng, resam, &fUpdater, &yUpdater);
 
   for (i = 0; i < B+I*C; ++i) {
     accepted = mcmc.step(T, MIN_ESS*P, lambda);

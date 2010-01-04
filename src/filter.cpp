@@ -16,7 +16,7 @@
 #include "bi/method/StratifiedResampler.hpp"
 #include "bi/method/MetropolisResampler.hpp"
 #include "bi/method/FUpdater.hpp"
-#include "bi/method/OUpdater.hpp"
+#include "bi/method/YUpdater.hpp"
 #include "bi/io/ForwardNetCDFReader.hpp"
 #include "bi/io/ForwardNetCDFWriter.hpp"
 
@@ -125,12 +125,12 @@ int main(int argc, char* argv[]) {
 
   /* randoms, forcings, observations */
   FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
-  OUpdater oUpdater(m, OBS_FILE, s, OBS_NS);
+  YUpdater yUpdater(m, OBS_FILE, s, OBS_NS);
 
   /* outputs */
   ForwardNetCDFWriter* out;
   if (OUTPUT) {
-    out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, oUpdater.numUniqueTimes());
+    out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, yUpdater.numUniqueTimes());
   } else {
     out = NULL;
   }
@@ -156,7 +156,7 @@ int main(int argc, char* argv[]) {
   gettimeofday(&start, NULL);
 
   real_t ess;
-  ParticleFilter<NPZDModel> pf(m, s, rng, resam, &fUpdater, &oUpdater);
+  ParticleFilter<NPZDModel> pf(m, s, rng, resam, &fUpdater, &yUpdater);
 
   /* filter */
   cudaStream_t stream;
