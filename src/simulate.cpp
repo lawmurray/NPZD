@@ -12,7 +12,7 @@
 #include "bi/random/Random.hpp"
 #include "bi/method/StochasticRUpdater.hpp"
 #include "bi/method/FUpdater.hpp"
-#include "bi/method/YUpdater.hpp"
+#include "bi/method/OYUpdater.hpp"
 #include "bi/method/Simulator.hpp"
 #include "bi/method/Sampler.hpp"
 #include "bi/io/ForwardNetCDFReader.hpp"
@@ -102,9 +102,9 @@ int main(int argc, char* argv[]) {
   /* static sampler & dynamic simulator */
   StochasticRUpdater<NPZDModel> rUpdater(s, rng);
   FUpdater fUpdater(m, FORCE_FILE, s, NS);
-  YUpdater yUpdater(m, OBS_FILE, s, NS);
+  OYUpdater oyUpdater(m, OBS_FILE, s, NS);
   Sampler<NPZDModel> sam(m, s, &rUpdater);
-  Simulator<NPZDModel> sim(m, s, &r, &rUpdater, &fUpdater, &yUpdater);
+  Simulator<NPZDModel> sim(m, s, &r, &rUpdater, &fUpdater, &oyUpdater);
 
   /* simulate and output */
   timeval start, end;
