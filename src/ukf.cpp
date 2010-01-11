@@ -18,6 +18,10 @@
 #include "bi/io/ForwardNetCDFWriter.hpp"
 
 #include "cuda_runtime.h"
+#include "cuda.h"
+#include "cuda_runtime_api.h"
+#include "cublas.h"
+
 
 #include "boost/program_options.hpp"
 #include "boost/typeof/typeof.hpp"
@@ -37,6 +41,14 @@ using namespace bi;
 int main(int argc, char* argv[]) {
   /* mpi */
   mpi::environment env(argc, argv);
+
+  cuInit(0);
+  cublasInit();
+  cublasStatus status;
+  status = cublasInit();
+  if (status != CUBLAS_STATUS_SUCCESS) {
+      fprintf (stderr, "!!!! CUBLAS initialization error\n");
+  }
 
   /* handle command line arguments */
   real_t T, H;
@@ -144,25 +156,24 @@ int main(int argc, char* argv[]) {
   UnscentedKalmanFilter<NPZDModel> ukf(m, mu, Sigma, s, &fUpdater, &oyUpdater);
   cudaThreadSynchronize();
 
+  out->write(s, ukf.getTime());
+
   /* filter */
-  cudaStream_t stream;
-  CUDA_CHECKED_CALL(cudaStreamCreate(&stream));
-  ukf.bind(stream);
-  ukf.upload(stream);
+  ukf.bind();
+  ukf.upload();
   while (ukf.getTime() < T) {
     BI_LOG("t = " << ukf.getTime());
-    ukf.predict(T, stream);
-    ukf.correct(stream);
+    ukf.predict(T);
+    ukf.correct();
 
     if (out != NULL) {
-      ukf.download(stream);
-      cudaStreamSynchronize(stream);
+      ukf.download();
+      cudaThreadSynchronize();
       out->write(s, ukf.getTime());
     }
   }
-  cudaStreamSynchronize(stream);
+  cudaThreadSynchronize();
   ukf.unbind();
-  CUDA_CHECKED_CALL(cudaStreamDestroy(stream));
 
   /* wrap up timing */
   gettimeofday(&end, NULL);

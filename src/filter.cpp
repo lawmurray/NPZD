@@ -159,16 +159,14 @@ int main(int argc, char* argv[]) {
   ParticleFilter<NPZDModel> pf(m, s, rng, resam, &fUpdater, &oyUpdater);
 
   /* filter */
-  cudaStream_t stream;
-  CUDA_CHECKED_CALL(cudaStreamCreate(&stream));
-  pf.bind(stream);
-  pf.upload(stream);
+  pf.bind();
+  pf.upload();
   while (pf.getTime() < T) {
     BI_LOG("t = " << pf.getTime());
-    pf.filter(T, stream);
-    pf.weight(stream);
+    pf.predict(T);
+    pf.correct();
 
-    cudaStreamSynchronize(stream);
+    cudaThreadSynchronize();
     ess = pf.ess();
 
     /* output ess */
@@ -185,18 +183,17 @@ int main(int argc, char* argv[]) {
     //lwsOut << std::endl;
 
     if (ess < MIN_ESS*s.P) {
-      pf.resample(stream);
+      pf.resample();
     }
 
     if (out != NULL) {
-      pf.download(stream);
-      cudaStreamSynchronize(stream);
+      pf.download();
+      cudaThreadSynchronize();
       out->write(s, pf.getTime());
     }
   }
-  cudaStreamSynchronize(stream);
+  cudaThreadSynchronize();
   pf.unbind();
-  CUDA_CHECKED_CALL(cudaStreamDestroy(stream));
 
   /* wrap up timing */
   gettimeofday(&end, NULL);
