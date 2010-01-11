@@ -25,29 +25,34 @@ $LINKER = 'g++';
 $CPPINCLUDES = '-I../bi/src -I/usr/local/cuda/include -I/tools/cuda/2.3/cuda/include/ -I/tools/thrust/1.1.1 -I/usr/local/include/thrust';
 $CXXFLAGS = "-Wall -fopenmp `nc-config --cflags` `mpic++ -showme:compile` $CPPINCLUDES";
 $CUDACCFLAGS = "-arch=sm_13 -Xptxas=\"-v\" -Xcompiler=\"-Wall -fopenmp `mpic++ -showme:compile`\" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS $CPPINCLUDES";
-$LINKFLAGS = '-L"../bi/build" -L"/usr/local/atlas/lib" -lbi -latlas -lf77blas -lcblas -lcublas -llapack -lmagma -lmagmablas -lgfortran -lgsl -lnetcdf_c++ `nc-config --libs` -lcuda -lgomp -lpthread -lboost_program_options-mt -lboost_mpi-mt `mpic++ -showme:link`';
+$LINKFLAGS = '-L"../bi/build" -L"/usr/local/atlas/lib" -lbi -latlas -lf77blas -lcblas -llapack -lmagma -lmagmablas -lgfortran -lgsl -lnetcdf_c++ `nc-config --libs` -lcuda -lgomp -lpthread -lboost_program_options-mt -lboost_mpi-mt `mpic++ -showme:link`';
 # ^ may need f2c, g2c or nothing in place of gfortran
 # ^ may need to add -lcuda as well as -lcudart
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 
 # Release flags
 $RELEASE_CXXFLAGS = ' -O3 -funroll-loops -fomit-frame-pointer';
-$RELEASE_CUDACCFLAGS = ' -O3 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer"';
+$RELEASE_CUDACCFLAGS = ' -O3 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer" -lcublas';
 
 # Debugging flags
 $DEBUG_CXXFLAGS = ' -g';
-$DEBUG_CUDACCFLAGS = ' -g';
+$DEBUG_CUDACCFLAGS = ' -g -lcublas';
 
 # Profiling flags
 $PROFILE_CXXFLAGS = ' -O3 -funroll-loops -pg';
 $PROFILE_CUDACCFLAGS = ' -O3 --compiler-options="-O3 -funroll-loops -pg"';
-$PROFILE_LINKFLAGS = ' -pg';
+$PROFILE_LINKFLAGS = ' -pg -lcublas';
 
 # Disassembly flags
 $DISASSEMBLE_CUDACCFLAGS = ' -keep';
+$DISASSEMBLE_LINKFLAGS = ' -lcublas';
 
 # Ocelot flags
-$OCELOT_LINKFLAGS = '-L/usr/local/ocelot/lib -lOcelotIr -lOcelotParser -lOcelotExecutive -lOcelotTrace -lOcelotAnalysis -lhydrazine';
+$OCELOT_LINKFLAGS = '-L/usr/local/ocelot/lib -lOcelotIr -lOcelotParser -lOcelotExecutive -lOcelotTrace -lOcelotAnalysis -lhydrazine -lcublas';
+
+# Device emulation flags
+$EMULATION_CUDACCFLAGS .= ' --device-emulation -g';
+$EMULATION_LINKFLAGS = ' --device-emulation -g -lcublasemu';
 
 # Bootstrap
 `mkdir -p $BUILDDIR $CPPDIR`;
@@ -144,6 +149,10 @@ OCELOT_CXXFLAGS=$OCELOT_CXXFLAGS
 OCELOT_CUDACCFLAGS=$OCELOT_CUDACCFLAGS
 OCELOT_LINKFLAGS=$OCELOT_LINKFLAGS
 
+EMULATION_CXXFLAGS=$EMULATION_CXXFLAGS
+EMULATION_CUDACCFLAGS=$EMULATION_CUDACCFLAGS
+EMULATION_LINKFLAGS=$EMULATION_LINKFLAGS
+
 ifdef USE_DOUBLE
 CUDACCFLAGS += -DUSE_DOUBLE
 CXXFLAGS += -DUSE_DOUBLE
@@ -198,11 +207,17 @@ CXXFLAGS += \$(OCELOT_CXXFLAGS)
 LINKFLAGS += \$(OCELOT_LINKFLAGS)
 endif
 
+ifdef EMULATION
+CUDACCFLAGS += \$(EMULATION_CUDACCFLAGS)
+CXXFLAGS += \$(EMULATION_CXXFLAGS)
+LINKFLAGS += \$(EMULATION_LINKFLAGS)
+endif
+
 End
 
 # Default targets
 print <<End;
-default: \$(BUILDDIR)/simulate \$(BUILDDIR)/filter \$(BUILDDIR)/mcmc
+default: \$(BUILDDIR)/simulate \$(BUILDDIR)/filter \$(BUILDDIR)/mcmc \$(BUILDDIR)/ukf
 
 End
 
