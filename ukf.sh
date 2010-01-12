@@ -2,9 +2,9 @@
 #PBS -l walltime=10:00,nodes=1:ppn=1,gres=gpu
 #PBS -j oe
 
-#module load cuda boost boost-bindings netcdf gsl atlas intel-cc
+source /home/mur387/init.sh
 
-ROOT=/home/mur387/workspace
+ROOT=/home/mur387
 LD_LIBRARY_PATH=$ROOT/bi/build:$LD_LIBRARY_PATH
 
 T=565 # time to simulate
@@ -22,5 +22,4 @@ INIT_NS=0
 FORCE_NS=0
 OBS_NS=1
 
-echo $ROOT/npzd/build/ukf -T $T -h $H --seed $SEED --init-file $INIT_FILE --force-file $FORCE_FILE --obs-file $OBS_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file ${OUTPUT_FILE} --output $OUTPUT --time $TIME
-
+$ROOT/npzd/build/ukf -T $T -h $H --seed $SEED --init-file $INIT_FILE --force-file $FORCE_FILE --obs-file $OBS_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file ${OUTPUT_FILE} --output $OUTPUT --time $TIME
