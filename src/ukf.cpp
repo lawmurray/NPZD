@@ -123,9 +123,11 @@ int main(int argc, char* argv[]) {
   OYUpdater oyUpdater(m, OBS_FILE, s, OBS_NS);
 
   /* outputs */
-  ForwardNetCDFWriter* out;
+  //ForwardNetCDFWriter* out;
+  std::ofstream* out;
   if (OUTPUT) {
-    out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, oyUpdater.numUniqueTimes());
+    //out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, oyUpdater.numUniqueTimes());
+    out = new std::ofstream(OUTPUT_FILE.c_str());
   } else {
     out = NULL;
   }
@@ -134,7 +136,7 @@ int main(int argc, char* argv[]) {
   const unsigned D = m.getDSize();
   const unsigned C = m.getCSize();
   const unsigned N = D + C;
-  unsigned i;
+  unsigned i, j;
   real_t mu[N];
   real_t Sigma[N*N];
   for (i = 0; i < N*N; ++i) {
@@ -152,11 +154,7 @@ int main(int argc, char* argv[]) {
   /* filter */
   timeval start, end;
   gettimeofday(&start, NULL);
-
   UnscentedKalmanFilter<NPZDModel> ukf(m, mu, Sigma, s, &fUpdater, &oyUpdater);
-  cudaThreadSynchronize();
-
-  out->write(s, ukf.getTime());
 
   /* filter */
   ukf.bind();
@@ -167,9 +165,23 @@ int main(int argc, char* argv[]) {
     ukf.correct();
 
     if (out != NULL) {
-      ukf.download();
-      cudaThreadSynchronize();
-      out->write(s, ukf.getTime());
+      ukf.getMean(mu);
+      ukf.getCovariance(Sigma);
+      CUDA_CHECKED_CALL(cudaThreadSynchronize());
+
+      for (i = 0; i < N; ++i) {
+        *out << mu[i] << '\t';
+      }
+      for (i = 0; i < N; ++i) {
+        for (j = 0; j < N; ++j) {
+          *out << Sigma[i + j*N] << '\t';
+        }
+      }
+      *out << std::endl;
+
+      //ukf.download();
+      //CUDA_CHECKED_CALL(cudaThreadSynchronize());
+      //out->write(s, ukf.getTime());
     }
   }
   cudaThreadSynchronize();
