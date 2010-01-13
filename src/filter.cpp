@@ -188,11 +188,11 @@ int main(int argc, char* argv[]) {
 
     if (out != NULL) {
       pf.download();
-      cudaThreadSynchronize();
+      CUDA_CHECKED_CALL(cudaThreadSynchronize());
       out->write(s, pf.getTime());
     }
   }
-  cudaThreadSynchronize();
+  CUDA_CHECKED_CALL(cudaThreadSynchronize());
   pf.unbind();
 
   /* wrap up timing */

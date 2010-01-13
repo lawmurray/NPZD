@@ -184,7 +184,7 @@ int main(int argc, char* argv[]) {
       //out->write(s, ukf.getTime());
     }
   }
-  cudaThreadSynchronize();
+  CUDA_CHECKED_CALL(cudaThreadSynchronize());
   ukf.unbind();
 
   /* wrap up timing */

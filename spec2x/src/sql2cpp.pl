@@ -191,6 +191,7 @@ sub OutputModelPrior {
       if (&NodePrior($node) ne '') {
         $tokens{$token} .= "  mu_$type($i) = $node.mu0();\n";
         $tokens{$token} .= "  Sigma_$type($i,$i) = std::pow($node.sigma0(), 2);\n";
+        $tokens{$token} .= "  if (has_log_normal_prior<" . ucfirst($node) . "Node>::value) ${type}0.setLog($i);\n\n";
       }
       $i++;
     }
