@@ -32,7 +32,7 @@ $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 
 # Release flags
 $RELEASE_CXXFLAGS = ' -O3 -funroll-loops -fomit-frame-pointer';
-$RELEASE_CUDACCFLAGS = ' -O2 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer"';
+$RELEASE_CUDACCFLAGS = ' -O3 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer"';
 $RELEASE_LINKFLAGS = ' -lcublas';
 # ^ have observed errors in unscented Kalman filter with -O3 to nvcc, so using -O2
 
@@ -42,8 +42,8 @@ $DEBUG_CUDACCFLAGS = ' -g';
 $DEBUG_LINKFLAGS = ' -lcublas';
 
 # Profiling flags
-$PROFILE_CXXFLAGS = ' -O2 -funroll-loops -pg';
-$PROFILE_CUDACCFLAGS = ' -O2 --compiler-options="-O3 -funroll-loops -pg"';
+$PROFILE_CXXFLAGS = ' -O3 -funroll-loops -pg';
+$PROFILE_CUDACCFLAGS = ' -O3 --compiler-options="-O3 -funroll-loops -pg"';
 $PROFILE_LINKFLAGS = ' -pg -lcublas';
 
 # Disassembly flags
