@@ -32,6 +32,7 @@
 #include <iomanip>
 #include <string>
 #include <sys/time.h>
+#include <unistd.h>
 
 namespace po = boost::program_options;
 namespace mpi = boost::mpi;
@@ -163,6 +164,7 @@ int main(int argc, char* argv[]) {
     BI_LOG("t = " << ukf.getTime());
     ukf.predict(T);
     ukf.correct();
+    //sleep(1);
 
     if (out != NULL) {
       ukf.getMean(mu);

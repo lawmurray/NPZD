@@ -29,7 +29,7 @@ ConditionalFactoredPdf<GET_TYPELIST(proposalP)> buildPProposal(NPZDModel& m,
   p.set(m.alphaE.id, MultiplicativeLogNormalPdf<>(pow(scale*0.25,2.0)));
   p.set(m.alphaR.id, MultiplicativeLogNormalPdf<>(pow(scale*0.5,2.0)));
   p.set(m.alphaQ.id, MultiplicativeLogNormalPdf<>(pow(scale*1.0,2.0)));
-  p.set(m.alphaL.id, MultiplicativeLogNormalPdf<>(pow(scale*0.1,2.0)));
+  //p.set(m.alphaL.id, MultiplicativeLogNormalPdf<>(pow(scale*0.1,2.0)));
 
   return p;
 }
