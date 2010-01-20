@@ -121,7 +121,7 @@ int main(int argc, char* argv[]) {
   /* ...and/or initialise from prior */
   prior.getDPrior().sample(rng, s.dState);
   prior.getCPrior().sample(rng, s.cState);
-  prior.getPPrior().sample(rng, s.pState);
+  //prior.getPPrior().sample(rng, s.pState);
 
   /* randoms, forcings, observations */
   FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);

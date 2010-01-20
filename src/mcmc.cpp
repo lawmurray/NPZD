@@ -15,6 +15,8 @@
 #include "bi/state/State.hpp"
 #include "bi/random/Random.hpp"
 #include "bi/method/ParallelParticleMCMC.hpp"
+#include "bi/method/ParticleFilter.hpp"
+#include "bi/method/UnscentedKalmanFilter.hpp"
 #include "bi/method/StratifiedResampler.hpp"
 #include "bi/method/MetropolisResampler.hpp"
 #include "bi/method/FUpdater.hpp"
@@ -145,7 +147,7 @@ int main(int argc, char* argv[]) {
   /* model */
   NPZDModel m;
 
-  /* prior */
+  /* prior... */
   NPZDPrior x0;
 
   /* proposal */
@@ -169,7 +171,6 @@ int main(int argc, char* argv[]) {
   d(m.alphaE.id) = 0.25;
   d(m.alphaR.id) = 0.5;
   d(m.alphaQ.id) = 1.0;
-  d(m.alphaL.id) = 0.1;
 
   d *= SCALE;
   d = element_prod(d,d); // square to get variances
@@ -191,7 +192,12 @@ int main(int argc, char* argv[]) {
   sumSigma.clear();
 
   /* state */
+  P = 2*(m.getDSize() + m.getCSize() + m.getRSize()) + 1; // for UKF
   State s(m, P);
+
+  /* initialise from file... */
+  ForwardNetCDFReader<true,true,true,false,true,true,true> in(m, INIT_FILE, INIT_NS);
+  in.read(s);
 
   /* forcings, observations */
   FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
@@ -220,13 +226,34 @@ int main(int argc, char* argv[]) {
   std::cerr << "Rank " << rank << ": using device " << dev << ", temperature "
       << lambda << std::endl;
 
-  /* resamplers */
-  Resampler* resam;
-  if (RESAMPLER.compare("stratified") == 0) {
-    resam = new StratifiedResampler(s, rng);
-  } else {
-    resam = new MetropolisResampler(s, rng, L);
+  /* particle filter... */
+//  Resampler* resam;
+//  if (RESAMPLER.compare("stratified") == 0) {
+//    resam = new StratifiedResampler(s, rng);
+//  } else {
+//    resam = new MetropolisResampler(s, rng, L);
+//  }
+//  ParticleFilter<NPZDModel,NPZDPrior> filter(m, s, rng, resam, &fUpdater,
+//      &oyUpdater);
+
+  /* ...or unscented Kalman filter */
+  const unsigned D = m.getDSize();
+  const unsigned N = D + m.getCSize();
+  real_t mu0[N];
+  real_t Sigma0[N*N];
+  for (i = 0; i < N*N; ++i) {
+    Sigma0[i] = CUDA_REAL(0.0);
   }
+  for (i = 0; i < D; ++i) {
+    mu0[i] = x0.getDPrior().mean()(i);
+    Sigma0[i*N+i] = x0.getDPrior().cov()(i,i);
+  }
+  for (i = D; i < N; ++i) {
+    mu0[i] = x0.getCPrior().mean()(i - D);
+    Sigma0[i*N+i] = x0.getCPrior().cov()(i - D, i - D);
+  }
+  UnscentedKalmanFilter<NPZDModel> filter(m, mu0, Sigma0, s,
+      &fUpdater, &oyUpdater);
 
   /* MCMC */
   real_t l;
@@ -235,12 +262,12 @@ int main(int argc, char* argv[]) {
   vector x(m.getPSize());
   bool accepted;
 
-  x0.getPPrior().sample(rng, s.pState); // initialise chain
+  //x0.getPPrior().sample(rng, s.pState); // initialise chain
   ParallelParticleMCMC<NPZDModel,NPZDPrior,AdditiveExpGaussianPdf<> > mcmc(m,
-      x0, q, ALPHA, s, rng, resam, &fUpdater, &oyUpdater);
+      x0, q, ALPHA, s, rng, &filter);
 
   for (i = 0; i < B+I*C; ++i) {
-    accepted = mcmc.step(T, MIN_ESS*P, lambda);
+    accepted = mcmc.step(T, lambda);
     theta = mcmc.getState();
     l = mcmc.getLogLikelihood();
 
