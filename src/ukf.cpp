@@ -123,12 +123,13 @@ int main(int argc, char* argv[]) {
   OYUpdater oyUpdater(m, OBS_FILE, s, OBS_NS);
 
   /* outputs */
-  //ForwardNetCDFWriter* out;
+  ForwardNetCDFWriter* out2;
   std::ofstream* out;
   if (OUTPUT) {
-    //out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, oyUpdater.numUniqueTimes());
-    out = new std::ofstream(OUTPUT_FILE.c_str());
+    out2 = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, oyUpdater.numUniqueTimes());
+    out = new std::ofstream("results/ukf.csv");
   } else {
+    out2 = NULL;
     out = NULL;
   }
 
@@ -179,9 +180,9 @@ int main(int argc, char* argv[]) {
       }
       *out << std::endl;
 
-      //ukf.download();
-      //CUDA_CHECKED_CALL(cudaThreadSynchronize());
-      //out->write(s, ukf.getTime());
+      ukf.download();
+      CUDA_CHECKED_CALL(cudaThreadSynchronize());
+      out2->write(s, ukf.getTime());
     }
   }
   CUDA_CHECKED_CALL(cudaThreadSynchronize());
