@@ -43,5 +43,8 @@ INIT_NS=0
 FORCE_NS=0
 OBS_NS=1
 
+# output this script
+cat $ROOT/npzd/mcmc.sh
+
 time mpirun -np $NPROCS $ROOT/npzd/build/mcmc -P $P -T $T -h $H --filter $FILTER --min-temp $MIN_TEMP --max-temp $MAX_TEMP --alpha $ALPHA --sd $SD --scale $SCALE --min-ess $MIN_ESS --resampler $RESAMPLER -L $L -B $B -I $I -C $C -A $A --seed $SEED --init-file $INIT_FILE --force-file $FORCE_FILE --obs-file $OBS_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file $OUTPUT_FILE
 
