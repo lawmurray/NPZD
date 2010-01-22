@@ -52,7 +52,29 @@ int main(int argc, char* argv[]) {
   unsigned P, INIT_NS, FORCE_NS, OBS_NS, B, I, C, A, L;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE, PROPOSAL_FILE,
-      RESAMPLER;
+      RESAMPLER, FILTER;
+
+  po::options_description mcmcOptions("MCMC options");
+  mcmcOptions.add_options()
+    (",B", po::value(&B)->default_value(0), "no. burn steps")
+    (",I", po::value(&I)->default_value(1), "interval for drawing samples")
+    (",C", po::value(&C), "no. samples to draw")
+    (",A", po::value(&A)->default_value(100),
+        "no. samples to drawn before adapting proposal")
+    ("filter", po::value(&FILTER),
+        "filter to use, 'pf' or 'ukf'")
+    ("scale", po::value(&SCALE),
+        "scale of proposal relative to prior")
+    ("temp", po::value(&TEMP),
+        "temperature of chain, if min-temp and max-temp not given")
+    ("min-temp", po::value(&MIN_TEMP)->default_value(1.0),
+        "minimum temperature in parallel tempering pool")
+    ("max-temp", po::value(&MAX_TEMP),
+        "maximum temperature in parallel tempering pool")
+    ("alpha", po::value(&ALPHA)->default_value(0.05),
+        "probability of non-local proposal at each step")
+    ("sd", po::value(&SD)->default_value(0.0),
+        "s_d parameter for proposal adaptation. Defaults to 2.4^2/d");
 
   po::options_description pfOptions("Particle filter options");
   pfOptions.add_options()
@@ -66,26 +88,6 @@ int main(int argc, char* argv[]) {
         "suggested first step size for numerical integration")
     ("min-ess", po::value(&MIN_ESS)->default_value(1.0),
         "minimum ESS (as proportion of P) at each step to avoid resampling");
-
-  po::options_description mcmcOptions("MCMC options");
-  mcmcOptions.add_options()
-    (",B", po::value(&B)->default_value(0), "no. burn steps")
-    (",I", po::value(&I)->default_value(1), "interval for drawing samples")
-    (",C", po::value(&C), "no. samples to draw")
-    (",A", po::value(&A)->default_value(100),
-        "no. samples to drawn before adapting proposal")
-    ("scale", po::value(&SCALE),
-        "scale of proposal relative to prior")
-    ("temp", po::value(&TEMP),
-        "temperature of chain, if min-temp and max-temp not given")
-    ("min-temp", po::value(&MIN_TEMP)->default_value(1.0),
-        "minimum temperature in parallel tempering pool")
-    ("max-temp", po::value(&MAX_TEMP),
-        "maximum temperature in parallel tempering pool")
-    ("alpha", po::value(&ALPHA)->default_value(0.05),
-        "probability of non-local proposal at each step")
-    ("sd", po::value(&SD)->default_value(0.0),
-        "s_d parameter for proposal adaptation. Defaults to 2.4^2/d");
 
   po::options_description ioOptions("I/O options");
   ioOptions.add_options()
@@ -192,7 +194,9 @@ int main(int argc, char* argv[]) {
   sumSigma.clear();
 
   /* state */
-  P = 2*(m.getDSize() + m.getCSize() + m.getRSize()) + 1; // for UKF
+  if (FILTER.compare("ukf") == 0) {
+    P = 2*(m.getDSize() + m.getCSize() + m.getRSize()) + 1;
+  }
   State s(m, P);
 
   /* initialise from file... */
@@ -207,6 +211,7 @@ int main(int argc, char* argv[]) {
   std::stringstream file;
   file << OUTPUT_FILE << '.' << rank;
   MCMCNetCDFWriter out(m, file.str().c_str(), C);
+  out.sync();
 
   /* temperature */
   double lambda;
@@ -226,34 +231,38 @@ int main(int argc, char* argv[]) {
   std::cerr << "Rank " << rank << ": using device " << dev << ", temperature "
       << lambda << std::endl;
 
-  /* particle filter... */
-//  Resampler* resam;
-//  if (RESAMPLER.compare("stratified") == 0) {
-//    resam = new StratifiedResampler(s, rng);
-//  } else {
-//    resam = new MetropolisResampler(s, rng, L);
-//  }
-//  ParticleFilter<NPZDModel,NPZDPrior> filter(m, s, rng, resam, &fUpdater,
-//      &oyUpdater);
-
-  /* ...or unscented Kalman filter */
+  Filter* filter;
   const unsigned D = m.getDSize();
   const unsigned N = D + m.getCSize();
   real_t mu0[N];
   real_t Sigma0[N*N];
-  for (i = 0; i < N*N; ++i) {
-    Sigma0[i] = CUDA_REAL(0.0);
+
+  if (FILTER.compare("ukf") == 0) {
+    /* unscented Kalman filter */
+    for (i = 0; i < N*N; ++i) {
+      Sigma0[i] = CUDA_REAL(0.0);
+    }
+    for (i = 0; i < D; ++i) {
+      mu0[i] = x0.getDPrior().mean()(i);
+      Sigma0[i*N+i] = x0.getDPrior().cov()(i,i);
+    }
+    for (i = D; i < N; ++i) {
+      mu0[i] = x0.getCPrior().mean()(i - D);
+      Sigma0[i*N+i] = x0.getCPrior().cov()(i - D, i - D);
+    }
+    filter = new UnscentedKalmanFilter<NPZDModel>(m, mu0, Sigma0, s,
+        &fUpdater, &oyUpdater);
+  } else {
+    /* particle filter */
+    Resampler* resam;
+    if (RESAMPLER.compare("stratified") == 0) {
+      resam = new StratifiedResampler(s, rng);
+    } else {
+      resam = new MetropolisResampler(s, rng, L);
+    }
+    filter = new ParticleFilter<NPZDModel>(m, s, rng, resam, &fUpdater,
+        &oyUpdater);
   }
-  for (i = 0; i < D; ++i) {
-    mu0[i] = x0.getDPrior().mean()(i);
-    Sigma0[i*N+i] = x0.getDPrior().cov()(i,i);
-  }
-  for (i = D; i < N; ++i) {
-    mu0[i] = x0.getCPrior().mean()(i - D);
-    Sigma0[i*N+i] = x0.getCPrior().cov()(i - D, i - D);
-  }
-  UnscentedKalmanFilter<NPZDModel> filter(m, mu0, Sigma0, s,
-      &fUpdater, &oyUpdater);
 
   /* MCMC */
   real_t l;
@@ -264,7 +273,7 @@ int main(int argc, char* argv[]) {
 
   //x0.getPPrior().sample(rng, s.pState); // initialise chain
   ParallelParticleMCMC<NPZDModel,NPZDPrior,AdditiveExpGaussianPdf<> > mcmc(m,
-      x0, q, ALPHA, s, rng, &filter);
+      x0, q, ALPHA, s, rng, filter);
 
   for (i = 0; i < B+I*C; ++i) {
     accepted = mcmc.step(T, lambda);
@@ -273,6 +282,7 @@ int main(int argc, char* argv[]) {
 
     if (i >= B && (i - B) % I == 0) {
       out.write(s2, l);
+      out.sync();
     }
 
     std::cerr << rank << '.' << i << ": " << l;
