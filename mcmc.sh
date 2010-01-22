@@ -4,7 +4,7 @@
 
 source /home/mur387/init.sh
 
-ROOT=/home/mur387/workspace
+ROOT=/home/mur387
 LD_LIBRARY_PATH=$ROOT/bi/build:$LD_LIBRARY_PATH
 
 T=565.0 # time to simulate
