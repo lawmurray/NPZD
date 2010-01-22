@@ -1,40 +1,47 @@
 #!/bin/bash
-#PBS -l walltime=24:00:00,nodes=2:ppn=1,gres=gpu,vmem=8gb
+#PBS -l walltime=24:00:00,nodes=2:ppn=8,vmem=8gb
 #PBS -j oe
 
 source /home/mur387/init.sh
 
-ROOT=/home/mur387
+ROOT=/home/mur387/workspace
 LD_LIBRARY_PATH=$ROOT/bi/build:$LD_LIBRARY_PATH
 
-P=1024 # no. trajectories
-T=200.0 # time to simulate
+T=565.0 # time to simulate
 H=0.3 # initial step size
-SCALE=0.1 # scale of initial proposal relative to prior
+SEED=2 # pseudorandom number seed
+SCALE=0.01 # scale of initial proposal relative to prior
+ALPHA=0.1 # proportion of proposals that are non-local
+SD=0.0 # adaptive proposal parameter (zero triggers default)
+
 B=0 # burn in steps
 I=1 # sample interval (in steps)
-L=30000 # no. samples to draw
-A=5000 # no. steps before adaptation
-MIN_TEMP=1.0
-MAX_TEMP=2.0
-ALPHA=0.1
-SD=0.02
-MIN_ESS=1.0
-ID=$PBS_JOBID
+C=5000 # no. samples to draw
+A=2000 # no. steps before adaptation
 
-NPROCS=4
-SEED=14756 # pseudorandom number seed
+FILTER=pf # filter to use -- ukf or pf
+MIN_TEMP=1.0 # minimum temperature (or temperature for single process)
+MAX_TEMP=1.0 # maximum termperature
 
-INIT_FILE=$ROOT/npzd/data/GPUinput_OSP_0D.nc # initial values file
-FORCE_FILE=$ROOT/npzd/data/GPUinput_OSP_0D.nc # forcings file
-OBS_FILE=$ROOT/npzd/data/GPUobs_EQ.nc # observations file
+# particle filter settings
+RESAMPLER=stratified # resampler to use, 'stratified' or 'metropolis'
+MIN_ESS=1.0 # minimum ESS to trigger resampling (not used presently)
+P=1024 # no. trajectories
+L=20 # no. iterations for metropolis resampler
+
+# job settings
+ID=$PBS_JOBID # job id
+NPROCS=1 # no. processes
+OMP_NUM_THREADS=4 # no. OpenMP threads per process
+
+INIT_FILE=$ROOT/npzd/data/GPUinput_OSP_C6_pad.nc # initial values file
+FORCE_FILE=$ROOT/npzd/data/GPUinput_OSP_C6_pad.nc # forcings file
+OBS_FILE=$ROOT/npzd/data/GPUobs_C6_S1_pad.nc # observations file
 OUTPUT_FILE=$ROOT/npzd/results/mcmc-$ID.nc # output file
 
 INIT_NS=0
 FORCE_NS=0
 OBS_NS=1
 
-# output this script
-cat $ROOT/npzd/mcmc.sh
+time mpirun -np $NPROCS $ROOT/npzd/build/mcmc -P $P -T $T -h $H --filter $FILTER --min-temp $MIN_TEMP --max-temp $MAX_TEMP --alpha $ALPHA --sd $SD --scale $SCALE --min-ess $MIN_ESS --resampler $RESAMPLER -L $L -B $B -I $I -C $C -A $A --seed $SEED --init-file $INIT_FILE --force-file $FORCE_FILE --obs-file $OBS_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file $OUTPUT_FILE
 
-time mpirun -np $NPROCS $ROOT/npzd/build/mcmc -P $P -T $T -h $H --min-temp $MIN_TEMP --max-temp $MAX_TEMP --alpha $ALPHA --sd $SD --scale $SCALE --min-ess $MIN_ESS -B $B -I $I -L $L -A $A --seed $SEED --init-file $INIT_FILE --force-file $FORCE_FILE --obs-file $OBS_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file $OUTPUT_FILE
