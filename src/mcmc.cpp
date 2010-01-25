@@ -186,6 +186,33 @@ int main(int argc, char* argv[]) {
   }
   AdditiveExpGaussianPdf<> q(Sigma, logs);
 
+  /* starting distro */
+  symmetric_matrix SigmaS(m.getPSize());
+  SigmaS.clear();
+  BOOST_AUTO(dS, diag(SigmaS));
+
+  dS(m.KW.id) = 0.2;
+  dS(m.KC.id) = 0.3;
+  dS(m.deltaS.id) = 1.0;
+  dS(m.deltaI.id) = 0.1;
+  dS(m.P_DF.id) = 0.2;
+  dS(m.Z_DF.id) = 0.1;
+  dS(m.alphaC.id) = 0.63;
+  dS(m.alphaCN.id) = 0.2;
+  dS(m.alphaCh.id) = 0.37;
+  dS(m.alphaA.id) = 1.0;
+  dS(m.alphaNC.id) = 0.3;
+  dS(m.alphaI.id) = 0.7;
+  dS(m.alphaCl.id) = 1.3;
+  dS(m.alphaE.id) = 0.25;
+  dS(m.alphaR.id) = 0.5;
+  dS(m.alphaQ.id) = 1.0;
+
+  dS *= 0.1;
+  dS = element_prod(dS,dS); // square to get variances
+
+  ExpGaussianPdf<> s0(x0.getPPrior().mean(), SigmaS, logs);
+
   /* proposal adaptation */
   vector mu(m.getPSize());
   vector sumMu(m.getPSize());
@@ -271,7 +298,8 @@ int main(int argc, char* argv[]) {
   vector x(m.getPSize());
   bool accepted;
 
-  //x0.getPPrior().sample(rng, s.pState); // initialise chain
+  x0.getPPrior().sample(rng, s.pState); // initialise chain
+  //s0.sample(rng, s.pState);
   ParallelParticleMCMC<NPZDModel,NPZDPrior,AdditiveExpGaussianPdf<> > mcmc(m,
       x0, q, ALPHA, s, rng, filter);
 
