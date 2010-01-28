@@ -12,8 +12,8 @@
 #include "bi/cuda/cuda.hpp"
 #include "bi/cuda/ode/IntegratorConstants.hpp"
 #include "bi/method/UnscentedKalmanFilter.hpp"
-#include "bi/method/FUpdater.hpp"
-#include "bi/method/OYUpdater.hpp"
+#include "bi/updater/FUpdater.hpp"
+#include "bi/updater/OYUpdater.hpp"
 #include "bi/io/ForwardNetCDFReader.hpp"
 #include "bi/io/ForwardNetCDFWriter.hpp"
 

@@ -19,8 +19,8 @@
 #include "bi/method/UnscentedKalmanFilter.hpp"
 #include "bi/method/StratifiedResampler.hpp"
 #include "bi/method/MetropolisResampler.hpp"
-#include "bi/method/FUpdater.hpp"
-#include "bi/method/OYUpdater.hpp"
+#include "bi/updater/FUpdater.hpp"
+#include "bi/updater/OYUpdater.hpp"
 #include "bi/io/MCMCNetCDFWriter.hpp"
 #include "bi/pdf/AdditiveExpGaussianPdf.hpp"
 
