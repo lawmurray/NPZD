@@ -12,9 +12,9 @@ $SPEC = 'NPZD';
 $SRCDIR = 'src';
 $BUILDDIR = 'build';
 $SPECDIR = 'spec';
-$SPEC2XDIR = 'spec2x';
+$SPEC2XDIR = '../spec2x';
 $SPEC2XSRCDIR = "$SPEC2XDIR/src";
-$SPEC2XCPPTEMPLATEDIR = "$SPEC2XDIR/templates/cpp";
+$SPEC2XCPPTTDIR = "$SPEC2XDIR/tt/cpp";
 $SPEC2XTEXTEMPLATEDIR = "$SPEC2XDIR/templates/tex";
 $CPPDIR = "$SRCDIR/model";
 
@@ -59,8 +59,8 @@ $EMULATION_LINKFLAGS = ' --device-emulation -g -lcublasemu';
 
 # Bootstrap
 `mkdir -p $BUILDDIR $CPPDIR`;
-`perl $SPEC2XSRCDIR/csv2sql.pl --model $NAME --outdir $BUILDDIR --srcdir $SPEC2XSRCDIR < $SPECDIR/$SPEC.csv`;
-`perl $SPEC2XSRCDIR/sql2cpp.pl --outdir $CPPDIR --templatedir $SPEC2XCPPTEMPLATEDIR --model $NAME --dbfile $BUILDDIR/$NAME.db`;
+`$SPEC2XDIR/csv2sql --model $NAME --outdir $BUILDDIR --srcdir $SPEC2XSRCDIR < $SPECDIR/$SPEC.csv`;
+`$SPEC2XDIR/sql2cpp --outdir $CPPDIR --ttdir $SPEC2XCPPTTDIR --model $BUILDDIR/$NAME.db`;
 
 # Walk through source
 @files = ($SRCDIR);
@@ -227,13 +227,13 @@ End
 # spec2x targets
 print <<End;
 
-\$(BUILDDIR)/\$(NAME).db: \$(SPECDIR)/\$(SPEC).csv \$(SPEC2XSRCDIR)/csv2sql.pl \$(SPEC2XSRCDIR)/sqlite.sql
+\$(BUILDDIR)/\$(NAME).db: \$(SPECDIR)/\$(SPEC).csv \$(SPEC2XDIR)/csv2sql \$(SPEC2XSRCDIR)/sqlite.sql
 \tmkdir -p \$(BUILDDIR)
-\tperl \$(SPEC2XSRCDIR)/csv2sql.pl --model \$(NAME) --outdir \$(BUILDDIR) --srcdir \$(SPEC2XSRCDIR) < \$(SPECDIR)/\$(SPEC).csv 
+\tperl \$(SPEC2XDIR)/csv2sql --model \$(NAME) --outdir \$(BUILDDIR) --srcdir \$(SPEC2XSRCDIR) < \$(SPECDIR)/\$(SPEC).csv 
 
-\$(BUILDDIR)/\$(NAME).dot: \$(BUILDDIR)/\$(NAME).db \$(SPEC2XSRCDIR)/sql2dot.pl
+\$(BUILDDIR)/\$(NAME).dot: \$(BUILDDIR)/\$(NAME).db \$(SPEC2XDIR)/sql2dot
 \tmkdir -p \$(BUILDDIR)
-\tperl \$(SPEC2XSRCDIR)/sql2dot.pl --model \$(NAME) --dbfile \$(BUILDDIR)/\$(NAME).db > \$(BUILDDIR)/\$(NAME).dot
+\tperl \$(SPEC2XDIR)/sql2dot --model \$(NAME) --dbfile \$(BUILDDIR)/\$(NAME).db > \$(BUILDDIR)/\$(NAME).dot
 
 \$(BUILDDIR)/\$(NAME)_graph.tex: \$(BUILDDIR)/\$(NAME).dot
 \tmkdir -p \$(BUILDDIR)
@@ -246,9 +246,9 @@ print <<End;
 \tpdflatex \$(NAME)_graph.tex; \\
 \tcd ..
 
-\$(BUILDDIR)/\$(NAME).tex: \$(BUILDDIR)/\$(NAME).db \$(SPEC2XSRCDIR)/sql2tex.pl \$(SPEC2XTEXTEMPLATEDIR)/*.template
+\$(BUILDDIR)/\$(NAME).tex: \$(BUILDDIR)/\$(NAME).db \$(SPEC2XDIR)/sql2tex \$(SPEC2XTEXTEMPLATEDIR)/*.template
 \tmkdir -p \$(BUILDDIR)
-\tperl \$(SPEC2XSRCDIR)/sql2tex.pl --templatedir \$(SPEC2XTEXTEMPLATEDIR) --model \$(NAME) --dbfile \$(BUILDDIR)/\$(NAME).db > \$(BUILDDIR)/\$(NAME).tex
+\tperl \$(SPEC2XDIR)/sql2tex --templatedir \$(SPEC2XTEXTEMPLATEDIR) --model \$(NAME) --dbfile \$(BUILDDIR)/\$(NAME).db > \$(BUILDDIR)/\$(NAME).tex
 
 \$(BUILDDIR)/\$(NAME).pdf: \$(BUILDDIR)/\$(NAME).tex
 \tmkdir -p \$(BUILDDIR)
@@ -261,9 +261,9 @@ sql: \$(BUILDDIR)/\$(NAME).db
 
 dot: \$(BUILDDIR)/\$(NAME)_graph.pdf
 
-cpp: \$(BUILDDIR)/\$(NAME).db \$(SPEC2XSRCDIR)/sql2cpp.pl \$(SPEC2XCPPTEMPLATEDIR)/*.template
+cpp: \$(BUILDDIR)/\$(NAME).db \$(SPEC2XDIR)/sql2cpp \$(SPEC2XCPPTTDIR)/*.tt
 \tmkdir -p \$(CPPDIR)
-\tperl \$(SPEC2XSRCDIR)/sql2cpp.pl --outdir \$(CPPDIR) --templatedir \$(SPEC2XCPPTEMPLATEDIR) --model \$(NAME) --dbfile \$(BUILDDIR)/\$(NAME).db
+\tperl \$(SPEC2XDIR)/sql2cpp --outdir \$(CPPDIR) --ttdir \$(SPEC2XCPPTTDIR) --model \$(BUILDDIR)/\$(NAME).db
 
 tex: \$(BUILDDIR)/\$(NAME).tex
 
