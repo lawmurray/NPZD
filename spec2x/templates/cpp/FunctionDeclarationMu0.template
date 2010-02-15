@@ -1,7 +1,0 @@
-  /**
-   * Prior mean.
-   *
-   * \f$<% LaTeXFormula %>\f$
-   */
-  static double mu0();
-

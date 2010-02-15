@@ -1,4 +1,0 @@
-bi::LogNormalPdf<> <% ClassName %>::getPrior() {
-  return bi::LogNormalPdf<>(mu0(), sigma0());
-}
-

@@ -13,14 +13,13 @@ SEED=3 # pseudorandom number seed
 OUTPUT=1 # produce output?
 TIME=0 # produce timings?
 
-INIT_FILE=$ROOT/npzd/data/GPUinput_OSP_C5_pad.nc # initial values file
-FORCE_FILE=$ROOT/npzd/data/GPUinput_OSP_C5_pad.nc # forcings file
-OBS_FILE=$ROOT/npzd/data/GPUobs_C5_S1_pad.nc # observations file
-OUTPUT_FILE=$ROOT/npzd/results/ukf.csv # output file
+INIT_FILE=$ROOT/npzd/data/GPUinput_OSP_C6_pad.nc # initial values file
+FORCE_FILE=$ROOT/npzd/data/GPUinput_OSP_C6_pad.nc # forcings file
+OBS_FILE=$ROOT/npzd/data/GPUobs_C6_S1_pad.nc # observations file
+OUTPUT_FILE=$ROOT/npzd/results/ukf.nc # output file
 
 INIT_NS=0
 FORCE_NS=0
-OBS_NS=1
+OBS_NS=0
 
 $ROOT/npzd/build/ukf -T $T -h $H --seed $SEED --init-file $INIT_FILE --force-file $FORCE_FILE --obs-file $OBS_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file ${OUTPUT_FILE} --output $OUTPUT --time $TIME
-

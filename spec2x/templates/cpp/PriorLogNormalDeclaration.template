@@ -1,7 +1,0 @@
-  /**
-   * Prior.
-   *
-   * \f$<% LaTeXFormula %>\f$
-   */
-  static bi::LogNormalPdf<> getPrior();
-

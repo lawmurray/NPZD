@@ -12,7 +12,6 @@
 #include "bi/random/Random.hpp"
 #include "bi/updater/StochasticRUpdater.hpp"
 #include "bi/updater/FUpdater.hpp"
-#include "bi/updater/OYUpdater.hpp"
 #include "bi/method/Simulator.hpp"
 #include "bi/method/Sampler.hpp"
 #include "bi/io/ForwardNetCDFReader.hpp"
@@ -53,8 +52,6 @@ int main(int argc, char* argv[]) {
         "input file containing initial values")
     ("force-file", po::value(&FORCE_FILE),
         "input file containing forcings")
-    ("obs-file", po::value(&OBS_FILE),
-        "input file containing observations")
     ("output-file", po::value(&OUTPUT_FILE),
         "output file to contain results")
     ("ns", po::value(&NS)->default_value(0),
@@ -89,6 +86,7 @@ int main(int argc, char* argv[]) {
   State s(m, P);
   ForwardNetCDFReader<true,true,true,false,false,false,true> in(m, INIT_FILE, NS);
   in.read(s); // initialise state
+  s.upload(); // upload state
 
   /* intermediate result buffer */
   Result r(m, P, K);
@@ -97,21 +95,26 @@ int main(int argc, char* argv[]) {
   ForwardNetCDFWriter* out;
   if (OUTPUT) {
     out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, K + 1);
+  } else {
+    out = NULL;
   }
 
   /* static sampler & dynamic simulator */
   StochasticRUpdater<NPZDModel> rUpdater(s, rng);
   FUpdater fUpdater(m, FORCE_FILE, s, NS);
-  OYUpdater oyUpdater(m, OBS_FILE, s, NS);
   Sampler<NPZDModel> sam(m, s, &rUpdater);
-  Simulator<NPZDModel> sim(m, s, &r, &rUpdater, &fUpdater, &oyUpdater);
+  Simulator<NPZDModel> sim(m, s, &r, &rUpdater, &fUpdater);
 
   /* simulate and output */
   timeval start, end;
-  gettimeofday(&start, NULL);
+  gettimeofday(&start, NULL);\
   sam.sample(); // set static variables
   sim.simulate(T); // simulate dynamic variables
   if (OUTPUT) {
+    s.download();
+    r.download();
+    CUDA_CHECKED_CALL(cudaThreadSynchronize());
+
     out->write(r, K);
     out->write(s, sim.getTime());
   }

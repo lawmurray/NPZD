@@ -17,11 +17,11 @@
 #include "bi/io/ForwardNetCDFReader.hpp"
 #include "bi/io/ForwardNetCDFWriter.hpp"
 
+//#include "cula.h"
 #include "cuda_runtime.h"
 #include "cuda.h"
 #include "cuda_runtime_api.h"
 #include "cublas.h"
-
 
 #include "boost/program_options.hpp"
 #include "boost/typeof/typeof.hpp"
@@ -44,6 +44,7 @@ int main(int argc, char* argv[]) {
 
   cuInit(0);
   cublasInit();
+  //culaInitialize();
   cublasStatus status;
   status = cublasInit();
   if (status != CUBLAS_STATUS_SUCCESS) {
@@ -117,6 +118,7 @@ int main(int argc, char* argv[]) {
   /* initialise from file... */
   ForwardNetCDFReader<true,true,true,false,true,true,true> in(m, INIT_FILE, INIT_NS);
   in.read(s);
+  s.upload();
 
   /* forcings, observations */
   FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
@@ -126,7 +128,7 @@ int main(int argc, char* argv[]) {
   ForwardNetCDFWriter* out2;
   std::ofstream* out;
   if (OUTPUT) {
-    out2 = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, oyUpdater.numUniqueTimes());
+    out2 = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, 565);
     out = new std::ofstream("results/ukf.csv");
   } else {
     out2 = NULL;
@@ -156,16 +158,27 @@ int main(int argc, char* argv[]) {
   timeval start, end;
   gettimeofday(&start, NULL);
   UnscentedKalmanFilter<NPZDModel> ukf(m, mu, Sigma, s, &fUpdater, &oyUpdater);
+  ukf.init();
 
-  /* filter */
-  ukf.bind();
-  ukf.upload();
+  if (OUTPUT) {
+    for (i = 0; i < N; ++i) {
+      *out << mu[i] << '\t';
+    }
+    for (i = 0; i < N; ++i) {
+      for (j = 0; j < N; ++j) {
+        *out << Sigma[i + j*N] << '\t';
+      }
+    }
+    *out << std::endl;
+  }
+
   while (ukf.getTime() < T) {
     BI_LOG("t = " << ukf.getTime());
     ukf.predict(T);
     ukf.correct();
 
-    if (out != NULL) {
+    if (OUTPUT) {
+      s.download();
       ukf.getMean(mu);
       ukf.getCovariance(Sigma);
       CUDA_CHECKED_CALL(cudaThreadSynchronize());
@@ -180,13 +193,12 @@ int main(int argc, char* argv[]) {
       }
       *out << std::endl;
 
-      ukf.download();
-      CUDA_CHECKED_CALL(cudaThreadSynchronize());
       out2->write(s, ukf.getTime());
+      out2->sync();
     }
   }
   CUDA_CHECKED_CALL(cudaThreadSynchronize());
-  ukf.unbind();
+  ukf.term();
 
   /* wrap up timing */
   gettimeofday(&end, NULL);

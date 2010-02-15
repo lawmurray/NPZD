@@ -1,8 +1,0 @@
-  /**
-   * @see bi::GenericStaticFunction::s
-   *
-   * \f$<% LaTeXFormula %>\f$
-   */
-  template<class V1, class V2>
-  static CUDA_FUNC_BOTH void s(const V1& pax, V2& x);
-

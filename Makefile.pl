@@ -24,8 +24,8 @@ $CUDACC = 'nvcc';
 $LINKER = 'g++';
 $CPPINCLUDES = '-I../bi/src -I/usr/local/cuda/include -I/tools/cuda/2.3/cuda/include/ -I/tools/thrust/1.1.1 -I/usr/local/include/thrust -I/tools/magma/0.2/include';
 $CXXFLAGS = "-Wall -fopenmp `nc-config --cflags` `mpic++ -showme:compile` $CPPINCLUDES";
-$CUDACCFLAGS = "-arch=sm_13 --maxrregcount 64 -Xptxas=\"-v\" -Xcompiler=\"-Wall -fopenmp `mpic++ -showme:compile`\" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS $CPPINCLUDES";
-$LINKFLAGS = '-L"../bi/build" -L"/usr/local/atlas/lib" -L"/tools/magma/0.2/lib" -lbi -latlas -lf77blas -lcblas -llapack -lmagma -lmagmablas -lgfortran -lgsl -lnetcdf_c++ `nc-config --libs` -lcuda -lgomp -lpthread -lboost_program_options-gcc43-mt -lboost_mpi-gcc43-mt `mpic++ -showme:link`';
+$CUDACCFLAGS = "-arch=sm_13 -Xptxas=\"-v\" -Xcompiler=\"-Wall -fopenmp `mpic++ -showme:compile`\" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS $CPPINCLUDES";
+$LINKFLAGS = '-L"../bi/build" -L"/usr/local/atlas/lib" -L"/tools/magma/0.2/lib" -lbi -latlas -lf77blas -lcblas -llapack -lmagma -lmagmablas -lgfortran -lgsl -lnetcdf_c++ `nc-config --libs` -lgomp -lpthread -lboost_program_options -lboost_mpi `mpic++ -showme:link`';
 # ^ may need f2c, g2c or nothing in place of gfortran
 # ^ may need to add -lcuda as well as -lcudart
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
@@ -33,25 +33,26 @@ $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 # Release flags
 $RELEASE_CXXFLAGS = ' -O3 -funroll-loops -fomit-frame-pointer';
 $RELEASE_CUDACCFLAGS = ' -O3 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer"';
-$RELEASE_LINKFLAGS = ' -lcublas';
-# ^ have observed errors in unscented Kalman filter with -O3 to nvcc, so using -O2
+$RELEASE_LINKFLAGS = ' -lcublas -lcuda';
 
 # Debugging flags
 $DEBUG_CXXFLAGS = ' -g';
 $DEBUG_CUDACCFLAGS = ' -g';
-$DEBUG_LINKFLAGS = ' -lcublas';
+$DEBUG_LINKFLAGS = ' -lcublas -lcuda';
 
 # Profiling flags
 $PROFILE_CXXFLAGS = ' -O3 -funroll-loops -pg';
 $PROFILE_CUDACCFLAGS = ' -O3 --compiler-options="-O3 -funroll-loops -pg"';
-$PROFILE_LINKFLAGS = ' -pg -lcublas';
+$PROFILE_LINKFLAGS = ' -pg -lcublas -lcuda';
 
 # Disassembly flags
 $DISASSEMBLE_CUDACCFLAGS = ' -keep';
-$DISASSEMBLE_LINKFLAGS = ' -lcublas';
+$DISASSEMBLE_LINKFLAGS = ' -lcublas -lcuda';
 
 # Ocelot flags
-$OCELOT_LINKFLAGS = '-L/usr/local/ocelot/lib -lOcelotIr -lOcelotParser -lOcelotExecutive -lOcelotTrace -lOcelotAnalysis -lhydrazine -lcublas';
+$OCELOT_CXXFLAGS = ' -g -O3 -funroll-loops';
+$OCELOT_CUDACCFLAGS = ' -g -O3 -Xcompiler="-O3 -funroll-loops"';
+$OCELOT_LINKFLAGS = ' -locelot -lhydralize -lcublas';
 
 # Device emulation flags
 $EMULATION_CUDACCFLAGS .= ' --device-emulation -g';
@@ -157,9 +158,10 @@ EMULATION_CUDACCFLAGS=$EMULATION_CUDACCFLAGS
 EMULATION_LINKFLAGS=$EMULATION_LINKFLAGS
 
 ifdef USE_DOUBLE
-CUDACCFLAGS += -DUSE_DOUBLE
+CUDACCFLAGS += -DUSE_DOUBLE --maxrregcount 64
 CXXFLAGS += -DUSE_DOUBLE
 else
+CUDACCFLAGS += --maxrregcount 32
 ifdef USE_FAST_MATH
 CUDACCFLAGS += -use_fast_math
 endif
@@ -280,8 +282,8 @@ print "\t\$(LINKER) -o $BUILDDIR/simulate \$(BUILDDIR)/simulate.cpp.o \$(BUILDDI
 print "\$(BUILDDIR)/filter: \$(BUILDDIR)/filter.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o $models\n";
 print "\t\$(LINKER) -o $BUILDDIR/filter \$(BUILDDIR)/filter.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o $models \$(LINKFLAGS)\n\n";
 
-print "\$(BUILDDIR)/ukf: \$(BUILDDIR)/ukf.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o $models\n";
-print "\t\$(LINKER) -o $BUILDDIR/ukf \$(BUILDDIR)/ukf.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o $models \$(LINKFLAGS)\n\n";
+print "\$(BUILDDIR)/ukf: \$(BUILDDIR)/ukf.cpp.o \$(BUILDDIR)/filter.cu.o $models\n";
+print "\t\$(LINKER) -o $BUILDDIR/ukf \$(BUILDDIR)/ukf.cpp.o \$(BUILDDIR)/filter.cu.o $models \$(LINKFLAGS)\n\n";
 
 print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/mcmc.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o \$(BUILDDIR)/device.cu.o $models\n";
 print "\t\$(LINKER) -o $BUILDDIR/mcmc \$(BUILDDIR)/mcmc.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o \$(BUILDDIR)/device.cu.o $models \$(LINKFLAGS)\n\n";

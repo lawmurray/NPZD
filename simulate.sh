@@ -7,18 +7,16 @@
 ROOT=/home/mur387/workspace
 LD_LIBRARY_PATH=$ROOT/bi/build:$LD_LIBRARY_PATH
 
-NS=0
-P=10 # no. trajectories
-K=365 # size of intermediate result buffer
-T=365.0 # time to simulate
+P=1024 # no. trajectories
+K=565 # size of intermediate result buffer
+T=565.0 # time to simulate
 SEED=0 # pseudorandom number seed
 OUTPUT=1 # produce output?
 TIME=0 # produce timings?
 
-INIT_FILE=$ROOT/npzd/data/input_OSP_0D.nc # initial values file
-FORCE_FILE=$ROOT/npzd/data/input_OSP_0D.nc # forcings file
-OBS_FILE=$ROOT/npzd/data/obs_NEQ.nc # observations file
+INIT_FILE=$ROOT/npzd/data/GPUinput_OSP_C6_pad.nc # initial values file
+FORCE_FILE=$ROOT/npzd/data/GPUinput_OSP_C6_pad.nc # forcings file
 OUTPUT_FILE=$ROOT/npzd/results/output.nc # output file
+NS=0 # record number in input files
 
-$ROOT/npzd/build/simulate --ns $NS -P $P -K $K -T $T --seed $SEED --init-file $INIT_FILE --force-file $FORCE_FILE --obs-file $OBS_FILE --output-file $OUTPUT_FILE --output $OUTPUT --time $TIME
-
+$ROOT/npzd/build/simulate --ns $NS -P $P -K $K -T $T --seed $SEED --init-file $INIT_FILE --force-file $FORCE_FILE --output-file $OUTPUT_FILE --output $OUTPUT --time $TIME

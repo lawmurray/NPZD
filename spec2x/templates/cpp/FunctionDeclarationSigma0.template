@@ -1,7 +1,0 @@
-  /**
-   * Prior standard deviation.
-   *
-   * \f$<% LaTeXFormula %>\f$
-   */
-  static double sigma0();
-

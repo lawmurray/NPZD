@@ -1,9 +1,0 @@
-  /**
-   * @see bi::GenericForwardFunction::f
-   *
-   * \f$<% LaTeXFormula %>\f$
-   */
-  template<class T, class V1, class V2>
-  static CUDA_FUNC_BOTH void f(const T t, const V1& pax, const T tnxt,
-      V2& xnxt);
-

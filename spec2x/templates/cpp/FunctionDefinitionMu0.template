@@ -1,3 +1,0 @@
-inline double <% ClassName %>::mu0() {
-  return <% Formula %>;
-}

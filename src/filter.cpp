@@ -159,8 +159,8 @@ int main(int argc, char* argv[]) {
   ParticleFilter<NPZDModel> pf(m, s, rng, resam, &fUpdater, &oyUpdater);
 
   /* filter */
-  pf.bind();
-  pf.upload();
+  s.upload();
+  pf.init();
   while (pf.getTime() < T) {
     BI_LOG("t = " << pf.getTime());
     pf.predict(T);
@@ -187,13 +187,13 @@ int main(int argc, char* argv[]) {
     }
 
     if (out != NULL) {
-      pf.download();
+      s.download();
       CUDA_CHECKED_CALL(cudaThreadSynchronize());
       out->write(s, pf.getTime());
     }
   }
   CUDA_CHECKED_CALL(cudaThreadSynchronize());
-  pf.unbind();
+  pf.term();
 
   /* wrap up timing */
   gettimeofday(&end, NULL);
