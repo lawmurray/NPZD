@@ -2,9 +2,9 @@
 #PBS -l walltime=10:00,nodes=1:ppn=1,gres=gpu
 #PBS -j oe
 
-#source /home/mur387/init.sh
+source /home/mur387/init.sh
 
-ROOT=/home/mur387/workspace
+ROOT=/home/mur387
 LD_LIBRARY_PATH=$ROOT/bi/build:$LD_LIBRARY_PATH
 
 P=1024 # no. trajectories
@@ -14,8 +14,8 @@ SEED=0 # pseudorandom number seed
 OUTPUT=1 # produce output?
 TIME=0 # produce timings?
 
-INIT_FILE=$ROOT/npzd/data/GPUinput_OSP_C6_pad.nc # initial values file
-FORCE_FILE=$ROOT/npzd/data/GPUinput_OSP_C6_pad.nc # forcings file
+INIT_FILE=$ROOT/npzd/data/GPUinput_OSP_C7_init.nc # initial values file
+FORCE_FILE=$ROOT/npzd/data/GPUinput_OSP_C7_force.nc # forcings file
 OUTPUT_FILE=$ROOT/npzd/results/output.nc # output file
 NS=0 # record number in input files
 
