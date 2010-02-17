@@ -115,7 +115,7 @@ int main(int argc, char* argv[]) {
   State s(m, P);
 
   /* initialise from file... */
-  ForwardNetCDFReader<true,true,true,false,true,true,true> in(m, INIT_FILE, INIT_NS);
+  ForwardNetCDFReader<true,true,true,false,false,false,true> in(m, INIT_FILE, INIT_NS);
   in.read(s);
 
   /* ...and/or initialise from prior */
