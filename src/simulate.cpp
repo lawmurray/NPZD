@@ -29,6 +29,8 @@ namespace mpi = boost::mpi;
 
 using namespace bi;
 
+void test();
+
 int main(int argc, char* argv[]) {
   /* mpi */
   mpi::environment env(argc, argv);
