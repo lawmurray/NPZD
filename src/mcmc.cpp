@@ -157,22 +157,22 @@ int main(int argc, char* argv[]) {
   Sigma.clear();
   BOOST_AUTO(d, diag(Sigma));
 
-  d(m.KW.id) = 0.2;
-  d(m.KC.id) = 0.3;
-  d(m.deltaS.id) = 1.0;
-  d(m.deltaI.id) = 0.1;
-  d(m.P_DF.id) = 0.2;
-  d(m.Z_DF.id) = 0.1;
-  d(m.alphaC.id) = 0.63;
-  d(m.alphaCN.id) = 0.2;
-  d(m.alphaCh.id) = 0.37;
-  d(m.alphaA.id) = 1.0;
-  d(m.alphaNC.id) = 0.3;
-  d(m.alphaI.id) = 0.7;
-  d(m.alphaCl.id) = 1.3;
-  d(m.alphaE.id) = 0.25;
-  d(m.alphaR.id) = 0.5;
-  d(m.alphaQ.id) = 1.0;
+  d(m.Kw.id) = 0.2;
+  d(m.KCh.id) = 0.3;
+  d(m.Dsi.id) = 1.0;
+  d(m.ZgD.id) = 0.1;
+  d(m.PDF.id) = 0.2;
+  d(m.ZDF.id) = 0.1;
+  d(m.muPgC.id) = 0.63;
+  d(m.muPgR.id) = 0.2;
+  d(m.muPCh.id) = 0.37;
+  d(m.muPaN.id) = 1.0;
+  d(m.muPRN.id) = 0.3;
+  d(m.muZin.id) = 0.7;
+  d(m.muZCl.id) = 1.3;
+  d(m.muZgE.id) = 0.25;
+  d(m.muDre.id) = 0.5;
+  d(m.muZmQ.id) = 1.0;
 
   d *= SCALE;
   d = element_prod(d,d); // square to get variances
@@ -180,7 +180,7 @@ int main(int argc, char* argv[]) {
   unsigned i;
   std::set<unsigned> logs;
   for (i = 0; i < m.getPSize(); ++i) {
-    if (i != m.deltaS.id) { // all are log-normal besides deltaS
+    if (i != m.Dsi.id) { // all are log-normal besides deltaS
       logs.insert(i);
     }
   }
@@ -191,22 +191,22 @@ int main(int argc, char* argv[]) {
   SigmaS.clear();
   BOOST_AUTO(dS, diag(SigmaS));
 
-  dS(m.KW.id) = 0.2;
-  dS(m.KC.id) = 0.3;
-  dS(m.deltaS.id) = 1.0;
-  dS(m.deltaI.id) = 0.1;
-  dS(m.P_DF.id) = 0.2;
-  dS(m.Z_DF.id) = 0.1;
-  dS(m.alphaC.id) = 0.63;
-  dS(m.alphaCN.id) = 0.2;
-  dS(m.alphaCh.id) = 0.37;
-  dS(m.alphaA.id) = 1.0;
-  dS(m.alphaNC.id) = 0.3;
-  dS(m.alphaI.id) = 0.7;
-  dS(m.alphaCl.id) = 1.3;
-  dS(m.alphaE.id) = 0.25;
-  dS(m.alphaR.id) = 0.5;
-  dS(m.alphaQ.id) = 1.0;
+  dS(m.Kw.id) = 0.2;
+  dS(m.KCh.id) = 0.3;
+  dS(m.Dsi.id) = 1.0;
+  dS(m.ZgD.id) = 0.1;
+  dS(m.PDF.id) = 0.2;
+  dS(m.ZDF.id) = 0.1;
+  dS(m.muPgC.id) = 0.63;
+  dS(m.muPgR.id) = 0.2;
+  dS(m.muPCh.id) = 0.37;
+  dS(m.muPaN.id) = 1.0;
+  dS(m.muPRN.id) = 0.3;
+  dS(m.muZin.id) = 0.7;
+  dS(m.muZCl.id) = 1.3;
+  dS(m.muZgE.id) = 0.25;
+  dS(m.muDre.id) = 0.5;
+  dS(m.muZmQ.id) = 1.0;
 
   dS *= 0.1;
   dS = element_prod(dS,dS); // square to get variances
