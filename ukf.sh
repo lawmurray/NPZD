@@ -10,12 +10,12 @@ LD_LIBRARY_PATH=$ROOT/bi/build:$LD_LIBRARY_PATH
 T=565 # time to simulate
 H=0.3 # initial step size
 SEED=3 # pseudorandom number seed
-OUTPUT=1 # produce output?
-TIME=0 # produce timings?
+OUTPUT=0 # produce output?
+TIME=1 # produce timings?
 
-INIT_FILE=$ROOT/npzd/data/GPUinput_OSP_C6_pad.nc # initial values file
-FORCE_FILE=$ROOT/npzd/data/GPUinput_OSP_C6_pad.nc # forcings file
-OBS_FILE=$ROOT/npzd/data/GPUobs_C6_S1_pad.nc # observations file
+INIT_FILE=$ROOT/npzd/data/C7_init.nc # initial values file
+FORCE_FILE=$ROOT/npzd/data/C7_force_pad.nc # forcings file
+OBS_FILE=$ROOT/npzd/data/C7_obs_pad.nc # observations file
 OUTPUT_FILE=$ROOT/npzd/results/ukf.nc # output file
 
 INIT_NS=0

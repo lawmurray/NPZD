@@ -19,12 +19,12 @@ I=1 # sample interval (in steps)
 C=30000 # no. samples to draw
 A=2000 # no. steps before adaptation
 
-FILTER=ukf # filter to use -- ukf or pf
+FILTER=pf # filter to use -- ukf or pf
 MIN_TEMP=1.0 # minimum temperature (or temperature for single process)
 MAX_TEMP=1.0 # maximum termperature
 
 # particle filter settings
-RESAMPLER=metropolis # resampler to use, 'stratified' or 'metropolis'
+RESAMPLER=stratified # resampler to use, 'stratified' or 'metropolis'
 MIN_ESS=1.0 # minimum ESS to trigger resampling (not used presently)
 P=1024 # no. trajectories
 L=30 # no. iterations for metropolis resampler
@@ -34,9 +34,9 @@ ID=0 # job id
 NPROCS=1 # no. processes
 OMP_NUM_THREADS=4 # no. OpenMP threads per process
 
-INIT_FILE=$ROOT/npzd/data/GPUinput_OSP_C6_pad.nc # initial values file
-FORCE_FILE=$ROOT/npzd/data/GPUinput_OSP_C6_pad.nc # forcings file
-OBS_FILE=$ROOT/npzd/data/GPUobs_C6_S1_pad.nc # observations file
+INIT_FILE=$ROOT/npzd/data/C7_init.nc # initial values file
+FORCE_FILE=$ROOT/npzd/data/C7_force_pad.nc # forcings file
+OBS_FILE=$ROOT/npzd/data/C7_obs_pad.nc # observations file
 OUTPUT_FILE=$ROOT/npzd/results/mcmc-$ID.nc # output file
 
 INIT_NS=0
@@ -46,6 +46,5 @@ OBS_NS=1
 # output this script
 #cat $ROOT/npzd/mcmc.sh
 
-#time mpirun -np $NPROCS
-valgrind --leak-check=full --show-reachable=yes $ROOT/npzd/build/mcmc -P $P -T $T -h $H --filter $FILTER --min-temp $MIN_TEMP --max-temp $MAX_TEMP --alpha $ALPHA --sd $SD --scale $SCALE --min-ess $MIN_ESS --resampler $RESAMPLER -L $L -B $B -I $I -C $C -A $A --seed $SEED --init-file $INIT_FILE --force-file $FORCE_FILE --obs-file $OBS_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file $OUTPUT_FILE
+time mpirun -np $NPROCS $ROOT/npzd/build/mcmc -P $P -T $T -h $H --filter $FILTER --min-temp $MIN_TEMP --max-temp $MAX_TEMP --alpha $ALPHA --sd $SD --scale $SCALE --min-ess $MIN_ESS --resampler $RESAMPLER -L $L -B $B -I $I -C $C -A $A --seed $SEED --init-file $INIT_FILE --force-file $FORCE_FILE --obs-file $OBS_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file $OUTPUT_FILE
 
