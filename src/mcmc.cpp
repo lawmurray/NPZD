@@ -292,7 +292,7 @@ int main(int argc, char* argv[]) {
   }
 
   /* MCMC */
-  real_t l;
+  real_t l1, l2;
   State s2(m, 1);
   state_vector theta(s2.pState);
   vector x(m.getPSize());
@@ -300,20 +300,23 @@ int main(int argc, char* argv[]) {
 
   x0.getPPrior().sample(rng, s.pState); // initialise chain
   //s0.sample(rng, s.pState);
+  s.upload();
+
   ParallelParticleMCMC<NPZDModel,NPZDPrior,AdditiveExpGaussianPdf<> > mcmc(m,
       x0, q, ALPHA, s, rng, filter);
 
   for (i = 0; i < B+I*C; ++i) {
+    l1 = mcmc.getLogLikelihood();
     accepted = mcmc.step(T, lambda);
     theta = mcmc.getState();
-    l = mcmc.getLogLikelihood();
+    l2 = mcmc.getLastProposedLogLikelihood();
 
     if (i >= B && (i - B) % I == 0) {
-      out.write(s2, l);
+      out.write(s2, l1);
       out.sync();
     }
 
-    std::cerr << rank << '.' << i << ": " << l;
+    std::cerr << rank << '.' << i << ": " << l1 << " -> " << l2;
     if (accepted) {
       std::cerr << " ***accepted***";
     }
