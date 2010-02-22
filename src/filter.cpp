@@ -122,6 +122,7 @@ int main(int argc, char* argv[]) {
   prior.getDPrior().sample(rng, s.dState);
   prior.getCPrior().sample(rng, s.cState);
   //prior.getPPrior().sample(rng, s.pState);
+  s.upload();
 
   /* randoms, forcings, observations */
   FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
@@ -159,15 +160,14 @@ int main(int argc, char* argv[]) {
   ParticleFilter<NPZDModel> pf(m, s, rng, resam, &fUpdater, &oyUpdater);
 
   /* filter */
-  s.upload();
   pf.init();
   while (pf.getTime() < T) {
     BI_LOG("t = " << pf.getTime());
     pf.predict(T);
     pf.correct();
 
-    cudaThreadSynchronize();
-    ess = pf.ess();
+    //CUDA_CHECKED_CALL(cudaThreadSynchronize());
+    //ess = pf.ess();
 
     /* output ess */
     //essOut << ess << std::endl;
@@ -182,9 +182,9 @@ int main(int argc, char* argv[]) {
     //}
     //lwsOut << std::endl;
 
-    if (ess < MIN_ESS*s.P) {
-      pf.resample();
-    }
+    //if (ess < MIN_ESS*s.P) {
+    //  pf.resample();
+    //}
 
     if (out != NULL) {
       s.download();
