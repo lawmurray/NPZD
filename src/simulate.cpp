@@ -23,6 +23,7 @@
 #include <iostream>
 #include <string>
 #include <sys/time.h>
+#include <unistd.h>
 
 namespace po = boost::program_options;
 namespace mpi = boost::mpi;
@@ -86,6 +87,7 @@ int main(int argc, char* argv[]) {
 
   /* state */
   State s(m, P);
+
   ForwardNetCDFReader<true,true,true,false,false,false,true> in(m, INIT_FILE, NS);
   in.read(s); // initialise state
   s.upload(); // upload state
@@ -112,6 +114,14 @@ int main(int argc, char* argv[]) {
   gettimeofday(&start, NULL);\
   sam.sample(); // set static variables
   sim.simulate(T); // simulate dynamic variables
+  gettimeofday(&end, NULL);
+
+  /* output timing results */
+  if (TIME) {
+    int elapsed = (end.tv_sec-start.tv_sec)*1000000 + (end.tv_usec-start.tv_usec);
+    std::cout << elapsed << std::endl;
+  }
+
   if (OUTPUT) {
     s.download();
     r.download();
@@ -119,13 +129,6 @@ int main(int argc, char* argv[]) {
 
     out->write(r, K);
     out->write(s, sim.getTime());
-  }
-  gettimeofday(&end, NULL);
-
-  /* output timing results */
-  if (TIME) {
-    int elapsed = (end.tv_sec-start.tv_sec)*1000000 + (end.tv_usec-start.tv_usec);
-    std::cout << elapsed << std::endl;
   }
 
   delete out;
