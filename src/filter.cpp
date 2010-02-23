@@ -135,7 +135,7 @@ int main(int argc, char* argv[]) {
   } else {
     out = NULL;
   }
-  std::ofstream essOut("ess.txt");
+  //std::ofstream essOut("ess.txt");
   std::ofstream lwsOut("lws.txt");
   lwsOut << std::setprecision(16);
 
@@ -166,24 +166,22 @@ int main(int argc, char* argv[]) {
     pf.predict(T);
     pf.correct();
 
-    //CUDA_CHECKED_CALL(cudaThreadSynchronize());
+    CUDA_CHECKED_CALL(cudaThreadSynchronize());
     //ess = pf.ess();
 
     /* output ess */
     //essOut << ess << std::endl;
 
     /* output log-weights */
-    //pf.download(stream);
-    //cudaStreamSynchronize(stream);
-    //unsigned i;
-    //const thrust::host_vector<real_t>& lws = pf.getWeights();
-    //for (i = 0; i < lws.size(); ++i) {
-    //  lwsOut << lws[i] << ' ';
-    //}
-    //lwsOut << std::endl;
+    unsigned i;
+    const thrust::host_vector<real_t>& lws = pf.getWeights();
+    for (i = 0; i < lws.size(); ++i) {
+      lwsOut << lws[i] << ' ';
+    }
+    lwsOut << std::endl;
 
     //if (ess < MIN_ESS*s.P) {
-    //  pf.resample();
+      pf.resample();
     //}
 
     if (out != NULL) {
