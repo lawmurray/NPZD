@@ -18,21 +18,35 @@ $SPEC2XCPPTTDIR = "$SPEC2XDIR/tt/cpp";
 $SPEC2XTEXTEMPLATEDIR = "$SPEC2XDIR/templates/tex";
 $CPPDIR = "$SRCDIR/model";
 
-# Compile flags
-$CXX = 'g++';
+# Compilers
+$GCC = 'g++';
+$ICC = 'icpc';
 $CUDACC = 'nvcc';
-$LINKER = 'g++';
+
+# Common compile flags
 $CPPINCLUDES = '-I../bi/src -I/usr/local/cuda/include -I/tools/cuda/2.3/cuda/include/ -I/tools/thrust/1.1.1 -I/usr/local/include/thrust -I/tools/magma/0.2/include';
-$CXXFLAGS = "-Wall -fopenmp `nc-config --cflags` `mpic++ -showme:compile` $CPPINCLUDES";
+$CXXFLAGS = "-Wall `nc-config --cflags` `mpic++ -showme:compile` $CPPINCLUDES";
 $CUDACCFLAGS = "-arch=sm_13 -Xptxas=\"-v\" -Xcompiler=\"-Wall -fopenmp `mpic++ -showme:compile`\" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS $CPPINCLUDES";
-$LINKFLAGS = '-L"../bi/build" -L"/usr/local/atlas/lib" -L"/tools/magma/0.2/lib" -lbi -latlas -lf77blas -lcblas -llapack -lmagma -lmagmablas -lgfortran -lgsl -lnetcdf_c++ `nc-config --libs` -lgomp -lpthread -lboost_program_options-gcc43-mt -lboost_mpi-gcc43-mt `mpic++ -showme:link`';
+$LINKFLAGS = '-L"../bi/build" -L"/tools/magma/0.2/lib" -lbi -lmagma -lmagmablas -lgfortran -lgsl -lnetcdf_c++ `nc-config --libs` -lpthread -lboost_program_options -lboost_mpi `mpic++ -showme:link`';
 # ^ may need f2c, g2c or nothing in place of gfortran
-# ^ may need to add -lcuda as well as -lcudart
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
+
+# GCC options
+$GCC_CXXFLAGS = ' -fopenmp';
+$GCC_LINKFLAGS = '-lgomp';
+
+# Intel C++ compiler options
+$ICC_CXXFLAGS = '-openmp -malign-double -wd424 -wd981 -wd383 -wd1572 -wd869 -wd304 -wd444';
+$ICC_LINKFLAGS = '-openmp';
+
+# Math library option flags
+$ATLAS_LINKFLAGS = '-L"/usr/local/atlas/lib" -latlas -lf77blas -lcblas -llapack -lm';
+$MKL_LINKFLAGS = '-lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core';
+$MATH_LINKFLAGS = '-lblas -lcblas -llapack -lm';
 
 # Release flags
 $RELEASE_CXXFLAGS = ' -O3 -funroll-loops -fomit-frame-pointer';
-$RELEASE_CUDACCFLAGS = ' -O3 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer"';
+$RELEASE_CUDACCFLAGS = ' -O2 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer"';
 $RELEASE_LINKFLAGS = ' -lcublas -lcuda';
 
 # Debugging flags
@@ -87,7 +101,7 @@ while (@files) {
       $flags = $CUDACCFLAGS;
       $flagstr = "\$(CUDACCFLAGS)";
     } else {
-      $cc = $CXX;
+      $cc = $GCC;
       $ccstr = "\$(CXX)";
       $flags = $CXXFLAGS;
       $flagstr = "\$(CXXFLAGS)";
@@ -114,6 +128,11 @@ while (@files) {
 
 # Write Makefile
 print <<End;
+ifdef USE_CONFIG
+include config.mk
+endif
+
+
 NAME=$NAME
 SPEC=$SPEC
 
@@ -126,12 +145,19 @@ SPEC2XCPPTEMPLATEDIR=$SPEC2XCPPTEMPLATEDIR
 SPEC2XTEXTEMPLATEDIR=$SPEC2XTEXTEMPLATEDIR
 CPPDIR=$CPPDIR
 
-CXX=$CXX
 CXXFLAGS=$CXXFLAGS
-LINKER=$LINKER
+LINKFLAGS=$LINKFLAGS
 CUDACC=$CUDACC
 CUDACCFLAGS=$CUDACCFLAGS
-LINKFLAGS=$LINKFLAGS
+
+GCC_CXXFLAGS=$GCC_CXXFLAGS
+GCC_LINKFLAGS=$GCC_LINKFLAGS
+ICC_CXXFLAGS=$ICC_CXXFLAGS
+ICC_LINKFLAGS=$ICC_LINKFLAGS
+
+ATLAS_LINKFLAGS=$ATLAS_LINKFLAGS
+MKL_LINKFLAGS=$MKL_LINKFLAGS
+MATH_LINKFLAGS=$MATH_LINKFLAGS
 
 DEBUG_CXXFLAGS=$DEBUG_CXXFLAGS
 DEBUG_CUDACCFLAGS=$DEBUG_CUDACCFLAGS
@@ -157,25 +183,37 @@ EMULATION_CXXFLAGS=$EMULATION_CXXFLAGS
 EMULATION_CUDACCFLAGS=$EMULATION_CUDACCFLAGS
 EMULATION_LINKFLAGS=$EMULATION_LINKFLAGS
 
-ifdef X_LEN
-CUDACCFLAGS += -DX_LEN=$X_LEN
-CXXFLAGS += -DX_LEN=$X_LEN
+ifdef USE_INTEL
+CXX=$ICC
+LINKER=$ICC
+CXXFLAGS += \$(ICC_CXXFLAGS)
+LINKFLAGS += \$(ICC_LINKFLAGS)
 else
-CUDACCFLAGS += -DX_LEN=1
-CXXFLAGS += -DX_LEN=1
+CXX=$GCC
+LINKER=$GCC
+CXXFLAGS += \$(GCC_CXXFLAGS)
+LINKFLAGS += \$(GCC_LINKFLAGS)
+endif
+
+ifdef X_LEN
+CUDACCFLAGS += -DX_LEN=\$(X_LEN)
+CXXFLAGS += -DX_LEN=\$(X_LEN)
+else
+CUDACCFLAGS += -DX_LEN=4
+CXXFLAGS += -DX_LEN=4
 endif
 
 ifdef Y_LEN
-CUDACCFLAGS += -DY_LEN=$Y_LEN
-CXXFLAGS += -DY_LEN=$Y_LEN
+CUDACCFLAGS += -DY_LEN=\$(Y_LEN)
+CXXFLAGS += -DY_LEN=\$(Y_LEN)
 else
 CUDACCFLAGS += -DY_LEN=1
 CXXFLAGS += -DY_LEN=1
 endif
 
 ifdef Z_LEN
-CUDACCFLAGS += -DZ_LEN=$Z_LEN
-CXXFLAGS += -DZ_LEN=$Z_LEN
+CUDACCFLAGS += -DZ_LEN=\$(Z_LEN)
+CXXFLAGS += -DZ_LEN=\$(Z_LEN)
 else
 CUDACCFLAGS += -DZ_LEN=1
 CXXFLAGS += -DZ_LEN=1
@@ -191,6 +229,31 @@ CUDACCFLAGS += -use_fast_math
 endif
 endif
 
+ifdef USE_CPU
+CUDACCFLAGS += -DUSE_CPU
+CXXFLAGS += -DUSE_CPU
+endif
+
+ifdef USE_SSE
+CXXFLAGS += -DUSE_SSE -msse3
+CUDACCFLAGS += -DUSE_SSE
+endif
+
+ifdef USE_MKL
+CXXFLAGS += -DUSE_MKL
+CUDACCFLAGS += -DUSE_MKL
+endif
+
+ifdef USE_ATLAS
+LINKFLAGS += \$(ATLAS_LINKFLAGS)
+else
+ifdef USE_MKL
+LINKFLAGS += \$(MKL_LINKFLAGS)
+else
+LINKFLAGS += \$(MATH_LINKFLAGS)
+endif
+endif
+
 ifdef USE_DOPRI5
 CUDACCFLAGS += -DUSE_DOPRI5
 CXXFLAGS += -DUSE_DOPRI5
@@ -199,6 +262,11 @@ endif
 ifdef USE_TEXTURE
 CUDACCFLAGS += -DUSE_TEXTURE
 CXXFLAGS += -DUSE_TEXTURE
+endif
+
+ifdef USE_RIPEN
+CUDACCFLAGS += -DUSE_RIPEN
+CXXFLAGS += -DUSE_RIPEN
 endif
 
 ifdef NDEBUG
@@ -240,6 +308,11 @@ ifdef EMULATION
 CUDACCFLAGS += \$(EMULATION_CUDACCFLAGS)
 CXXFLAGS += \$(EMULATION_CXXFLAGS)
 LINKFLAGS += \$(EMULATION_LINKFLAGS)
+endif
+
+ifdef USE_CPU_ODE
+CUDACCFLAGS += -DUSE_CPU_ODE
+CXXFLAGS += -DUSE_CPU_ODE
 endif
 
 End
