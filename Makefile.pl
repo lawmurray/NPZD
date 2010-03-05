@@ -132,7 +132,6 @@ ifdef USE_CONFIG
 include config.mk
 endif
 
-
 NAME=$NAME
 SPEC=$SPEC
 
