@@ -9,6 +9,7 @@
 
 #include "bi/cuda/cuda.hpp"
 #include "bi/cuda/ode/IntegratorConstants.hpp"
+#include "bi/ode/IntegratorConstants.hpp"
 #include "bi/random/Random.hpp"
 #include "bi/updater/StochasticRUpdater.hpp"
 #include "bi/updater/FUpdater.hpp"
@@ -77,10 +78,17 @@ int main(int argc, char* argv[]) {
   NcError ncErr(NcError::verbose_nonfatal);
 
   /* parameters for ODE integrator on GPU */
+  #ifdef USE_CPU
+  h_ode_init();
+  h_ode_set_h0(CUDA_REAL(0.2));
+  h_ode_set_rtoler(CUDA_REAL(1.0e-3));
+  h_ode_set_atoler(CUDA_REAL(1.0e-3));
+  #else
   ode_init();
   ode_set_h0(CUDA_REAL(0.2));
   ode_set_rtoler(CUDA_REAL(1.0e-3));
   ode_set_atoler(CUDA_REAL(1.0e-3));
+  #endif
 
   /* model */
   NPZDModel m;
@@ -90,7 +98,9 @@ int main(int argc, char* argv[]) {
 
   ForwardNetCDFReader<true,true,true,false,false,false,true> in(m, INIT_FILE, NS);
   in.read(s); // initialise state
-  s.upload(); // upload state
+  #ifndef USE_CPU
+  s.upload();
+  #endif
 
   /* intermediate result buffer */
   Result r(m, P, K);
@@ -123,9 +133,11 @@ int main(int argc, char* argv[]) {
   }
 
   if (OUTPUT) {
+    #ifndef USE_CPU
     s.download();
     r.download();
     CUDA_CHECKED_CALL(cudaThreadSynchronize());
+    #endif
 
     out->write(r, K);
     out->write(s, sim.getTime());
