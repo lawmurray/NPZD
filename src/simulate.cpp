@@ -37,6 +37,9 @@ int main(int argc, char* argv[]) {
   /* mpi */
   mpi::environment env(argc, argv);
 
+  /* openmp */
+  bi_omp_init();
+
   /* command line arguments */
   real_t T;
   unsigned P, K, NS;

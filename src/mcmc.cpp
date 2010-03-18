@@ -46,6 +46,9 @@ int main(int argc, char* argv[]) {
   const unsigned rank = world.rank();
   const unsigned size = world.size();
 
+  /* openmp */
+  bi_omp_init();
+
   /* handle command line arguments */
   real_t T, H, MIN_ESS;
   double SCALE, TEMP, MIN_TEMP, MAX_TEMP, ALPHA, SD;

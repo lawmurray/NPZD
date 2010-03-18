@@ -41,6 +41,9 @@ int main(int argc, char* argv[]) {
   /* mpi */
   mpi::environment env(argc, argv);
 
+  /* openmp */
+  bi_omp_init();
+
   /* handle command line arguments */
   real_t T, H, MIN_ESS;
   unsigned P, L, INIT_NS, FORCE_NS, OBS_NS;
@@ -173,12 +176,12 @@ int main(int argc, char* argv[]) {
     //essOut << ess << std::endl;
 
     /* output log-weights */
-    unsigned i;
-    const thrust::host_vector<real_t>& lws = pf.getWeights();
-    for (i = 0; i < lws.size(); ++i) {
-      lwsOut << lws[i] << ' ';
-    }
-    lwsOut << std::endl;
+//    unsigned i;
+//    const thrust::host_vector<real_t>& lws = pf.getWeights();
+//    for (i = 0; i < lws.size(); ++i) {
+//      lwsOut << lws[i] << ' ';
+//    }
+//    lwsOut << std::endl;
 
     //if (ess < MIN_ESS*s.P) {
       pf.resample();
