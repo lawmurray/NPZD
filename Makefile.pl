@@ -32,7 +32,7 @@ $LINKFLAGS = '-L"../bi/build" -L"/tools/magma/0.2/lib" -lbi -lmagma -lmagmablas 
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 
 # GCC options
-$GCC_CXXFLAGS = ' -fopenmp';
+$GCC_CXXFLAGS = '-fopenmp';
 $GCC_LINKFLAGS = '-lgomp';
 
 # Intel C++ compiler options
@@ -45,8 +45,8 @@ $MKL_LINKFLAGS = '-lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core';
 $MATH_LINKFLAGS = '-lblas -lcblas -llapack -lm';
 
 # Release flags
-$RELEASE_CXXFLAGS = ' -O3 -funroll-loops -fomit-frame-pointer';
-$RELEASE_CUDACCFLAGS = ' -O2 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer"';
+$RELEASE_CXXFLAGS = ' -O3 -funroll-loops -fomit-frame-pointer -g';
+$RELEASE_CUDACCFLAGS = ' -O3 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer -g"';
 $RELEASE_LINKFLAGS = ' -lcublas -lcuda';
 
 # Debugging flags
@@ -219,10 +219,9 @@ CXXFLAGS += -DZ_LEN=1
 endif
 
 ifdef USE_DOUBLE
-CUDACCFLAGS += -DUSE_DOUBLE --maxrregcount 64
+CUDACCFLAGS += -DUSE_DOUBLE
 CXXFLAGS += -DUSE_DOUBLE
 else
-CUDACCFLAGS += --maxrregcount 32
 ifdef USE_FAST_MATH
 CUDACCFLAGS += -use_fast_math
 endif
