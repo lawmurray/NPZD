@@ -25,8 +25,8 @@ $CUDACC = 'nvcc';
 
 # Common compile flags
 $CPPINCLUDES = '-I../bi/src -I/usr/local/cuda/include -I/tools/cuda/2.3/cuda/include/ -I/tools/thrust/1.1.1 -I/usr/local/include/thrust -I/tools/magma/0.2/include';
-$CXXFLAGS = "-Wall `nc-config --cflags` `mpic++ -showme:compile` $CPPINCLUDES";
-$CUDACCFLAGS = "-arch=sm_13 -Xptxas=\"-v\" -Xcompiler=\"-Wall -fopenmp `mpic++ -showme:compile`\" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS $CPPINCLUDES";
+$CXXFLAGS = "-Wall  -DBOOST_UBLAS_SHALLOW_ARRAY_ADAPTOR `nc-config --cflags` `mpic++ -showme:compile` $CPPINCLUDES";
+$CUDACCFLAGS = "-arch=sm_13 -Xptxas=\"-v\" -Xcompiler=\"-Wall -fopenmp `mpic++ -showme:compile`\" -DBOOST_UBLAS_SHALLOW_ARRAY_ADAPTOR `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS $CPPINCLUDES";
 $LINKFLAGS = '-L"../bi/build" -L"/tools/magma/0.2/lib" -lbi -lmagma -lmagmablas -lgfortran -lgsl -lnetcdf_c++ `nc-config --libs` -lpthread -lboost_program_options -lboost_mpi `mpic++ -showme:link`';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
@@ -47,21 +47,21 @@ $MATH_LINKFLAGS = '-lblas -lcblas -llapack -lm';
 # Release flags
 $RELEASE_CXXFLAGS = ' -O3 -funroll-loops -fomit-frame-pointer -g';
 $RELEASE_CUDACCFLAGS = ' -O3 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer -g"';
-$RELEASE_LINKFLAGS = ' -lcublas -lcuda';
+$RELEASE_LINKFLAGS = ' -lcublas -lcudart';
 
 # Debugging flags
 $DEBUG_CXXFLAGS = ' -g';
 $DEBUG_CUDACCFLAGS = ' -g';
-$DEBUG_LINKFLAGS = ' -lcublas -lcuda';
+$DEBUG_LINKFLAGS = ' -lcublas -lcudart';
 
 # Profiling flags
-$PROFILE_CXXFLAGS = ' -O3 -funroll-loops -pg';
-$PROFILE_CUDACCFLAGS = ' -O3 --compiler-options="-O3 -funroll-loops -pg"';
-$PROFILE_LINKFLAGS = ' -pg -lcublas -lcuda';
+$PROFILE_CXXFLAGS = ' -O3 -funroll-loops -pg -g';
+$PROFILE_CUDACCFLAGS = ' -O3 --compiler-options="-O3 -funroll-loops -pg -g"';
+$PROFILE_LINKFLAGS = ' -pg -g -lcublas -lcudart';
 
 # Disassembly flags
 $DISASSEMBLE_CUDACCFLAGS = ' -keep';
-$DISASSEMBLE_LINKFLAGS = ' -lcublas -lcuda';
+$DISASSEMBLE_LINKFLAGS = ' -lcublas -lcudart';
 
 # Ocelot flags
 $OCELOT_CXXFLAGS = ' -g -O3 -funroll-loops';
@@ -192,30 +192,6 @@ CXX=$GCC
 LINKER=$GCC
 CXXFLAGS += \$(GCC_CXXFLAGS)
 LINKFLAGS += \$(GCC_LINKFLAGS)
-endif
-
-ifdef X_LEN
-CUDACCFLAGS += -DX_LEN=\$(X_LEN)
-CXXFLAGS += -DX_LEN=\$(X_LEN)
-else
-CUDACCFLAGS += -DX_LEN=4
-CXXFLAGS += -DX_LEN=4
-endif
-
-ifdef Y_LEN
-CUDACCFLAGS += -DY_LEN=\$(Y_LEN)
-CXXFLAGS += -DY_LEN=\$(Y_LEN)
-else
-CUDACCFLAGS += -DY_LEN=1
-CXXFLAGS += -DY_LEN=1
-endif
-
-ifdef Z_LEN
-CUDACCFLAGS += -DZ_LEN=\$(Z_LEN)
-CXXFLAGS += -DZ_LEN=\$(Z_LEN)
-else
-CUDACCFLAGS += -DZ_LEN=1
-CXXFLAGS += -DZ_LEN=1
 endif
 
 ifdef USE_DOUBLE
@@ -374,14 +350,14 @@ my $models = join(' ', @models);
 print "\$(BUILDDIR)/simulate: \$(BUILDDIR)/simulate.cpp.o \$(BUILDDIR)/simulate.cu.o $models\n";
 print "\t\$(LINKER) -o $BUILDDIR/simulate \$(BUILDDIR)/simulate.cpp.o \$(BUILDDIR)/simulate.cu.o $models \$(LINKFLAGS)\n\n";
 
-print "\$(BUILDDIR)/filter: \$(BUILDDIR)/filter.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o $models\n";
-print "\t\$(LINKER) -o $BUILDDIR/filter \$(BUILDDIR)/filter.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o $models \$(LINKFLAGS)\n\n";
+print "\$(BUILDDIR)/filter: \$(BUILDDIR)/filter.cpp.o \$(BUILDDIR)/filter.cu.o $models\n";
+print "\t\$(LINKER) -o $BUILDDIR/filter \$(BUILDDIR)/filter.cpp.o \$(BUILDDIR)/filter.cu.o $models \$(LINKFLAGS)\n\n";
 
 print "\$(BUILDDIR)/ukf: \$(BUILDDIR)/ukf.cpp.o \$(BUILDDIR)/filter.cu.o $models\n";
 print "\t\$(LINKER) -o $BUILDDIR/ukf \$(BUILDDIR)/ukf.cpp.o \$(BUILDDIR)/filter.cu.o $models \$(LINKFLAGS)\n\n";
 
-print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/mcmc.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o \$(BUILDDIR)/device.cu.o $models\n";
-print "\t\$(LINKER) -o $BUILDDIR/mcmc \$(BUILDDIR)/mcmc.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/prior.cpp.o \$(BUILDDIR)/device.cu.o $models \$(LINKFLAGS)\n\n";
+print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/mcmc.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o $models\n";
+print "\t\$(LINKER) -o $BUILDDIR/mcmc \$(BUILDDIR)/mcmc.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o $models \$(LINKFLAGS)\n\n";
 
 # Targets
 print join("\n", @commands);

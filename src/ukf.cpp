@@ -5,7 +5,6 @@
  * $Rev:234 $
  * $Date:2009-08-17 11:10:31 +0800 (Mon, 17 Aug 2009) $
  */
-#include "prior.hpp"
 #include "model/NPZDModel.hpp"
 #include "model/NPZDPrior.hpp"
 
@@ -52,7 +51,7 @@ int main(int argc, char* argv[]) {
   }
 
   /* handle command line arguments */
-  real_t T, H;
+  real T, H;
   unsigned INIT_NS, FORCE_NS, OBS_NS;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE, RESAMPLER;
@@ -100,9 +99,9 @@ int main(int argc, char* argv[]) {
 
   /* parameters for ODE integrator on GPU */
   ode_init();
-  ode_set_h0(CUDA_REAL(H));
-  ode_set_rtoler(CUDA_REAL(1.0e-5));
-  ode_set_atoler(CUDA_REAL(1.0e-5));
+  ode_set_h0(REAL(H));
+  ode_set_rtoler(REAL(1.0e-5));
+  ode_set_atoler(REAL(1.0e-5));
   ode_set_nsteps(1000);
 
   /* model */
@@ -140,10 +139,10 @@ int main(int argc, char* argv[]) {
   const unsigned C = m.getCSize();
   const unsigned N = D + C;
   unsigned i, j;
-  real_t mu[N];
-  real_t Sigma[N*N];
+  real mu[N];
+  real Sigma[N*N];
   for (i = 0; i < N*N; ++i) {
-    Sigma[i] = CUDA_REAL(0.0);
+    Sigma[i] = REAL(0.0);
   }
   for (i = 0; i < D; ++i) {
     mu[i] = prior.getDPrior().mean()(i);

@@ -8,15 +8,14 @@
 #include "model/NPZDModel.hpp"
 
 #include "bi/cuda/cuda.hpp"
-#include "bi/cuda/ode/IntegratorConstants.hpp"
-#include "bi/ode/IntegratorConstants.hpp"
+#include "bi/math/ode.hpp"
 #include "bi/random/Random.hpp"
 #include "bi/updater/StochasticRUpdater.hpp"
 #include "bi/updater/FUpdater.hpp"
 #include "bi/method/Simulator.hpp"
 #include "bi/method/Sampler.hpp"
-#include "bi/io/ForwardNetCDFReader.hpp"
-#include "bi/io/ForwardNetCDFWriter.hpp"
+#include "bi/buffer/SparseInputNetCDFBuffer.hpp"
+#include "bi/buffer/SimulatorNetCDFBuffer.hpp"
 
 #include "boost/program_options.hpp"
 #include "boost/mpi.hpp"
@@ -25,6 +24,8 @@
 #include <string>
 #include <sys/time.h>
 #include <unistd.h>
+
+#include "boost/numeric/ublas/io.hpp"
 
 namespace po = boost::program_options;
 namespace mpi = boost::mpi;
@@ -37,11 +38,12 @@ int main(int argc, char* argv[]) {
   /* mpi */
   mpi::environment env(argc, argv);
 
-  /* openmp */
+  /* bi init */
   bi_omp_init();
+  bi_ode_init(0.2, 1.0e-3, 1.0e-3);
 
   /* command line arguments */
-  real_t T;
+  real T;
   unsigned P, K, NS;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE;
@@ -74,57 +76,46 @@ int main(int argc, char* argv[]) {
     return 0;
   }
 
+  /* NetCDF error reporting */
+  NcError ncErr(NcError::silent_nonfatal);
+
   /* random number generator */
   Random rng(SEED);
 
-  /* report missing variables in NetCDF, but don't die */
-  NcError ncErr(NcError::verbose_nonfatal);
-
-  /* parameters for ODE integrator on GPU */
-  #ifdef USE_CPU
-  h_ode_init();
-  h_ode_set_h0(CUDA_REAL(0.2));
-  h_ode_set_rtoler(CUDA_REAL(1.0e-3));
-  h_ode_set_atoler(CUDA_REAL(1.0e-3));
-  #else
-  ode_init();
-  ode_set_h0(CUDA_REAL(0.2));
-  ode_set_rtoler(CUDA_REAL(1.0e-3));
-  ode_set_atoler(CUDA_REAL(1.0e-3));
-  #endif
-
   /* model */
-  NPZDModel m;
+  NPZDModel<> m;
 
   /* state */
   State s(m, P);
 
-  ForwardNetCDFReader<true,true,true,false,false,false,true> in(m, INIT_FILE, NS);
-  in.read(s); // initialise state
-  #ifndef USE_CPU
-  s.upload();
-  #endif
+  /* inputs */
+  SparseInputNetCDFBuffer inForce(m, InputBuffer::F_NODES, FORCE_FILE, NS);
+  SparseInputNetCDFBuffer inInit(m,
+      InputBuffer::C_NODES|InputBuffer::D_NODES|InputBuffer::P_NODES,
+      INIT_FILE, NS);
 
-  /* intermediate result buffer */
-  Result r(m, P, K);
+  /* initialise state */
+  inInit.read(s);
+  s.upload();
 
   /* output */
-  ForwardNetCDFWriter* out;
+  SimulatorNetCDFBuffer* out;
   if (OUTPUT) {
-    out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, K + 1);
+    out = new SimulatorNetCDFBuffer(m, P, K, OUTPUT_FILE,
+        NetCDFBuffer::REPLACE);
   } else {
     out = NULL;
   }
 
   /* static sampler & dynamic simulator */
-  StochasticRUpdater<NPZDModel> rUpdater(s, rng);
-  FUpdater fUpdater(m, FORCE_FILE, s, NS);
-  Sampler<NPZDModel> sam(m, s, &rUpdater);
-  Simulator<NPZDModel> sim(m, s, &r, &rUpdater, &fUpdater);
+  StochasticRUpdater<NPZDModel<> > rUpdater(s, rng);
+  FUpdater fUpdater(s, inForce);
+  Sampler<NPZDModel<> > sam(m, s, &rUpdater);
+  Simulator<NPZDModel<> > sim(m, s, &rUpdater, &fUpdater, out);
 
   /* simulate and output */
   timeval start, end;
-  gettimeofday(&start, NULL);\
+  gettimeofday(&start, NULL);
   sam.sample(); // set static variables
   sim.simulate(T); // simulate dynamic variables
   gettimeofday(&end, NULL);
@@ -133,17 +124,6 @@ int main(int argc, char* argv[]) {
   if (TIME) {
     int elapsed = (end.tv_sec-start.tv_sec)*1000000 + (end.tv_usec-start.tv_usec);
     std::cout << elapsed << std::endl;
-  }
-
-  if (OUTPUT) {
-    #ifndef USE_CPU
-    s.download();
-    r.download();
-    CUDA_CHECKED_CALL(cudaThreadSynchronize());
-    #endif
-
-    out->write(r, K);
-    out->write(s, sim.getTime());
   }
 
   delete out;

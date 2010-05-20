@@ -5,20 +5,19 @@
  * $Rev:234 $
  * $Date:2009-08-17 11:10:31 +0800 (Mon, 17 Aug 2009) $
  */
-#include "prior.hpp"
 #include "model/NPZDModel.hpp"
 #include "model/NPZDPrior.hpp"
 
 #include "bi/cuda/cuda.hpp"
-#include "bi/cuda/ode/IntegratorConstants.hpp"
+#include "bi/math/ode.hpp"
 #include "bi/random/Random.hpp"
 #include "bi/method/ParticleFilter.hpp"
 #include "bi/method/StratifiedResampler.hpp"
-#include "bi/method/MetropolisResampler.hpp"
+//#include "bi/method/MetropolisResampler.hpp"
 #include "bi/updater/FUpdater.hpp"
 #include "bi/updater/OYUpdater.hpp"
-#include "bi/io/ForwardNetCDFReader.hpp"
-#include "bi/io/ForwardNetCDFWriter.hpp"
+#include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
+#include "bi/buffer/SparseInputNetCDFBuffer.hpp"
 
 #include "cuda_runtime.h"
 
@@ -43,9 +42,10 @@ int main(int argc, char* argv[]) {
 
   /* openmp */
   bi_omp_init();
+  bi_ode_init(1.0, 1.0e-3, 1.0e-3);
 
   /* handle command line arguments */
-  real_t T, H, MIN_ESS;
+  real T, H, MIN_ESS;
   unsigned P, L, INIT_NS, FORCE_NS, OBS_NS;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE, RESAMPLER;
@@ -91,113 +91,70 @@ int main(int argc, char* argv[]) {
     return 0;
   }
 
-  /* report missing variables in NetCDF, but don't die */
-  #ifndef NDEBUG
-  NcError ncErr(NcError::verbose_nonfatal);
-  #else
+  /* NetCDF error reporting */
   NcError ncErr(NcError::silent_nonfatal);
-  #endif
-
-  /* parameters for ODE integrator on GPU */
-  ode_init();
-  ode_set_h0(CUDA_REAL(H));
-  ode_set_rtoler(CUDA_REAL(1.0e-5));
-  ode_set_atoler(CUDA_REAL(1.0e-5));
-  ode_set_nsteps(1000);
 
   /* random number generator */
   Random rng(SEED);
 
   /* model */
-  NPZDModel m;
+  NPZDModel<> m;
 
-  /* prior */
-  NPZDPrior prior;
+  /* prior over initial conditions */
+  NPZDPrior prior(m);
 
   /* state and intermediate results */
   State s(m, P);
 
-  /* initialise from file... */
-  ForwardNetCDFReader<true,true,true,false,false,false,true> in(m, INIT_FILE, INIT_NS);
-  in.read(s);
+  /* inputs */
+  SparseInputNetCDFBuffer inForce(m, InputBuffer::F_NODES, FORCE_FILE, FORCE_NS);
+  SparseInputNetCDFBuffer inObs(m, InputBuffer::O_NODES, OBS_FILE, OBS_NS);
+  SparseInputNetCDFBuffer inInit(m, InputBuffer::P_NODES, INIT_FILE, INIT_NS);
 
-  /* ...and/or initialise from prior */
-  prior.getDPrior().sample(rng, s.dState);
-  prior.getCPrior().sample(rng, s.cState);
-  //prior.getPPrior().sample(rng, s.pState);
+  /* initialise state */
+  inInit.read(s);
+  prior.getDPrior().sample(rng, s.dHostState);
+  prior.getCPrior().sample(rng, s.cHostState);
+  //prior.getPPrior().sample(rng, s.pHostState);
   s.upload();
 
-  /* randoms, forcings, observations */
-  FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
-  OYUpdater oyUpdater(m, OBS_FILE, s, OBS_NS);
-
-  /* outputs */
-  ForwardNetCDFWriter* out;
+  /* output */
+  ParticleFilterNetCDFBuffer* out;
   if (OUTPUT) {
-    out = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, oyUpdater.numUniqueTimes());
+    out = new ParticleFilterNetCDFBuffer(m, P, inObs.numUniqueTimes(),
+        OUTPUT_FILE, NetCDFBuffer::REPLACE);
   } else {
     out = NULL;
   }
-  //std::ofstream essOut("ess.txt");
-  std::ofstream lwsOut("lws.txt");
-  lwsOut << std::setprecision(16);
+
+  /* randoms, forcings, observations */
+  FUpdater fUpdater(s, inForce);
+  OYUpdater oyUpdater(s, inObs);
 
   /* resamplers */
-  bool isStratified, isMetropolis;
-  Resampler* resam;
-  if (RESAMPLER.compare("stratified") == 0) {
-    isStratified = true;
-    isMetropolis = false;
-    resam = new StratifiedResampler(s, rng);
-  } else {
-    isStratified = false;
-    isMetropolis = true;
-    resam = new MetropolisResampler(s, rng, L);
-  }
+//  bool isStratified, isMetropolis;
+//  Resampler* resam;
+//  if (RESAMPLER.compare("stratified") == 0) {
+//    isStratified = true;
+//    isMetropolis = false;
+    StratifiedResampler resam(s, rng);
+//  } else {
+//    isStratified = false;
+//    isMetropolis = true;
+//    //resam = new MetropolisResampler(s, rng, L);
+//    BI_ERROR(false, "Metropolis resampler not available at present");
+//  }
+
+  /* particle filter */
+  ParticleFilter<NPZDModel<>, StratifiedResampler> pf(m, s, rng, &resam, &fUpdater, &oyUpdater, out);
 
   /* filter */
   timeval start, end;
   gettimeofday(&start, NULL);
-
-  real_t ess;
-  ParticleFilter<NPZDModel> pf(m, s, rng, resam, &fUpdater, &oyUpdater);
-
-  /* filter */
-  pf.init();
-  while (pf.getTime() < T) {
-    BI_LOG("t = " << pf.getTime());
-    pf.predict(T);
-    pf.correct();
-
-    CUDA_CHECKED_CALL(cudaThreadSynchronize());
-    //ess = pf.ess();
-
-    /* output ess */
-    //essOut << ess << std::endl;
-
-    /* output log-weights */
-//    unsigned i;
-//    const thrust::host_vector<real_t>& lws = pf.getWeights();
-//    for (i = 0; i < lws.size(); ++i) {
-//      lwsOut << lws[i] << ' ';
-//    }
-//    lwsOut << std::endl;
-
-    //if (ess < MIN_ESS*s.P) {
-      pf.resample();
-    //}
-
-    if (out != NULL) {
-      s.download();
-      CUDA_CHECKED_CALL(cudaThreadSynchronize());
-      out->write(s, pf.getTime());
-    }
-  }
-  CUDA_CHECKED_CALL(cudaThreadSynchronize());
-  pf.term();
-
-  /* wrap up timing */
+  pf.filter(T);
   gettimeofday(&end, NULL);
+
+  /* output timing results */
   if (TIME) {
     int elapsed = (end.tv_sec-start.tv_sec)*1e6 + (end.tv_usec-start.tv_usec);
     std::cout << elapsed << std::endl;

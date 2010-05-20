@@ -19,12 +19,12 @@ I=1 # sample interval (in steps)
 C=30000 # no. samples to draw
 A=2000 # no. steps before adaptation
 
-FILTER=pf # filter to use -- ukf or pf
+FILTER=ukf # filter to use -- ukf or pf
 MIN_TEMP=1.0 # minimum temperature (or temperature for single process)
 MAX_TEMP=1.0 # maximum termperature
 
 # particle filter settings
-RESAMPLER=stratified # resampler to use, 'stratified' or 'metropolis'
+RESAMPLER=metropolis # resampler to use, 'stratified' or 'metropolis'
 MIN_ESS=1.0 # minimum ESS to trigger resampling (not used presently)
 P=1024 # no. trajectories
 L=30 # no. iterations for metropolis resampler

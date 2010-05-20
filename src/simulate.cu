@@ -12,7 +12,7 @@
 #include "bi/cuda/method/Simulator.cuh"
 #include "bi/cuda/method/Sampler.cuh"
 
-template class bi::Simulator<NPZDModel>;
-template class bi::Sampler<NPZDModel>;
+template class bi::Simulator<NPZDModel<> >;
+template class bi::Sampler<NPZDModel<> >;
 
 #endif

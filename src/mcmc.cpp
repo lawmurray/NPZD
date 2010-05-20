@@ -5,7 +5,6 @@
  * $Rev:234 $
  * $Date:2009-08-17 11:10:31 +0800 (Mon, 17 Aug 2009) $
  */
-#include "prior.hpp"
 #include "device.hpp"
 #include "model/NPZDModel.hpp"
 #include "model/NPZDPrior.hpp"
@@ -50,7 +49,7 @@ int main(int argc, char* argv[]) {
   bi_omp_init();
 
   /* handle command line arguments */
-  real_t T, H, MIN_ESS;
+  real T, H, MIN_ESS;
   double SCALE, TEMP, MIN_TEMP, MAX_TEMP, ALPHA, SD;
   unsigned P, INIT_NS, FORCE_NS, OBS_NS, B, I, C, A, L;
   int SEED;
@@ -141,10 +140,10 @@ int main(int argc, char* argv[]) {
 
   /* parameters for ODE integrator on GPU */
   ode_init();
-  ode_set_h0(CUDA_REAL(H));
-  ode_set_rtoler(CUDA_REAL(1.0e-5));
-  ode_set_atoler(CUDA_REAL(1.0e-5));
-  ode_set_nsteps(CUDA_REAL(200));
+  ode_set_h0(REAL(H));
+  ode_set_rtoler(REAL(1.0e-5));
+  ode_set_atoler(REAL(1.0e-5));
+  ode_set_nsteps(REAL(200));
 
   /* random number generator */
   Random rng(SEED);
@@ -264,13 +263,13 @@ int main(int argc, char* argv[]) {
   Filter* filter;
   const unsigned D = m.getDSize();
   const unsigned N = D + m.getCSize();
-  real_t mu0[N];
-  real_t Sigma0[N*N];
+  real mu0[N];
+  real Sigma0[N*N];
 
   if (FILTER.compare("ukf") == 0) {
     /* unscented Kalman filter */
     for (i = 0; i < N*N; ++i) {
-      Sigma0[i] = CUDA_REAL(0.0);
+      Sigma0[i] = REAL(0.0);
     }
     for (i = 0; i < D; ++i) {
       mu0[i] = x0.getDPrior().mean()(i);
@@ -295,7 +294,7 @@ int main(int argc, char* argv[]) {
   }
 
   /* MCMC */
-  real_t l1, l2;
+  real l1, l2;
   State s2(m, 1);
   state_vector theta(s2.pState);
   vector x(m.getPSize());

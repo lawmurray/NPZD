@@ -7,10 +7,10 @@
 ROOT=/home/mur387/workspace
 LD_LIBRARY_PATH=$ROOT/bi/build:$LD_LIBRARY_PATH
 
-T=565 # time to simulate
+T=415 # time to simulate
 H=0.3 # initial step size
 SEED=3 # pseudorandom number seed
-OUTPUT=0 # produce output?
+OUTPUT=1 # produce output?
 TIME=1 # produce timings?
 
 INIT_FILE=$ROOT/npzd/data/C7_init.nc # initial values file
