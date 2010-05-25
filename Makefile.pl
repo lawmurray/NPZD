@@ -25,8 +25,8 @@ $CUDACC = 'nvcc';
 
 # Common compile flags
 $CPPINCLUDES = '-I../bi/src -I/usr/local/cuda/include -I/tools/cuda/2.3/cuda/include/ -I/tools/thrust/1.1.1 -I/usr/local/include/thrust -I/tools/magma/0.2/include';
-$CXXFLAGS = "-Wall  -DBOOST_UBLAS_SHALLOW_ARRAY_ADAPTOR `nc-config --cflags` `mpic++ -showme:compile` $CPPINCLUDES";
-$CUDACCFLAGS = "-arch=sm_13 -Xptxas=\"-v\" -Xcompiler=\"-Wall -fopenmp `mpic++ -showme:compile`\" -DBOOST_UBLAS_SHALLOW_ARRAY_ADAPTOR `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS $CPPINCLUDES";
+$CXXFLAGS = "-Wall `nc-config --cflags` `mpic++ -showme:compile` $CPPINCLUDES";
+$CUDACCFLAGS = "-arch=sm_13 -Xptxas=\"-v\" -Xcompiler=\"-Wall -fopenmp `mpic++ -showme:compile`\" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS $CPPINCLUDES";
 $LINKFLAGS = '-L"../bi/build" -L"/tools/magma/0.2/lib" -lbi -lmagma -lmagmablas -lgfortran -lgsl -lnetcdf_c++ `nc-config --libs` -lpthread -lboost_program_options -lboost_mpi `mpic++ -showme:link`';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
@@ -347,17 +347,17 @@ End
 # Artefacts
 my $models = join(' ', @models);
 
-print "\$(BUILDDIR)/simulate: \$(BUILDDIR)/simulate.cpp.o \$(BUILDDIR)/simulate.cu.o $models\n";
-print "\t\$(LINKER) -o $BUILDDIR/simulate \$(BUILDDIR)/simulate.cpp.o \$(BUILDDIR)/simulate.cu.o $models \$(LINKFLAGS)\n\n";
+print "\$(BUILDDIR)/simulate: \$(BUILDDIR)/simulate.cu.o \$(BUILDDIR)/simulate.cpp.o $models\n";
+print "\t\$(LINKER) -o $BUILDDIR/simulate \$(BUILDDIR)/simulate.cu.o \$(BUILDDIR)/simulate.cpp.o $models \$(LINKFLAGS)\n\n";
 
-print "\$(BUILDDIR)/filter: \$(BUILDDIR)/filter.cpp.o \$(BUILDDIR)/filter.cu.o $models\n";
-print "\t\$(LINKER) -o $BUILDDIR/filter \$(BUILDDIR)/filter.cpp.o \$(BUILDDIR)/filter.cu.o $models \$(LINKFLAGS)\n\n";
+print "\$(BUILDDIR)/filter: \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/filter.cpp.o $models\n";
+print "\t\$(LINKER) -o $BUILDDIR/filter \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/filter.cpp.o $models \$(LINKFLAGS)\n\n";
 
 print "\$(BUILDDIR)/ukf: \$(BUILDDIR)/ukf.cpp.o \$(BUILDDIR)/filter.cu.o $models\n";
 print "\t\$(LINKER) -o $BUILDDIR/ukf \$(BUILDDIR)/ukf.cpp.o \$(BUILDDIR)/filter.cu.o $models \$(LINKFLAGS)\n\n";
 
-print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/mcmc.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o $models\n";
-print "\t\$(LINKER) -o $BUILDDIR/mcmc \$(BUILDDIR)/mcmc.cpp.o \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o $models \$(LINKFLAGS)\n\n";
+print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/mcmc.cpp.o $models\n";
+print "\t\$(LINKER) -o $BUILDDIR/mcmc \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/mcmc.cpp.o $models \$(LINKFLAGS)\n\n";
 
 # Targets
 print join("\n", @commands);

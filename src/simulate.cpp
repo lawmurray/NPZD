@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
 
   /* bi init */
   bi_omp_init();
-  bi_ode_init(0.2, 1.0e-3, 1.0e-3);
+  bi_ode_init(1.0, 1.0e-3, 1.0e-3);
 
   /* command line arguments */
   real T;
@@ -97,6 +97,7 @@ int main(int argc, char* argv[]) {
   /* initialise state */
   inInit.read(s);
   s.upload();
+  cudaThreadSynchronize();
 
   /* output */
   SimulatorNetCDFBuffer* out;
