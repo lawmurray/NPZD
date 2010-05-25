@@ -9,11 +9,13 @@
 
 #include "model/NPZDModel.hpp"
 #include "bi/state/State.hpp"
-#include "bi/method/StratifiedResampler.hpp"
+#include "bi/cuda/method/StratifiedResampler.cuh"
 #include "bi/cuda/method/ParticleFilter.cuh"
-#include "bi/cuda/method/UnscentedKalmanFilter.cuh"
+//#include "bi/cuda/method/UnscentedKalmanFilter.cuh"
 
-template class bi::ParticleFilter<NPZDModel<>, StratifiedResampler>;
-template class bi::UnscentedKalmanFilter<NPZDModel<> >;
+using namespace bi;
+
+template class ParticleFilter<NPZDModel<>, StratifiedResampler>;
+//template class UnscentedKalmanFilter<NPZDModel<> >;
 
 #endif
