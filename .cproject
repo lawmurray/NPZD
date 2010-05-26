@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?fileVersion 4.0.0?>
 
 <cproject>
@@ -36,6 +36,7 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.745445750" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.115499010" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 <option id="gnu.cpp.link.option.paths.525385329" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
 <listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
@@ -49,6 +50,7 @@
 <listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/intel64/cc4.1.0_libc2.4_kernel2.6.16.21/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
+<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1566161925" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -72,6 +74,7 @@
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 </externalSetting>
 </externalSettings>
 </storageModule>
@@ -1894,6 +1897,7 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.293944563" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.328509506" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 <option id="gnu.cpp.link.option.paths.1803685423" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
 <listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
@@ -1907,6 +1911,7 @@
 <listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/intel64/cc4.1.0_libc2.4_kernel2.6.16.21/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
+<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.546159979" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -1930,6 +1935,7 @@
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 </externalSetting>
 </externalSettings>
 </storageModule>
@@ -3752,6 +3758,7 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.1888312080" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1255498055" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 <option id="gnu.cpp.link.option.paths.206622522" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
 <listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
@@ -3765,6 +3772,7 @@
 <listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/intel64/cc4.1.0_libc2.4_kernel2.6.16.21/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
+<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1069947214" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -3788,6 +3796,7 @@
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 </externalSetting>
 </externalSettings>
 </storageModule>
@@ -5610,6 +5619,7 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.350058304" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1229299904" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 <option id="gnu.cpp.link.option.paths.1761726187" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
 <listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
@@ -5623,6 +5633,7 @@
 <listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/intel64/cc4.1.0_libc2.4_kernel2.6.16.21/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
+<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1243572795" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -5646,6 +5657,7 @@
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 </externalSetting>
 </externalSettings>
 </storageModule>
@@ -7468,6 +7480,7 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.390055138" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.323006053" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 <option id="gnu.cpp.link.option.paths.1468384071" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
 <listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
@@ -7481,6 +7494,7 @@
 <listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/intel64/cc4.1.0_libc2.4_kernel2.6.16.21/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
+<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.2071116121" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -7504,6 +7518,7 @@
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 </externalSetting>
 </externalSettings>
 </storageModule>
@@ -9326,6 +9341,7 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.830405242" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1370117921" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 <option id="gnu.cpp.link.option.paths.373624749" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
 <listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
@@ -9339,6 +9355,7 @@
 <listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/intel64/cc4.1.0_libc2.4_kernel2.6.16.21/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
+<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.895575577" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -9362,6 +9379,7 @@
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 </externalSetting>
 </externalSettings>
 </storageModule>
@@ -11167,7 +11185,7 @@
 <folderInfo id="cdt.managedbuild.toolchain.gnu.base.2070993171.670733595." name="/" resourcePath="">
 <toolChain id="cdt.managedbuild.toolchain.gnu.base.1551133783" name="cdt.managedbuild.toolchain.gnu.base" superClass="cdt.managedbuild.toolchain.gnu.base">
 <targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.target.gnu.platform.base.913783072" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
-<builder arguments="USE_DOUBLE=1 DEBUG=1 USE_CPU=1" autoBuildTarget="all" buildPath="${workspace_loc:/npzd}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.base.1849206653" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="12" superClass="cdt.managedbuild.target.gnu.builder.base"/>
+<builder arguments="USE_DOUBLE=1 DEBUG=1 USE_CPU=1" autoBuildTarget="all" buildPath="${workspace_loc:/npzd}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.base.1849206653" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="8" superClass="cdt.managedbuild.target.gnu.builder.base"/>
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.1492653031" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.983525773" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.1543788154" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
@@ -11184,6 +11202,7 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.1753529821" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1938803035" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 <option id="gnu.cpp.link.option.paths.1816807005" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
 <listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
@@ -11197,6 +11216,7 @@
 <listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/intel64/cc4.1.0_libc2.4_kernel2.6.16.21/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
+<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1488775712" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -11220,6 +11240,7 @@
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 </externalSetting>
 </externalSettings>
 </storageModule>
@@ -13025,7 +13046,7 @@
 <folderInfo id="cdt.managedbuild.toolchain.gnu.base.2070993171.1873706288." name="/" resourcePath="">
 <toolChain id="cdt.managedbuild.toolchain.gnu.base.1002199327" name="cdt.managedbuild.toolchain.gnu.base" superClass="cdt.managedbuild.toolchain.gnu.base">
 <targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.target.gnu.platform.base.825760741" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
-<builder arguments="USE_DOUBLE=1 DEBUG=1 USE_CPU=1 USE_SSE=1" autoBuildTarget="all" buildPath="${workspace_loc:/npzd}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.base.523615253" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="12" superClass="cdt.managedbuild.target.gnu.builder.base"/>
+<builder arguments="USE_DOUBLE=1 DEBUG=1 USE_CPU=1 USE_SSE=1" autoBuildTarget="all" buildPath="${workspace_loc:/npzd}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.base.523615253" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="8" superClass="cdt.managedbuild.target.gnu.builder.base"/>
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.878113146" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.203912385" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.636272456" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
@@ -13042,6 +13063,7 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.1024732136" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.677216786" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 <option id="gnu.cpp.link.option.paths.1250562596" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
 <listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
@@ -13055,6 +13077,7 @@
 <listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/intel64/cc4.1.0_libc2.4_kernel2.6.16.21/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
+<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.312993772" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -13078,6 +13101,7 @@
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 </externalSetting>
 </externalSettings>
 </storageModule>
@@ -14883,7 +14907,7 @@
 <folderInfo id="cdt.managedbuild.toolchain.gnu.base.2070993171.629526829.1615131825." name="/" resourcePath="">
 <toolChain id="cdt.managedbuild.toolchain.gnu.base.1883636690" name="cdt.managedbuild.toolchain.gnu.base" superClass="cdt.managedbuild.toolchain.gnu.base">
 <targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.target.gnu.platform.base.1878728804" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
-<builder arguments="USE_DOUBLE=1 NDEBUG=1 RELEASE=1 USE_CPU=1" autoBuildTarget="all" buildPath="${workspace_loc:/npzd}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.base.419489571" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="12" superClass="cdt.managedbuild.target.gnu.builder.base"/>
+<builder arguments="USE_DOUBLE=1 NDEBUG=1 RELEASE=1 USE_CPU=1" autoBuildTarget="all" buildPath="${workspace_loc:/npzd}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.base.419489571" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="8" superClass="cdt.managedbuild.target.gnu.builder.base"/>
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.545393832" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1415745374" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.1566513381" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
@@ -14900,6 +14924,7 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.647977754" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.557670883" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 <option id="gnu.cpp.link.option.paths.795868895" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
 <listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
@@ -14913,6 +14938,7 @@
 <listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/intel64/cc4.1.0_libc2.4_kernel2.6.16.21/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
+<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.173871552" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -14936,6 +14962,7 @@
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 </externalSetting>
 </externalSettings>
 </storageModule>
@@ -16741,7 +16768,7 @@
 <folderInfo id="cdt.managedbuild.toolchain.gnu.base.2070993171.1831120001.1312769584." name="/" resourcePath="">
 <toolChain id="cdt.managedbuild.toolchain.gnu.base.138148547" name="cdt.managedbuild.toolchain.gnu.base" superClass="cdt.managedbuild.toolchain.gnu.base">
 <targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.target.gnu.platform.base.714400134" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
-<builder arguments="USE_DOUBLE=1 NDEBUG=1 PROFILE=1 USE_CPU=1" autoBuildTarget="all" buildPath="${workspace_loc:/npzd}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.base.1895954997" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="12" superClass="cdt.managedbuild.target.gnu.builder.base"/>
+<builder arguments="USE_DOUBLE=1 NDEBUG=1 PROFILE=1 USE_CPU=1" autoBuildTarget="all" buildPath="${workspace_loc:/npzd}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.base.1895954997" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="8" superClass="cdt.managedbuild.target.gnu.builder.base"/>
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.2031531286" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1884147073" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.835193735" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
@@ -16758,6 +16785,7 @@
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.357605476" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.929312398" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 <option id="gnu.cpp.link.option.paths.309132247" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
 <listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
@@ -16771,6 +16799,7 @@
 <listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/intel64/cc4.1.0_libc2.4_kernel2.6.16.21/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 <listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
+<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1163523190" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -16794,6 +16823,7 @@
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 </externalSetting>
 </externalSettings>
 </storageModule>

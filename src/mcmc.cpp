@@ -129,7 +129,10 @@ int main(int argc, char* argv[]) {
   }
 
   /* select CUDA device */
+  #ifndef USE_CPU
   int dev = chooseDevice(rank);
+  std::cerr << "Rank " << rank << ": using device " << dev << std::endl;
+  #endif
 
   /* NetCDF error reporting */
   NcError ncErr(NcError::silent_nonfatal);
@@ -139,75 +142,51 @@ int main(int argc, char* argv[]) {
 
   /* model */
   NPZDModel<> m;
+  const unsigned NP = m.getNetSize(P_NODE);
+  const unsigned ND = m.getNetSize(D_NODE);
+  const unsigned NC = m.getNetSize(C_NODE);
 
   /* prior */
   NPZDPrior prior(m);
 
   /* proposal */
-  symmetric_matrix Sigma(m.getNetSize(P_NODE));
+  symmetric_matrix Sigma(NP);
   Sigma.clear();
   BOOST_AUTO(d, diag(Sigma));
 
-  d(m.Kw.id) = 0.2;
-  d(m.KCh.id) = 0.3;
-  d(m.Dsi.id) = 1.0;
-  d(m.ZgD.id) = 0.1;
-  d(m.PDF.id) = 0.2;
-  d(m.ZDF.id) = 0.1;
-  d(m.muPgC.id) = 0.63;
-  d(m.muPgR.id) = 0.2;
-  d(m.muPCh.id) = 0.37;
-  d(m.muPaN.id) = 1.0;
-  d(m.muPRN.id) = 0.3;
-  d(m.muZin.id) = 0.7;
-  d(m.muZCl.id) = 1.3;
-  d(m.muZgE.id) = 0.25;
-  d(m.muDre.id) = 0.5;
-  d(m.muZmQ.id) = 1.0;
+  d(m.getNode(P_NODE, "Kw")->getId()) = 0.2;
+  d(m.getNode(P_NODE, "KCh")->getId()) = 0.3;
+  d(m.getNode(P_NODE, "Dsi")->getId()) = 1.0;
+  d(m.getNode(P_NODE, "ZgD")->getId()) = 0.1;
+  d(m.getNode(P_NODE, "PDF")->getId()) = 0.2;
+  d(m.getNode(P_NODE, "ZDF")->getId()) = 0.1;
+  d(m.getNode(P_NODE, "muPgC")->getId()) = 0.63;
+  d(m.getNode(P_NODE, "muPgR")->getId()) = 0.2;
+  d(m.getNode(P_NODE, "muPCh")->getId()) = 0.37;
+  d(m.getNode(P_NODE, "muPaN")->getId()) = 1.0;
+  d(m.getNode(P_NODE, "muPRN")->getId()) = 0.3;
+  d(m.getNode(P_NODE, "muZin")->getId()) = 0.7;
+  d(m.getNode(P_NODE, "muZCl")->getId()) = 1.3;
+  d(m.getNode(P_NODE, "muZgE")->getId()) = 0.25;
+  d(m.getNode(P_NODE, "muDre")->getId()) = 0.5;
+  d(m.getNode(P_NODE, "muZmQ")->getId()) = 1.0;
 
   d *= SCALE;
   d = element_prod(d,d); // square to get variances
 
   unsigned i;
   std::set<unsigned> logs;
-  for (i = 0; i < m.getNetSize(P_NODE); ++i) {
-    if (i != m.Dsi.id) { // all are log-normal besides deltaS
+  for (i = 0; i < NP; ++i) {
+    if (i != m.getNode(P_NODE, "Dsi")->getId()) { // all log-normal besides this
       logs.insert(i);
     }
   }
   AdditiveExpGaussianPdf<> q(Sigma, logs);
 
-  /* starting distro */
-  symmetric_matrix SigmaS(m.getNetSize(P_NODE));
-  SigmaS.clear();
-  BOOST_AUTO(dS, diag(SigmaS));
-
-  dS(m.Kw.id) = 0.2;
-  dS(m.KCh.id) = 0.3;
-  dS(m.Dsi.id) = 1.0;
-  dS(m.ZgD.id) = 0.1;
-  dS(m.PDF.id) = 0.2;
-  dS(m.ZDF.id) = 0.1;
-  dS(m.muPgC.id) = 0.63;
-  dS(m.muPgR.id) = 0.2;
-  dS(m.muPCh.id) = 0.37;
-  dS(m.muPaN.id) = 1.0;
-  dS(m.muPRN.id) = 0.3;
-  dS(m.muZin.id) = 0.7;
-  dS(m.muZCl.id) = 1.3;
-  dS(m.muZgE.id) = 0.25;
-  dS(m.muDre.id) = 0.5;
-  dS(m.muZmQ.id) = 1.0;
-
-  dS *= 0.1;
-  dS = element_prod(dS,dS); // square to get variances
-
-  ExpGaussianPdf<> s0(x0.getPPrior().mean(), SigmaS, logs);
-
   /* proposal adaptation */
-  vector mu(m.getNetSize(P_NODE));
-  vector sumMu(m.getNetSize(P_NODE));
-  symmetric_matrix sumSigma(m.getNetSize(P_NODE));
+  vector mu(NP);
+  vector sumMu(NP);
+  symmetric_matrix sumSigma(NP);
   sumMu.clear();
   sumSigma.clear();
 
@@ -232,7 +211,7 @@ int main(int argc, char* argv[]) {
   ParticleFilterNetCDFBuffer tmp(m, P, Y, file.str(), NetCDFBuffer::REPLACE);
 
   /* temperature */
-  double lambda;
+  real lambda;
   if (vm.count("temp")) {
     lambda = TEMP;
   } else if (vm.count("min-temp") && vm.count("max-temp")) {
@@ -244,43 +223,32 @@ int main(int argc, char* argv[]) {
   } else {
     lambda = 1.0;
   }
+  std::cerr << "Rank " << rank << ": using temperature " << lambda << std::endl;
 
   /* randoms, forcings, observations */
   FUpdater fUpdater(s, inForce);
   OYUpdater oyUpdater(s, inObs);
 
-  /* set up resampler and filter */
-  Resampler* resam;
-  Filter* filter;
-  if (RESAMPLER.compare("stratified") == 0) {
-    resam = new StratifiedResampler(s, rng);
-    filter = new ParticleFilter<NPZDModel<>, StratifiedResampler>(m, s, rng, (StratifiedResampler*)resam, &fUpdater, &oyUpdater, &tmp);
-  } else {
-    resam = new MetropolisResampler(s, rng, L);
-    filter = new ParticleFilter<NPZDModel<>, MetropolisResampler>(m, s, rng, (MetropolisResampler*)resam, &fUpdater, &oyUpdater, &tmp);
-  }
+  /* set up resampler, filter and MCMC */
+  typedef StratifiedResampler ResamplerType;
+  //typedef MetropolisResampler ResamplerType;
+  typedef ParticleFilter<NPZDModel<>, ResamplerType> FilterType;
+  typedef ParallelParticleMCMC<NPZDModel<>,NPZDPrior,AdditiveExpGaussianPdf<>,FilterType> MCMCType;
 
-  /* set up MCMC */
-  const unsigned D = m.getNetSize(D_NODE);
-  const unsigned N = D + m.getNetSize(C_NODE);
-  real mu0[N];
-  real Sigma0[N*N];
+  StratifiedResampler resam(s, rng);
+  //MetropolisResampler resam(s, rng, L);
+
+  FilterType filter(m, s, rng, &resam, &fUpdater, &oyUpdater, &tmp);
+  MCMCType mcmc(m, prior, q, ALPHA, s, rng, &filter, &out);
+
+  /* and go... */
   real l1, l2;
-  vector x(m.getNetSize(P_NODE));
+  vector x(NP);
   bool accepted;
 
   inInit.read(s);
-  x0.getPPrior().sample(rng, s.pHostState); // initialise chain
-  //s0.sample(rng, s.pState);
-  s.upload();
+  prior.getPPrior().sample(rng, s.pHostState); // initialise chain
 
-  ParallelParticleMCMC<NPZDModel<>,NPZDPrior,AdditiveExpGaussianPdf<> > mcmc(m,
-      x0, q, ALPHA, s, rng, filter);
-
-  std::cerr << "Rank " << rank << ": using device " << dev << ", temperature "
-      << lambda << std::endl;
-
-  /* and go... */
   for (i = 0; i < C; ++i) {
     accepted = mcmc.step(T, lambda);
 
