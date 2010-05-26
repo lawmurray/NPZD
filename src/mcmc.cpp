@@ -10,17 +10,18 @@
 #include "model/NPZDPrior.hpp"
 
 #include "bi/cuda/cuda.hpp"
-#include "bi/cuda/ode/IntegratorConstants.hpp"
+#include "bi/math/ode.hpp"
 #include "bi/state/State.hpp"
 #include "bi/random/Random.hpp"
 #include "bi/method/ParallelParticleMCMC.hpp"
 #include "bi/method/ParticleFilter.hpp"
-#include "bi/method/UnscentedKalmanFilter.hpp"
 #include "bi/method/StratifiedResampler.hpp"
 #include "bi/method/MetropolisResampler.hpp"
 #include "bi/updater/FUpdater.hpp"
 #include "bi/updater/OYUpdater.hpp"
-#include "bi/io/MCMCNetCDFWriter.hpp"
+#include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
+#include "bi/buffer/ParticleMCMCNetCDFBuffer.hpp"
+#include "bi/buffer/SparseInputNetCDFBuffer.hpp"
 #include "bi/pdf/AdditiveExpGaussianPdf.hpp"
 
 #include "boost/program_options.hpp"
@@ -47,24 +48,21 @@ int main(int argc, char* argv[]) {
 
   /* openmp */
   bi_omp_init();
+  bi_ode_init(1.0, 1.0e-3, 1.0e-3);
 
   /* handle command line arguments */
   real T, H, MIN_ESS;
   double SCALE, TEMP, MIN_TEMP, MAX_TEMP, ALPHA, SD;
   unsigned P, INIT_NS, FORCE_NS, OBS_NS, B, I, C, A, L;
   int SEED;
-  std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE, PROPOSAL_FILE,
-      RESAMPLER, FILTER;
+  std::string INIT_FILE, FORCE_FILE, OBS_FILE, FILTER_FILE, OUTPUT_FILE,
+      PROPOSAL_FILE, RESAMPLER;
 
   po::options_description mcmcOptions("MCMC options");
   mcmcOptions.add_options()
-    (",B", po::value(&B)->default_value(0), "no. burn steps")
-    (",I", po::value(&I)->default_value(1), "interval for drawing samples")
     (",C", po::value(&C), "no. samples to draw")
     (",A", po::value(&A)->default_value(100),
         "no. samples to drawn before adapting proposal")
-    ("filter", po::value(&FILTER),
-        "filter to use, 'pf' or 'ukf'")
     ("scale", po::value(&SCALE),
         "scale of proposal relative to prior")
     ("temp", po::value(&TEMP),
@@ -99,6 +97,8 @@ int main(int argc, char* argv[]) {
         "input file containing forcings")
     ("obs-file", po::value(&OBS_FILE),
         "input file containing observations")
+    ("filter-file", po::value(&FILTER_FILE),
+        "temporary file for storage of intermediate particle filter results")
     ("proposal-file", po::value(&PROPOSAL_FILE),
         "input file containing non-local file proposals")
     ("output-file", po::value(&OUTPUT_FILE),
@@ -132,30 +132,19 @@ int main(int argc, char* argv[]) {
   int dev = chooseDevice(rank);
 
   /* NetCDF error reporting */
-  #ifdef NDEBUG
   NcError ncErr(NcError::silent_nonfatal);
-  #else
-  NcError ncErr(NcError::verbose_nonfatal);
-  #endif
-
-  /* parameters for ODE integrator on GPU */
-  ode_init();
-  ode_set_h0(REAL(H));
-  ode_set_rtoler(REAL(1.0e-5));
-  ode_set_atoler(REAL(1.0e-5));
-  ode_set_nsteps(REAL(200));
 
   /* random number generator */
   Random rng(SEED);
 
   /* model */
-  NPZDModel m;
+  NPZDModel<> m;
 
-  /* prior... */
-  NPZDPrior x0;
+  /* prior */
+  NPZDPrior prior(m);
 
   /* proposal */
-  symmetric_matrix Sigma(m.getPSize());
+  symmetric_matrix Sigma(m.getNetSize(P_NODE));
   Sigma.clear();
   BOOST_AUTO(d, diag(Sigma));
 
@@ -181,7 +170,7 @@ int main(int argc, char* argv[]) {
 
   unsigned i;
   std::set<unsigned> logs;
-  for (i = 0; i < m.getPSize(); ++i) {
+  for (i = 0; i < m.getNetSize(P_NODE); ++i) {
     if (i != m.Dsi.id) { // all are log-normal besides deltaS
       logs.insert(i);
     }
@@ -189,7 +178,7 @@ int main(int argc, char* argv[]) {
   AdditiveExpGaussianPdf<> q(Sigma, logs);
 
   /* starting distro */
-  symmetric_matrix SigmaS(m.getPSize());
+  symmetric_matrix SigmaS(m.getNetSize(P_NODE));
   SigmaS.clear();
   BOOST_AUTO(dS, diag(SigmaS));
 
@@ -216,31 +205,31 @@ int main(int argc, char* argv[]) {
   ExpGaussianPdf<> s0(x0.getPPrior().mean(), SigmaS, logs);
 
   /* proposal adaptation */
-  vector mu(m.getPSize());
-  vector sumMu(m.getPSize());
-  symmetric_matrix sumSigma(m.getPSize());
+  vector mu(m.getNetSize(P_NODE));
+  vector sumMu(m.getNetSize(P_NODE));
+  symmetric_matrix sumSigma(m.getNetSize(P_NODE));
   sumMu.clear();
   sumSigma.clear();
 
   /* state */
-  if (FILTER.compare("ukf") == 0) {
-    P = 2*(m.getDSize() + m.getCSize() + m.getRSize()) + 1;
-  }
   State s(m, P);
 
-  /* initialise from file... */
-  ForwardNetCDFReader<true,true,true,false,true,true,true> in(m, INIT_FILE, INIT_NS);
-  in.read(s);
+  /* inputs */
+  SparseInputNetCDFBuffer inForce(m, InputBuffer::F_NODES, FORCE_FILE, FORCE_NS);
+  SparseInputNetCDFBuffer inObs(m, InputBuffer::O_NODES, OBS_FILE, OBS_NS);
+  SparseInputNetCDFBuffer inInit(m, InputBuffer::P_NODES, INIT_FILE, INIT_NS);
 
-  /* forcings, observations */
-  FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
-  OYUpdater oyUpdater(m, OBS_FILE, s, OBS_NS);
-
-  /* output */
+  /* outputs */
   std::stringstream file;
+  const unsigned Y = inObs.numUniqueTimes();
+
+  file.str("");
   file << OUTPUT_FILE << '.' << rank;
-  MCMCNetCDFWriter out(m, file.str().c_str(), C);
-  out.sync();
+  ParticleMCMCNetCDFBuffer out(m, C, Y, file.str(), NetCDFBuffer::REPLACE);
+
+  file.str("");
+  file << FILTER_FILE << '.' << rank;
+  ParticleFilterNetCDFBuffer tmp(m, P, Y, file.str(), NetCDFBuffer::REPLACE);
 
   /* temperature */
   double lambda;
@@ -256,67 +245,47 @@ int main(int argc, char* argv[]) {
     lambda = 1.0;
   }
 
-  /* report... */
-  std::cerr << "Rank " << rank << ": using device " << dev << ", temperature "
-      << lambda << std::endl;
+  /* randoms, forcings, observations */
+  FUpdater fUpdater(s, inForce);
+  OYUpdater oyUpdater(s, inObs);
 
+  /* set up resampler and filter */
+  Resampler* resam;
   Filter* filter;
-  const unsigned D = m.getDSize();
-  const unsigned N = D + m.getCSize();
-  real mu0[N];
-  real Sigma0[N*N];
-
-  if (FILTER.compare("ukf") == 0) {
-    /* unscented Kalman filter */
-    for (i = 0; i < N*N; ++i) {
-      Sigma0[i] = REAL(0.0);
-    }
-    for (i = 0; i < D; ++i) {
-      mu0[i] = x0.getDPrior().mean()(i);
-      Sigma0[i*N+i] = x0.getDPrior().cov()(i,i);
-    }
-    for (i = D; i < N; ++i) {
-      mu0[i] = x0.getCPrior().mean()(i - D);
-      Sigma0[i*N+i] = x0.getCPrior().cov()(i - D, i - D);
-    }
-    filter = new UnscentedKalmanFilter<NPZDModel>(m, mu0, Sigma0, s,
-        &fUpdater, &oyUpdater);
+  if (RESAMPLER.compare("stratified") == 0) {
+    resam = new StratifiedResampler(s, rng);
+    filter = new ParticleFilter<NPZDModel<>, StratifiedResampler>(m, s, rng, (StratifiedResampler*)resam, &fUpdater, &oyUpdater, &tmp);
   } else {
-    /* particle filter */
-    Resampler* resam;
-    if (RESAMPLER.compare("stratified") == 0) {
-      resam = new StratifiedResampler(s, rng);
-    } else {
-      resam = new MetropolisResampler(s, rng, L);
-    }
-    filter = new ParticleFilter<NPZDModel>(m, s, rng, resam, &fUpdater,
-        &oyUpdater);
+    resam = new MetropolisResampler(s, rng, L);
+    filter = new ParticleFilter<NPZDModel<>, MetropolisResampler>(m, s, rng, (MetropolisResampler*)resam, &fUpdater, &oyUpdater, &tmp);
   }
 
-  /* MCMC */
+  /* set up MCMC */
+  const unsigned D = m.getNetSize(D_NODE);
+  const unsigned N = D + m.getNetSize(C_NODE);
+  real mu0[N];
+  real Sigma0[N*N];
   real l1, l2;
-  State s2(m, 1);
-  state_vector theta(s2.pState);
-  vector x(m.getPSize());
+  vector x(m.getNetSize(P_NODE));
   bool accepted;
 
-  x0.getPPrior().sample(rng, s.pState); // initialise chain
+  inInit.read(s);
+  x0.getPPrior().sample(rng, s.pHostState); // initialise chain
   //s0.sample(rng, s.pState);
   s.upload();
 
-  ParallelParticleMCMC<NPZDModel,NPZDPrior,AdditiveExpGaussianPdf<> > mcmc(m,
+  ParallelParticleMCMC<NPZDModel<>,NPZDPrior,AdditiveExpGaussianPdf<> > mcmc(m,
       x0, q, ALPHA, s, rng, filter);
 
-  for (i = 0; i < B+I*C; ++i) {
-    l1 = mcmc.getLogLikelihood();
-    accepted = mcmc.step(T, lambda);
-    theta = mcmc.getState();
-    l2 = mcmc.getLastProposedLogLikelihood();
+  std::cerr << "Rank " << rank << ": using device " << dev << ", temperature "
+      << lambda << std::endl;
 
-    if (i >= B && (i - B) % I == 0) {
-      out.write(s2, l1);
-      out.sync();
-    }
+  /* and go... */
+  for (i = 0; i < C; ++i) {
+    accepted = mcmc.step(T, lambda);
+
+    l1 = mcmc.getLogLikelihood();
+    l2 = mcmc.getLastProposedLogLikelihood();
 
     std::cerr << rank << '.' << i << ": " << l1 << " -> " << l2;
     if (accepted) {
@@ -325,7 +294,7 @@ int main(int argc, char* argv[]) {
     std::cerr << std::endl;
 
     /* adapt proposal */
-    noalias(x) = theta;
+    noalias(x) = mcmc.getState();
     q.log(x);
     noalias(sumMu) += x;
     noalias(sumSigma) += ublas::outer_prod(x,x);
@@ -333,7 +302,7 @@ int main(int argc, char* argv[]) {
     if (i > A) {
       double sd = SD;
       if (sd <= 0.0) {
-        sd = std::pow(2.4,2) / m.getPSize();
+        sd = std::pow(2.4,2) / m.getNetSize(P_NODE);
       }
 
       noalias(mu) = sumMu / (i + 1.0);
