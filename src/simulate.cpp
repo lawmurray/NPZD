@@ -97,7 +97,6 @@ int main(int argc, char* argv[]) {
   /* initialise state */
   inInit.read(s);
   s.upload();
-  cudaThreadSynchronize();
 
   /* output */
   SimulatorNetCDFBuffer* out;

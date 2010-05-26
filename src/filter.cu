@@ -8,13 +8,15 @@
 #ifndef USE_CPU
 
 #include "model/NPZDModel.hpp"
-#include "bi/state/State.hpp"
-#include "bi/cuda/method/StratifiedResampler.cuh"
-#include "bi/cuda/method/ParticleFilter.cuh"
+
+#include "bi/method/StratifiedResampler.hpp"
+#include "bi/method/MetropolisResampler.hpp"
+#include "bi/method/ParticleFilter.hpp"
 //#include "bi/cuda/method/UnscentedKalmanFilter.cuh"
 
 using namespace bi;
 
+template class ParticleFilter<NPZDModel<>, MetropolisResampler>;
 template class ParticleFilter<NPZDModel<>, StratifiedResampler>;
 //template class UnscentedKalmanFilter<NPZDModel<> >;
 

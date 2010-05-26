@@ -13,7 +13,7 @@
 #include "bi/random/Random.hpp"
 #include "bi/method/ParticleFilter.hpp"
 #include "bi/method/StratifiedResampler.hpp"
-//#include "bi/method/MetropolisResampler.hpp"
+#include "bi/method/MetropolisResampler.hpp"
 #include "bi/updater/FUpdater.hpp"
 #include "bi/updater/OYUpdater.hpp"
 #include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
@@ -131,27 +131,21 @@ int main(int argc, char* argv[]) {
   FUpdater fUpdater(s, inForce);
   OYUpdater oyUpdater(s, inObs);
 
-  /* resamplers */
-//  bool isStratified, isMetropolis;
-//  Resampler* resam;
-//  if (RESAMPLER.compare("stratified") == 0) {
-//    isStratified = true;
-//    isMetropolis = false;
-    StratifiedResampler resam(s, rng);
-//  } else {
-//    isStratified = false;
-//    isMetropolis = true;
-//    //resam = new MetropolisResampler(s, rng, L);
-//    BI_ERROR(false, "Metropolis resampler not available at present");
-//  }
-
-  /* particle filter */
-  ParticleFilter<NPZDModel<>, StratifiedResampler> pf(m, s, rng, &resam, &fUpdater, &oyUpdater, out);
+  /* set up resampler and filter */
+  Resampler* resam;
+  Filter* filter;
+  if (RESAMPLER.compare("stratified") == 0) {
+    resam = new StratifiedResampler(s, rng);
+    filter = new ParticleFilter<NPZDModel<>, StratifiedResampler>(m, s, rng, (StratifiedResampler*)resam, &fUpdater, &oyUpdater, out);
+  } else {
+    resam = new MetropolisResampler(s, rng, L);
+    filter = new ParticleFilter<NPZDModel<>, MetropolisResampler>(m, s, rng, (MetropolisResampler*)resam, &fUpdater, &oyUpdater, out);
+  }
 
   /* filter */
   timeval start, end;
   gettimeofday(&start, NULL);
-  pf.filter(T);
+  filter->filter(T);
   gettimeofday(&end, NULL);
 
   /* output timing results */

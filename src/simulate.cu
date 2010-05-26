@@ -9,8 +9,8 @@
 
 #include "model/NPZDModel.hpp"
 
-#include "bi/cuda/method/Simulator.cuh"
-#include "bi/cuda/method/Sampler.cuh"
+#include "bi/method/Simulator.hpp"
+#include "bi/method/Sampler.hpp"
 
 template class bi::Simulator<NPZDModel<> >;
 template class bi::Sampler<NPZDModel<> >;
