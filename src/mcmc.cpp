@@ -243,7 +243,8 @@ int main(int argc, char* argv[]) {
 
   /* and go... */
   real l1, l2, p1, p2;
-  vector x(NP);
+  host_vector<> x(NP);
+  shallow_vector y(x);
   bool accepted;
 
   inInit.read(s);
@@ -274,10 +275,10 @@ int main(int argc, char* argv[]) {
     std::cerr << std::endl;
 
     /* adapt proposal */
-    noalias(x) = mcmc.getState();
-    q.log(x);
-    noalias(sumMu) += x;
-    noalias(sumSigma) += ublas::outer_prod(x,x);
+    x = mcmc.getState();
+    q.log(y);
+    noalias(sumMu) += y;
+    noalias(sumSigma) += ublas::outer_prod(y,y);
 
     if (i > A) {
       double sd = SD;
