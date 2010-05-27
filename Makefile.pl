@@ -36,7 +36,7 @@ $GCC_CXXFLAGS = '-fopenmp';
 $GCC_LINKFLAGS = '-lgomp';
 
 # Intel C++ compiler options
-$ICC_CXXFLAGS = '-openmp -malign-double -wd424 -wd981 -wd383 -wd1572 -wd869 -wd304 -wd444';
+$ICC_CXXFLAGS = '-openmp -malign-double -wd424 -wd981 -wd383 -wd1572 -wd869 -wd304 -wd444 -wd1418 -wd1782';
 $ICC_LINKFLAGS = '-openmp';
 
 # Math library option flags
@@ -46,7 +46,7 @@ $MATH_LINKFLAGS = '-lblas -lcblas -llapack -lm';
 
 # Release flags
 $RELEASE_CXXFLAGS = ' -O3 -funroll-loops -fomit-frame-pointer -g';
-$RELEASE_CUDACCFLAGS = ' -O3 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer -g"';
+$RELEASE_CUDACCFLAGS = ' -O2 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer -g"';
 $RELEASE_LINKFLAGS = ' -lcublas -lcudart';
 
 # Debugging flags

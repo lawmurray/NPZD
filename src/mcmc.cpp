@@ -242,7 +242,7 @@ int main(int argc, char* argv[]) {
   MCMCType mcmc(m, prior, q, ALPHA, s, rng, &filter, &out);
 
   /* and go... */
-  real l1, l2;
+  real l1, l2, p1, p2;
   vector x(NP);
   bool accepted;
 
@@ -253,11 +253,23 @@ int main(int argc, char* argv[]) {
     accepted = mcmc.step(T, lambda);
 
     l1 = mcmc.getLogLikelihood();
-    l2 = mcmc.getLastProposedLogLikelihood();
+    p1 = mcmc.getPriorDensity();
+    l2 = mcmc.getOtherLogLikelihood();
+    p2 = mcmc.getOtherPriorDensity();
 
-    std::cerr << rank << '.' << i << ": " << l1 << " -> " << l2;
+    std::cerr << rank << '.' << i << ":\t";
+    std::cerr.width(10);
+    std::cerr << l1;
+    std::cerr << "\tbeats\t";
+    std::cerr.width(10);
+    std::cerr << l2;
+    std::cerr << '\t';
     if (accepted) {
-      std::cerr << " ***accepted***";
+      std::cerr << "accept";
+    }
+    std::cerr << '\t';
+    if (mcmc.wasLastNonLocal()) {
+      std::cerr << "non-local";
     }
     std::cerr << std::endl;
 
