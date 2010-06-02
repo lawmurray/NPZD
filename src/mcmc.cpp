@@ -296,13 +296,10 @@ int main(int argc, char* argv[]) {
   /* output diagnostics */
   std::cout << "Rank " << rank << ": " << mcmc.getNumAccepted() << " of " <<
       mcmc.getNumSteps() << " proposals accepted" << std::endl;
-  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalAccepts() <<
+  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalAccepted() <<
       " of " << mcmc.getNumNonLocal() << " non-local accepted" << std::endl;
-  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalResponses() <<
-      " of " << mcmc.getNumNonLocalRequests() << " outgoing furnished" <<
-      std::endl;
-  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalFurnishes() <<
-      " incoming furnished" << std::endl;
+  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalSent() <<
+      " non-local sent" << std::endl;
 
   return 0;
 }
