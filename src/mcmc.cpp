@@ -46,10 +46,6 @@ int main(int argc, char* argv[]) {
   const unsigned rank = world.rank();
   const unsigned size = world.size();
 
-  /* openmp */
-  bi_omp_init();
-  bi_ode_init(1.0, 1.0e-3, 1.0e-3);
-
   /* handle command line arguments */
   real T, H, MIN_ESS;
   double SCALE, TEMP, MIN_TEMP, MAX_TEMP, ALPHA, SD;
@@ -128,13 +124,13 @@ int main(int argc, char* argv[]) {
     return 0;
   }
 
-  /* select CUDA device */
+  /* init stuff */
   #ifndef USE_CPU
   int dev = chooseDevice(rank);
   std::cerr << "Rank " << rank << ": using device " << dev << std::endl;
   #endif
-
-  /* NetCDF error reporting */
+  bi_omp_init();
+  bi_ode_init(1.0, 1.0e-3, 1.0e-3);
   NcError ncErr(NcError::silent_nonfatal);
 
   /* random number generator */
@@ -239,7 +235,7 @@ int main(int argc, char* argv[]) {
   //MetropolisResampler resam(s, rng, L);
 
   FilterType filter(m, s, rng, &resam, &fUpdater, &oyUpdater, &tmp);
-  MCMCType mcmc(m, prior, q, ALPHA, s, rng, &filter, &out);
+  MCMCType mcmc(m, prior, q, s, rng, &filter, &out);
 
   /* and go... */
   real l1, l2, p1, p2;
@@ -250,48 +246,50 @@ int main(int argc, char* argv[]) {
   inInit.read(s);
   prior.getPPrior().sample(rng, s.pHostState); // initialise chain
 
-  for (i = 0; i < C; ++i) {
-    accepted = mcmc.step(T, lambda);
+  mcmc.sample(C, T, ALPHA, lambda);
 
-    l1 = mcmc.getLogLikelihood();
-    p1 = mcmc.getPriorDensity();
-    l2 = mcmc.getOtherLogLikelihood();
-    p2 = mcmc.getOtherPriorDensity();
-
-    std::cerr << rank << '.' << i << ":\t";
-    std::cerr.width(10);
-    std::cerr << l1;
-    std::cerr << "\tbeats\t";
-    std::cerr.width(10);
-    std::cerr << l2;
-    std::cerr << '\t';
-    if (accepted) {
-      std::cerr << "accept";
-    }
-    std::cerr << '\t';
-    if (mcmc.wasLastNonLocal()) {
-      std::cerr << "non-local";
-    }
-    std::cerr << std::endl;
-
-    /* adapt proposal */
-    x = mcmc.getState();
-    q.log(y);
-    noalias(sumMu) += y;
-    noalias(sumSigma) += ublas::outer_prod(y,y);
-
-    if (i > A) {
-      double sd = SD;
-      if (sd <= 0.0) {
-        sd = std::pow(2.4,2) / m.getNetSize(P_NODE);
-      }
-
-      noalias(mu) = sumMu / (i + 1.0);
-      noalias(Sigma) = sd*((sumSigma - (i + 1.0)*ublas::outer_prod(mu,mu))/i);
-      q.setCov(Sigma);
-      mcmc.setProposal(q);
-    }
-  }
+//  for (i = 0; i < C; ++i) {
+//    accepted = mcmc.step(T, lambda);
+//
+//    l1 = mcmc.getLogLikelihood();
+//    p1 = mcmc.getPriorDensity();
+//    l2 = mcmc.getOtherLogLikelihood();
+//    p2 = mcmc.getOtherPriorDensity();
+//
+//    std::cerr << rank << '.' << i << ":\t";
+//    std::cerr.width(10);
+//    std::cerr << l1;
+//    std::cerr << "\tbeats\t";
+//    std::cerr.width(10);
+//    std::cerr << l2;
+//    std::cerr << '\t';
+//    if (accepted) {
+//      std::cerr << "accept";
+//    }
+//    std::cerr << '\t';
+//    if (mcmc.wasLastNonLocal()) {
+//      std::cerr << "non-local";
+//    }
+//    std::cerr << std::endl;
+//
+//    /* adapt proposal */
+//    x = mcmc.getState();
+//    q.log(y);
+//    noalias(sumMu) += y;
+//    noalias(sumSigma) += ublas::outer_prod(y,y);
+//
+//    if (i > A) {
+//      double sd = SD;
+//      if (sd <= 0.0) {
+//        sd = std::pow(2.4,2) / m.getNetSize(P_NODE);
+//      }
+//
+//      noalias(mu) = sumMu / (i + 1.0);
+//      noalias(Sigma) = sd*((sumSigma - (i + 1.0)*ublas::outer_prod(mu,mu))/i);
+//      q.setCov(Sigma);
+//      mcmc.setProposal(q);
+//    }
+//  }
 
   /* output diagnostics */
   std::cout << "Rank " << rank << ": " << mcmc.getNumAccepted() << " of " <<
