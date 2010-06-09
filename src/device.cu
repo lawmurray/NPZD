@@ -1,6 +1,7 @@
 #include "device.hpp"
 
 #include "bi/cuda/cuda.hpp"
+#include "bi/misc/assert.hpp"
 
 #include <vector>
 

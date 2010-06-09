@@ -238,58 +238,9 @@ int main(int argc, char* argv[]) {
   MCMCType mcmc(m, prior, q, s, rng, &filter, &out);
 
   /* and go... */
-  real l1, l2, p1, p2;
-  host_vector<> x(NP);
-  shallow_vector y(x);
-  bool accepted;
-
   inInit.read(s);
   prior.getPPrior().sample(rng, s.pHostState); // initialise chain
-
-  mcmc.sample(C, T, ALPHA, lambda);
-
-//  for (i = 0; i < C; ++i) {
-//    accepted = mcmc.step(T, lambda);
-//
-//    l1 = mcmc.getLogLikelihood();
-//    p1 = mcmc.getPriorDensity();
-//    l2 = mcmc.getOtherLogLikelihood();
-//    p2 = mcmc.getOtherPriorDensity();
-//
-//    std::cerr << rank << '.' << i << ":\t";
-//    std::cerr.width(10);
-//    std::cerr << l1;
-//    std::cerr << "\tbeats\t";
-//    std::cerr.width(10);
-//    std::cerr << l2;
-//    std::cerr << '\t';
-//    if (accepted) {
-//      std::cerr << "accept";
-//    }
-//    std::cerr << '\t';
-//    if (mcmc.wasLastNonLocal()) {
-//      std::cerr << "non-local";
-//    }
-//    std::cerr << std::endl;
-//
-//    /* adapt proposal */
-//    x = mcmc.getState();
-//    q.log(y);
-//    noalias(sumMu) += y;
-//    noalias(sumSigma) += ublas::outer_prod(y,y);
-//
-//    if (i > A) {
-//      double sd = SD;
-//      if (sd <= 0.0) {
-//        sd = std::pow(2.4,2) / m.getNetSize(P_NODE);
-//      }
-//
-//      noalias(mu) = sumMu / (i + 1.0);
-//      noalias(Sigma) = sd*((sumSigma - (i + 1.0)*ublas::outer_prod(mu,mu))/i);
-//      q.setCov(Sigma);
-//      mcmc.setProposal(q);
-//    }
-//  }
+  mcmc.sample(C, T, ALPHA, lambda, SD, A);
 
   /* output diagnostics */
   std::cout << "Rank " << rank << ": " << mcmc.getNumAccepted() << " of " <<
