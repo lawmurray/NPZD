@@ -364,6 +364,9 @@ print "\t\$(LINKER) -o $BUILDDIR/ukf \$(BUILDDIR)/ukf.cpp.o \$(BUILDDIR)/filter.
 print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/mcmc.cpp.o $models\n";
 print "\t\$(LINKER) -o $BUILDDIR/mcmc \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/mcmc.cpp.o $models \$(LINKFLAGS)\n\n";
 
+print "\$(BUILDDIR)/stitch: \$(BUILDDIR)/stitch.cpp.o $models\n";
+print "\t\$(LINKER) -o $BUILDDIR/stitch \$(BUILDDIR)/stitch.cpp.o $models \$(LINKFLAGS)\n\n";
+
 # Targets
 print join("\n", @commands);
 print "\n";

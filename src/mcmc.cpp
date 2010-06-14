@@ -179,13 +179,6 @@ int main(int argc, char* argv[]) {
   }
   AdditiveExpGaussianPdf<> q(Sigma, logs);
 
-  /* proposal adaptation */
-  vector mu(NP);
-  vector sumMu(NP);
-  symmetric_matrix sumSigma(NP);
-  sumMu.clear();
-  sumSigma.clear();
-
   /* state */
   State s(m, P);
 
