@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
   mpi::environment env(argc, argv);
 
   /* handle command line arguments */
-  unsigned C, I;
+  unsigned C, B, I;
   int SEED;
   std::vector<std::string> INPUT_FILES;
   std::string OUTPUT_FILE;
@@ -42,6 +42,8 @@ int main(int argc, char* argv[]) {
   po::options_description desc("Options");
   desc.add_options()
     (",C", po::value(&C)->default_value(1000), "no. samples to draw")
+    (",B", po::value(&B)->default_value(0),
+        "burn in to remove from each input sequence")
     (",I", po::value(&I)->default_value(100), "output interval")
     ("seed", po::value(&SEED)->default_value(0),
         "pseudorandom number seed")
@@ -93,8 +95,18 @@ int main(int argc, char* argv[]) {
   host_matrix<> xd(m.getNetSize(D_NODE), T);
   host_matrix<> xc(m.getNetSize(C_NODE), T);
   host_vector<> theta(m.getNetSize(P_NODE));
-  unsigned c, n, ch, accepted = 0;
+  unsigned c, n, ch1, ch2, accepted = 0;
   bool accept;
+
+  /* read log-likelihoods and priors into memory */
+  const unsigned P = ins[0]->size1() - B;
+  host_matrix<> ls(P, ins.size()), ps(P, ins.size());
+  for (ch1 = 0; ch1 < ins.size(); ++ch1) {
+    for (i1 = 0; i1 < P; ++i1) {
+      ins[ch1]->readLogLikelihood(i1 + B, ls(i1,ch1));
+      ins[ch1]->readPrior(i1 + B, ps(i1,ch1));
+    }
+  }
 
   /* write times */
   for (n = 0; n < T; ++n) {
@@ -103,14 +115,12 @@ int main(int argc, char* argv[]) {
   }
 
   for (c = 0; c < C*I; ++c) {
-    /* first select a chain, and then select a sample; note that we assume
-     * here that all chains are to be given equal weight in the proposal,
-     * even if they have unequal number of samples */
-    ch = rng.uniformInt(0, ins.size() - 1);
-    i2 = rng.uniformInt(0, ins[ch]->size1() - 1);
+    /* first select a chain, and then select a sample */
+    ch2 = rng.uniformInt(0, ls.size2() - 1);
+    i2 = rng.uniformInt(0, ls.size1() - 1);
 
-    ins[ch]->readLogLikelihood(i2, l2);
-    ins[ch]->readPrior(i2, p2);
+    l2 = ls(i2,ch2);
+    p2 = ps(i2,ch2);
 
     if (c == 0) {
       accept = true;
@@ -122,6 +132,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (accept) {
+      ch1 = ch2;
       i1 = i2;
       l1 = l2;
       p1 = p2;
@@ -131,8 +142,8 @@ int main(int argc, char* argv[]) {
     /* output */
     if (c % I == 0) {
       j = c / I;
-      ins[ch]->traceParticle(i1, xd, xc);
-      ins[ch]->readSample(i1, theta.buf());
+      ins[ch1]->traceParticle(i1 + B, xd, xc);
+      ins[ch1]->readSample(i1 + B, theta.buf());
 
       out.writeSample(j, theta.buf());
       out.writeLogLikelihood(j, l1);
