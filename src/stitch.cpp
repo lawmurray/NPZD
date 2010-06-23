@@ -11,6 +11,7 @@
 #include "bi/cuda/cuda.hpp"
 #include "bi/state/State.hpp"
 #include "bi/random/Random.hpp"
+#include "bi/math/index.hpp"
 #include "bi/buffer/ParticleMCMCNetCDFBuffer.hpp"
 
 #include "boost/program_options.hpp"
@@ -84,6 +85,8 @@ int main(int argc, char* argv[]) {
   for (i = 0; i < INPUT_FILES.size(); ++i) {
     ins.push_back(new ParticleMCMCNetCDFBuffer(m, INPUT_FILES[i]));
   }
+
+  const unsigned P = ins[0]->size1() - B;
   const unsigned T = ins[0]->size2();
 
   /* output */
@@ -94,12 +97,12 @@ int main(int argc, char* argv[]) {
   host_matrix<> xd(m.getNetSize(D_NODE), T);
   host_matrix<> xc(m.getNetSize(C_NODE), T);
   host_vector<> theta(m.getNetSize(P_NODE));
+  host_index chs(C), is(C);
+  host_matrix<> ls(P, ins.size()), ps(P, ins.size());
   unsigned c, n, ch1, ch2, accepted = 0;
   bool accept;
 
   /* read log-likelihoods and priors into memory */
-  const unsigned P = ins[0]->size1() - B;
-  host_matrix<> ls(P, ins.size()), ps(P, ins.size());
   for (ch1 = 0; ch1 < ins.size(); ++ch1) {
     for (i1 = 0; i1 < P; ++i1) {
       ins[ch1]->readLogLikelihood(i1 + B, ls(i1,ch1));
@@ -107,12 +110,8 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  /* write times */
-  for (n = 0; n < T; ++n) {
-    ins[0]->readTime(n, t);
-    out.writeTime(n, t);
-  }
-
+  /* sample */
+  std::cerr << "Sample... ";
   for (c = 0; c < C*I; ++c) {
     /* first select a chain, and then select a sample */
     ch2 = rng.uniformInt(0, ls.size2() - 1);
@@ -138,19 +137,11 @@ int main(int argc, char* argv[]) {
       ++accepted;
     }
 
-    /* output */
     if (c % I == 0) {
+      /* select this sample for output */
       j = c / I;
-      ins[ch1]->traceParticle(i1 + B, xd, xc);
-      ins[ch1]->readSample(i1 + B, theta.buf());
-
-      out.writeSample(j, theta.buf());
-      out.writeLogLikelihood(j, l1);
-      out.writePrior(j, p1);
-      out.writeParticle(j, xd, xc);
-      for (t = 0; t < T; ++t) {
-        out.writeAncestor(t, j, j);
-      }
+      chs[j] = ch1;
+      is[j] = i1;
 
       /* progress update */
       std::cerr << j << ' ';
@@ -177,8 +168,41 @@ int main(int argc, char* argv[]) {
   }
   std::cerr << std::endl;
 
+  /* output, one input file at a time for better buffering performance etc */
+  std::cerr << "Output... ";
+
+  /* write times */
+  for (n = 0; n < T; ++n) {
+    ins[0]->readTime(n, t);
+    out.writeTime(n, t);
+  }
+  unsigned numOutput = 0;
+  for (ch1 = 0; ch1 < ins.size(); ++ch1) {
+    for (j = 0; j < C; ++j) {
+      if (chs[j] == ch1) {
+        i1 = is[j];
+
+        /* output this */
+        ins[ch1]->traceParticle(i1 + B, xd, xc);
+        ins[ch1]->readSample(i1 + B, theta.buf());
+
+        out.writeSample(j, theta.buf());
+        out.writeLogLikelihood(j, ls(i1,ch1));
+        out.writePrior(j, ps(i1,ch1));
+        out.writeParticle(j, xd, xc);
+        for (t = 0; t < T; ++t) {
+          out.writeAncestor(t, j, j);
+        }
+
+        std::cerr << numOutput << " ";
+        ++numOutput;
+      }
+    }
+  }
+  std::cerr << std::endl;
+
   /* output diagnostics */
-  std::cout << accepted << " of " << C*I << " proposals accepted" << std::endl;
+  std::cerr << accepted << " of " << C*I << " proposals accepted" << std::endl;
 
   /* clean up */
   for (i = 0; i < ins.size(); ++i) {
