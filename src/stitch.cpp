@@ -5,7 +5,6 @@
  * $Rev$
  * $Date$
  */
-#include "device.hpp"
 #include "model/NPZDModel.hpp"
 #include "model/NPZDPrior.hpp"
 

@@ -10,10 +10,12 @@ then
     source init.sh
     ROOT=$PBS_O_WORKDIR
     INT_DIR=$MEMDIR
+    TMP_DIR=$TMPDIR
     ID=$PBS_JOBNAME
 else
     ROOT=.
     INT_DIR=/tmp
+    TMP_DIR=/tmp
     ID=stitch
 fi
 RESULTS_DIR=$ROOT/results
@@ -25,20 +27,20 @@ SEED=3 # pseudorandom number seed
 C=10000 # no. samples to draw
 B=15000
 I=20 # interval
-INPUT_FILES=*-norep3* # input files, in $RESULTS_DIR
+INPUT_FILES=*-repeat* # input files, in $RESULTS_DIR
 OUTPUT_FILE=$ID.nc.2 # output file, in $RESULTS_DIR
 
 # output this script as record of settings
-cat $ROOT/stitch.sh
+#cat $ROOT/stitch.sh
 
 # copy input files to local directory
-cp $RESULTS_DIR/$INPUT_FILES $TMPDIR/.
+cp $RESULTS_DIR/$INPUT_FILES $TMP_DIR/.
 
 # stitch
-$ROOT/build/stitch -C $C -B $B -I $I --output-file $INT_DIR/$OUTPUT_FILE $TMPDIR/$INPUT_FILES 
+echo $ROOT/build/stitch -C $C -B $B -I $I --output-file $INT_DIR/$OUTPUT_FILE $TMP_DIR/$INPUT_FILES 
 
 # copy output file back to network dir
 mv $INT_DIR/$OUTPUT_FILE $RESULTS_DIR/.
 
 # clean up
-rm $TMPDIR/$INPUT_FILES
+rm $TMP_DIR/$INPUT_FILES
