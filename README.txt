@@ -71,19 +71,6 @@ Makefile. Note that it does not compile the bi library, however. The bi
 library should be recompiled separately when changes are made to it. This is
 automatic in Eclipse, as it is registered as a project dependency.
 
-The following macros may be defined during compilation to adjust behaviour,
-set these with, e.g. 'make USE_DOUBLE=1'
-
-* NDEBUG=1 will disable assertion checking.
-* USE_DOUBLE=1 will use double precision arithmetic on the GPU, otherwise
-  single precision is used.
-* USE_FAST_MATH=1 will use intrinsic CUDA functions throughout, as long as
-  USE_DOUBLE=1 is not defined (intrinsics are available only for single
-  precision). No intrinsics are used by default.
-* USE_DOPRI5=1 will use the DOPRI5 integrator for ordinary differential
-  equations, otherwise RK4(3)5[2R+]C is used.
-* USE_TEXTURE=1 will use textures for some variables during ODE integration,
-  which may or may not improve performance.
-* DEBUG=1 builds in debug mode.
-* RELEASE=1 builds in release mode.
-* PROFILE=1 builds in profile mode.
+The macros given in the bi library README.txt file may also be used to
+control compile behaviour. You should compile with the same macros as given
+for your bi library compilation.

@@ -27,12 +27,12 @@ $CUDACC = 'nvcc';
 $CPPINCLUDES = '-I../bi/src -I/tools/cuda/3.0/cuda/include/ -I/usr/local/cuda/include -I/tools/thrust/1.2 -I/usr/local/include/thrust -I/tools/magma/0.2/include';
 $CXXFLAGS = "-Wall `nc-config --cflags` `mpic++ -showme:compile` $CPPINCLUDES";
 $CUDACCFLAGS = "-arch=sm_13 -Xptxas=\"-v\" -Xcompiler=\"-Wall -fopenmp `mpic++ -showme:compile`\" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS $CPPINCLUDES";
-$LINKFLAGS = '-L"../bi/build" -L"/tools/magma/0.2/lib" -L"/tools/boost/1.43.0/lib" -lbi -lmagma -lmagmablas -lgfortran -lgsl -lnetcdf_c++ `nc-config --libs` -lpthread -lboost_program_options -lboost_mpi `mpic++ -showme:link`';
+$LINKFLAGS = '-L"../bi/build" -L"/tools/magma/0.2/lib" -L"/tools/boost/1.43.0/lib" -lbi -lmagma -lmagmablas -lgfortran -lnetcdf_c++ `nc-config --libs` -lpthread -lboost_program_options -lboost_mpi `mpic++ -showme:link`';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 
 # GCC options
-$GCC_CXXFLAGS = '-fopenmp';
+$GCC_CXXFLAGS = '-fopenmp -Wno-parentheses';
 $GCC_LINKFLAGS = '-lgomp';
 
 # Intel C++ compiler options
@@ -363,6 +363,9 @@ print "\t\$(LINKER) -o $BUILDDIR/ukf \$(BUILDDIR)/ukf.cpp.o \$(BUILDDIR)/filter.
 
 print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/mcmc.cpp.o $models\n";
 print "\t\$(LINKER) -o $BUILDDIR/mcmc \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/mcmc.cpp.o $models \$(LINKFLAGS)\n\n";
+
+print "\$(BUILDDIR)/gibbs: \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/gibbs.cpp.o $models\n";
+print "\t\$(LINKER) -o $BUILDDIR/gibbs \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/gibbs.cpp.o $models \$(LINKFLAGS)\n\n";
 
 print "\$(BUILDDIR)/stitch: \$(BUILDDIR)/stitch.cpp.o $models\n";
 print "\t\$(LINKER) -o $BUILDDIR/stitch \$(BUILDDIR)/stitch.cpp.o $models \$(LINKFLAGS)\n\n";

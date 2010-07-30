@@ -13,7 +13,7 @@
 #include "bi/math/ode.hpp"
 #include "bi/state/State.hpp"
 #include "bi/random/Random.hpp"
-#include "bi/method/ParallelParticleMCMC.hpp"
+#include "bi/method/ParticleMCMC.hpp"
 #include "bi/method/ParticleFilter.hpp"
 #include "bi/method/StratifiedResampler.hpp"
 #include "bi/method/MetropolisResampler.hpp"
@@ -27,6 +27,9 @@
 #include "boost/program_options.hpp"
 #include "boost/typeof/typeof.hpp"
 #include "boost/mpi.hpp"
+
+#include "thrust/sort.h"
+#include "thrust/adjacent_difference.h"
 
 #include <iostream>
 #include <iomanip>
@@ -222,7 +225,7 @@ int main(int argc, char* argv[]) {
   typedef StratifiedResampler ResamplerType;
   //typedef MetropolisResampler ResamplerType;
   typedef ParticleFilter<NPZDModel<>, ResamplerType> FilterType;
-  typedef ParallelParticleMCMC<NPZDModel<>,NPZDPrior,AdditiveExpGaussianPdf<>,FilterType> MCMCType;
+  typedef ParticleMCMC<NPZDModel<>,NPZDPrior,AdditiveExpGaussianPdf<>,FilterType> MCMCType;
 
   StratifiedResampler resam(s, rng);
   //MetropolisResampler resam(s, rng, L);
@@ -233,15 +236,96 @@ int main(int argc, char* argv[]) {
   /* and go... */
   inInit.read(s);
   prior.getPPrior().sample(rng, s.pHostState); // initialise chain
-  mcmc.sample(C, T, ALPHA, lambda, SD, A);
+
+  /* using high-level interface */
+  //mcmc.sample(C, T, lambda);
+
+  /* using low-level interface */
+  unsigned c;
+  ParticleMCMCState& x1 = mcmc.getState();
+  ParticleMCMCState& x2 = mcmc.getOtherState();
+  vector p(x2.xr.size2());
+  vector u(x2.xr.size2());
+  vector r(m.getNetSize(S_NODE));
+  host_vector<> x(m.getNetSize(P_NODE));
+
+  mcmc.init(T);
+  mcmc.output(0);
+  for (c = 1; c < C; ++c) {
+    if (c % 2 == 1) {
+      /* Gibbs update of mean related hyperparameters */
+      shallow_vector mu(subrange(x, 6, 10));
+      shallow_vector theta(subrange(x1.xs, 0, 10));
+      shallow_vector sigma(subrange(x1.xs, 10, 10));
+      shallow_vector gamma(subrange(x1.xs, 20, 10));
+
+      /* proportions for Bayesian bootstrap */
+      rng.uniforms(&u[0], u.size() - 1);
+      u(u.size() - 1) = 1.0;
+      thrust::sort(u.begin(), u.end());
+      thrust::adjacent_difference(u.begin(), u.end(), p.begin());
+
+      /* Gibbs update */
+      shallow_matrix xr(x1.xr);
+      r = prod(xr, p); // bootstrap mean of stochastic trajectories
+      noalias(mu) = gamma + element_prod(sigma, r) - 0.5*element_prod(theta,theta) +
+          0.5*element_prod(sigma,sigma);
+      for (i = 0; i < mu.size(); ++i) {
+        mu(i) = CUDA_EXP(mu(i));
+      }
+
+      subrange(x, 0, 6) = subrange(x1.theta, 0, 6); // don't change other hyperparameters
+
+      mcmc.propose(x);
+      mcmc.likelihood(T, MCMCType::STATE_CONDITIONED);
+      mcmc.accept();
+    } else {
+      /* MH update of other params */
+      shallow_vector theta1(x1.theta);
+      shallow_vector theta2(x);
+
+      mcmc.q.sample(rng, theta1, theta2);
+      subrange(x, 6, 10) = subrange(x1.theta, 6, 10); // don't change mean related hyperparameters
+
+      mcmc.propose(x);
+      mcmc.likelihood(T, MCMCType::STOCHASTIC_CONDITIONED);
+      mcmc.metropolisHastings();
+    }
+    mcmc.adapt(SD, A);
+    mcmc.output(c);
+
+    /* verbose output */
+    std::cerr << rank << '.' << c << ":\t";
+    std::cerr.width(10);
+    std::cerr << mcmc.getLogLikelihood();
+    std::cerr << '\t';
+    std::cerr.width(10);
+    std::cerr << mcmc.getPriorDensity();
+    std::cerr << "\tbeats\t";
+    std::cerr.width(10);
+    std::cerr << mcmc.getOtherLogLikelihood();
+    std::cerr << '\t';
+    std::cerr.width(10);
+    std::cerr << mcmc.getOtherPriorDensity();
+    std::cerr << '\t';
+    if (mcmc.wasLastAccepted()) {
+      std::cerr << "accept";
+    }
+//    std::cerr << '\t';
+//    if (mcmc.wasLastNonLocal()) {
+//      std::cerr << "non-local";
+//    }
+    std::cerr << std::endl;
+  }
+  mcmc.term();
 
   /* output diagnostics */
   std::cout << "Rank " << rank << ": " << mcmc.getNumAccepted() << " of " <<
       mcmc.getNumSteps() << " proposals accepted" << std::endl;
-  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalAccepted() <<
-      " of " << mcmc.getNumNonLocal() << " non-local accepted" << std::endl;
-  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalSent() <<
-      " non-local sent" << std::endl;
+//  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalAccepted() <<
+//      " of " << mcmc.getNumNonLocal() << " non-local accepted" << std::endl;
+//  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalSent() <<
+//      " non-local sent" << std::endl;
 
   return 0;
 }
