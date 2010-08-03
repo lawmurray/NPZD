@@ -12,12 +12,14 @@
 #include "bi/method/StratifiedResampler.hpp"
 //#include "bi/method/MetropolisResampler.hpp"
 #include "bi/method/ParticleFilter.hpp"
+#include "bi/method/AuxiliaryParticleFilter.hpp"
 //#include "bi/cuda/method/UnscentedKalmanFilter.cuh"
 
 using namespace bi;
 
 //template class ParticleFilter<NPZDModel<>, MetropolisResampler>;
 template class ParticleFilter<NPZDModel<>, StratifiedResampler>;
+template class AuxiliaryParticleFilter<NPZDModel<>, StratifiedResampler>;
 //template class UnscentedKalmanFilter<NPZDModel<> >;
 
 #endif

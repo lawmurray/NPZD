@@ -14,9 +14,9 @@
 #include "bi/state/State.hpp"
 #include "bi/random/Random.hpp"
 #include "bi/method/ParticleMCMC.hpp"
-#include "bi/method/ParticleFilter.hpp"
+#include "bi/method/AuxiliaryParticleFilter.hpp"
 #include "bi/method/StratifiedResampler.hpp"
-#include "bi/method/MetropolisResampler.hpp"
+//#include "bi/method/MetropolisResampler.hpp"
 #include "bi/updater/FUpdater.hpp"
 #include "bi/updater/OYUpdater.hpp"
 #include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
@@ -41,6 +41,9 @@ namespace ublas = boost::numeric::ublas;
 namespace mpi = boost::mpi;
 
 using namespace bi;
+
+template void bi::AuxiliaryParticleFilter<NPZDModel<>, StratifiedResampler>::mark();
+template void bi::AuxiliaryParticleFilter<NPZDModel<>, StratifiedResampler>::restore();
 
 int main(int argc, char* argv[]) {
   /* mpi */
@@ -81,8 +84,8 @@ int main(int argc, char* argv[]) {
     (",T", po::value(&T), "total time to filter")
     ("resampler", po::value(&RESAMPLER)->default_value("metropolis"),
         "resampling strategy, 'stratified' or 'metropolis'")
-    (",L", po::value(&L)->default_value(15),
-        "no. steps for Metropolis resampler")
+    (",L", po::value(&L)->default_value(0),
+        "lookahead for auxiliary particle filter")
     (",h", po::value(&H),
         "suggested first step size for numerical integration")
     ("min-ess", po::value(&MIN_ESS)->default_value(1.0),
@@ -224,13 +227,14 @@ int main(int argc, char* argv[]) {
   /* set up resampler, filter and MCMC */
   typedef StratifiedResampler ResamplerType;
   //typedef MetropolisResampler ResamplerType;
-  typedef ParticleFilter<NPZDModel<>, ResamplerType> FilterType;
+  //typedef ParticleFilter<NPZDModel<>, ResamplerType> FilterType;
+  typedef AuxiliaryParticleFilter<NPZDModel<>, ResamplerType> FilterType;
   typedef ParticleMCMC<NPZDModel<>,NPZDPrior,AdditiveExpGaussianPdf<>,FilterType> MCMCType;
 
   StratifiedResampler resam(s, rng);
   //MetropolisResampler resam(s, rng, L);
 
-  FilterType filter(m, s, rng, &resam, &fUpdater, &oyUpdater, &tmp);
+  FilterType filter(m, s, rng, L, &resam, &fUpdater, &oyUpdater, &tmp);
   MCMCType mcmc(m, prior, q, s, rng, &filter, &out);
 
   /* and go... */
