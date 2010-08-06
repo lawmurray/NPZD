@@ -29,14 +29,15 @@ NPERNODE=1 # no. processes per node
 ##
 
 # MCMC settings
-T=365.0 # time to simulate
+T=415.0 # time to simulate
 H=1.0 # initial step size
 SEED=6 # pseudorandom number seed
-SCALE=0.1 # scale of initial proposal relative to prior
+SCALE=0.02 # scale of initial proposal relative to prior
 ALPHA=0.0 # proportion of proposals to be non-local
 SD=0.0 # adaptive proposal parameter (zero triggers default)
-C=100 # no. samples to draw
+C=5 # no. samples to draw
 A=1000 # no. steps before adaptation
+L=0 # lookahead for auxiliary particle filter
 MIN_TEMP=1.0 # minimum temperature (or temperature for single process)
 MAX_TEMP=1.0 # maximum temperature
 
@@ -44,12 +45,11 @@ MAX_TEMP=1.0 # maximum temperature
 RESAMPLER=stratified # resampler to use, 'stratified' or 'metropolis'
 MIN_ESS=1.0 # minimum ESS to trigger resampling (not used presently)
 P=1024 # no. trajectories
-L=10 # no. iterations for metropolis resampler
 
 # input files, in $DATA_DIR
 INIT_FILE=C7_init.nc # initial values file
-FORCE_FILE=C7_force.nc # forcings file
-OBS_FILE=C7_S1_obs_HP2.nc # observations file
+FORCE_FILE=C7_force_pad.nc # forcings file
+OBS_FILE=C7_S1_obs_padHP2.nc # observations file
 
 # output file, in $RESULTS_DIR
 OUTPUT_FILE=$ID.nc

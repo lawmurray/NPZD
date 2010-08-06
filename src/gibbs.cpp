@@ -228,13 +228,13 @@ int main(int argc, char* argv[]) {
   typedef StratifiedResampler ResamplerType;
   //typedef MetropolisResampler ResamplerType;
   //typedef ParticleFilter<NPZDModel<>, ResamplerType> FilterType;
-  typedef AuxiliaryParticleFilter<NPZDModel<>, ResamplerType> FilterType;
+  typedef ParticleFilter<NPZDModel<>, ResamplerType> FilterType;
   typedef ParticleMCMC<NPZDModel<>,NPZDPrior,AdditiveExpGaussianPdf<>,FilterType> MCMCType;
 
   StratifiedResampler resam(s, rng);
   //MetropolisResampler resam(s, rng, L);
 
-  FilterType filter(m, s, rng, L, &resam, &fUpdater, &oyUpdater, &tmp);
+  FilterType filter(m, s, rng, &resam, &fUpdater, &oyUpdater, &tmp);
   MCMCType mcmc(m, prior, q, s, rng, &filter, &out);
 
   /* and go... */

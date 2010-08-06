@@ -10,16 +10,14 @@
 #include "model/NPZDModel.hpp"
 
 #include "bi/method/StratifiedResampler.hpp"
-//#include "bi/method/MetropolisResampler.hpp"
 #include "bi/method/ParticleFilter.hpp"
 #include "bi/method/AuxiliaryParticleFilter.hpp"
-//#include "bi/cuda/method/UnscentedKalmanFilter.cuh"
+#include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
+#include "bi/buffer/SparseInputNetCDFBuffer.hpp"
 
 using namespace bi;
 
-//template class ParticleFilter<NPZDModel<>, MetropolisResampler>;
-template class ParticleFilter<NPZDModel<>, StratifiedResampler>;
-template class AuxiliaryParticleFilter<NPZDModel<>, StratifiedResampler>;
-//template class UnscentedKalmanFilter<NPZDModel<> >;
+template class ParticleFilter<NPZDModel<>, StratifiedResampler, SparseInputNetCDFBuffer, SparseInputNetCDFBuffer, ParticleFilterNetCDFBuffer>;
+template class AuxiliaryParticleFilter<NPZDModel<>, StratifiedResampler, SparseInputNetCDFBuffer, SparseInputNetCDFBuffer, ParticleFilterNetCDFBuffer>;
 
 #endif

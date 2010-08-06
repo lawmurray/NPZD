@@ -11,11 +11,9 @@
 #include "bi/cuda/cuda.hpp"
 #include "bi/math/ode.hpp"
 #include "bi/random/Random.hpp"
-#include "bi/method/ParticleFilter.hpp"
+#include "bi/method/AuxiliaryParticleFilter.hpp"
 #include "bi/method/StratifiedResampler.hpp"
-#include "bi/method/MetropolisResampler.hpp"
-#include "bi/updater/FUpdater.hpp"
-#include "bi/updater/OYUpdater.hpp"
+//#include "bi/method/MetropolisResampler.hpp"
 #include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
 #include "bi/buffer/SparseInputNetCDFBuffer.hpp"
 
@@ -64,8 +62,8 @@ int main(int argc, char* argv[]) {
         "pseudorandom number seed")
     ("resampler", po::value(&RESAMPLER)->default_value("metropolis"),
         "resampling strategy, 'stratified' or 'metropolis'")
-    (",L", po::value(&L)->default_value(20),
-        "no. steps for Metropolis resampler")
+    (",L", po::value(&L)->default_value(0),
+        "lookahead for auxiliary particle filter")
     ("init-file", po::value(&INIT_FILE),
         "input file containing initial values")
     ("force-file", po::value(&FORCE_FILE),
@@ -121,28 +119,17 @@ int main(int argc, char* argv[]) {
   /* output */
   ParticleFilterNetCDFBuffer* out;
   if (OUTPUT) {
-    out = new ParticleFilterNetCDFBuffer(m, P, inObs.numUniqueTimes(),
+    out = new ParticleFilterNetCDFBuffer(m, P, inObs.numUniqueTimes(T),
         OUTPUT_FILE, NetCDFBuffer::REPLACE);
   } else {
     out = NULL;
   }
 
-  /* randoms, forcings, observations */
-  FUpdater fUpdater(s, inForce);
-  OYUpdater oyUpdater(s, inObs);
+  /* set filter */
+  StratifiedResampler resam(s, rng);
+  BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, out));
 
-  /* set up resampler and filter */
-  Resampler* resam;
-  Filter* filter;
-  if (RESAMPLER.compare("stratified") == 0) {
-    resam = new StratifiedResampler(s, rng);
-    filter = new ParticleFilter<NPZDModel<>, StratifiedResampler>(m, s, rng, (StratifiedResampler*)resam, &fUpdater, &oyUpdater, out);
-  } else {
-    resam = new MetropolisResampler(s, rng, L);
-    filter = new ParticleFilter<NPZDModel<>, MetropolisResampler>(m, s, rng, (MetropolisResampler*)resam, &fUpdater, &oyUpdater, out);
-  }
-
-  /* filter */
+  /* do filter */
   timeval start, end;
   gettimeofday(&start, NULL);
   filter->filter(T);
