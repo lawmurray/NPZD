@@ -10,14 +10,43 @@
 #include "model/NPZDModel.hpp"
 
 #include "bi/method/StratifiedResampler.hpp"
-#include "bi/method/ParticleFilter.hpp"
-#include "bi/method/AuxiliaryParticleFilter.hpp"
-#include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
-#include "bi/buffer/SparseInputNetCDFBuffer.hpp"
+#include "bi/method/StratifiedResampler.inl"
+#include "bi/method/Resampler.inl"
+#include "bi/cuda/method/Resampler.cuh"
+
+#include "bi/updater/SUpdater.hpp"
+#include "bi/updater/DUpdater.hpp"
+#include "bi/updater/CUpdater.hpp"
+#include "bi/updater/LUpdater.hpp"
+#include "bi/cuda/updater/SUpdater.cuh"
+#include "bi/cuda/updater/DUpdater.cuh"
+#include "bi/cuda/updater/CUpdater.cuh"
+#include "bi/cuda/updater/LUpdater.cuh"
+
+#include "bi/cuda/math/vector.hpp"
+#include "bi/cuda/math/index.hpp"
 
 using namespace bi;
 
-template class ParticleFilter<NPZDModel<>, StratifiedResampler, SparseInputNetCDFBuffer, SparseInputNetCDFBuffer, ParticleFilterNetCDFBuffer>;
-template class AuxiliaryParticleFilter<NPZDModel<>, StratifiedResampler, SparseInputNetCDFBuffer, SparseInputNetCDFBuffer, ParticleFilterNetCDFBuffer>;
+/*
+ * Explicit class template instantiations.
+ */
+template class SUpdater<NPZDModel<> >;
+template class DUpdater<NPZDModel<> >;
+template class CUpdater<NPZDModel<> >;
+template class LUpdater<NPZDModel<> >;
+
+/*
+ * Explicit function template instantiations.
+ */
+typedef gpu_vector<> V1;
+typedef gpu_index V2;
+
+
+template void LUpdater<NPZDModel<> >::update<gpu_index,gpu_vector<> >(const gpu_index&, gpu_vector<>&);
+template void StratifiedResampler::resample<V1,V2>(V1&, V2&);
+template void StratifiedResampler::resample<V1,V2>(const V1&, V1&, V2&);
+template void StratifiedResampler::resample<V1,V2>(const V2::value_type, V1&, V2&);
+template void StratifiedResampler::resample<V1,V2>(const V2::value_type, const V1&, V1&, V2&);
 
 #endif
