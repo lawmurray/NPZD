@@ -11,7 +11,6 @@
 #include "bi/cuda/cuda.hpp"
 #include "bi/state/State.hpp"
 #include "bi/random/Random.hpp"
-#include "bi/math/index.hpp"
 #include "bi/buffer/ParticleMCMCNetCDFBuffer.hpp"
 
 #include "boost/program_options.hpp"
