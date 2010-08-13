@@ -42,9 +42,6 @@ namespace mpi = boost::mpi;
 
 using namespace bi;
 
-template void bi::AuxiliaryParticleFilter<NPZDModel<>, StratifiedResampler>::mark();
-template void bi::AuxiliaryParticleFilter<NPZDModel<>, StratifiedResampler>::restore();
-
 int main(int argc, char* argv[]) {
   /* mpi */
   mpi::environment env(argc, argv);
@@ -220,41 +217,30 @@ int main(int argc, char* argv[]) {
   }
   std::cerr << "Rank " << rank << ": using temperature " << lambda << std::endl;
 
-  /* randoms, forcings, observations */
-  FUpdater fUpdater(s, inForce);
-  OYUpdater oyUpdater(s, inObs);
-
   /* set up resampler, filter and MCMC */
-  typedef StratifiedResampler ResamplerType;
-  //typedef MetropolisResampler ResamplerType;
-  //typedef ParticleFilter<NPZDModel<>, ResamplerType> FilterType;
-  typedef ParticleFilter<NPZDModel<>, ResamplerType> FilterType;
-  typedef ParticleMCMC<NPZDModel<>,NPZDPrior,AdditiveExpGaussianPdf<>,FilterType> MCMCType;
-
   StratifiedResampler resam(s, rng);
-  //MetropolisResampler resam(s, rng, L);
-
-  FilterType filter(m, s, rng, &resam, &fUpdater, &oyUpdater, &tmp);
-  MCMCType mcmc(m, prior, q, s, rng, &filter, &out);
+  BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, &tmp));
+  BOOST_AUTO(mcmc, createParticleMCMC(m, prior, q, s, rng, filter, &out));
+  typedef BOOST_TYPEOF(*mcmc) MCMCType;
 
   /* and go... */
   inInit.read(s);
   prior.getPPrior().sample(rng, s.pHostState); // initialise chain
 
   /* using high-level interface */
-  //mcmc.sample(C, T, lambda);
+  //mcmc->sample(C, T, lambda);
 
   /* using low-level interface */
   unsigned c;
-  ParticleMCMCState& x1 = mcmc.getState();
-  ParticleMCMCState& x2 = mcmc.getOtherState();
+  ParticleMCMCState& x1 = mcmc->getState();
+  ParticleMCMCState& x2 = mcmc->getOtherState();
   vector p(x2.xr.size2());
   vector u(x2.xr.size2());
   vector r(m.getNetSize(S_NODE));
   host_vector<> x(m.getNetSize(P_NODE));
 
-  mcmc.init(T);
-  mcmc.output(0);
+  mcmc->init(T);
+  mcmc->output(0);
   for (c = 1; c < C; ++c) {
     if (c % 2 == 1) {
       /* Gibbs update of mean related hyperparameters */
@@ -280,56 +266,59 @@ int main(int argc, char* argv[]) {
 
       subrange(x, 0, 6) = subrange(x1.theta, 0, 6); // don't change other hyperparameters
 
-      mcmc.propose(x);
-      mcmc.likelihood(T, MCMCType::STATE_CONDITIONED);
-      mcmc.accept();
+      mcmc->propose(x);
+      mcmc->likelihood(T, MCMCType::STATE_CONDITIONED);
+      mcmc->accept();
     } else {
       /* MH update of other params */
       shallow_vector theta1(x1.theta);
       shallow_vector theta2(x);
 
-      mcmc.q.sample(rng, theta1, theta2);
+      mcmc->q.sample(rng, theta1, theta2);
       subrange(x, 6, 10) = subrange(x1.theta, 6, 10); // don't change mean related hyperparameters
 
-      mcmc.propose(x);
-      mcmc.likelihood(T, MCMCType::STOCHASTIC_CONDITIONED);
-      mcmc.metropolisHastings();
+      mcmc->propose(x);
+      mcmc->likelihood(T);
+      mcmc->metropolisHastings();
     }
-    mcmc.adapt(SD, A);
-    mcmc.output(c);
+    mcmc->adapt(SD, A);
+    mcmc->output(c);
 
     /* verbose output */
     std::cerr << rank << '.' << c << ":\t";
     std::cerr.width(10);
-    std::cerr << mcmc.getLogLikelihood();
+    std::cerr << mcmc->getLogLikelihood();
     std::cerr << '\t';
     std::cerr.width(10);
-    std::cerr << mcmc.getPriorDensity();
+    std::cerr << mcmc->getPriorDensity();
     std::cerr << "\tbeats\t";
     std::cerr.width(10);
-    std::cerr << mcmc.getOtherLogLikelihood();
+    std::cerr << mcmc->getOtherLogLikelihood();
     std::cerr << '\t';
     std::cerr.width(10);
-    std::cerr << mcmc.getOtherPriorDensity();
+    std::cerr << mcmc->getOtherPriorDensity();
     std::cerr << '\t';
-    if (mcmc.wasLastAccepted()) {
+    if (mcmc->wasLastAccepted()) {
       std::cerr << "accept";
     }
 //    std::cerr << '\t';
-//    if (mcmc.wasLastNonLocal()) {
+//    if (mcmc->wasLastNonLocal()) {
 //      std::cerr << "non-local";
 //    }
     std::cerr << std::endl;
   }
-  mcmc.term();
+  mcmc->term();
 
   /* output diagnostics */
-  std::cout << "Rank " << rank << ": " << mcmc.getNumAccepted() << " of " <<
-      mcmc.getNumSteps() << " proposals accepted" << std::endl;
-//  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalAccepted() <<
-//      " of " << mcmc.getNumNonLocal() << " non-local accepted" << std::endl;
-//  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalSent() <<
+  std::cout << "Rank " << rank << ": " << mcmc->getNumAccepted() << " of " <<
+      mcmc->getNumSteps() << " proposals accepted" << std::endl;
+//  std::cout << "Rank " << rank << ": " << mcmc->getNumNonLocalAccepted() <<
+//      " of " << mcmc->getNumNonLocal() << " non-local accepted" << std::endl;
+//  std::cout << "Rank " << rank << ": " << mcmc->getNumNonLocalSent() <<
 //      " non-local sent" << std::endl;
+
+  delete mcmc;
+  delete filter;
 
   return 0;
 }
