@@ -14,7 +14,7 @@ int chooseDevice(const int rank) {
   CUDA_CHECKED_CALL(cudaGetDeviceCount(&num));
   for (dev = 0; dev < num; ++dev) {
     CUDA_CHECKED_CALL(cudaGetDeviceProperties(&prop, dev));
-    if (prop.major >= 1 && prop.minor >= 3) { // require compute 1.3 or later
+    if ((prop.major >= 1 && prop.minor >= 3) || prop.major >= 2) { // require compute 1.3 or later
       valid.push_back(dev);
     }
   }
