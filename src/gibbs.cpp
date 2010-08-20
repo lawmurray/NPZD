@@ -135,6 +135,7 @@ int main(int argc, char* argv[]) {
   bi_omp_init();
   bi_ode_init(1.0, 1.0e-3, 1.0e-3);
   NcError ncErr(NcError::silent_nonfatal);
+  cudaFuncSetCacheConfig("_ZN2bi10kernelRK43I9NPZDModelILj1ELj1ELj1EEEEvdd", cudaFuncCachePreferL1);
 
   /* random number generator */
   Random rng(SEED);

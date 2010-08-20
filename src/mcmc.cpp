@@ -13,12 +13,9 @@
 #include "bi/math/ode.hpp"
 #include "bi/state/State.hpp"
 #include "bi/random/Random.hpp"
-#include "bi/method/ParallelParticleMCMC.hpp"
-#include "bi/method/ParticleFilter.hpp"
+#include "bi/method/ParticleMCMC.hpp"
+#include "bi/method/AuxiliaryParticleFilter.hpp"
 #include "bi/method/StratifiedResampler.hpp"
-#include "bi/method/MetropolisResampler.hpp"
-#include "bi/updater/FUpdater.hpp"
-#include "bi/updater/OYUpdater.hpp"
 #include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
 #include "bi/buffer/ParticleMCMCNetCDFBuffer.hpp"
 #include "bi/buffer/SparseInputNetCDFBuffer.hpp"
@@ -132,6 +129,7 @@ int main(int argc, char* argv[]) {
   bi_omp_init();
   bi_ode_init(1.0, 1.0e-3, 1.0e-3);
   NcError ncErr(NcError::silent_nonfatal);
+  cudaFuncSetCacheConfig("_ZN2bi10kernelRK43I9NPZDModelILj1ELj1ELj1EEEEvdd", cudaFuncCachePreferL1);
 
   /* random number generator */
   Random rng(SEED);
@@ -214,34 +212,24 @@ int main(int argc, char* argv[]) {
   }
   std::cerr << "Rank " << rank << ": using temperature " << lambda << std::endl;
 
-  /* randoms, forcings, observations */
-  FUpdater fUpdater(s, inForce);
-  OYUpdater oyUpdater(s, inObs);
-
   /* set up resampler, filter and MCMC */
-  typedef StratifiedResampler ResamplerType;
-  //typedef MetropolisResampler ResamplerType;
-  typedef ParticleFilter<NPZDModel<>, ResamplerType> FilterType;
-  typedef ParallelParticleMCMC<NPZDModel<>,NPZDPrior,AdditiveExpGaussianPdf<>,FilterType> MCMCType;
-
   StratifiedResampler resam(s, rng);
-  //MetropolisResampler resam(s, rng, L);
-
-  FilterType filter(m, s, rng, &resam, &fUpdater, &oyUpdater, &tmp);
-  MCMCType mcmc(m, prior, q, s, rng, &filter, &out);
+  BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, &tmp));
+  BOOST_AUTO(mcmc, createParticleMCMC(m, prior, q, s, rng, filter, &out));
+  typedef BOOST_TYPEOF(*mcmc) MCMCType;
 
   /* and go... */
   inInit.read(s);
   prior.getPPrior().sample(rng, s.pHostState); // initialise chain
-  mcmc.sample(C, T, ALPHA, lambda, SD, A);
+  mcmc->sample(C, T, lambda, SD, A);
 
   /* output diagnostics */
-  std::cout << "Rank " << rank << ": " << mcmc.getNumAccepted() << " of " <<
-      mcmc.getNumSteps() << " proposals accepted" << std::endl;
-  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalAccepted() <<
-      " of " << mcmc.getNumNonLocal() << " non-local accepted" << std::endl;
-  std::cout << "Rank " << rank << ": " << mcmc.getNumNonLocalSent() <<
-      " non-local sent" << std::endl;
+  std::cout << "Rank " << rank << ": " << mcmc->getNumAccepted() << " of " <<
+      mcmc->getNumSteps() << " proposals accepted" << std::endl;
+//  std::cout << "Rank " << rank << ": " << mcmc->getNumNonLocalAccepted() <<
+//      " of " << mcmc->getNumNonLocal() << " non-local accepted" << std::endl;
+//  std::cout << "Rank " << rank << ": " << mcmc->getNumNonLocalSent() <<
+//      " non-local sent" << std::endl;
 
   return 0;
 }
