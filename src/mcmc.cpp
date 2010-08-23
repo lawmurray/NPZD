@@ -75,8 +75,8 @@ int main(int argc, char* argv[]) {
     (",T", po::value(&T), "total time to filter")
     ("resampler", po::value(&RESAMPLER)->default_value("metropolis"),
         "resampling strategy, 'stratified' or 'metropolis'")
-    (",L", po::value(&L)->default_value(15),
-        "no. steps for Metropolis resampler")
+    (",L", po::value(&L)->default_value(0),
+        "lookahead for auxiliary particle filter")
     (",h", po::value(&H),
         "suggested first step size for numerical integration")
     ("min-ess", po::value(&MIN_ESS)->default_value(1.0),
@@ -230,6 +230,9 @@ int main(int argc, char* argv[]) {
 //      " of " << mcmc->getNumNonLocal() << " non-local accepted" << std::endl;
 //  std::cout << "Rank " << rank << ": " << mcmc->getNumNonLocalSent() <<
 //      " non-local sent" << std::endl;
+
+  delete mcmc;
+  delete filter;
 
   return 0;
 }
