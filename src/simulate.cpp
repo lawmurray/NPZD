@@ -11,7 +11,6 @@
 #include "bi/math/ode.hpp"
 #include "bi/random/Random.hpp"
 #include "bi/updater/StochasticRUpdater.hpp"
-#include "bi/updater/FUpdater.hpp"
 #include "bi/method/Simulator.hpp"
 #include "bi/method/Sampler.hpp"
 #include "bi/buffer/SparseInputNetCDFBuffer.hpp"
@@ -26,6 +25,7 @@
 #include <unistd.h>
 
 #include "boost/numeric/ublas/io.hpp"
+#include "boost/typeof/typeof.hpp"
 
 namespace po = boost::program_options;
 namespace mpi = boost::mpi;
@@ -109,15 +109,14 @@ int main(int argc, char* argv[]) {
 
   /* static sampler & dynamic simulator */
   StochasticRUpdater<NPZDModel<> > rUpdater(s, rng);
-  FUpdater fUpdater(s, inForce);
   Sampler<NPZDModel<> > sam(m, s, &rUpdater);
-  Simulator<NPZDModel<> > sim(m, s, &rUpdater, &fUpdater, out);
+  BOOST_AUTO(sim, createSimulator(m, s, &rUpdater, &inForce, out));
 
   /* simulate and output */
   timeval start, end;
   gettimeofday(&start, NULL);
   sam.sample(); // set static variables
-  sim.simulate(T); // simulate dynamic variables
+  sim->simulate(T); // simulate dynamic variables
   gettimeofday(&end, NULL);
 
   /* output timing results */
@@ -127,5 +126,6 @@ int main(int argc, char* argv[]) {
   }
 
   delete out;
+  delete sim;
   return 0;
 }
