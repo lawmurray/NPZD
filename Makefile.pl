@@ -73,6 +73,7 @@ $EMULATION_CUDACCFLAGS .= ' --device-emulation -g';
 $EMULATION_LINKFLAGS = ' --device-emulation -g -lcublasemu';
 
 # Bootstrap
+`rm -rf $CPPDIR`; # clean up any old code from generator
 `mkdir -p $BUILDDIR $CPPDIR`;
 `$SPEC2XDIR/csv2sql --model $NAME --outdir $BUILDDIR --srcdir $SPEC2XSRCDIR < $SPECDIR/$SPEC.csv`;
 `$SPEC2XDIR/sql2cpp --outdir $CPPDIR --ttdir $SPEC2XCPPTTDIR --model $BUILDDIR/$NAME.db`;
