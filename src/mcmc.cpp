@@ -41,13 +41,13 @@ int main(int argc, char* argv[]) {
   /* mpi */
   mpi::environment env(argc, argv);
   mpi::communicator world;
-  const unsigned rank = world.rank();
-  const unsigned size = world.size();
+  const int rank = world.rank();
+  const int size = world.size();
 
   /* handle command line arguments */
   real T, H, MIN_ESS;
   double SCALE, TEMP, MIN_TEMP, MAX_TEMP, ALPHA, SD;
-  unsigned P, INIT_NS, FORCE_NS, OBS_NS, B, I, C, A, L;
+  int P, INIT_NS, FORCE_NS, OBS_NS, B, I, C, A, L;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, FILTER_FILE, OUTPUT_FILE,
       PROPOSAL_FILE, RESAMPLER;
@@ -137,9 +137,9 @@ int main(int argc, char* argv[]) {
 
   /* model */
   NPZDModel<> m;
-  const unsigned NP = m.getNetSize(P_NODE);
-  const unsigned ND = m.getNetSize(D_NODE);
-  const unsigned NC = m.getNetSize(C_NODE);
+  const int NP = m.getNetSize(P_NODE);
+  const int ND = m.getNetSize(D_NODE);
+  const int NC = m.getNetSize(C_NODE);
 
   /* prior */
   NPZDPrior prior(m);
@@ -166,8 +166,8 @@ int main(int argc, char* argv[]) {
   d(m.getNode(P_NODE, "muDre")->getId()) = 0.5;
   d(m.getNode(P_NODE, "muZmQ")->getId()) = 1.0;
 
-  unsigned i;
-  std::set<unsigned> logs;
+  int i;
+  std::set<int> logs;
   for (i = 0; i < NP; ++i) {
     if (i != m.getNode(P_NODE, "Dsi")->getId()) { // all log-normal besides this
       logs.insert(i);
@@ -191,7 +191,7 @@ int main(int argc, char* argv[]) {
 
   /* outputs */
   std::stringstream file;
-  const unsigned Y = inObs.numUniqueTimes(T);
+  const int Y = inObs.numUniqueTimes(T);
 
   file.str("");
   file << OUTPUT_FILE << '.' << rank;

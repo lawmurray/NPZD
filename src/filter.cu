@@ -51,13 +51,13 @@ typedef host_vector<int> V5;
 
 template void StratifiedResampler::resample<V1,V2>(V1&, V2&);
 template void StratifiedResampler::resample<V1,V1,V2>(const V1&, V1&, V2&);
-template void StratifiedResampler::resample<V1,V2>(const unsigned, V1&, V2&);
-template void StratifiedResampler::resample<V1,V1,V2>(const unsigned, const V1&, V1&, V2&);
+template void StratifiedResampler::resample<V1,V2>(const int, V1&, V2&);
+template void StratifiedResampler::resample<V1,V1,V2>(const int, const V1&, V1&, V2&);
 
 template void StratifiedResampler::resample<V4,V5>(V4&, V5&);
 template void StratifiedResampler::resample<V3,V4,V5>(const V3&, V4&, V5&);
-template void StratifiedResampler::resample<V4,V5>(const unsigned, V4&, V5&);
-template void StratifiedResampler::resample<V3,V4,V5>(const unsigned, const V3&, V4&, V5&);
+template void StratifiedResampler::resample<V4,V5>(const int, V4&, V5&);
+template void StratifiedResampler::resample<V3,V4,V5>(const int, const V3&, V4&, V5&);
 
 template void Resampler::copy<V5>(const V5&, State&);
 template void LUpdater<NPZDModel<> >::update<V5,V4>(const V5&, V4&);
