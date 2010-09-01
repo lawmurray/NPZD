@@ -24,7 +24,7 @@ $ICC = 'icpc';
 $CUDACC = 'nvcc';
 
 # Common compile flags
-$CPPINCLUDES = '-I../bi/src -I/tools/cuda/3.1/cuda/include/ -I/usr/local/cuda/include -I/tools/thrust/1.2.1 -I/usr/local/include/thrust -I/tools/magma/0.2/include';
+$CPPINCLUDES = '-I../bi/src -I/tools/cuda/3.1/cuda/include/ -I/usr/local/cuda/include -I/tools/thrust/1.2.1 -I/usr/local/include/thrust -I/tools/magma/0.2/include -I/usr/local/atlas/include';
 $CXXFLAGS = "-Wall `nc-config --cflags` `mpic++ -showme:compile` $CPPINCLUDES";
 $CUDACCFLAGS = "-gencode arch=compute_13,code=sm_13 -gencode arch=compute_20,code=sm_20 -Xptxas=\"-v\" -Xcompiler=\"-Wall -fopenmp `mpic++ -showme:compile`\" `nc-config --cflags` -DBOOST_NO_INCLASS_MEMBER_INITIALIZATION -DBOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS $CPPINCLUDES";
 $LINKFLAGS = '-L"../bi/build" -L"/tools/magma/0.2/lib" -L"/tools/boost/1.43.0/lib" -lbi -lmagma -lmagmablas -lgfortran -lnetcdf_c++ `nc-config --libs` -lpthread -lboost_program_options -lboost_mpi `mpic++ -showme:link`';
@@ -40,7 +40,7 @@ $ICC_CXXFLAGS = '-openmp -malign-double -wd424 -wd981 -wd383 -wd1572 -wd869 -wd3
 $ICC_LINKFLAGS = '-openmp';
 
 # Math library option flags
-$ATLAS_LINKFLAGS = '-L"/usr/local/atlas/lib" -latlas -lf77blas -lcblas -llapack -lm';
+$ATLAS_LINKFLAGS = '-L/usr/local/atlas/lib -llapack -lptf77blas -lptcblas -latlas -lm'; # "pt" prefix for multithreaded versions
 $MKL_LINKFLAGS = '-lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core';
 $MATH_LINKFLAGS = '-lblas -lcblas -llapack -lm';
 

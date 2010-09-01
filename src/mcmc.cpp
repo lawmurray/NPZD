@@ -13,6 +13,7 @@
 #include "bi/math/ode.hpp"
 #include "bi/state/State.hpp"
 #include "bi/random/Random.hpp"
+#include "bi/method/DistributedMCMC.hpp"
 #include "bi/method/ParticleMCMC.hpp"
 #include "bi/method/AuxiliaryParticleFilter.hpp"
 #include "bi/method/StratifiedResampler.hpp"
@@ -20,6 +21,7 @@
 #include "bi/buffer/ParticleMCMCNetCDFBuffer.hpp"
 #include "bi/buffer/SparseInputNetCDFBuffer.hpp"
 #include "bi/pdf/AdditiveExpGaussianPdf.hpp"
+#include "bi/pdf/ExpGaussianMixturePdf.hpp"
 
 #include "boost/program_options.hpp"
 #include "boost/typeof/typeof.hpp"
@@ -31,7 +33,6 @@
 #include <sys/time.h>
 
 namespace po = boost::program_options;
-namespace ublas = boost::numeric::ublas;
 namespace mpi = boost::mpi;
 
 using namespace bi;
@@ -143,10 +144,10 @@ int main(int argc, char* argv[]) {
   /* prior */
   NPZDPrior prior(m);
 
-  /* proposal */
-  symmetric_matrix Sigma(NP);
+  /* local proposals */
+  host_matrix<> Sigma(NP,NP);
   Sigma.clear();
-  BOOST_AUTO(d, diag(Sigma));
+  BOOST_AUTO(d, diagonal(Sigma));
 
   d(m.getNode(P_NODE, "Kw")->getId()) = 0.2;
   d(m.getNode(P_NODE, "KCh")->getId()) = 0.3;
@@ -165,9 +166,6 @@ int main(int argc, char* argv[]) {
   d(m.getNode(P_NODE, "muDre")->getId()) = 0.5;
   d(m.getNode(P_NODE, "muZmQ")->getId()) = 1.0;
 
-  d *= SCALE;
-  d = element_prod(d,d); // square to get variances
-
   unsigned i;
   std::set<unsigned> logs;
   for (i = 0; i < NP; ++i) {
@@ -175,7 +173,13 @@ int main(int argc, char* argv[]) {
       logs.insert(i);
     }
   }
+
+  scal(SCALE, d);
+  square(d.begin(), d.end(), d.begin()); // square to get variances
   AdditiveExpGaussianPdf<> q(Sigma, logs);
+  ExpGaussianMixturePdf<> r(NP, logs);
+  ExpGaussianPdf<> x0(prior.getPPrior().mean(), prior.getPPrior().cov());
+  r.add(x0);
 
   /* state */
   State s(m, P);
@@ -215,13 +219,15 @@ int main(int argc, char* argv[]) {
   /* set up resampler, filter and MCMC */
   StratifiedResampler resam(s, rng);
   BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, &tmp));
-  BOOST_AUTO(mcmc, createParticleMCMC(m, prior, q, s, rng, filter, &out));
-  typedef BOOST_TYPEOF(*mcmc) MCMCType;
+  BOOST_AUTO(mcmc, createParticleMCMC(m, prior, q, s, rng, filter, T, &out));
+  BOOST_AUTO(dmcmc, createDistributedMCMC(m, r, rng, mcmc));
+  typedef BOOST_TYPEOF(*dmcmc) MCMCType;
 
   /* and go... */
   inInit.read(s);
-  prior.getPPrior().sample(rng, s.pHostState); // initialise chain
-  mcmc->sample(C, T, lambda, SD, A);
+  prior.getPPrior().samples(rng, s.pHostState); // initialise chain
+  //mcmc->sample(C, lambda, SD, A);
+  mcmc->sample(C, lambda);
 
   /* output diagnostics */
   std::cout << "Rank " << rank << ": " << mcmc->getNumAccepted() << " of " <<
