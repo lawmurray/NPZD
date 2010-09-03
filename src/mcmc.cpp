@@ -175,7 +175,7 @@ int main(int argc, char* argv[]) {
   }
 
   scal(SCALE, d);
-  square(d.begin(), d.end(), d.begin()); // square to get variances
+  element_square(d.begin(), d.end(), d.begin()); // square to get variances
   AdditiveExpGaussianPdf<> q(Sigma, logs);
   ExpGaussianMixturePdf<> r(NP, logs);
   ExpGaussianPdf<> x0(prior.getPPrior().mean(), prior.getPPrior().cov());
@@ -221,21 +221,20 @@ int main(int argc, char* argv[]) {
   BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, &tmp));
   BOOST_AUTO(mcmc, createParticleMCMC(m, prior, q, s, rng, filter, T, &out));
   BOOST_AUTO(dmcmc, createDistributedMCMC(m, r, rng, mcmc));
-  typedef BOOST_TYPEOF(*dmcmc) MCMCType;
 
   /* and go... */
   inInit.read(s);
   prior.getPPrior().samples(rng, s.pHostState); // initialise chain
   //mcmc->sample(C, lambda, SD, A);
-  mcmc->sample(C, lambda);
+  dmcmc->sample(C, lambda);
 
   /* output diagnostics */
   std::cout << "Rank " << rank << ": " << mcmc->getNumAccepted() << " of " <<
       mcmc->getNumSteps() << " proposals accepted" << std::endl;
-//  std::cout << "Rank " << rank << ": " << mcmc->getNumNonLocalAccepted() <<
-//      " of " << mcmc->getNumNonLocal() << " non-local accepted" << std::endl;
-//  std::cout << "Rank " << rank << ": " << mcmc->getNumNonLocalSent() <<
-//      " non-local sent" << std::endl;
+  std::cout << "Rank " << rank << ": " << dmcmc->getNumRemoteAccepted() <<
+      " of " << dmcmc->getNumRemote() << " remote accepted" << std::endl;
+  //std::cout << "Rank " << rank << ": " << dmcmc->getSent() <<
+  //    " non-local sent" << std::endl;
 
   delete mcmc;
   delete filter;
