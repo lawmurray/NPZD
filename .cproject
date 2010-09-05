@@ -28,6 +28,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.908422782" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -37,6 +38,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.663063627" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -45,6 +47,7 @@
 								<option id="gnu.cpp.link.option.paths.525385329" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -70,6 +73,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.31245884" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -83,6 +87,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -2407,6 +2412,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1009566569" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -2416,6 +2422,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1026985922" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -2424,6 +2431,7 @@
 								<option id="gnu.cpp.link.option.paths.1803685423" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -2449,6 +2457,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.589758517" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -2462,6 +2471,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -4786,6 +4796,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1159067143" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -4795,6 +4806,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1694485767" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -4803,6 +4815,7 @@
 								<option id="gnu.cpp.link.option.paths.206622522" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -4828,6 +4841,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.393976133" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -4841,6 +4855,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -7165,6 +7180,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1016013332" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -7174,6 +7190,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.458394443" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -7182,6 +7199,7 @@
 								<option id="gnu.cpp.link.option.paths.1761726187" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -7207,6 +7225,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.2077547623" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -7220,6 +7239,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -9544,6 +9564,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1744288314" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -9553,6 +9574,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.506456593" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -9561,6 +9583,7 @@
 								<option id="gnu.cpp.link.option.paths.1468384071" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -9586,6 +9609,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1528055304" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -9599,6 +9623,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -11923,6 +11948,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1248884861" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -11932,6 +11958,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.688687353" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -11940,6 +11967,7 @@
 								<option id="gnu.cpp.link.option.paths.373624749" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -11965,6 +11993,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.574045177" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -11978,6 +12007,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -14294,7 +14324,7 @@
 					<folderInfo id="cdt.managedbuild.toolchain.gnu.base.2070993171.670733595." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.base.1551133783" name="cdt.managedbuild.toolchain.gnu.base" superClass="cdt.managedbuild.toolchain.gnu.base">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.target.gnu.platform.base.913783072" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
-							<builder arguments="USE_DOUBLE=1 DEBUG=1 USE_CPU=1" autoBuildTarget="all" buildPath="${workspace_loc:/npzd}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.base.1849206653" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="8" superClass="cdt.managedbuild.target.gnu.builder.base"/>
+							<builder arguments="USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1" autoBuildTarget="all" buildPath="${workspace_loc:/npzd}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.base.1849206653" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="8" superClass="cdt.managedbuild.target.gnu.builder.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.1492653031" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.983525773" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.include.paths.1543788154" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
@@ -14302,6 +14332,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.721685218" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -14311,6 +14342,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.492914413" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -14319,6 +14351,7 @@
 								<option id="gnu.cpp.link.option.paths.1816807005" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -14344,6 +14377,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.570370967" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -14357,6 +14391,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -16681,6 +16716,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1454429833" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -16690,6 +16726,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1895998740" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -16698,6 +16735,7 @@
 								<option id="gnu.cpp.link.option.paths.1250562596" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -16723,6 +16761,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.767606269" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -16736,6 +16775,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -19052,7 +19092,7 @@
 					<folderInfo id="cdt.managedbuild.toolchain.gnu.base.2070993171.629526829.1615131825." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.base.1883636690" name="cdt.managedbuild.toolchain.gnu.base" superClass="cdt.managedbuild.toolchain.gnu.base">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.target.gnu.platform.base.1878728804" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
-							<builder arguments="USE_DOUBLE=1 NDEBUG=1 RELEASE=1 USE_CPU=1" autoBuildTarget="all" buildPath="${workspace_loc:/npzd}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.base.419489571" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="8" superClass="cdt.managedbuild.target.gnu.builder.base"/>
+							<builder arguments="USE_DOUBLE=1 NDEBUG=1 RELEASE=1 USE_ATLAS=1 USE_CPU=1" autoBuildTarget="all" buildPath="${workspace_loc:/npzd}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.base.419489571" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="8" superClass="cdt.managedbuild.target.gnu.builder.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.545393832" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1415745374" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.include.paths.1566513381" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
@@ -19060,6 +19100,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.709391159" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -19069,6 +19110,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.633419246" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -19077,6 +19119,7 @@
 								<option id="gnu.cpp.link.option.paths.795868895" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -19102,6 +19145,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.725622887" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -19115,6 +19159,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -21431,7 +21476,7 @@
 					<folderInfo id="cdt.managedbuild.toolchain.gnu.base.2070993171.1831120001.1312769584." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.base.138148547" name="cdt.managedbuild.toolchain.gnu.base" superClass="cdt.managedbuild.toolchain.gnu.base">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.target.gnu.platform.base.714400134" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
-							<builder arguments="USE_DOUBLE=1 NDEBUG=1 PROFILE=1 USE_CPU=1" autoBuildTarget="all" buildPath="${workspace_loc:/npzd}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.base.1895954997" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="8" superClass="cdt.managedbuild.target.gnu.builder.base"/>
+							<builder arguments="USE_DOUBLE=1 NDEBUG=1 PROFILE=1 USE_ATLAS=1 USE_CPU=1" autoBuildTarget="all" buildPath="${workspace_loc:/npzd}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.base.1895954997" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="8" superClass="cdt.managedbuild.target.gnu.builder.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.2031531286" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1884147073" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.include.paths.835193735" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
@@ -21439,6 +21484,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.880826233" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -21448,6 +21494,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.884711222" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -21456,6 +21503,7 @@
 								<option id="gnu.cpp.link.option.paths.309132247" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -21481,6 +21529,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1750516055" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -21494,6 +21543,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -23818,6 +23868,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.943874536" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -23827,6 +23878,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.779079596" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -23835,6 +23887,7 @@
 								<option id="gnu.cpp.link.option.paths.618720723" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -23860,6 +23913,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.2039402815" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -23873,6 +23927,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -26197,6 +26252,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.786010111" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -26206,6 +26262,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.324534473" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -26214,6 +26271,7 @@
 								<option id="gnu.cpp.link.option.paths.1709360658" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -26239,6 +26297,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.2135786139" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -26252,6 +26311,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -28576,6 +28636,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.712229832" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -28585,6 +28646,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1081849066" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -28593,6 +28655,7 @@
 								<option id="gnu.cpp.link.option.paths.409109573" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -28618,6 +28681,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/mkl/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.456022913" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -28631,6 +28695,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>

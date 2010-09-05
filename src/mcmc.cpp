@@ -23,6 +23,11 @@
 #include "bi/pdf/AdditiveExpGaussianPdf.hpp"
 #include "bi/pdf/ExpGaussianMixturePdf.hpp"
 
+#ifdef USE_CPU
+#include "bi/method/StratifiedResampler.inl"
+#include "bi/method/Resampler.inl"
+#endif
+
 #include "boost/program_options.hpp"
 #include "boost/typeof/typeof.hpp"
 #include "boost/mpi.hpp"
