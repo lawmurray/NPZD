@@ -183,8 +183,7 @@ int main(int argc, char* argv[]) {
   element_square(d.begin(), d.end(), d.begin()); // square to get variances
   AdditiveExpGaussianPdf<> q(Sigma, logs);
   ExpGaussianMixturePdf<> r(NP, logs);
-  ExpGaussianPdf<> x0(prior.getPPrior().mean(), prior.getPPrior().cov());
-  r.add(x0);
+  r.add(prior.getPPrior());
 
   /* state */
   State s(m, P);
