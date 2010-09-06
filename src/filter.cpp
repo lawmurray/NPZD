@@ -17,7 +17,10 @@
 #include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
 #include "bi/buffer/SparseInputNetCDFBuffer.hpp"
 
-#include "cuda_runtime.h"
+#ifdef USE_CPU
+#include "bi/method/StratifiedResampler.inl"
+#include "bi/method/Resampler.inl"
+#endif
 
 #include "boost/program_options.hpp"
 #include "boost/typeof/typeof.hpp"
@@ -111,9 +114,9 @@ int main(int argc, char* argv[]) {
 
   /* initialise state */
   inInit.read(s);
-  prior.getDPrior().sample(rng, s.dHostState);
-  prior.getCPrior().sample(rng, s.cHostState);
-  //prior.getPPrior().sample(rng, s.pHostState);
+  prior.getDPrior().samples(rng, s.dHostState);
+  prior.getCPrior().samples(rng, s.cHostState);
+  //prior.getPPrior().samples(rng, s.pHostState);
   s.upload();
 
   /* output */
