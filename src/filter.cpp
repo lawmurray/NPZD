@@ -6,7 +6,6 @@
  * $Date:2009-08-17 11:10:31 +0800 (Mon, 17 Aug 2009) $
  */
 #include "model/NPZDModel.hpp"
-#include "model/NPZDPrior.hpp"
 
 #include "bi/cuda/cuda.hpp"
 #include "bi/math/ode.hpp"
@@ -101,9 +100,6 @@ int main(int argc, char* argv[]) {
   /* model */
   NPZDModel<> m;
 
-  /* prior over initial conditions */
-  NPZDPrior prior(m);
-
   /* state and intermediate results */
   State s(m, P);
 
@@ -114,9 +110,9 @@ int main(int argc, char* argv[]) {
 
   /* initialise state */
   inInit.read(s);
-  prior.getDPrior().samples(rng, s.dHostState);
-  prior.getCPrior().samples(rng, s.cHostState);
-  //prior.getPPrior().samples(rng, s.pHostState);
+  m.getPrior(D_NODE).samples(rng, s.dHostState);
+  m.getPrior(C_NODE).samples(rng, s.cHostState);
+  //m.getPrior(P_NODE).samples(rng, s.pHostState);
   s.upload();
 
   /* output */

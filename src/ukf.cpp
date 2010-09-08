@@ -6,21 +6,12 @@
  * $Date:2009-08-17 11:10:31 +0800 (Mon, 17 Aug 2009) $
  */
 #include "model/NPZDModel.hpp"
-#include "model/NPZDPrior.hpp"
 
 #include "bi/cuda/cuda.hpp"
-#include "bi/cuda/ode/IntegratorConstants.hpp"
+#include "bi/math/ode.hpp"
 #include "bi/method/UnscentedKalmanFilter.hpp"
-#include "bi/updater/FUpdater.hpp"
-#include "bi/updater/OYUpdater.hpp"
-#include "bi/io/ForwardNetCDFReader.hpp"
-#include "bi/io/ForwardNetCDFWriter.hpp"
-
-//#include "cula.h"
-#include "cuda_runtime.h"
-#include "cuda.h"
-#include "cuda_runtime_api.h"
-#include "cublas.h"
+#include "bi/buffer/SparseInputNetCDFBuffer.hpp"
+#include "bi/buffer/UnscentedKalmanFilterNetCDFBuffer.hpp"
 
 #include "boost/program_options.hpp"
 #include "boost/typeof/typeof.hpp"
@@ -41,14 +32,9 @@ int main(int argc, char* argv[]) {
   /* mpi */
   mpi::environment env(argc, argv);
 
-  cuInit(0);
-  cublasInit();
-  //culaInitialize();
-  cublasStatus status;
-  status = cublasInit();
-  if (status != CUBLAS_STATUS_SUCCESS) {
-      fprintf (stderr, "!!!! CUBLAS initialization error\n");
-  }
+  /* openmp */
+  bi_omp_init();
+  bi_ode_init(1.0, 1.0e-5, 1.0e-5);
 
   /* handle command line arguments */
   real T, H;
@@ -90,122 +76,47 @@ int main(int argc, char* argv[]) {
     return 0;
   }
 
-  /* report missing variables in NetCDF, but don't die */
-  #ifndef NDEBUG
-  NcError ncErr(NcError::verbose_nonfatal);
-  #else
+  /* NetCDF error reporting */
   NcError ncErr(NcError::silent_nonfatal);
-  #endif
-
-  /* parameters for ODE integrator on GPU */
-  ode_init();
-  ode_set_h0(REAL(H));
-  ode_set_rtoler(REAL(1.0e-5));
-  ode_set_atoler(REAL(1.0e-5));
-  ode_set_nsteps(1000);
 
   /* model */
-  NPZDModel m;
-
-  /* prior */
-  NPZDPrior prior;
+  NPZDModel<> m;
 
   /* state and intermediate results */
-  unsigned P = 2*(m.getDSize() + m.getCSize() + m.getRSize()) + 1;
+  unsigned P = 2*(m.getNetSize(D_NODE) + m.getNetSize(C_NODE) + m.getNetSize(R_NODE)) + 1;
   State s(m, P);
 
-  /* initialise from file... */
-  ForwardNetCDFReader<true,true,true,false,true,true,true> in(m, INIT_FILE, INIT_NS);
-  in.read(s);
-  s.upload();
+  /* inputs */
+  SparseInputNetCDFBuffer inForce(m, InputBuffer::F_NODES, FORCE_FILE, FORCE_NS);
+  SparseInputNetCDFBuffer inObs(m, InputBuffer::O_NODES, OBS_FILE, OBS_NS);
+  SparseInputNetCDFBuffer inInit(m, InputBuffer::P_NODES, INIT_FILE, INIT_NS);
 
-  /* forcings, observations */
-  FUpdater fUpdater(m, FORCE_FILE, s, FORCE_NS);
-  OYUpdater oyUpdater(m, OBS_FILE, s, OBS_NS);
-
-  /* outputs */
-  ForwardNetCDFWriter* out2;
-  std::ofstream* out;
+  /* output */
+  UnscentedKalmanFilterNetCDFBuffer* out;
   if (OUTPUT) {
-    out2 = new ForwardNetCDFWriter(m, OUTPUT_FILE, P, 565);
-    out = new std::ofstream("results/ukf.csv");
+    out = new UnscentedKalmanFilterNetCDFBuffer(m, P, inObs.numUniqueTimes(T),
+        OUTPUT_FILE, NetCDFBuffer::REPLACE);
   } else {
-    out2 = NULL;
     out = NULL;
   }
 
-  /* prior */
-  const unsigned D = m.getDSize();
-  const unsigned C = m.getCSize();
-  const unsigned N = D + C;
-  unsigned i, j;
-  real mu[N];
-  real Sigma[N*N];
-  for (i = 0; i < N*N; ++i) {
-    Sigma[i] = REAL(0.0);
-  }
-  for (i = 0; i < D; ++i) {
-    mu[i] = prior.getDPrior().mean()(i);
-    Sigma[i*N+i] = prior.getDPrior().cov()(i,i);
-  }
-  for (i = D; i < N; ++i) {
-    mu[i] = prior.getCPrior().mean()(i - D);
-    Sigma[i*N+i] = prior.getCPrior().cov()(i - D, i - D);
-  }
+  /* set filter */
+  BOOST_AUTO(filter, createUnscentedKalmanFilter(m, s, &inForce, &inObs, out));
 
-  /* filter */
+  /* do filter */
   timeval start, end;
   gettimeofday(&start, NULL);
-  UnscentedKalmanFilter<NPZDModel> ukf(m, mu, Sigma, s, &fUpdater, &oyUpdater);
-  ukf.init();
-
-  if (OUTPUT) {
-    for (i = 0; i < N; ++i) {
-      *out << mu[i] << '\t';
-    }
-    for (i = 0; i < N; ++i) {
-      for (j = 0; j < N; ++j) {
-        *out << Sigma[i + j*N] << '\t';
-      }
-    }
-    *out << std::endl;
-  }
-
-  while (ukf.getTime() < T) {
-    BI_LOG("t = " << ukf.getTime());
-    ukf.predict(T);
-    ukf.correct();
-
-    if (OUTPUT) {
-      s.download();
-      ukf.getMean(mu);
-      ukf.getCovariance(Sigma);
-      CUDA_CHECKED_CALL(cudaThreadSynchronize());
-
-      for (i = 0; i < N; ++i) {
-        *out << mu[i] << '\t';
-      }
-      for (i = 0; i < N; ++i) {
-        for (j = 0; j < N; ++j) {
-          *out << Sigma[i + j*N] << '\t';
-        }
-      }
-      *out << std::endl;
-
-      out2->write(s, ukf.getTime());
-      out2->sync();
-    }
-  }
-  CUDA_CHECKED_CALL(cudaThreadSynchronize());
-  ukf.term();
-
-  /* wrap up timing */
+  filter->filter(T);
   gettimeofday(&end, NULL);
+
+  /* output timing results */
   if (TIME) {
     int elapsed = (end.tv_sec-start.tv_sec)*1e6 + (end.tv_usec-start.tv_usec);
     std::cout << elapsed << std::endl;
   }
 
   delete out;
+  delete filter;
+
   return 0;
 }

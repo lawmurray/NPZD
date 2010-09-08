@@ -7,7 +7,6 @@
  */
 #include "device.hpp"
 #include "model/NPZDModel.hpp"
-#include "model/NPZDPrior.hpp"
 
 #include "bi/cuda/cuda.hpp"
 #include "bi/math/ode.hpp"
@@ -146,9 +145,6 @@ int main(int argc, char* argv[]) {
   const int ND = m.getNetSize(D_NODE);
   const int NC = m.getNetSize(C_NODE);
 
-  /* prior */
-  NPZDPrior prior(m);
-
   /* local proposals */
   host_matrix<> Sigma(NP,NP);
   Sigma.clear();
@@ -183,7 +179,7 @@ int main(int argc, char* argv[]) {
   element_square(d.begin(), d.end(), d.begin()); // square to get variances
   AdditiveExpGaussianPdf<> q(Sigma, logs);
   ExpGaussianMixturePdf<> r(NP, logs);
-  r.add(prior.getPPrior());
+  r.add(m.getPrior(P_NODE));
 
   /* state */
   State s(m, P);
@@ -223,12 +219,12 @@ int main(int argc, char* argv[]) {
   /* set up resampler, filter and MCMC */
   StratifiedResampler resam(s, rng);
   BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, &tmp));
-  BOOST_AUTO(mcmc, createParticleMCMC(m, prior, q, s, rng, filter, T, &out));
+  BOOST_AUTO(mcmc, createParticleMCMC(m, q, s, rng, filter, T, &out));
   BOOST_AUTO(dmcmc, createDistributedMCMC(m, r, rng, mcmc));
 
   /* and go... */
   inInit.read(s);
-  prior.getPPrior().samples(rng, s.pHostState); // initialise chain
+  m.getPrior(P_NODE).samples(rng, s.pHostState); // initialise chain
   //mcmc->sample(C, lambda, SD, A);
   dmcmc->sample(C, lambda);
 

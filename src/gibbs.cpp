@@ -30,6 +30,7 @@
 
 #include "thrust/sort.h"
 #include "thrust/adjacent_difference.h"
+#include "thrust/fill.h"
 
 #include <iostream>
 #include <iomanip>
@@ -251,10 +252,11 @@ int main(int argc, char* argv[]) {
       shallow_vector gamma(subrange(x1.xs, 20, 10));
 
       /* proportions for Bayesian bootstrap */
-      rng.uniforms(&u[0], u.size() - 1);
-      u(u.size() - 1) = 1.0;
-      thrust::sort(u.begin(), u.end());
-      thrust::adjacent_difference(u.begin(), u.end(), p.begin());
+      //rng.uniforms(&u[0], u.size() - 1);
+      //u(u.size() - 1) = 1.0;
+      //thrust::sort(u.begin(), u.end());
+      //thrust::adjacent_difference(u.begin(), u.end(), p.begin());
+      thrust::fill(p.begin(), p.end(), 1.0/p.size()); // for ~EM
 
       /* Gibbs update */
       shallow_matrix xr(x1.xr);
