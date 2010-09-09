@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
 
   /* openmp */
   bi_omp_init();
-  bi_ode_init(1.0, 1.0e-5, 1.0e-5);
+  bi_ode_init(1.0, 1.0e-3, 1.0e-3);
 
   /* handle command line arguments */
   real T, H;
@@ -90,6 +90,10 @@ int main(int argc, char* argv[]) {
   SparseInputNetCDFBuffer inForce(m, InputBuffer::F_NODES, FORCE_FILE, FORCE_NS);
   SparseInputNetCDFBuffer inObs(m, InputBuffer::O_NODES, OBS_FILE, OBS_NS);
   SparseInputNetCDFBuffer inInit(m, InputBuffer::P_NODES, INIT_FILE, INIT_NS);
+
+  /* initialise state */
+  inInit.read(s);
+  s.upload();
 
   /* output */
   UnscentedKalmanFilterNetCDFBuffer* out;
