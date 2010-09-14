@@ -23,10 +23,13 @@
 #include "bi/updater/DUpdater.hpp"
 #include "bi/updater/CUpdater.hpp"
 #include "bi/updater/LUpdater.hpp"
+#include "bi/updater/OUpdater.hpp"
+
 #include "bi/cuda/updater/SUpdater.cuh"
 #include "bi/cuda/updater/DUpdater.cuh"
 #include "bi/cuda/updater/CUpdater.cuh"
 #include "bi/cuda/updater/LUpdater.cuh"
+#include "bi/cuda/updater/OUpdater.cuh"
 
 #include "bi/cuda/math/vector.hpp"
 
@@ -39,6 +42,7 @@ template class SUpdater<NPZDModel<> >;
 template class DUpdater<NPZDModel<> >;
 template class CUpdater<NPZDModel<> >;
 template class LUpdater<NPZDModel<> >;
+template class OUpdater<NPZDModel<> >;
 
 /*
  * Explicit function template instantiations.
@@ -61,5 +65,7 @@ template void StratifiedResampler::resample<V3,V4,V5>(const int, const V3&, V4&,
 
 template void Resampler::copy<V5>(const V5&, State&);
 template void LUpdater<NPZDModel<> >::update<V5,V4>(const V5&, V4&);
+template void OUpdater<NPZDModel<> >::update<V2>(const V2&, const int);
+template void OUpdater<NPZDModel<> >::update<V5>(const V5&, const int);
 
 #endif

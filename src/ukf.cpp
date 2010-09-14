@@ -83,7 +83,7 @@ int main(int argc, char* argv[]) {
   NPZDModel<> m;
 
   /* state and intermediate results */
-  unsigned P = 2*(m.getNetSize(D_NODE) + m.getNetSize(C_NODE) + m.getNetSize(R_NODE)) + 1;
+  const int P = calcUnscentedKalmanFilterStateSize(m);
   State s(m, P);
 
   /* inputs */
