@@ -134,7 +134,9 @@ int main(int argc, char* argv[]) {
   bi_omp_init();
   bi_ode_init(1.0, 1.0e-3, 1.0e-3);
   NcError ncErr(NcError::silent_nonfatal);
-  cudaFuncSetCacheConfig("_ZN2bi10kernelRK43I9NPZDModelILj1ELj1ELj1EEEEvdd", cudaFuncCachePreferL1);
+
+  /* can cause "invalid device function" error if not correct mangled name */
+  //cudaFuncSetCacheConfig("_ZN2bi10kernelRK43I9NPZDModelILj1ELj1ELj1EEEEvdd", cudaFuncCachePreferL1);
 
   /* random number generator */
   Random rng(SEED);
@@ -146,37 +148,9 @@ int main(int argc, char* argv[]) {
   const int NC = m.getNetSize(C_NODE);
 
   /* local proposals */
-  host_matrix<> Sigma(NP,NP);
-  Sigma.clear();
-  BOOST_AUTO(d, diagonal(Sigma));
-
-  d(m.getNode(P_NODE, "Kw")->getId()) = 0.2;
-  d(m.getNode(P_NODE, "KCh")->getId()) = 0.3;
-  d(m.getNode(P_NODE, "Dsi")->getId()) = 1.0;
-  d(m.getNode(P_NODE, "ZgD")->getId()) = 0.1;
-  d(m.getNode(P_NODE, "PDF")->getId()) = 0.2;
-  d(m.getNode(P_NODE, "ZDF")->getId()) = 0.1;
-  d(m.getNode(P_NODE, "muPgC")->getId()) = 0.63;
-  d(m.getNode(P_NODE, "muPgR")->getId()) = 0.2;
-  d(m.getNode(P_NODE, "muPCh")->getId()) = 0.37;
-  d(m.getNode(P_NODE, "muPaN")->getId()) = 1.0;
-  d(m.getNode(P_NODE, "muPRN")->getId()) = 0.3;
-  d(m.getNode(P_NODE, "muZin")->getId()) = 0.7;
-  d(m.getNode(P_NODE, "muZCl")->getId()) = 1.3;
-  d(m.getNode(P_NODE, "muZgE")->getId()) = 0.25;
-  d(m.getNode(P_NODE, "muDre")->getId()) = 0.5;
-  d(m.getNode(P_NODE, "muZmQ")->getId()) = 1.0;
-
-  int i;
-  std::set<int> logs;
-  for (i = 0; i < NP; ++i) {
-    if (i != m.getNode(P_NODE, "Dsi")->getId()) { // all log-normal besides this
-      logs.insert(i);
-    }
-  }
-
-  scal(SCALE, d);
-  element_square(d.begin(), d.end(), d.begin()); // square to get variances
+  host_matrix<> Sigma(m.getPrior(P_NODE).cov());
+  std::set<int> logs(m.getPrior(P_NODE).getLogs());
+  scal(SCALE, diagonal(Sigma));
   AdditiveExpGaussianPdf<> q(Sigma, logs);
   ExpGaussianMixturePdf<> r(NP, logs);
   r.add(m.getPrior(P_NODE));
@@ -220,23 +194,24 @@ int main(int argc, char* argv[]) {
   StratifiedResampler resam(s, rng);
   BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, &tmp));
   BOOST_AUTO(mcmc, createParticleMCMC(m, q, s, rng, filter, T, &out));
-  BOOST_AUTO(dmcmc, createDistributedMCMC(m, r, rng, mcmc));
+  //BOOST_AUTO(dmcmc, createDistributedMCMC(m, r, rng, mcmc));
 
   /* and go... */
   inInit.read(s);
   m.getPrior(P_NODE).samples(rng, s.pHostState); // initialise chain
-  //mcmc->sample(C, lambda, SD, A);
-  dmcmc->sample(C, lambda);
+  mcmc->sample(C, lambda, SD, A);
+  //dmcmc->sample(C, lambda);
 
   /* output diagnostics */
   std::cout << "Rank " << rank << ": " << mcmc->getNumAccepted() << " of " <<
       mcmc->getNumSteps() << " proposals accepted" << std::endl;
-  std::cout << "Rank " << rank << ": " << dmcmc->getNumRemoteAccepted() <<
-      " of " << dmcmc->getNumRemote() << " remote accepted" << std::endl;
+  //std::cout << "Rank " << rank << ": " << dmcmc->getNumRemoteAccepted() <<
+  //    " of " << dmcmc->getNumRemote() << " remote accepted" << std::endl;
   //std::cout << "Rank " << rank << ": " << dmcmc->getSent() <<
   //    " non-local sent" << std::endl;
 
   delete mcmc;
+  //delete dmcmc;
   delete filter;
 
   return 0;
