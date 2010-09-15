@@ -371,6 +371,9 @@ print "\t\$(LINKER) -o $BUILDDIR/gibbs \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/dev
 print "\$(BUILDDIR)/stitch: \$(BUILDDIR)/stitch.cpp.o $models\n";
 print "\t\$(LINKER) -o $BUILDDIR/stitch \$(BUILDDIR)/stitch.cpp.o $models \$(LINKFLAGS)\n\n";
 
+print "\$(BUILDDIR)/likelihood: \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/likelihood.cpp.o $models\n";
+print "\t\$(LINKER) -o $BUILDDIR/likelihood \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/likelihood.cpp.o $models \$(LINKFLAGS)\n\n";
+
 # Targets
 print join("\n", @commands);
 print "\n";
