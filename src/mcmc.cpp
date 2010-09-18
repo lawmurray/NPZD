@@ -15,8 +15,10 @@
 #include "bi/method/DistributedMCMC.hpp"
 #include "bi/method/ParticleMCMC.hpp"
 #include "bi/method/AuxiliaryParticleFilter.hpp"
+#include "bi/method/UnscentedKalmanFilter.hpp"
 #include "bi/method/StratifiedResampler.hpp"
 #include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
+#include "bi/buffer/UnscentedKalmanFilterNetCDFBuffer.hpp"
 #include "bi/buffer/ParticleMCMCNetCDFBuffer.hpp"
 #include "bi/buffer/SparseInputNetCDFBuffer.hpp"
 #include "bi/pdf/AdditiveExpGaussianPdf.hpp"
@@ -156,6 +158,7 @@ int main(int argc, char* argv[]) {
   r.add(m.getPrior(P_NODE));
 
   /* state */
+  P = calcUnscentedKalmanFilterStateSize(m);
   State s(m, P);
 
   /* inputs */
@@ -165,7 +168,7 @@ int main(int argc, char* argv[]) {
 
   /* outputs */
   std::stringstream file;
-  const int Y = inObs.numUniqueTimes(T);
+  const int Y = inObs.countUniqueTimes(T);
 
   file.str("");
   file << OUTPUT_FILE << '.' << rank;
@@ -173,7 +176,8 @@ int main(int argc, char* argv[]) {
 
   file.str("");
   file << FILTER_FILE << '.' << rank;
-  ParticleFilterNetCDFBuffer tmp(m, P, Y, file.str(), NetCDFBuffer::REPLACE);
+  //ParticleFilterNetCDFBuffer tmp(m, P, Y, file.str(), NetCDFBuffer::REPLACE);
+  UnscentedKalmanFilterNetCDFBuffer tmp(m, P, Y, file.str(), NetCDFBuffer::REPLACE);
 
   /* temperature */
   real lambda;
@@ -192,7 +196,8 @@ int main(int argc, char* argv[]) {
 
   /* set up resampler, filter and MCMC */
   StratifiedResampler resam(s, rng);
-  BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, &tmp));
+  //BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, &tmp));
+  BOOST_AUTO(filter, createUnscentedKalmanFilter(m, s, &inForce, &inObs, &tmp));
   BOOST_AUTO(mcmc, createParticleMCMC(m, q, s, rng, filter, T, &out));
   //BOOST_AUTO(dmcmc, createDistributedMCMC(m, r, rng, mcmc));
 
