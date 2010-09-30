@@ -50,7 +50,7 @@
 ,"thetaZgE",,"\theta ZgE","x: 0.25","Constant",,
 ,"muDre",,"\mu Dre","mu0: log(0.1); sigma0: 0.5; f: muDre","Discrete-time variable","muDre","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
 ,"thetaDre",,"\theta Dre","x: 0.5","Constant",,
-,"muZmQ",,"\mu ZmQ","mu0: log(0.01); sigma0: 1.0; f: muZmQ","Discrete-time variable","muZmQ","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
+,"muZmQ",,"\mu ZmQ","x: 0.01","Constant",,
 ,"thetaZmQ",,"\theta ZmQ","x: 0.5","Constant",,
 ,"rPgC",,"rPgC",,"Random variate",,"IS_R_NODE; IS_GAUSSIAN_VARIATE"
 ,"rPgR",,"rPgR",,"Random variate",,"IS_R_NODE; IS_GAUSSIAN_VARIATE"

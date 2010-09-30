@@ -42,7 +42,7 @@
 ,"thetaPaN",,"\theta PaN","x: 1.0","Constant",,
 ,"muPRN",,"\mu PRN","mu0: log(0.25); sigma0: 0.3; f: muPRN","Discrete-time variable","muPRN","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
 ,"thetaPRN",,"\theta PRN","x: 0.3","Constant",,
-,"muZin",,"\mu Zin","mu0: log(4.7); sigma0: 0.7; f: muZin","Discrete-time variable","muZin","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
+,"muZin",,"\mu Zin","x: 4.7","Constant",,
 ,"thetaZin",,"\theta Zin","x: 0.7","Constant",,
 ,"muZCl",,"\mu ZCl","mu0: log(0.2); sigma0: 1.3; f: muZCl","Discrete-time variable","muZCl","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
 ,"thetaZCl",,"\theta ZCl","x: 1.31","Constant",,

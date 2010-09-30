@@ -1,0 +1,13 @@
+"Name","Description","Formulae","Category","Dependencies","Traits"
+"ZCl","Zooplankton clearance rate","x: 0.25","Constant",,
+"ZgE","Zooplankton growth efficiency","x: 0.3","Constant",,
+"ZmL","Zooplankton linear mortality","x: 0.1","Constant",,
+"ZmQ","Zooplankton quadratic mortality","x: 0.1","Constant",,
+"EPg",,"mu0: 0.25; sigma0: 0.5","Parameter",,"IS_P_NODE; HAS_GAUSSIAN_PRIOR"
+"VPg",,"mu0: 0.1; sigma0: 0.5","Parameter",,"IS_P_NODE; HAS_GAUSSIAN_PRIOR"
+"rPg",,,"Random variate",,"IS_R_NODE; IS_GAUSSIAN_VARIATE"
+"Pg","Phytoplankton growth rate","f: VPg*rPg+EPg; mu0: 0.25; sigma0: 0.1","Discrete-time variable","EPg; VPg; rPg","IS_D_NODE; IS_GENERIC_FORWARD; HAS_GAUSSIAN_PRIOR"
+"crap1",,"s: 1","Static variable",,"IS_S_NODE; IS_GENERIC_STATIC"
+"P",,"dfdt: Pg*P - ZCl*P*Z; mu0: 2; sigma0: 0.2","Continuous-time variable","Pg; P; ZCl; Z","IS_C_NODE; IS_ODE_FORWARD; HAS_GAUSSIAN_PRIOR"
+"Z",,"dfdt: ZCl*ZgE*P*Z - ZmL*Z - ZmQ*Z*Z; mu0: 2; sigma0: 0.1","Continuous-time variable","ZCl; ZgE; ZmL; ZmQ; Z; P","IS_C_NODE; IS_ODE_FORWARD; HAS_GAUSSIAN_PRIOR"
+"P_obs",,"mu: log(P); sigma: 0.1","Observation","P","IS_O_NODE; IS_LOG_NORMAL_LIKELIHOOD; HAS_COMMON_SIGMA"
