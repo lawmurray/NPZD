@@ -16,6 +16,8 @@
 #include "bi/method/ParticleMCMC.hpp"
 #include "bi/method/AuxiliaryParticleFilter.hpp"
 #include "bi/method/StratifiedResampler.hpp"
+#include "bi/method/MultinomialResampler.hpp"
+#include "bi/method/MetropolisResampler.hpp"
 #include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
 #include "bi/buffer/ParticleMCMCNetCDFBuffer.hpp"
 #include "bi/buffer/SparseInputNetCDFBuffer.hpp"
@@ -24,6 +26,8 @@
 
 #ifdef USE_CPU
 #include "bi/method/StratifiedResampler.inl"
+#include "bi/method/MultinomialResampler.inl"
+#include "bi/method/MetropolisResampler.inl"
 #include "bi/method/Resampler.inl"
 #endif
 
@@ -112,7 +116,7 @@ int main(int argc, char* argv[]) {
   std::cerr << "Rank " << rank << ": using device " << dev << std::endl;
   #endif
   bi_omp_init();
-  bi_ode_init(1.0, 1.0e-3, 1.0e-3);
+  bi_ode_init(1.0, 1.0e-6, 1.0e-3);
   NcError ncErr(NcError::silent_nonfatal);
 
   /* can cause "invalid device function" error if not correct mangled name */
@@ -137,7 +141,7 @@ int main(int argc, char* argv[]) {
 
   /* outputs */
   std::stringstream file;
-  const int Y = inObs.numUniqueTimes(T);
+  const int Y = inObs.countUniqueTimes(T);
 
   file.str("");
   file << OUTPUT_FILE << '.' << rank;
@@ -149,12 +153,16 @@ int main(int argc, char* argv[]) {
 
   /* set up resampler, filter and MCMC */
   StratifiedResampler resam(s, rng);
+  //MultinomialResampler resam(s, rng);
+  //MetropolisResampler resam(s, rng, 5);
   BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, &tmp));
   BOOST_AUTO(mcmc, createParticleMCMC(m, m.getPrior(P_NODE), s, rng, filter, T, &out));
 
   /* and go... */
   inInit.read(s);
-  m.getPrior(P_NODE).samples(rng, s.pHostState); // initialise chain
+  std::cin >> s.pHostState(0,0) >> s.pHostState(0,1);
+  //m.getPrior(P_NODE).samples(rng, s.pHostState); // initialise chain
+  s.upload(P_NODE);
 
   /* using high-level interface */
   //mcmc->sample(C);
@@ -165,7 +173,9 @@ int main(int argc, char* argv[]) {
   mcmc->init();
   mcmc->output(0);
   for (c = 1; c < C; ++c) {
-    mcmc->m.getPrior(P_NODE).sample(rng, theta);
+    //mcmc->m.getPrior(P_NODE).sample(rng, theta);
+    std::cin >> theta(0) >> theta(1);
+
     mcmc->propose(theta);
     mcmc->likelihood();
     mcmc->accept();

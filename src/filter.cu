@@ -11,6 +11,11 @@
 
 #include "bi/method/StratifiedResampler.hpp"
 #include "bi/method/StratifiedResampler.inl"
+#include "bi/method/MultinomialResampler.hpp"
+#include "bi/method/MultinomialResampler.inl"
+#include "bi/method/MetropolisResampler.hpp"
+#include "bi/method/MetropolisResampler.inl"
+#include "bi/cuda/method/MetropolisResampler.cuh"
 #include "bi/method/Resampler.inl"
 #include "bi/cuda/method/Resampler.cuh"
 
@@ -30,8 +35,6 @@
 #include "bi/cuda/updater/CUpdater.cuh"
 #include "bi/cuda/updater/LUpdater.cuh"
 #include "bi/cuda/updater/OUpdater.cuh"
-
-#include "bi/cuda/math/vector.hpp"
 
 using namespace bi;
 
@@ -62,6 +65,16 @@ template void StratifiedResampler::resample<V4,V5>(V4&, V5&);
 template void StratifiedResampler::resample<V3,V4,V5>(const V3&, V4&, V5&);
 template void StratifiedResampler::resample<V4,V5>(const int, V4&, V5&);
 template void StratifiedResampler::resample<V3,V4,V5>(const int, const V3&, V4&, V5&);
+
+template void MultinomialResampler::resample<V4,V5>(V4&, V5&);
+template void MultinomialResampler::resample<V3,V4,V5>(const V3&, V4&, V5&);
+template void MultinomialResampler::resample<V4,V5>(const int, V4&, V5&);
+template void MultinomialResampler::resample<V3,V4,V5>(const int, const V3&, V4&, V5&);
+
+template void MetropolisResampler::resample<V4,V5>(V4&, V5&);
+template void MetropolisResampler::resample<V3,V4,V5>(const V3&, V4&, V5&);
+template void MetropolisResampler::resample<V4,V5>(const int, V4&, V5&);
+template void MetropolisResampler::resample<V3,V4,V5>(const int, const V3&, V4&, V5&);
 
 template void Resampler::copy<V5>(const V5&, State&);
 template void LUpdater<NPZDModel<> >::update<V5,V4>(const V5&, V4&);

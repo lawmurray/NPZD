@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
   /* output */
   UnscentedKalmanFilterNetCDFBuffer* out;
   if (OUTPUT) {
-    out = new UnscentedKalmanFilterNetCDFBuffer(m, P, inObs.numUniqueTimes(T),
+    out = new UnscentedKalmanFilterNetCDFBuffer(m, P, inObs.countUniqueTimes(T),
         OUTPUT_FILE, NetCDFBuffer::REPLACE);
   } else {
     out = NULL;

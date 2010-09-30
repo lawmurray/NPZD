@@ -17,6 +17,7 @@
 #include "bi/method/AuxiliaryParticleFilter.hpp"
 #include "bi/method/UnscentedKalmanFilter.hpp"
 #include "bi/method/StratifiedResampler.hpp"
+#include "bi/method/MultinomialResampler.hpp"
 #include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
 #include "bi/buffer/UnscentedKalmanFilterNetCDFBuffer.hpp"
 #include "bi/buffer/ParticleMCMCNetCDFBuffer.hpp"
@@ -26,6 +27,7 @@
 
 #ifdef USE_CPU
 #include "bi/method/StratifiedResampler.inl"
+#include "bi/method/MultinomialResampler.inl"
 #include "bi/method/Resampler.inl"
 #endif
 
@@ -53,13 +55,15 @@ int main(int argc, char* argv[]) {
   /* handle command line arguments */
   real T, H, MIN_ESS;
   double SCALE, TEMP, MIN_TEMP, MAX_TEMP, ALPHA, SD;
-  int P, INIT_NS, FORCE_NS, OBS_NS, B, I, C, A, L;
+  int P, INIT_NS, FORCE_NS, OBS_NS, C, A, L;
   int SEED;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, FILTER_FILE, OUTPUT_FILE,
-      PROPOSAL_FILE, RESAMPLER;
+      PROPOSAL_FILE, FILTER, RESAMPLER;
 
   po::options_description mcmcOptions("MCMC options");
   mcmcOptions.add_options()
+    ("type", po::value(&FILTER)->default_value("ukf"),
+        "type of filter to use, 'ukf' or 'pf'")
     (",C", po::value(&C), "no. samples to draw")
     (",A", po::value(&A)->default_value(100),
         "no. samples to drawn before adapting proposal")
@@ -146,19 +150,26 @@ int main(int argc, char* argv[]) {
   /* model */
   NPZDModel<> m;
   const int NP = m.getNetSize(P_NODE);
-  const int ND = m.getNetSize(D_NODE);
-  const int NC = m.getNetSize(C_NODE);
 
   /* local proposals */
   host_matrix<> Sigma(m.getPrior(P_NODE).cov());
   std::set<int> logs(m.getPrior(P_NODE).getLogs());
+
   scal(SCALE, diagonal(Sigma));
+  /* special case for PZ model */
+//  diagonal(Sigma)(0) = pow(0.01,2);
+//  diagonal(Sigma)(1) = pow(0.005,2);
+
   AdditiveExpGaussianPdf<> q(Sigma, logs);
+  /* special case for PZ model */
+//  AdditiveExpGaussianPdf<> q(Sigma);
   ExpGaussianMixturePdf<> r(NP, logs);
   r.add(m.getPrior(P_NODE));
 
   /* state */
-  P = calcUnscentedKalmanFilterStateSize(m);
+  if (FILTER.compare("ukf") == 0) {
+    P = calcUnscentedKalmanFilterStateSize(m);
+  }
   State s(m, P);
 
   /* inputs */
@@ -173,11 +184,6 @@ int main(int argc, char* argv[]) {
   file.str("");
   file << OUTPUT_FILE << '.' << rank;
   ParticleMCMCNetCDFBuffer out(m, C, Y, file.str(), NetCDFBuffer::REPLACE);
-
-  file.str("");
-  file << FILTER_FILE << '.' << rank;
-  //ParticleFilterNetCDFBuffer tmp(m, P, Y, file.str(), NetCDFBuffer::REPLACE);
-  UnscentedKalmanFilterNetCDFBuffer tmp(m, P, Y, file.str(), NetCDFBuffer::REPLACE);
 
   /* temperature */
   real lambda;
@@ -194,30 +200,64 @@ int main(int argc, char* argv[]) {
   }
   std::cerr << "Rank " << rank << ": using temperature " << lambda << std::endl;
 
-  /* set up resampler, filter and MCMC */
-  StratifiedResampler resam(s, rng);
-  //BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, &tmp));
-  BOOST_AUTO(filter, createUnscentedKalmanFilter(m, s, &inForce, &inObs, &tmp));
-  BOOST_AUTO(mcmc, createParticleMCMC(m, q, s, rng, filter, T, &out));
-  //BOOST_AUTO(dmcmc, createDistributedMCMC(m, r, rng, mcmc));
-
-  /* and go... */
+  /* initialise chain */
   inInit.read(s);
   m.getPrior(P_NODE).samples(rng, s.pHostState); // initialise chain
-  mcmc->sample(C, lambda, SD, A);
-  //dmcmc->sample(C, lambda);
+  /* special case for PZ model */
+//  s.pHostState(0,0) = 0.2;
+//  s.pHostState(0,1) = 0.15;
 
-  /* output diagnostics */
-  std::cout << "Rank " << rank << ": " << mcmc->getNumAccepted() << " of " <<
-      mcmc->getNumSteps() << " proposals accepted" << std::endl;
-  //std::cout << "Rank " << rank << ": " << dmcmc->getNumRemoteAccepted() <<
-  //    " of " << dmcmc->getNumRemote() << " remote accepted" << std::endl;
-  //std::cout << "Rank " << rank << ": " << dmcmc->getSent() <<
-  //    " non-local sent" << std::endl;
+  s.upload(P_NODE);
 
-  delete mcmc;
-  //delete dmcmc;
-  delete filter;
+  /* set up resampler, filter and MCMC */
+  if (FILTER.compare("ukf") == 0) {
+    file.str("");
+    file << FILTER_FILE << '.' << rank;
+    UnscentedKalmanFilterNetCDFBuffer tmp(m, P, Y, file.str(), NetCDFBuffer::REPLACE);
+
+    BOOST_AUTO(filter, createUnscentedKalmanFilter(m, s, &inForce, &inObs, &tmp));
+    BOOST_AUTO(mcmc, createParticleMCMC(m, q, s, rng, filter, T, &out));
+    //BOOST_AUTO(dmcmc, createDistributedMCMC(m, r, rng, mcmc));
+
+    mcmc->sample(C, lambda, SD, A);
+    //dmcmc->sample(C, lambda);
+
+    /* output diagnostics */
+    std::cout << "Rank " << rank << ": " << mcmc->getNumAccepted() << " of " <<
+        mcmc->getNumSteps() << " proposals accepted" << std::endl;
+    //std::cout << "Rank " << rank << ": " << dmcmc->getNumRemoteAccepted() <<
+    //    " of " << dmcmc->getNumRemote() << " remote accepted" << std::endl;
+    //std::cout << "Rank " << rank << ": " << dmcmc->getSent() <<
+    //    " non-local sent" << std::endl;
+
+    delete mcmc;
+    //delete dmcmc;
+    delete filter;
+  } else {
+    file.str("");
+    file << FILTER_FILE << '.' << rank;
+    ParticleFilterNetCDFBuffer tmp(m, P, Y, file.str(), NetCDFBuffer::REPLACE);
+
+    StratifiedResampler resam(s, rng);
+    BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, &tmp));
+    BOOST_AUTO(mcmc, createParticleMCMC(m, q, s, rng, filter, T, &out));
+    //BOOST_AUTO(dmcmc, createDistributedMCMC(m, r, rng, mcmc));
+
+    mcmc->sample(C, lambda, SD, A);
+    //dmcmc->sample(C, lambda);
+
+    /* output diagnostics */
+    std::cout << "Rank " << rank << ": " << mcmc->getNumAccepted() << " of " <<
+        mcmc->getNumSteps() << " proposals accepted" << std::endl;
+    //std::cout << "Rank " << rank << ": " << dmcmc->getNumRemoteAccepted() <<
+    //    " of " << dmcmc->getNumRemote() << " remote accepted" << std::endl;
+    //std::cout << "Rank " << rank << ": " << dmcmc->getSent() <<
+    //    " non-local sent" << std::endl;
+
+    delete mcmc;
+    //delete dmcmc;
+    delete filter;
+  }
 
   return 0;
 }
