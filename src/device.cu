@@ -6,6 +6,9 @@
 #include <vector>
 
 int chooseDevice(const int rank) {
+  #ifdef USE_CPU
+  return -1;
+  #else
   int dev, num;
   cudaDeviceProp prop;
   std::vector<int> valid;
@@ -25,4 +28,5 @@ int chooseDevice(const int rank) {
   CUDA_CHECKED_CALL(cudaGetDevice(&dev));
 
   return dev;
+  #endif
 }
