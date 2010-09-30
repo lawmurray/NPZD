@@ -236,25 +236,26 @@ int main(int argc, char* argv[]) {
       scal(SCALE, column(Sigma, j));
     }
     //////// add next two lines for PZ model ////////
-    //diagonal(Sigma)(0) = pow(0.01,2);
-    //diagonal(Sigma)(1) = pow(0.005,2);
+    diagonal(Sigma)(0) = pow(0.01,2);
+    diagonal(Sigma)(1) = pow(0.005,2);
+
     q.setCov(Sigma);
 
     /* initialise chain from file... */
-    inInit.read(s);
+    //inInit.read(s);
 
     /* ...or prior... */
-    m.getPrior(P_NODE).samples(rng, s.pHostState);
+    //m.getPrior(P_NODE).samples(rng, s.pHostState);
 
     /* ...or special case */
     //////// add next two lines for PZ model ////////
-    //s.pHostState(0,0) = 0.2;
-    //s.pHostState(0,1) = 0.15;
+    s.pHostState(0,0) = 0.2;
+    s.pHostState(0,1) = 0.15;
   }
   s.upload(P_NODE);
 
   ///////// remove next line for PZ model ////////
-  q.setLogs(m.getPrior(P_NODE).getLogs());
+  //q.setLogs(m.getPrior(P_NODE).getLogs());
 
   /* remote proposal */
   //ExpGaussianMixturePdf<> r(NP, logs);

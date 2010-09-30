@@ -31,23 +31,22 @@ NPERNODE=1 # no. processes per node
 ##
 
 # MCMC settings
-T=1875.0 # time to simulate
-H=1.0 # initial step size
+T=200.0 # time to simulate
 SEED=20 # pseudorandom number seed
 SCALE=0.002 # scale of initial proposal relative to prior
 ALPHA=0.2 # proportion of proposals to be non-local
 SD=0.0 # adaptive proposal parameter (zero triggers default)
-C=100 # no. samples to draw
-A=100 # no. steps before adaptation
+C=2000 # no. samples to draw
+A=4000 # no. steps before adaptation
 MIN_TEMP=1.0 # minimum temperature (or temperature for single process)
 MAX_TEMP=1.0 # maximum temperature
-FILTER=ukf # filter type
+FILTER=pf # filter type
 
 # particle filter settings
 RESAMPLER=stratified # resampler to use, 'stratified' or 'metropolis'
 MIN_ESS=1.0 # minimum ESS to trigger resampling (not used presently)
 P=256 # no. trajectories
-L=1 # lookahead for auxiliary particle filter
+L=0 # lookahead for auxiliary particle filter
 
 # ODE settings
 H=1.0
@@ -55,14 +54,14 @@ EPS_ABS=1.0e-6
 EPS_REL=1.0e-3
 
 # input files, in $DATA_DIR
-#INIT_FILE=PZtest1_init.nc # initial values file
-#FORCE_FILE=C7_force.nc # forcings file
-#OBS_FILE=PZtest1_obs_gaussian.nc # observations file
-#PROPOSAL_FILE= # proposal file
-INIT_FILE=OSP_71_76_init.nc # initial values file
-FORCE_FILE=OSP_71_76_force_pad.nc # forcings file
-OBS_FILE=OSP_71_76_obs_pad.nc # observations file
-PROPOSAL_FILE=OSP_71_76_proposal.nc # proposal file
+INIT_FILE=PZtest1_init.nc # initial values file
+FORCE_FILE=C7_force.nc # forcings file
+OBS_FILE=PZtest1_obs_gaussian.nc # observations file
+PROPOSAL_FILE= # proposal file
+#INIT_FILE=OSP_71_76_init.nc # initial values file
+#FORCE_FILE=OSP_71_76_force_pad.nc # forcings file
+#OBS_FILE=OSP_71_76_obs_pad.nc # observations file
+#PROPOSAL_FILE=OSP_71_76_proposal.nc # proposal file
 
 # output file, in $RESULTS_DIR
 OUTPUT_FILE=$ID.nc
@@ -82,7 +81,8 @@ mpirun -npernode 1 cp $DATA_DIR/$FORCE_FILE $DATA_DIR/$OBS_FILE $MEM_DIR/.
 cat $ROOT/npzd/mcmc.sh
 
 # run
-mpirun -npernode $NPERNODE $ROOT/build/mcmc  --type $FILTER -P $P -T $T --min-temp $MIN_TEMP --max-temp $MAX_TEMP --alpha $ALPHA --sd $SD --scale $SCALE --min-ess $MIN_ESS --resampler $RESAMPLER -L $L -C $C -A $A -h $H --eps-abs $EPS_ABS --eps-rel $EPS_REL --seed $SEED --init-file $DATA_DIR/$INIT_FILE --force-file $MEM_DIR/$FORCE_FILE --obs-file $MEM_DIR/$OBS_FILE --proposal-file $DATA_DIR/$PROPOSAL_FILE --filter-file $FILTER_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file $TMP_DIR/$OUTPUT_FILE
+mpirun -npernode $NPERNODE $ROOT/build/mcmc  --type $FILTER -P $P -T $T --min-temp $MIN_TEMP --max-temp $MAX_TEMP --alpha $ALPHA --sd $SD --scale $SCALE --min-ess $MIN_ESS --resampler $RESAMPLER -L $L -C $C -A $A -h $H --eps-abs $EPS_ABS --eps-rel $EPS_REL --seed $SEED --init-file $DATA_DIR/$INIT_FILE --force-file $MEM_DIR/$FORCE_FILE --obs-file $MEM_DIR/$OBS_FILE --filter-file $MEM_DIR/$FILTER_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file $TMP_DIR/$OUTPUT_FILE
+# --proposal-file $DATA_DIR/$PROPOSAL_FILE
 
 # copy results from $TMP_DIR to $RESULTS_DIR
 mpirun -npernode 1 sh -c "cp $TMP_DIR/$OUTPUT_FILE"'*'" $RESULTS_DIR/."
