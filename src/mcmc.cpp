@@ -182,6 +182,7 @@ int main(int argc, char* argv[]) {
   NPZDModel<> m;
   const int NP = m.getNetSize(P_NODE);
   const int ND = m.getNetSize(D_NODE);
+  const int NC = m.getNetSize(C_NODE);
   if (SD <= 0.0) {
     SD = 2.4*2.4/NP;
   }
@@ -207,17 +208,24 @@ int main(int argc, char* argv[]) {
   AdditiveExpGaussianPdf<> q(NP);
   if (PROPOSAL_FILE.compare("") != 0) {
     /* construct from input file */
+    /**
+     * @todo We don't have the correct model specification for the online UKF
+     * run here, this will only work if ND + NC >= NP.
+     */
     UnscentedKalmanFilterNetCDFBuffer inProposal(m, PROPOSAL_FILE);
-    host_vector<real> mu(ND);
-    host_matrix<real> Sigma(ND,ND);
+    host_vector<real> mu(ND + NC);
+    host_matrix<real> Sigma(ND + NC, ND + NC);
+    host_matrix<real> transSigma(ND + NC, ND + NC);
 
-    inProposal.readStateMarginal(inProposal.size2() - 1, mu, Sigma);
+    inProposal.readStateMarginal(inProposal.size2() - 1, mu, transSigma);
+    transpose(transSigma, Sigma);
     for (j = 0; j < Sigma.size2(); ++j) {
       scal(SD, column(Sigma, j));
     }
     q.setCov(subrange(Sigma, 0, NP, 0, NP));
 
     /* initialise chain from mean */
+    expVec(mu, m.getPrior(P_NODE).getLogs());
     row(s.pHostState, 0) = subrange(mu, 0, NP);
   } else {
     /* construct from scaled prior */
