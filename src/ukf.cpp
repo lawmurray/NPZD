@@ -34,7 +34,8 @@ int main(int argc, char* argv[]) {
 
   /* openmp */
   bi_omp_init();
-  bi_ode_init(1.0, 1.0e-3, 1.0e-3);
+  bi_ode_init(1.0, 1.0e-6, 1.0e-3);
+  h_ode_set_nsteps(100);
 
   /* handle command line arguments */
   real T, H;
@@ -83,7 +84,7 @@ int main(int argc, char* argv[]) {
   NPZDModel<> m;
 
   /* state and intermediate results */
-  const int P = calcUnscentedKalmanFilterStateSize(m);
+  int P = 1;
   State s(m, P);
 
   /* inputs */
@@ -98,7 +99,7 @@ int main(int argc, char* argv[]) {
   /* output */
   UnscentedKalmanFilterNetCDFBuffer* out;
   if (OUTPUT) {
-    out = new UnscentedKalmanFilterNetCDFBuffer(m, P, inObs.countUniqueTimes(T),
+    out = new UnscentedKalmanFilterNetCDFBuffer(m, P, inObs.countUniqueTimes(T) + 1,
         OUTPUT_FILE, NetCDFBuffer::REPLACE);
   } else {
     out = NULL;
