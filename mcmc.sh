@@ -31,18 +31,18 @@ NPERNODE=1 # no. processes per node
 ##
 
 # MCMC settings
-T=200.0 # time to simulate
+T=415.0 # time to simulate
 SEED=20 # pseudorandom number seed
 SCALE=0.09 # scale of initial proposal relative to prior
 SD=0.09 # adaptive proposal parameter (zero triggers default)
-C=500 # no. samples to draw
-A=4000 # no. steps before adaptation
+C=10000 # no. samples to draw
+A=100000 # no. steps before adaptation
 MIN_TEMP=1.0 # minimum temperature (or temperature for single process)
 MAX_TEMP=1.0 # maximum temperature
 FILTER=ukf # filter type
 
 # distributed MCMC settings
-REMOTE=1 # 1 to enable remote proposals, 0 to disable
+REMOTE=0 # 1 to enable remote proposals, 0 to disable
 ALPHA=0.2 # remote proposal proportion
 BETA=0.1 # remote proposal update propensity
 R=50 # no. steps before incorporating remote proposal
@@ -50,8 +50,8 @@ R=50 # no. steps before incorporating remote proposal
 # particle filter settings
 RESAMPLER=stratified # resampler to use, 'stratified' or 'metropolis'
 MIN_ESS=1.0 # minimum ESS to trigger resampling (not used presently)
-P=256 # no. trajectories
-L=0 # lookahead for auxiliary particle filter
+P=1024 # no. trajectories
+L=1 # lookahead for auxiliary particle filter
 
 # ODE settings
 H=1.0
