@@ -170,6 +170,7 @@ int main(int argc, char* argv[]) {
   std::cerr << "Rank " << rank << ": using device " << dev << std::endl;
   bi_omp_init();
   bi_ode_init(H, EPS_ABS, EPS_REL);
+  h_ode_set_nsteps(100);
   NcError ncErr(NcError::silent_nonfatal);
 
   /* can cause "invalid device function" error if not correct mangled name */
@@ -188,16 +189,13 @@ int main(int argc, char* argv[]) {
   }
 
   /* state */
-  if (FILTER.compare("ukf") == 0) {
-    P = calcUnscentedKalmanFilterStateSize(m);
-  }
   State s(m, P);
 
   /* inputs */
   SparseInputNetCDFBuffer inForce(m, InputBuffer::F_NODES, FORCE_FILE, FORCE_NS);
   SparseInputNetCDFBuffer inObs(m, InputBuffer::O_NODES, OBS_FILE, OBS_NS);
   SparseInputNetCDFBuffer inInit(m, InputBuffer::P_NODES, INIT_FILE, INIT_NS);
-  const int Y = inObs.countUniqueTimes(T);
+  const int Y = inObs.countUniqueTimes(T) + 1;
 
   /* outputs */
   std::stringstream file;
@@ -236,8 +234,8 @@ int main(int argc, char* argv[]) {
       scal(SCALE, column(Sigma, j));
     }
     //////// add next two lines for PZ model ////////
-    diagonal(Sigma)(0) = pow(0.01,2);
-    diagonal(Sigma)(1) = pow(0.005,2);
+//    diagonal(Sigma)(0) = pow(0.01,2);
+//    diagonal(Sigma)(1) = pow(0.005,2);
 
     q.setCov(Sigma);
 
@@ -249,13 +247,13 @@ int main(int argc, char* argv[]) {
 
     /* ...or special case */
     //////// add next two lines for PZ model ////////
-    s.pHostState(0,0) = 0.2;
-    s.pHostState(0,1) = 0.15;
+//    s.pHostState(0,0) = 0.2;
+//    s.pHostState(0,1) = 0.15;
   }
   s.upload(P_NODE);
 
   ///////// remove next line for PZ model ////////
-  //q.setLogs(m.getPrior(P_NODE).getLogs());
+  q.setLogs(m.getPrior(P_NODE).getLogs());
 
   /* remote proposal */
   //ExpGaussianMixturePdf<> r(NP, logs);
