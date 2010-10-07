@@ -44,6 +44,18 @@
 #include <string>
 #include <sys/time.h>
 
+/**
+ * @def SAMPLE
+ *
+ * Macro to call appropriate sampling function.
+ */
+#define SAMPLE \
+   if (REMOTE) { \
+     distributedSample(m, q, r, s, rng, filter, T, &out, C, R, ALPHA, BETA, lambda, SD, A); \
+   } else { \
+     sample(m, q, s, rng, filter, T, &out, C, lambda, SD, A); \
+   }
+
 namespace po = boost::program_options;
 namespace mpi = boost::mpi;
 
@@ -56,6 +68,14 @@ template<class B, class Q1, class F, class IO1>
 void sample(B& m, Q1& q, State& s, Random& rng, F* filter, const real T,
     IO1* out, const int C, const real lambda, const real SD, const int A);
 
+/**
+ * Distributed sample using particular filter, resampler and remote proposal.
+ */
+template<class B, class Q1, class Q2, class F, class IO1>
+void distributedSample(B& m, Q1& q, Q2& r, State& s, Random& rng, F* filter, const real T,
+    IO1* out, const int C, const int R, const real alpha, const real beta,
+    const real lambda, const real SD, const int A);
+
 int main(int argc, char* argv[]) {
   int j;
 
@@ -67,8 +87,9 @@ int main(int argc, char* argv[]) {
 
   /* handle command line arguments */
   real T, H, MIN_ESS, EPS_REL, EPS_ABS;
-  double SCALE, TEMP, MIN_TEMP, MAX_TEMP, ALPHA, SD;
-  int P, INIT_NS, FORCE_NS, OBS_NS, C, A, L, J, SEED;
+  double SCALE, TEMP, MIN_TEMP, MAX_TEMP, ALPHA, BETA, SD;
+  int P, INIT_NS, FORCE_NS, OBS_NS, C, A, R, L, J, SEED;
+  bool REMOTE;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, FILTER_FILE, OUTPUT_FILE,
       PROPOSAL_FILE, FILTER, RESAMPLER;
 
@@ -76,15 +97,24 @@ int main(int argc, char* argv[]) {
   mcmcOptions.add_options()
     (",C", po::value(&C), "no. samples to draw")
     (",A", po::value(&A)->default_value(100),
-        "no. samples to drawn before adapting proposal")
+        "no. samples to draw before adapting proposal")
     ("temp", po::value(&TEMP),
         "temperature of chain, if min-temp and max-temp not given")
     ("min-temp", po::value(&MIN_TEMP)->default_value(1.0),
         "minimum temperature in parallel tempering pool")
     ("max-temp", po::value(&MAX_TEMP),
-        "maximum temperature in parallel tempering pool")
-    ("alpha", po::value(&ALPHA)->default_value(0.05),
-        "probability of non-local proposal at each step");
+        "maximum temperature in parallel tempering pool");
+
+  po::options_description dmcmcOptions("Distributed MCMC options");
+  dmcmcOptions.add_options()
+    ("remote", po::value(&REMOTE)->default_value(false),
+        "use remote proposal")
+    (",R", po::value(&R)->default_value(100),
+        "no. samples to draw before incorporating remote proposal")
+    ("alpha", po::value(&ALPHA)->default_value(0.1),
+        "remote proposal mixing proportion")
+    ("beta", po::value(&BETA)->default_value(0.2),
+          "remote proposal update propensity");
 
   po::options_description proposalOptions("Proposal options");
   proposalOptions.add_options()
@@ -151,7 +181,7 @@ int main(int argc, char* argv[]) {
       ("help", "produce help message")
       ("seed", po::value(&SEED)->default_value(0),
           "pseudorandom number seed");
-  desc.add(mcmcOptions).add(proposalOptions).add(filterOptions);
+  desc.add(mcmcOptions).add(dmcmcOptions).add(proposalOptions).add(filterOptions);
   desc.add(pfOptions).add(odeOptions).add(ioOptions);
 
   po::variables_map vm;
@@ -256,8 +286,8 @@ int main(int argc, char* argv[]) {
   q.setLogs(m.getPrior(P_NODE).getLogs());
 
   /* remote proposal */
-  //ExpGaussianMixturePdf<> r(NP, logs);
-  //r.add(m.getPrior(P_NODE));
+  ExpGaussianMixturePdf<> r(NP, m.getPrior(P_NODE).getLogs());
+  r.add(m.getPrior(P_NODE));
 
   /* temperature of chain */
   real lambda;
@@ -274,31 +304,30 @@ int main(int argc, char* argv[]) {
   }
   std::cerr << "Rank " << rank << ": using temperature " << lambda << std::endl;
 
-  /* set up MCMC */
   file.str("");
   file << FILTER_FILE << '.' << rank;
 
   if (FILTER.compare("ukf") == 0) {
     UnscentedKalmanFilterNetCDFBuffer tmp(m, P, Y, file.str(), NetCDFBuffer::REPLACE);
     BOOST_AUTO(filter, createUnscentedKalmanFilter(m, s, &inForce, &inObs, &tmp));
-    sample(m, q, s, rng, filter, T, &out, C, lambda, SD, A);
+    SAMPLE
     delete filter;
   } else {
     ParticleFilterNetCDFBuffer tmp(m, P, Y, file.str(), NetCDFBuffer::REPLACE);
     if (RESAMPLER.compare("stratified") == 0) {
       StratifiedResampler resam(s, rng);
       BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, &tmp));
-      sample(m, q, s, rng, filter, T, &out, C, lambda, SD, A);
+      SAMPLE
       delete filter;
     } else if (RESAMPLER.compare("multinomial") == 0) {
       MultinomialResampler resam(s, rng);
       BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, &tmp));
-      sample(m, q, s, rng, filter, T, &out, C, lambda, SD, A);
+      SAMPLE
       delete filter;
     } else if (RESAMPLER.compare("metropolis") == 0) {
       MetropolisResampler resam(s, rng, J);
       BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, &tmp));
-      sample(m, q, s, rng, filter, T, &out, C, lambda, SD, A);
+      SAMPLE
       delete filter;
     }
   }
@@ -313,18 +342,32 @@ void sample(B& m, Q1& q, State& s, Random& rng, F* filter, const real T,
   const int rank = world.rank();
 
   BOOST_AUTO(mcmc, createParticleMCMC(m, q, s, rng, filter, T, out));
-  //BOOST_AUTO(dmcmc, createDistributedMCMC(m, r, rng, mcmc));
 
   mcmc->sample(C, lambda, SD, A);
-  //dmcmc->sample(C, lambda);
 
   std::cout << "Rank " << rank << ": " << mcmc->getNumAccepted() << " of " <<
       mcmc->getNumSteps() << " proposals accepted" << std::endl;
-  //std::cout << "Rank " << rank << ": " << dmcmc->getNumRemoteAccepted() <<
-  //    " of " << dmcmc->getNumRemote() << " remote accepted" << std::endl;
-  //std::cout << "Rank " << rank << ": " << dmcmc->getSent() <<
-  //    " non-local sent" << std::endl;
 
-  //delete dmcmc;
+  delete mcmc;
+}
+
+template<class B, class Q1, class Q2, class F, class IO1>
+void distributedSample(B& m, Q1& q, Q2& r, State& s, Random& rng, F* filter, const real T,
+    IO1* out, const int C, const int R, const real alpha, const real beta,
+    const real lambda, const real SD, const int A) {
+  mpi::communicator world;
+  const int rank = world.rank();
+
+  BOOST_AUTO(mcmc, createParticleMCMC(m, q, s, rng, filter, T, out));
+  BOOST_AUTO(dmcmc, createDistributedMCMC(m, r, rng, mcmc));
+
+  dmcmc->sample(C, R, alpha, beta, lambda);
+
+  std::cout << "Rank " << rank << ": " << mcmc->getNumAccepted() << " of " <<
+      mcmc->getNumSteps() << " proposals accepted" << std::endl;
+  std::cout << "Rank " << rank << ": " << dmcmc->getNumRemoteAccepted() <<
+      " of " << dmcmc->getNumRemote() << " remote accepted" << std::endl;
+
+  delete dmcmc;
   delete mcmc;
 }

@@ -23,7 +23,7 @@ DATA_DIR=$ROOT/data
 
 LD_LIBRARY_PATH=$ROOT/../bi/build:$LD_LIBRARY_PATH
 
-export OMP_NUM_THREADS=4 # no. OpenMP threads per process
+export OMP_NUM_THREADS=2 # no. OpenMP threads per process
 NPERNODE=1 # no. processes per node
 
 ##
@@ -33,14 +33,19 @@ NPERNODE=1 # no. processes per node
 # MCMC settings
 T=200.0 # time to simulate
 SEED=20 # pseudorandom number seed
-SCALE=0.002 # scale of initial proposal relative to prior
-ALPHA=0.2 # proportion of proposals to be non-local
-SD=0.0 # adaptive proposal parameter (zero triggers default)
-C=2000 # no. samples to draw
+SCALE=0.09 # scale of initial proposal relative to prior
+SD=0.09 # adaptive proposal parameter (zero triggers default)
+C=500 # no. samples to draw
 A=4000 # no. steps before adaptation
 MIN_TEMP=1.0 # minimum temperature (or temperature for single process)
 MAX_TEMP=1.0 # maximum temperature
-FILTER=pf # filter type
+FILTER=ukf # filter type
+
+# distributed MCMC settings
+REMOTE=1 # 1 to enable remote proposals, 0 to disable
+ALPHA=0.2 # remote proposal proportion
+BETA=0.1 # remote proposal update propensity
+R=50 # no. steps before incorporating remote proposal
 
 # particle filter settings
 RESAMPLER=stratified # resampler to use, 'stratified' or 'metropolis'
@@ -54,10 +59,10 @@ EPS_ABS=1.0e-6
 EPS_REL=1.0e-3
 
 # input files, in $DATA_DIR
-INIT_FILE=PZtest1_init.nc # initial values file
-FORCE_FILE=C7_force.nc # forcings file
-OBS_FILE=PZtest1_obs_gaussian.nc # observations file
-PROPOSAL_FILE= # proposal file
+INIT_FILE=C7_initHP2.nc # initial values file
+FORCE_FILE=C7_force_pad.nc # forcings file
+OBS_FILE=C7_S1_obs_padHP2.nc # observations file
+PROPOSAL_FILE=C7_S1_proposal_padHP2.nc # proposal file
 #INIT_FILE=OSP_71_76_init.nc # initial values file
 #FORCE_FILE=OSP_71_76_force_pad.nc # forcings file
 #OBS_FILE=OSP_71_76_obs_pad.nc # observations file
@@ -72,7 +77,7 @@ FILTER_FILE=filter.nc
 # records to use from input files
 INIT_NS=0
 FORCE_NS=0
-OBS_NS=0
+OBS_NS=2
 
 # copy forcings and observations to memory file system, used repeatedly
 mpirun -npernode 1 cp $DATA_DIR/$FORCE_FILE $DATA_DIR/$OBS_FILE $MEM_DIR/.
@@ -81,8 +86,7 @@ mpirun -npernode 1 cp $DATA_DIR/$FORCE_FILE $DATA_DIR/$OBS_FILE $MEM_DIR/.
 cat $ROOT/npzd/mcmc.sh
 
 # run
-mpirun -npernode $NPERNODE $ROOT/build/mcmc  --type $FILTER -P $P -T $T --min-temp $MIN_TEMP --max-temp $MAX_TEMP --alpha $ALPHA --sd $SD --scale $SCALE --min-ess $MIN_ESS --resampler $RESAMPLER -L $L -C $C -A $A -h $H --eps-abs $EPS_ABS --eps-rel $EPS_REL --seed $SEED --init-file $DATA_DIR/$INIT_FILE --force-file $MEM_DIR/$FORCE_FILE --obs-file $MEM_DIR/$OBS_FILE --filter-file $MEM_DIR/$FILTER_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file $TMP_DIR/$OUTPUT_FILE
-# --proposal-file $DATA_DIR/$PROPOSAL_FILE
+mpirun -npernode $NPERNODE $ROOT/build/mcmc  --type $FILTER -P $P -T $T --min-temp $MIN_TEMP --max-temp $MAX_TEMP --sd $SD --scale $SCALE --remote $REMOTE --alpha $ALPHA --beta $BETA -R $R --min-ess $MIN_ESS --resampler $RESAMPLER -L $L -C $C -A $A -h $H --eps-abs $EPS_ABS --eps-rel $EPS_REL --seed $SEED --init-file $DATA_DIR/$INIT_FILE --force-file $MEM_DIR/$FORCE_FILE --obs-file $MEM_DIR/$OBS_FILE --filter-file $MEM_DIR/$FILTER_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file $TMP_DIR/$OUTPUT_FILE --proposal-file $DATA_DIR/$PROPOSAL_FILE
 
 # copy results from $TMP_DIR to $RESULTS_DIR
 mpirun -npernode 1 sh -c "cp $TMP_DIR/$OUTPUT_FILE"'*'" $RESULTS_DIR/."
