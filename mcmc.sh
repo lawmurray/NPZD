@@ -23,29 +23,31 @@ DATA_DIR=$ROOT/data
 
 LD_LIBRARY_PATH=$ROOT/../bi/build:$LD_LIBRARY_PATH
 
-export OMP_NUM_THREADS=2 # no. OpenMP threads per process
-NPERNODE=1 # no. processes per node
+export OMP_NUM_THREADS=1 # no. OpenMP threads per process
+NPERNODE=2 # no. processes per node
 
 ##
 ## Run config
 ##
 
 # MCMC settings
-T=415.0 # time to simulate
+T=100.0 # time to simulate
 SEED=20 # pseudorandom number seed
 SCALE=0.09 # scale of initial proposal relative to prior
 SD=0.09 # adaptive proposal parameter (zero triggers default)
-C=10000 # no. samples to draw
+C=500 # no. samples to draw
 A=100000 # no. steps before adaptation
 MIN_TEMP=1.0 # minimum temperature (or temperature for single process)
 MAX_TEMP=1.0 # maximum temperature
 FILTER=ukf # filter type
 
 # distributed MCMC settings
-REMOTE=0 # 1 to enable remote proposals, 0 to disable
+REMOTE=1 # 1 to enable remote proposals, 0 to disable
+SHARE=1 # 1 to share remote proposals, 0 to disable
 ALPHA=0.2 # remote proposal proportion
 BETA=0.1 # remote proposal update propensity
-R=50 # no. steps before incorporating remote proposal
+R1=50 # no. steps before mixing remote proposal
+R2=100 # no. steps after which to stop adapting remote proposal
 
 # particle filter settings
 RESAMPLER=stratified # resampler to use, 'stratified' or 'metropolis'
@@ -83,11 +85,12 @@ OBS_NS=2
 mpirun -npernode 1 cp $DATA_DIR/$FORCE_FILE $DATA_DIR/$OBS_FILE $MEM_DIR/.
 
 # output this script as record of settings
-cat $ROOT/npzd/mcmc.sh
+#cat $ROOT/npzd/mcmc.sh
 
 # run
-mpirun -npernode $NPERNODE $ROOT/build/mcmc  --type $FILTER -P $P -T $T --min-temp $MIN_TEMP --max-temp $MAX_TEMP --sd $SD --scale $SCALE --remote $REMOTE --alpha $ALPHA --beta $BETA -R $R --min-ess $MIN_ESS --resampler $RESAMPLER -L $L -C $C -A $A -h $H --eps-abs $EPS_ABS --eps-rel $EPS_REL --seed $SEED --init-file $DATA_DIR/$INIT_FILE --force-file $MEM_DIR/$FORCE_FILE --obs-file $MEM_DIR/$OBS_FILE --filter-file $MEM_DIR/$FILTER_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file $TMP_DIR/$OUTPUT_FILE --proposal-file $DATA_DIR/$PROPOSAL_FILE
+#mpirun -npernode $NPERNODE
+$ROOT/build/mcmc --type $FILTER -P $P -T $T --min-temp $MIN_TEMP --max-temp $MAX_TEMP --sd $SD --scale $SCALE --remote $REMOTE --share $SHARE --alpha $ALPHA --beta $BETA --R1 $R1 --R2 $R2 --min-ess $MIN_ESS --resampler $RESAMPLER -L $L -C $C -A $A -h $H --eps-abs $EPS_ABS --eps-rel $EPS_REL --seed $SEED --init-file $DATA_DIR/$INIT_FILE --force-file $MEM_DIR/$FORCE_FILE --obs-file $MEM_DIR/$OBS_FILE --filter-file $MEM_DIR/$FILTER_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file $TMP_DIR/$OUTPUT_FILE --proposal-file $DATA_DIR/$PROPOSAL_FILE
 
 # copy results from $TMP_DIR to $RESULTS_DIR
-mpirun -npernode 1 sh -c "cp $TMP_DIR/$OUTPUT_FILE"'*'" $RESULTS_DIR/."
+#mpirun -npernode $NPERNODE sh -c "cp $TMP_DIR/$OUTPUT_FILE"'*'" $RESULTS_DIR/."
 chmod 644 $RESULTS_DIR/*

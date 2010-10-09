@@ -51,7 +51,7 @@
  */
 #define SAMPLE \
    if (REMOTE) { \
-     distributedSample(m, q, r, s, rng, filter, T, &out, C, R, ALPHA, BETA, lambda, SD, A); \
+     distributedSample(m, q, r, s, rng, filter, T, &out, C, SHARE, R1, R2, ALPHA, BETA, lambda, SD, A); \
    } else { \
      sample(m, q, s, rng, filter, T, &out, C, lambda, SD, A); \
    }
@@ -73,7 +73,7 @@ void sample(B& m, Q1& q, State& s, Random& rng, F* filter, const real T,
  */
 template<class B, class Q1, class Q2, class F, class IO1>
 void distributedSample(B& m, Q1& q, Q2& r, State& s, Random& rng, F* filter, const real T,
-    IO1* out, const int C, const int R, const real alpha, const real beta,
+    IO1* out, const int C, const bool share, const int R1, const int R2, const real alpha, const real beta,
     const real lambda, const real SD, const int A);
 
 int main(int argc, char* argv[]) {
@@ -88,8 +88,8 @@ int main(int argc, char* argv[]) {
   /* handle command line arguments */
   real T, H, MIN_ESS, EPS_REL, EPS_ABS;
   double SCALE, TEMP, MIN_TEMP, MAX_TEMP, ALPHA, BETA, SD;
-  int P, INIT_NS, FORCE_NS, OBS_NS, C, A, R, L, J, SEED;
-  bool REMOTE;
+  int P, INIT_NS, FORCE_NS, OBS_NS, C, A, R1, R2, L, J, SEED;
+  bool REMOTE, SHARE;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, FILTER_FILE, OUTPUT_FILE,
       PROPOSAL_FILE, FILTER, RESAMPLER;
 
@@ -109,12 +109,16 @@ int main(int argc, char* argv[]) {
   dmcmcOptions.add_options()
     ("remote", po::value(&REMOTE)->default_value(false),
         "use remote proposal")
-    (",R", po::value(&R)->default_value(100),
-        "no. samples to draw before incorporating remote proposal")
+    ("share", po::value(&SHARE)->default_value(true),
+        "share remote proposals")
+    ("R1", po::value(&R1)->default_value(50),
+        "no. samples to draw before mixing remote proposal")
+    ("R2", po::value(&R2)->default_value(-1),
+        "no. samples before stopping adaptation of remote proposal")
     ("alpha", po::value(&ALPHA)->default_value(0.1),
         "remote proposal mixing proportion")
     ("beta", po::value(&BETA)->default_value(0.2),
-          "remote proposal update propensity");
+        "remote proposal update propensity");
 
   po::options_description proposalOptions("Proposal options");
   proposalOptions.add_options()
@@ -202,9 +206,6 @@ int main(int argc, char* argv[]) {
   bi_ode_init(H, EPS_ABS, EPS_REL);
   h_ode_set_nsteps(100);
   NcError ncErr(NcError::silent_nonfatal);
-
-  /* can cause "invalid device function" error if not correct mangled name */
-  //cudaFuncSetCacheConfig("_ZN2bi10kernelRK43I9NPZDModelILj1ELj1ELj1EEEEvdd", cudaFuncCachePreferL1);
 
   /* random number generator */
   Random rng(SEED);
@@ -353,15 +354,15 @@ void sample(B& m, Q1& q, State& s, Random& rng, F* filter, const real T,
 
 template<class B, class Q1, class Q2, class F, class IO1>
 void distributedSample(B& m, Q1& q, Q2& r, State& s, Random& rng, F* filter, const real T,
-    IO1* out, const int C, const int R, const real alpha, const real beta,
+    IO1* out, const int C, const bool share, const int R1, const int R2, const real alpha, const real beta,
     const real lambda, const real SD, const int A) {
   mpi::communicator world;
   const int rank = world.rank();
 
   BOOST_AUTO(mcmc, createParticleMCMC(m, q, s, rng, filter, T, out));
-  BOOST_AUTO(dmcmc, createDistributedMCMC(m, r, rng, mcmc));
+  BOOST_AUTO(dmcmc, createDistributedMCMC(m, r, rng, mcmc, share));
 
-  dmcmc->sample(C, R, alpha, beta, lambda);
+  dmcmc->sample(C, R1, R2, alpha, beta, lambda);
 
   std::cout << "Rank " << rank << ": " << mcmc->getNumAccepted() << " of " <<
       mcmc->getNumSteps() << " proposals accepted" << std::endl;
