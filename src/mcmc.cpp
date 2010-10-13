@@ -26,6 +26,7 @@
 #include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
 #include "bi/buffer/UnscentedKalmanFilterNetCDFBuffer.hpp"
 #include "bi/buffer/ParticleMCMCNetCDFBuffer.hpp"
+#include "bi/buffer/DistributedMCMCNetCDFBuffer.hpp"
 #include "bi/buffer/SparseInputNetCDFBuffer.hpp"
 
 #ifdef USE_CPU
@@ -231,7 +232,7 @@ int main(int argc, char* argv[]) {
   /* outputs */
   std::stringstream file;
   file << OUTPUT_FILE << '.' << rank;
-  ParticleMCMCNetCDFBuffer out(m, C, Y, file.str(), NetCDFBuffer::REPLACE);
+  DistributedMCMCNetCDFBuffer out(m, C, Y, file.str(), NetCDFBuffer::REPLACE);
 
   /* local proposal and Markov chain initialisation */
   AdditiveExpGaussianPdf<> q(NP);
@@ -255,7 +256,8 @@ int main(int argc, char* argv[]) {
 
     /* initialise chain from mean */
     expVec(mu, m.getPrior(P_NODE).getLogs());
-    row(s.pHostState, 0) = subrange(mu, 0, NP);
+    //row(s.pHostState, 0) = subrange(mu, 0, NP);
+    m.getPrior(P_NODE).samples(rng, s.pHostState);
   } else {
     /* construct from scaled prior */
     host_matrix<real> Sigma(NP,NP);
@@ -274,7 +276,7 @@ int main(int argc, char* argv[]) {
     //inInit.read(s);
 
     /* ...or prior... */
-    //m.getPrior(P_NODE).samples(rng, s.pHostState);
+    m.getPrior(P_NODE).samples(rng, s.pHostState);
 
     /* ...or special case */
     //////// add next two lines for PZ model ////////
