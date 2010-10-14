@@ -28,20 +28,21 @@ set xlabel "Step"
 set ylabel "R_p"
 set format x "10^{%L}"
 #set format y "10^{%L}"
-set yrange [1:8]
+set xrange [ 50:25000 ]
+set yrange [ 1:20 ]
 
-set logscale x
-#set logscale y
+set logscale x 10
+#set logscale y 10
 
-plot "results/dmcmc-share-4-converge.csv" title "DMCMC share" linestyle 1, \
+plot "results/dmcmc-share-4-converge.csv" title "DMCMC" linestyle 1, \
 "results/dmcmc-share-8-converge.csv" notitle linestyle 1, \
 "results/dmcmc-share-16-converge.csv" notitle linestyle 1, \
-"results/dmcmc-noshare-4-converge.csv" title "DMCMC share" linestyle 2, \
+"results/dmcmc-noshare-4-converge.csv" title "DMCMC no sharing" linestyle 2, \
 "results/dmcmc-noshare-8-converge.csv" notitle linestyle 2, \
 "results/dmcmc-noshare-16-converge.csv" notitle linestyle 2, \
-"results/haario-4-converge.csv" title "DMCMC share" linestyle 3, \
+"results/haario-4-converge.csv" title "Adaptive random walk" linestyle 3, \
 "results/haario-8-converge.csv" notitle linestyle 3, \
 "results/haario-16-converge.csv" notitle linestyle 3, \
-"results/straight-4-converge.csv" title "DMCMC share" linestyle 4, \
+"results/straight-4-converge.csv" title "Random walk" linestyle 4, \
 "results/straight-8-converge.csv" notitle linestyle 4, \
 "results/straight-16-converge.csv" notitle linestyle 4
