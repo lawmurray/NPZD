@@ -32,9 +32,9 @@ set format x "10^{%L}"
 set logscale x 10
 #set logscale y 10
 
-plot "results/dmcmc-share-4-accept.csv" title "DMCMC share" linestyle 1, \
-"results/dmcmc-share-8-accept.csv" notitle linestyle 1, \
-"results/dmcmc-share-16-accept.csv" notitle linestyle 1, \
-"results/dmcmc-noshare-4-accept.csv" title "DMCMC no share" linestyle 2, \
-"results/dmcmc-noshare-8-accept.csv" notitle linestyle 2, \
-"results/dmcmc-noshare-16-accept.csv" notitle linestyle 2
+plot "results/dmcmc-share-4-accept.csv" title "DMCMC share 4" linestyle 1, \
+"results/dmcmc-share-8-accept.csv" title "DMCMC share 8" linestyle 2, \
+"results/dmcmc-share-16-accept.csv" title "DMCMC share 16" linestyle 3, \
+"results/dmcmc-noshare-4-accept.csv" title "DMCMC no share 4" linestyle 4, \
+"results/dmcmc-noshare-8-accept.csv" title "DMCMC no share 8" linestyle 5, \
+"results/dmcmc-noshare-16-accept.csv" title "DMCMC no share 16" linestyle 6
