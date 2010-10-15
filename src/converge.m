@@ -8,7 +8,7 @@
 
 DIR = '/home/mur387/sandbox_dmcmc/npzd';
 NAMES = { 'dmcmc-share', 'dmcmc-noshare', 'haario', 'straight' };
-NODES = { 4, 8, 16, 32 };
+NODES = { 4, 8, 16 };
 PARAMS = {
     "Kw";
     "KCh";
@@ -29,7 +29,6 @@ PARAMS = {
 };
 
 N = length(PARAMS);
-C = length(NODES);
 
 for i = 1:length(NAMES)
     name = NAMES{i};
@@ -38,13 +37,12 @@ for i = 1:length(NAMES)
     mu = [];
     Sigma = [];
 
-    for j = 1:C
-        nodes = NODES{j};
-        id = sprintf('%s-%d-converge', name, nodes);
+    for j = 1:length(NODES)
+        C = NODES{j};
+        id = sprintf('%s-%d-converge', name, C);
 
-        for proc = 0:(nodes - 1)
-            filename = sprintf('%s/results/%s-%d.nc.%d', DIR, name, nodes, ...
-                               proc);
+        for proc = 0:(C - 1)
+            filename = sprintf('%s/results/%s-%d.nc.%d', DIR, name, C, proc);
             
             nc = netcdf(filename, 'r');
             theta = [];
