@@ -58,11 +58,12 @@ for i = 1:length(NAMES)
             
             cum_mu = cumsum(theta, 1) ./ repmat(seq, 1, N);
             cum_Sigma = zeros(P, N, N);
-            for k = 2:P % omit first, can't compute covariance
-                cum_Sigma(k,:,:) = (theta(k,:)'*theta(k,:)) ./ (k - 1);
+            for k = 1:P
+                cum_Sigma(k,:,:) = (theta(k,:)'*theta(k,:));
             end
             cum_Sigma = cumsum(cum_Sigma, 1);
             for k = 2:P
+                cum_Sigma(k,:,:) /= k - 1;
                 cum_Sigma(k,:,:) -= shiftdim(cum_mu(k,:)'*cum_mu(k,:), -1);
             end
             
@@ -81,7 +82,7 @@ for i = 1:length(NAMES)
         % scalar comparison
         for p = 1:P
             Wpi = inv(squeeze(W(p,:,:)));
-            Bonp = squeeze(Bon(p));
+            Bonp = squeeze(Bon(p,:,:));
         
             % eig causes error with any non-finite values
             if cumsum(cumsum(isfinite(Wpi), 1), 2) > 0 && ...

@@ -31,20 +31,21 @@ set ylabel "Log-accept"
 #set logscale x 10
 #set logscale y 10
 set xrange [0:25000]
+set yrange [-10:0]
 
 set multiplot layout 1,4
 
-#plot "results/dmcmc-share-mix-2-accept.csv" notitle linestyle 1, \
-#"results/dmcmc-noshare-mix-2-accept.csv" notitle linestyle 2
-
-plot "results/dmcmc-share-mix-4-accept.csv" notitle linestyle 1, \
-"results/dmcmc-noshare-mix-4-accept.csv" notitle linestyle 2
+plot "results/dmcmc-share-2-accept.csv" using 1:2 notitle linestyle 1, \
+"results/dmcmc-noshare-2-accept.csv" using 1:2 notitle linestyle 2
 
 set ylabel ""
 set format y ""
 
-plot "results/dmcmc-share-mix-8-accept.csv" notitle linestyle 1, \
-"results/dmcmc-noshare-mix-8-accept.csv" notitle linestyle 2
+plot "results/dmcmc-share-4-accept.csv" using 1:2 notitle linestyle 1, \
+"results/dmcmc-noshare-4-accept.csv" using 1:2 notitle linestyle 2
 
-plot "results/dmcmc-share-mix-16-accept.csv" title "Mixture, with sharing" linestyle 1, \
-"results/dmcmc-noshare-mix-16-accept.csv" title "Mixture, without sharing" linestyle 2
+plot "results/dmcmc-share-8-accept.csv" using 1:2 notitle linestyle 1, \
+"results/dmcmc-noshare-8-accept.csv" using 1:2 notitle linestyle 2
+
+plot "results/dmcmc-share-16-accept.csv" using 1:2 title "Mixture, with sharing" linestyle 1, \
+"results/dmcmc-noshare-16-accept.csv" using 1:2 title "Mixture, without sharing" linestyle 2
