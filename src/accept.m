@@ -8,20 +8,21 @@
 
 DIR = '/home/mur387/sandbox_dmcmc/npzd';
 NAMES = { 'dmcmc-share'; 'dmcmc-noshare' };
-NODES = { 4, 8, 16, 32 };
+NODES = { 2, 4, 8, 16 };
+ARRAYID = str2num(argv(){1});
 
 for i = 1:length(NAMES)
     name = NAMES{i};
     for j = 1:length(NODES)
         nodes = NODES{j};
-        id = sprintf('%s-%d-accept', name, nodes);
+        id = sprintf('%s-%d-accept-%d', name, nodes, ARRAYID);
 
         % build data set
         remote = [];
         logaccept = [];
         for proc = 0:(nodes - 1)
-            filename = sprintf('%s/results/%s-%d.nc.%d', DIR, name, nodes, ...
-                               proc);
+            filename = sprintf('%s/results/%s-%d-%d.%d.nc.%d', DIR, name, ...
+                nodes, ARRAYID, ARRAYID, proc);
             if exist(filename, 'file')
                 nc = netcdf(filename, 'r');
                 remote = [ remote, nc{'remote'}(:) ];

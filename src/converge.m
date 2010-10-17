@@ -8,7 +8,8 @@
 
 DIR = '/home/mur387/sandbox_dmcmc/npzd';
 NAMES = { 'dmcmc-share', 'dmcmc-noshare', 'haario', 'straight' };
-NODES = { 4, 8, 16 };
+NODES = { 2, 4, 8, 16 };
+ARRAYID = str2num(argv(){1});
 PARAMS = {
     "Kw";
     "KCh";
@@ -39,11 +40,11 @@ for i = 1:length(NAMES)
 
     for j = 1:length(NODES)
         C = NODES{j};
-        id = sprintf('%s-%d-converge', name, C);
+        id = sprintf('%s-%d-converge-%d', name, C, ARRAYID);
 
         for proc = 0:(C - 1)
-            filename = sprintf('%s/results/%s-%d.nc.%d', DIR, name, C, proc);
-            
+            filename = sprintf('%s/results/%s-%d-%d.%d.nc.%d', DIR, name, ...
+                C, ARRAYID, ARRAYID, proc);            
             nc = netcdf(filename, 'r');
             theta = [];
             for k = 1:N
