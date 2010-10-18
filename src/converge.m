@@ -42,34 +42,42 @@ for i = 1:length(NAMES)
         C = NODES{j};
         id = sprintf('%s-%d-converge-%d', name, C, ARRAYID);
 
+        c = 1;
         for proc = 0:(C - 1)
             filename = sprintf('%s/results/%s-%d-%d.%d.nc.%d', DIR, name, ...
-                C, ARRAYID, ARRAYID, proc);            
-            nc = netcdf(filename, 'r');
-            theta = [];
-            for k = 1:N
-                param = PARAMS{k};
-                theta = [ theta, nc{param}(:) ];
-            end
+                C, ARRAYID, ARRAYID, proc);
+            if exist(filename, "file")
+                nc = netcdf(filename, 'r');
+                theta = [];
+                for k = 1:N
+                    param = PARAMS{k};
+                    theta = [ theta, nc{param}(:) ];
+                end
             
-            P = rows(theta);
-            seq = [ 1:P ]';
-            halfseq = ceil(seq / 2);
+                P = rows(theta);
+                seq = [ 1:P ]';
+                halfseq = ceil(seq / 2);
+                
+                cum_theta = cumsum(theta, 1);
+                cum_mu = (cum_theta(seq,:) - cum_theta(halfseq,:)) ./ repmat(seq - halfseq, 1, N);
+                cum_Sigma = zeros(P, N, N);
+                for k = 1:P
+                    cum_Sigma(k,:,:) = (theta(k,:)'*theta(k,:));
+                end
+                cum_Sigma = cumsum(cum_Sigma, 1);
+                cum_Sigma = (cum_Sigma(seq,:,:) - cum_Sigma(halfseq,:,:));
+                for k = 2:P
+                    cum_Sigma(k,:,:) /= seq(k) - halfseq(k) - 1;
+                    cum_Sigma(k,:,:) -= shiftdim(cum_mu(k,:)'*cum_mu(k,:), -1);
+                end
             
-            cum_mu = cumsum(theta, 1) ./ repmat(seq, 1, N);
-            cum_Sigma = zeros(P, N, N);
-            for k = 1:P
-                cum_Sigma(k,:,:) = (theta(k,:)'*theta(k,:));
+                % store in big structure for later
+                mu(c,:,:) = cum_mu;
+                Sigma(c,:,:,:) = cum_Sigma;
+                c++;
+            else
+                warning(sprintf('No file %s', filename));
             end
-            cum_Sigma = cumsum(cum_Sigma, 1);
-            for k = 2:P
-                cum_Sigma(k,:,:) /= k - 1;
-                cum_Sigma(k,:,:) -= shiftdim(cum_mu(k,:)'*cum_mu(k,:), -1);
-            end
-            
-            % store in big structure for later
-            mu(proc + 1,:,:) = cum_mu;
-            Sigma(proc + 1,:,:,:) = cum_Sigma;
         end
         
         % compute W and B/n

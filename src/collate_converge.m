@@ -7,7 +7,7 @@
 %% $Date$
 %%
 
-DIR = '/home/lawrence/work/workspace/npzd';
+DIR = '/home/mur387/sandbox_dmcmc/npzd';
 NAMES = { 'dmcmc-share'; 'dmcmc-noshare'; 'haario'; 'straight' };
 NODES = { 2, 4, 8, 16 };
 
@@ -16,14 +16,26 @@ for i = 1:length(NAMES)
     for j = 1:length(NODES)
         nodes = NODES{j};
 
-        for k = 0:9
+        c = 1;
+        for k = 0:19
             filename = sprintf('%s/results/%s-%d-converge-%d.csv', DIR, name, ...
                 nodes, k);
-            accept(:,k + 1) = dlmread(filename);
+            if exist(filename, "file")
+                tmp = real(dlmread(filename));
+                if length(tmp) == 25000 && tmp(end) < 10
+                    converge(:,c) = tmp;
+                    ++c;
+                else
+                    warning('Broken file: %s, length = %d, last = %f', ...
+                            filename, length(tmp), tmp(end));
+                end
+            else
+                warning('No file: %s', filename);
+            end
         end
 
-        mu = mean(accept, 2);
-        sigma = std(accept, 0, 2);
+        mu = real(mean(converge, 2));
+        sigma = real(std(converge, 0, 2));
         filename = sprintf('%s/results/%s-%d-converge.csv', DIR, name, ...
                 nodes);
         
