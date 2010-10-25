@@ -20,6 +20,8 @@ and the following Perl modules:
 
   * DBI,
   * DBD::SQLite,
+  * Template (Perl Template Toolkit)
+  * Template::Plugin::DBI
   * Text::CSV,
   * List::MoreUtils.
 

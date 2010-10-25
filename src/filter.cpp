@@ -118,7 +118,7 @@ int main(int argc, char* argv[]) {
   /* output */
   ParticleFilterNetCDFBuffer* out;
   if (OUTPUT) {
-    out = new ParticleFilterNetCDFBuffer(m, P, inObs.numUniqueTimes(T),
+    out = new ParticleFilterNetCDFBuffer(m, P, inObs.countUniqueTimes(T),
         OUTPUT_FILE, NetCDFBuffer::REPLACE);
   } else {
     out = NULL;
