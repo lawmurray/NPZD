@@ -87,6 +87,9 @@ int main(int argc, char* argv[]) {
   int P = 1;
   State s(m, P);
 
+  /* random number generator */
+  Random rng(SEED);
+
   /* inputs */
   SparseInputNetCDFBuffer inForce(m, InputBuffer::F_NODES, FORCE_FILE, FORCE_NS);
   SparseInputNetCDFBuffer inObs(m, InputBuffer::O_NODES, OBS_FILE, OBS_NS);
@@ -106,7 +109,7 @@ int main(int argc, char* argv[]) {
   }
 
   /* set filter */
-  BOOST_AUTO(filter, createUnscentedKalmanFilter(m, s, &inForce, &inObs, out));
+  BOOST_AUTO(filter, createUnscentedKalmanFilter(m, s, rng, &inForce, &inObs, out));
 
   /* do filter */
   timeval start, end;

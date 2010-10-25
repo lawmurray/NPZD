@@ -27,7 +27,7 @@ $CUDACC = 'nvcc';
 $CPPINCLUDES = '-I../bi/src -I/tools/cuda/3.1/cuda/include/ -I/usr/local/cuda/include -I/tools/thrust/1.2.1 -I/usr/local/include/thrust -I/tools/magma/0.2/include -I/usr/local/atlas/include';
 $CXXFLAGS = "-Wall `nc-config --cflags` `mpic++ -showme:compile` $CPPINCLUDES";
 $CUDACCFLAGS = "-arch sm_13 -Xptxas=\"-v\" -Xcompiler=\"-Wall -fopenmp `mpic++ -showme:compile`\" `nc-config --cflags` $CPPINCLUDES";
-$LINKFLAGS = '-L"../bi/build" -L"/tools/magma/0.2/lib" -L"/tools/boost/1.43.0/lib" -lbi -lmagma -lmagmablas -lgfortran -lnetcdf_c++ `nc-config --libs` -lpthread -lboost_program_options -lboost_mpi `mpic++ -showme:link`';
+$LINKFLAGS = '-L"/usr/local/cuda/lib64" -L"../bi/build" -L"/tools/magma/0.2/lib" -L"/tools/boost/1.43.0/lib" -lbi -lmagma -lmagmablas -lgfortran -lnetcdf_c++ `nc-config --libs` -lpthread -lboost_program_options -lboost_mpi `mpic++ -showme:link`';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 

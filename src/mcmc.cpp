@@ -227,7 +227,7 @@ int main(int argc, char* argv[]) {
   SparseInputNetCDFBuffer inForce(m, InputBuffer::F_NODES, FORCE_FILE, FORCE_NS);
   SparseInputNetCDFBuffer inObs(m, InputBuffer::O_NODES, OBS_FILE, OBS_NS);
   SparseInputNetCDFBuffer inInit(m, InputBuffer::P_NODES, INIT_FILE, INIT_NS);
-  const int Y = inObs.countUniqueTimes(T) + 1;
+  const int Y = inObs.countUniqueTimes(T);
 
   /* outputs */
   std::stringstream file;
@@ -245,10 +245,8 @@ int main(int argc, char* argv[]) {
     UnscentedKalmanFilterNetCDFBuffer inProposal(m, PROPOSAL_FILE);
     host_vector<real> mu(ND + NC);
     host_matrix<real> Sigma(ND + NC, ND + NC);
-    host_matrix<real> transSigma(ND + NC, ND + NC);
 
-    inProposal.readStateMarginal(inProposal.size2() - 1, mu, transSigma);
-    transpose(transSigma, Sigma);
+    inProposal.readCorrectedState(inProposal.size2() - 1, mu, Sigma);
     for (j = 0; j < Sigma.size2(); ++j) {
       scal(SD, column(Sigma, j));
     }
@@ -312,7 +310,7 @@ int main(int argc, char* argv[]) {
 
   if (FILTER.compare("ukf") == 0) {
     UnscentedKalmanFilterNetCDFBuffer tmp(m, P, Y, file.str(), NetCDFBuffer::REPLACE);
-    BOOST_AUTO(filter, createUnscentedKalmanFilter(m, s, &inForce, &inObs, &tmp));
+    BOOST_AUTO(filter, createUnscentedKalmanFilter(m, s, rng, &inForce, &inObs, &tmp));
     SAMPLE
     delete filter;
   } else {

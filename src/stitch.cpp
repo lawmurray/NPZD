@@ -104,7 +104,7 @@ int main(int argc, char* argv[]) {
   /* read log-likelihoods and priors into memory */
   for (ch1 = 0; ch1 < ins.size(); ++ch1) {
     for (i1 = 0; i1 < P; ++i1) {
-      ins[ch1]->readLogLikelihood(i1 + B, ls(i1,ch1));
+      ins[ch1]->readTimeLogLikelihood(i1 + B, ls(i1,ch1));
       ins[ch1]->readPrior(i1 + B, ps(i1,ch1));
     }
   }
@@ -186,7 +186,7 @@ int main(int argc, char* argv[]) {
         ins[ch1]->readSample(i1 + B, theta.buf());
 
         out.writeSample(j, theta.buf());
-        out.writeLogLikelihood(j, ls(i1,ch1));
+        out.writeTimeLogLikelihood(j, ls(i1,ch1));
         out.writePrior(j, ps(i1,ch1));
         out.writeParticle(j, xd, xc);
         for (t = 0; t < T; ++t) {

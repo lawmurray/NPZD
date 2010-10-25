@@ -94,14 +94,14 @@ int main(int argc, char* argv[]) {
   /* NetCDF error reporting */
   NcError ncErr(NcError::silent_nonfatal);
 
-  /* random number generator */
-  Random rng(SEED);
-
   /* model */
   NPZDModel<> m;
 
   /* state and intermediate results */
   State s(m, P);
+
+  /* random number generator */
+  Random rng(SEED);
 
   /* inputs */
   SparseInputNetCDFBuffer inForce(m, InputBuffer::F_NODES, FORCE_FILE, FORCE_NS);
