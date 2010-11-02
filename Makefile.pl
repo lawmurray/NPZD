@@ -205,8 +205,8 @@ endif
 endif
 
 ifdef USE_CPU
-CUDACCFLAGS += -DUSE_CPU
-CXXFLAGS += -DUSE_CPU
+CUDACCFLAGS += -DUSE_CPU -Xcompiler -DTHRUST_DEVICE_BACKEND=THRUST_DEVICE_BACKEND_OMP
+CXXFLAGS += -DUSE_CPU -DTHRUST_DEVICE_BACKEND=THRUST_DEVICE_BACKEND_OMP
 endif
 
 ifdef USE_SSE
@@ -314,16 +314,9 @@ print <<End;
 \tmkdir -p \$(BUILDDIR)
 \tperl \$(SPEC2XDIR)/sql2dot --model \$(NAME) --dbfile \$(BUILDDIR)/\$(NAME).db > \$(BUILDDIR)/\$(NAME).dot
 
-\$(BUILDDIR)/\$(NAME)_graph.tex: \$(BUILDDIR)/\$(NAME).dot
+\$(BUILDDIR)/\$(NAME)_graph.pdf: \$(BUILDDIR)/\$(NAME).dot
 \tmkdir -p \$(BUILDDIR)
-\tdot2tex --autosize --usepdflatex --figpreamble="\huge" --prog=neato -traw --crop < \$(BUILDDIR)/\$(NAME).dot > \$(BUILDDIR)/\$(NAME)_graph.tex
-
-\$(BUILDDIR)/\$(NAME)_graph.pdf: \$(BUILDDIR)/\$(NAME)_graph.tex
-\tmkdir -p \$(BUILDDIR)
-\tcd \$(BUILDDIR); \\
-\tpdflatex \$(NAME)_graph.tex; \\
-\tpdflatex \$(NAME)_graph.tex; \\
-\tcd ..
+\tdot -Tpdf -o \$(BUILDDIR)/\$(NAME)_graph.pdf < \$(BUILDDIR)/\$(NAME).dot
 
 \$(BUILDDIR)/\$(NAME).tex: \$(BUILDDIR)/\$(NAME).db \$(SPEC2XDIR)/sql2tex \$(SPEC2XTEXTEMPLATEDIR)/*.template
 \tmkdir -p \$(BUILDDIR)
