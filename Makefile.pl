@@ -118,7 +118,7 @@ while (@files) {
     $command = "$target: " . $command;
     $command .= "\tmkdir -p $dir\n";
     $command .= "\t$ccstr -o $target $flagstr -c $file\n";
-    $command .= "\trm -f *.linkinfo\n";
+    #$command .= "\trm -f *.linkinfo\n";
     push(@targets, $target);
     push(@commands, $command);
     if ($dir eq "$BUILDDIR/model") {
