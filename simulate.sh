@@ -2,7 +2,7 @@
 #PBS -l walltime=10:00,nodes=1:ppn=1,gres=gpu
 #PBS -j oe
 
-#source /home/mur387/init.sh
+source /home/mur387/init.sh
 
 ROOT=.
 LD_LIBRARY_PATH=$ROOT/../bi/build:$LD_LIBRARY_PATH
