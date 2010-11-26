@@ -289,6 +289,7 @@ int main(int argc, char* argv[]) {
   /* remote proposal */
   ExpGaussianMixturePdf<> r(NP, m.getPrior(P_NODE).getLogs());
   r.add(m.getPrior(P_NODE));
+  //r.add(m.getPrior(P_NODE));
 
   /* temperature of chain */
   real lambda;
