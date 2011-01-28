@@ -12,32 +12,38 @@ then
     ID=$PBS_JOBNAME
 else
     ROOT=.
-    ID=simulate
+    ID=pf
 fi
 RESULTS_DIR=$ROOT/results
 DATA_DIR=$ROOT/data
 
 LD_LIBRARY_PATH=$ROOT/../bi/build:$LD_LIBRARY_PATH
 
-export OMP_NUM_THREADS=2
+export OMP_NUM_THREADS=1
 
 ##
 ## Run config
 ##
 
 P=1024 # no. trajectories
-K=416 # number of output points
 T=415.0 # time to simulate
 H=1.0 # initial step size for ODE integrator
 ATOLER=1.0e-3 # absolute error tolerance for ODE integrator
 RTOLER=1.0e-3 # relative error tolerance for ODE integrator
-SEED=0 # pseudorandom number seed
-OUTPUT=1 # produce output?
+SEED=3 # pseudorandom number seed
+OUTPUT=0 # produce output?
 TIME=1 # produce timings?
+RESAMPLER=stratified
+L=0
 
 INIT_FILE=$DATA_DIR/C7_initHP2.nc # initial values file
 FORCE_FILE=$DATA_DIR/C7_force_pad.nc # forcings file
-OUTPUT_FILE=$RESULTS_DIR/$ID.nc # output file
-NS=0 # record number in input files
+OBS_FILE=$DATA_DIR/C7_S1_obs_padHP2.nc # observations file
+OUTPUT_FILE=$RESULTS_DIR/$ID.nc
 
-$ROOT/build/simulate -h $H --atoler $ATOLER --rtoler $RTOLER --ns $NS -P $P -K $K -T $T --seed $SEED --init-file $INIT_FILE --force-file $FORCE_FILE --output-file $OUTPUT_FILE --output $OUTPUT --time $TIME
+# records to use from input files
+INIT_NS=0
+FORCE_NS=0
+OBS_NS=1
+
+$ROOT/build/pf -P $P -T $T -h $H --atoler $ATOLER --rtoler $RTOLER --seed $SEED --resampler $RESAMPLER -L $L --init-file $INIT_FILE --force-file $FORCE_FILE --obs-file $OBS_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file $OUTPUT_FILE --output $OUTPUT --time $TIME

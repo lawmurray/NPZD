@@ -10,71 +10,108 @@
 #include "bi/cuda/cuda.hpp"
 #include "bi/math/ode.hpp"
 #include "bi/random/Random.hpp"
-#include "bi/updater/StochasticRUpdater.hpp"
+#include "bi/updater/RUpdater.hpp"
 #include "bi/method/Simulator.hpp"
-#include "bi/method/Sampler.hpp"
 #include "bi/buffer/SparseInputNetCDFBuffer.hpp"
 #include "bi/buffer/SimulatorNetCDFBuffer.hpp"
-
-#include "boost/program_options.hpp"
-#include "boost/mpi.hpp"
+#include "bi/misc/TicToc.hpp"
 
 #include <iostream>
 #include <string>
-#include <sys/time.h>
 #include <unistd.h>
+#include <getopt.h>
 
-#include "boost/numeric/ublas/io.hpp"
-#include "boost/typeof/typeof.hpp"
-
-namespace po = boost::program_options;
-namespace mpi = boost::mpi;
+#ifdef USE_CPU
+#define LOCATION ON_HOST
+#else
+#define LOCATION ON_DEVICE
+#endif
 
 using namespace bi;
 
-void test();
-
 int main(int argc, char* argv[]) {
-  /* mpi */
-  mpi::environment env(argc, argv);
+  /* command line arguments */
+  enum {
+    ATOLER_ARG,
+    RTOLER_ARG,
+    NS_ARG,
+    SEED_ARG,
+    INIT_FILE_ARG,
+    FORCE_FILE_ARG,
+    OUTPUT_FILE_ARG,
+    OUTPUT_ARG,
+    TIME_ARG
+  };
+  real T = 0.0, H = 1.0, RTOLER = 1.0e-3, ATOLER = 1.0e-3;
+  int P = 0, K = 0, NS = 0, SEED = 0;
+  std::string INIT_FILE, FORCE_FILE, OUTPUT_FILE;
+  bool OUTPUT = false, TIME = false;
+  int c, option_index;
+
+  option long_options[] = {
+      {"atoler", required_argument, 0, ATOLER_ARG },
+      {"rtoler", required_argument, 0, RTOLER_ARG },
+      {"ns", required_argument, 0, NS_ARG },
+      {"seed", required_argument, 0, SEED_ARG },
+      {"init-file", required_argument, 0, INIT_FILE_ARG },
+      {"force-file", required_argument, 0, FORCE_FILE_ARG },
+      {"output-file", required_argument, 0, OUTPUT_FILE_ARG },
+      {"output", required_argument, 0, OUTPUT_ARG },
+      {"time", required_argument, 0, TIME_ARG }
+  };
+  const char* short_options = "T:P:K:h:";
+
+  do {
+    c = getopt_long(argc, argv, short_options, long_options, &option_index);
+    switch(c) {
+    case ATOLER_ARG:
+      ATOLER = atof(optarg);
+      break;
+    case RTOLER_ARG:
+      RTOLER = atof(optarg);
+      break;
+    case NS_ARG:
+      NS = atoi(optarg);
+      break;
+    case SEED_ARG:
+      SEED = atoi(optarg);
+      break;
+    case INIT_FILE_ARG:
+      INIT_FILE = std::string(optarg);
+      break;
+    case FORCE_FILE_ARG:
+      FORCE_FILE = std::string(optarg);
+      break;
+    case OUTPUT_FILE_ARG:
+      OUTPUT_FILE = std::string(optarg);
+      break;
+    case OUTPUT_ARG:
+      OUTPUT = atoi(optarg);
+      break;
+    case TIME_ARG:
+      TIME = atoi(optarg);
+      break;
+    case 'T':
+      T = atof(optarg);
+      break;
+    case 'P':
+      P = atoi(optarg);
+      break;
+    case 'K':
+      K = atoi(optarg);
+      break;
+    case 'h':
+      H = atof(optarg);
+      break;
+    }
+  } while (c != -1);
 
   /* bi init */
   bi_omp_init();
-  bi_ode_init(1.0, 1.0e-3, 1.0e-3);
-
-  /* command line arguments */
-  real T;
-  unsigned P, K, NS;
-  int SEED;
-  std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE;
-  bool OUTPUT, TIME;
-
-  po::options_description desc("Allowed options");
-  desc.add_options()
-    ("help", "produce help message")
-    (",P", po::value(&P), "no. trajectories")
-    (",K", po::value(&K), "size of intermediate result buffer")
-    (",T", po::value(&T), "simulation time for each trajectory")
-    ("seed", po::value(&SEED)->default_value(time(NULL)),
-        "pseudorandom number seed")
-    ("init-file", po::value(&INIT_FILE),
-        "input file containing initial values")
-    ("force-file", po::value(&FORCE_FILE),
-        "input file containing forcings")
-    ("output-file", po::value(&OUTPUT_FILE),
-        "output file to contain results")
-    ("ns", po::value(&NS)->default_value(0),
-        "index along ns dimension in input file to use")
-    ("output", po::value(&OUTPUT)->default_value(false), "enable output")
-    ("time", po::value(&TIME)->default_value(false), "enable timing output");
-  po::variables_map vm;
-  po::store(po::command_line_parser(argc, argv).options(desc).run(), vm);
-  po::notify(vm);
-
-  if (vm.count("help")) {
-    std::cerr << desc << std::endl;
-    return 0;
-  }
+  bi_ode_init(H, ATOLER, RTOLER);
+  #ifdef __CUDACC__
+  cudaThreadSetCacheConfig(cudaFuncCachePreferL1);
+  #endif
 
   /* NetCDF error reporting */
   NcError ncErr(NcError::silent_nonfatal);
@@ -86,46 +123,41 @@ int main(int argc, char* argv[]) {
   NPZDModel<> m;
 
   /* state */
-  State s(m, P);
+  Static<LOCATION> theta(m);
+  State<LOCATION> s(m, P);
 
   /* inputs */
-  SparseInputNetCDFBuffer inForce(m, InputBuffer::F_NODES, FORCE_FILE, NS);
-  SparseInputNetCDFBuffer inInit(m,
-      InputBuffer::C_NODES|InputBuffer::D_NODES|InputBuffer::P_NODES,
-      INIT_FILE, NS);
+  SparseInputNetCDFBuffer inForce(m, FORCE_FILE, NS);
+  SparseInputNetCDFBuffer inInit(m, INIT_FILE, NS);
 
-  /* initialise state */
-  inInit.read(s);
-  s.upload();
+  /* initialise state from inputs */
+  inInit.read(P_NODE, theta.get(P_NODE));
+  inInit.read(D_NODE, s.get(D_NODE));
+  inInit.read(C_NODE, s.get(C_NODE));
 
   /* output */
   SimulatorNetCDFBuffer* out;
   if (OUTPUT) {
-    out = new SimulatorNetCDFBuffer(m, P, K, OUTPUT_FILE,
-        NetCDFBuffer::REPLACE);
+    out = new SimulatorNetCDFBuffer(m, P, K, OUTPUT_FILE, NetCDFBuffer::REPLACE);
   } else {
     out = NULL;
   }
 
-  /* static sampler & dynamic simulator */
-  StochasticRUpdater<NPZDModel<> > rUpdater(s, rng);
-  Sampler<NPZDModel<> > sam(m, s, &rUpdater);
-  BOOST_AUTO(sim, createSimulator(m, s, &rUpdater, &inForce, out));
+  /* simulate */
+  RUpdater<NPZDModel<> > rUpdater(rng);
+  BOOST_AUTO(sim, SimulatorFactory<LOCATION>::create(m, &rUpdater, &inForce, out));
 
-  /* simulate and output */
-  timeval start, end;
-  gettimeofday(&start, NULL);
-  sam.sample(); // set static variables
-  sim->simulate(T); // simulate dynamic variables
-  gettimeofday(&end, NULL);
+  /* simulate */
+  TicToc timer;
+  sim->simulate(T, theta, s);
 
   /* output timing results */
   if (TIME) {
-    int elapsed = (end.tv_sec-start.tv_sec)*1000000 + (end.tv_usec-start.tv_usec);
-    std::cout << elapsed << std::endl;
+    synchronize();
+    std::cout << timer.toc() << std::endl;
   }
 
-  delete out;
   delete sim;
+  delete out;
   return 0;
 }

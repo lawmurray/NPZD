@@ -27,7 +27,7 @@ $CUDACC = 'nvcc';
 $CPPINCLUDES = '-I../bi/src -I/tools/cuda/3.1/cuda/include/ -I/usr/local/cuda/include -I/usr/local/include/thrust -I/tools/magma/0.2/include -I/usr/local/atlas/include';
 $CXXFLAGS = "-Wall `nc-config --cflags` `mpic++ -showme:compile` $CPPINCLUDES";
 $CUDACCFLAGS = "-arch sm_13 -Xptxas=\"-v\" -Xcompiler=\"-Wall -fopenmp `mpic++ -showme:compile`\" `nc-config --cflags` $CPPINCLUDES";
-$LINKFLAGS = '-L"../bi/build" -L"/tools/magma/0.2/lib" -L"/tools/boost/1.43.0/lib" -lbi -lmagma -lmagmablas -lgfortran -lnetcdf_c++ `nc-config --libs` -lpthread -lboost_program_options -lboost_mpi `mpic++ -showme:link`';
+$LINKFLAGS = '-L"../bi/build" -L"/tools/magma/0.2/lib" -L"/tools/boost/1.43.0/lib" -lbi -lmagma -lmagmablas -lgfortran -lnetcdf_c++ `nc-config --libs` -lpthread -lboost_mpi `mpic++ -showme:link`';
 # ^ may need f2c, g2c or nothing in place of gfortran
 $DEPFLAGS = '-I"../bi/src"'; # flags for dependencies check
 
@@ -46,7 +46,7 @@ $MATH_LINKFLAGS = '-lblas -lcblas -llapack -lm';
 
 # Release flags
 $RELEASE_CXXFLAGS = ' -O3 -funroll-loops -fomit-frame-pointer -g';
-$RELEASE_CUDACCFLAGS = ' -O2 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer -g"';
+$RELEASE_CUDACCFLAGS = ' -O3 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer -g"';
 $RELEASE_LINKFLAGS = ' -lcublas -lcudart';
 
 # Debugging flags
@@ -55,9 +55,9 @@ $DEBUG_CUDACCFLAGS = ' -g';
 $DEBUG_LINKFLAGS = ' -lcublas -lcudart';
 
 # Profiling flags
-$PROFILE_CXXFLAGS = ' -O3 -funroll-loops -pg -g';
-$PROFILE_CUDACCFLAGS = ' -O3 --compiler-options="-O3 -funroll-loops -pg -g"';
-$PROFILE_LINKFLAGS = ' -pg -g -lcublas -lcudart';
+$PROFILE_CXXFLAGS = ' -O1 -pg -g3';
+$PROFILE_CUDACCFLAGS = ' -O1 --compiler-options="-O1 -pg -g"';
+$PROFILE_LINKFLAGS = ' -pg -g3 -lcublas -lcudart';
 
 # Disassembly flags
 $DISASSEMBLE_CUDACCFLAGS = ' -keep';
@@ -113,11 +113,12 @@ while (@files) {
     $dir = $1;
     $dirs{$dir} = 1;
 
+    $target =~ s/$BUILDDIR/\$\(BUILDDIR\)/;
     $command = `$cc $flags -M $file`;
     $command =~ s/.*?\:\w*//;
     $command = "$target: " . $command;
     $command .= "\tmkdir -p $dir\n";
-    $command .= "\t$ccstr -o $target $flagstr -c $file\n";
+    $command .= "\t$ccstr -o \$\@ $flagstr -c \$<\n";
     #$command .= "\trm -f *.linkinfo\n";
     push(@targets, $target);
     push(@commands, $command);
@@ -207,6 +208,9 @@ endif
 ifdef USE_CPU
 CUDACCFLAGS += -DUSE_CPU -Xcompiler -DTHRUST_DEVICE_BACKEND=THRUST_DEVICE_BACKEND_OMP
 CXXFLAGS += -DUSE_CPU -DTHRUST_DEVICE_BACKEND=THRUST_DEVICE_BACKEND_OMP
+EXT=cpp
+else
+EXT=cu
 endif
 
 ifdef USE_SSE
@@ -299,7 +303,7 @@ End
 
 # Default targets
 print <<End;
-default: \$(BUILDDIR)/simulate \$(BUILDDIR)/filter \$(BUILDDIR)/mcmc \$(BUILDDIR)/ukf
+default: \$(BUILDDIR)/simulate \$(BUILDDIR)/pf \$(BUILDDIR)/mcmc \$(BUILDDIR)/ukf
 
 End
 
@@ -346,26 +350,20 @@ End
 # Artefacts
 my $models = join(' ', @models);
 
-print "\$(BUILDDIR)/simulate: \$(BUILDDIR)/simulate.cu.o \$(BUILDDIR)/simulate.cpp.o $models\n";
-print "\t\$(LINKER) -o $BUILDDIR/simulate \$(BUILDDIR)/simulate.cu.o \$(BUILDDIR)/simulate.cpp.o $models \$(LINKFLAGS)\n\n";
+print "\$(BUILDDIR)/simulate: \$(BUILDDIR)/simulate.\$(EXT).o $models\n";
+print "\t\$(LINKER) -o \$\@ \$^ \$(LINKFLAGS)\n\n";
 
-print "\$(BUILDDIR)/filter: \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/filter.cpp.o $models\n";
-print "\t\$(LINKER) -o $BUILDDIR/filter \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/filter.cpp.o $models \$(LINKFLAGS)\n\n";
+print "\$(BUILDDIR)/pf: \$(BUILDDIR)/pf.\$(EXT).o $models\n";
+print "\t\$(LINKER) -o \$\@ \$^ \$(LINKFLAGS)\n\n";
 
-print "\$(BUILDDIR)/ukf: \$(BUILDDIR)/ukf.cpp.o \$(BUILDDIR)/filter.cu.o $models\n";
-print "\t\$(LINKER) -o $BUILDDIR/ukf \$(BUILDDIR)/ukf.cpp.o \$(BUILDDIR)/filter.cu.o $models \$(LINKFLAGS)\n\n";
+print "\$(BUILDDIR)/ukf: \$(BUILDDIR)/ukf.\$(EXT).o $models\n";
+print "\t\$(LINKER) -o \$\@ \$^ \$(LINKFLAGS)\n\n";
 
-print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/mcmc.cpp.o $models\n";
-print "\t\$(LINKER) -o $BUILDDIR/mcmc \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/mcmc.cpp.o $models \$(LINKFLAGS)\n\n";
+print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/mcmc.\$(EXT).o $models\n";
+print "\t\$(LINKER) -o \$\@ \$^ \$(LINKFLAGS)\n\n";
 
-print "\$(BUILDDIR)/gibbs: \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/gibbs.cpp.o $models\n";
-print "\t\$(LINKER) -o $BUILDDIR/gibbs \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/gibbs.cpp.o $models \$(LINKFLAGS)\n\n";
-
-print "\$(BUILDDIR)/stitch: \$(BUILDDIR)/stitch.cpp.o $models\n";
-print "\t\$(LINKER) -o $BUILDDIR/stitch \$(BUILDDIR)/stitch.cpp.o $models \$(LINKFLAGS)\n\n";
-
-print "\$(BUILDDIR)/likelihood: \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/likelihood.cpp.o $models\n";
-print "\t\$(LINKER) -o $BUILDDIR/likelihood \$(BUILDDIR)/filter.cu.o \$(BUILDDIR)/device.cu.o \$(BUILDDIR)/likelihood.cpp.o $models \$(LINKFLAGS)\n\n";
+print "\$(BUILDDIR)/likelihood: \$(BUILDDIR)/likelihood.\$(EXT).o $models\n";
+print "\t\$(LINKER) -o \$\@ \$^ \$(LINKFLAGS)\n\n";
 
 # Targets
 print join("\n", @commands);

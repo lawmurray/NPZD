@@ -29,6 +29,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.908422782" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -39,6 +40,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.663063627" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -60,8 +62,11 @@
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.1273791379" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
+								<option id="gnu.cpp.link.option.libs.1273791379" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="bi"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1566161925" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -74,6 +79,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.31245884" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -88,6 +94,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -2668,10 +2675,10 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="filter" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="pf" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/filter</buildTarget>
+						<buildArguments>USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1  -j8</buildArguments>
+						<buildTarget>build/pf</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -2696,22 +2703,6 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/ukf</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="stitch" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/stitch</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="gibbs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>build</buildArguments>
-						<buildTarget>build/gibbs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -2753,6 +2744,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1009566569" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -2763,6 +2755,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1026985922" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -2784,8 +2777,11 @@
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.392490638" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
+								<option id="gnu.cpp.link.option.libs.392490638" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="bi"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.546159979" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -2798,6 +2794,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.589758517" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -2812,6 +2809,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -5392,10 +5390,10 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="filter" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="pf" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/filter</buildTarget>
+						<buildArguments>USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1  -j8</buildArguments>
+						<buildTarget>build/pf</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -5420,22 +5418,6 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/ukf</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="stitch" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/stitch</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="gibbs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>build</buildArguments>
-						<buildTarget>build/gibbs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -5477,6 +5459,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1159067143" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -5487,6 +5470,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1694485767" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -5508,8 +5492,11 @@
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.415764059" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
+								<option id="gnu.cpp.link.option.libs.415764059" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="bi"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1069947214" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -5522,6 +5509,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.393976133" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -5536,6 +5524,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -8116,10 +8105,10 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="filter" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="pf" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/filter</buildTarget>
+						<buildArguments>USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1  -j8</buildArguments>
+						<buildTarget>build/pf</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -8144,22 +8133,6 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/ukf</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="stitch" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/stitch</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="gibbs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>build</buildArguments>
-						<buildTarget>build/gibbs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -8201,6 +8174,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1016013332" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -8211,6 +8185,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.458394443" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -8232,8 +8207,11 @@
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.91198024" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
+								<option id="gnu.cpp.link.option.libs.91198024" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="bi"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1243572795" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -8246,6 +8224,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.2077547623" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -8260,6 +8239,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -10840,10 +10820,10 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="filter" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="pf" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/filter</buildTarget>
+						<buildArguments>USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1  -j8</buildArguments>
+						<buildTarget>build/pf</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -10868,22 +10848,6 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/ukf</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="stitch" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/stitch</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="gibbs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>build</buildArguments>
-						<buildTarget>build/gibbs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -10925,6 +10889,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1744288314" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -10935,6 +10900,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.506456593" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -10956,8 +10922,11 @@
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.1837624838" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
+								<option id="gnu.cpp.link.option.libs.1837624838" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="bi"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.2071116121" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -10970,6 +10939,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1528055304" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -10984,6 +10954,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -13564,10 +13535,10 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="filter" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="pf" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/filter</buildTarget>
+						<buildArguments>USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1  -j8</buildArguments>
+						<buildTarget>build/pf</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -13592,22 +13563,6 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/ukf</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="stitch" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/stitch</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="gibbs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>build</buildArguments>
-						<buildTarget>build/gibbs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -13649,6 +13604,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1248884861" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -13659,6 +13615,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.688687353" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -13680,8 +13637,11 @@
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.838918347" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
+								<option id="gnu.cpp.link.option.libs.838918347" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="bi"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.895575577" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -13694,6 +13654,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.574045177" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -13708,6 +13669,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -16288,10 +16250,10 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="filter" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="pf" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/filter</buildTarget>
+						<buildArguments>USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1  -j8</buildArguments>
+						<buildTarget>build/pf</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -16316,22 +16278,6 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/ukf</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="stitch" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/stitch</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="gibbs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>build</buildArguments>
-						<buildTarget>build/gibbs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -16373,6 +16319,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.721685218" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -16383,6 +16330,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.492914413" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -16404,8 +16352,11 @@
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.1835387703" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
+								<option id="gnu.cpp.link.option.libs.1835387703" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="bi"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1488775712" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -16418,6 +16369,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.570370967" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -16432,6 +16384,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -19012,10 +18965,10 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="filter" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="pf" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/filter</buildTarget>
+						<buildArguments>USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1  -j8</buildArguments>
+						<buildTarget>build/pf</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -19040,22 +18993,6 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/ukf</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="stitch" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/stitch</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="gibbs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>build</buildArguments>
-						<buildTarget>build/gibbs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -19097,6 +19034,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1454429833" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -19107,6 +19045,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1895998740" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -19128,8 +19067,11 @@
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.522444011" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
+								<option id="gnu.cpp.link.option.libs.522444011" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="bi"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.312993772" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -19142,6 +19084,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.767606269" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -19156,6 +19099,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -21736,10 +21680,10 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="filter" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="pf" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/filter</buildTarget>
+						<buildArguments>USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1  -j8</buildArguments>
+						<buildTarget>build/pf</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -21764,22 +21708,6 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/ukf</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="stitch" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/stitch</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="gibbs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>build</buildArguments>
-						<buildTarget>build/gibbs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -21821,6 +21749,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.709391159" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -21831,6 +21760,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.633419246" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -21852,8 +21782,11 @@
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.417452752" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
+								<option id="gnu.cpp.link.option.libs.417452752" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="bi"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.173871552" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -21866,6 +21799,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.725622887" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -21880,6 +21814,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -24460,10 +24395,10 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="filter" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="pf" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/filter</buildTarget>
+						<buildArguments>USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1  -j8</buildArguments>
+						<buildTarget>build/pf</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -24488,22 +24423,6 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/ukf</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="stitch" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/stitch</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="gibbs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>build</buildArguments>
-						<buildTarget>build/gibbs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -24545,6 +24464,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.880826233" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -24555,6 +24475,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.884711222" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -24576,8 +24497,11 @@
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.50542787" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
+								<option id="gnu.cpp.link.option.libs.50542787" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="bi"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1163523190" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -24590,6 +24514,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1750516055" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -24604,6 +24529,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -27184,10 +27110,10 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="filter" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="pf" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/filter</buildTarget>
+						<buildArguments>USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1  -j8</buildArguments>
+						<buildTarget>build/pf</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -27212,22 +27138,6 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/ukf</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="stitch" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/stitch</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="gibbs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>build</buildArguments>
-						<buildTarget>build/gibbs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -27269,6 +27179,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.943874536" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -27279,6 +27190,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.779079596" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -27300,8 +27212,11 @@
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.860487838" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
+								<option id="gnu.cpp.link.option.libs.860487838" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="bi"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.776498881" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -27314,6 +27229,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.2039402815" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -27328,6 +27244,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -29908,10 +29825,10 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="filter" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="pf" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/filter</buildTarget>
+						<buildArguments>USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1  -j8</buildArguments>
+						<buildTarget>build/pf</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -29936,22 +29853,6 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/ukf</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="stitch" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/stitch</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="gibbs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>build</buildArguments>
-						<buildTarget>build/gibbs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -29993,6 +29894,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.786010111" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -30003,6 +29905,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.324534473" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -30024,8 +29927,11 @@
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.1189817993" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
+								<option id="gnu.cpp.link.option.libs.1189817993" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="bi"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.272561546" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -30038,6 +29944,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.2135786139" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -30052,6 +29959,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -32632,10 +32540,10 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="filter" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="pf" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/filter</buildTarget>
+						<buildArguments>USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1  -j8</buildArguments>
+						<buildTarget>build/pf</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -32660,22 +32568,6 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/ukf</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="stitch" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/stitch</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="gibbs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>build</buildArguments>
-						<buildTarget>build/gibbs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -32717,6 +32609,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.712229832" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -32727,6 +32620,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1081849066" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -32748,8 +32642,11 @@
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.307089930" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
+								<option id="gnu.cpp.link.option.libs.307089930" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="bi"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.2012422358" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -32762,6 +32659,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.456022913" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -32776,6 +32674,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -35356,10 +35255,10 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="filter" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="pf" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/filter</buildTarget>
+						<buildArguments>USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1  -j8</buildArguments>
+						<buildTarget>build/pf</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -35384,22 +35283,6 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/ukf</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="stitch" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/stitch</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="gibbs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>build</buildArguments>
-						<buildTarget>build/gibbs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -35441,6 +35324,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1548598025" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -35451,6 +35335,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.109801723" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -35472,8 +35357,11 @@
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.1378779812" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
+								<option id="gnu.cpp.link.option.libs.1378779812" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="bi"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.364997871" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -35486,6 +35374,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.724176223" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -35500,6 +35389,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -38080,10 +37970,10 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="filter" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="pf" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/filter</buildTarget>
+						<buildArguments>USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1  -j8</buildArguments>
+						<buildTarget>build/pf</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -38108,22 +37998,6 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/ukf</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="stitch" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/stitch</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="gibbs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>build</buildArguments>
-						<buildTarget>build/gibbs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -38165,6 +38039,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.469905833" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -38175,6 +38050,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1281187099" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -38196,8 +38072,11 @@
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/work/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.120772343" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
+								<option id="gnu.cpp.link.option.libs.120772343" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="bi"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1485969179" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -38210,6 +38089,7 @@
 									<listOptionValue builtIn="false" value="/home/mur387/intel/Compiler/11.1/064/tbb/include"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/home/lawrence/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/atlas/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.319722516" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -38224,6 +38104,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -40856,10 +40737,10 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 				<buildTargets>
-					<target name="filter" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+					<target name="pf" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/filter</buildTarget>
+						<buildArguments>USE_DOUBLE=1 DEBUG=1 USE_ATLAS=1 USE_CPU=1  -j8</buildArguments>
+						<buildTarget>build/pf</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -40884,22 +40765,6 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/ukf</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="stitch" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>-j</buildArguments>
-						<buildTarget>build/stitch</buildTarget>
-						<stopOnError>true</stopOnError>
-						<useDefaultCommand>true</useDefaultCommand>
-						<runAllBuilders>true</runAllBuilders>
-					</target>
-					<target name="gibbs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-						<buildCommand>make</buildCommand>
-						<buildArguments>build</buildArguments>
-						<buildTarget>build/gibbs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
