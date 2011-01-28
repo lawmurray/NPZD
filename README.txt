@@ -10,7 +10,6 @@ Requirements
 The code requires the following:
 
   * The bi library, and its requirements, see its README.txt file.
-  * The Boost.ProgramOptions library in addition to these requirements.
 
 The spec2x utility requires the following:
 
