@@ -21,7 +21,6 @@
 #include "boost/typeof/typeof.hpp"
 
 #include <iostream>
-#include <fstream>
 #include <iomanip>
 #include <string>
 #include <getopt.h>

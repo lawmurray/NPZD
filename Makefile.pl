@@ -359,7 +359,7 @@ print "\t\$(LINKER) -o \$\@ \$^ \$(LINKFLAGS)\n\n";
 print "\$(BUILDDIR)/ukf: \$(BUILDDIR)/ukf.\$(EXT).o $models\n";
 print "\t\$(LINKER) -o \$\@ \$^ \$(LINKFLAGS)\n\n";
 
-print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/mcmc.\$(EXT).o $models\n";
+print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/mcmc.\$(EXT).o \$(BUILDDIR)/device.\$(EXT).o $models\n";
 print "\t\$(LINKER) -o \$\@ \$^ \$(LINKFLAGS)\n\n";
 
 print "\$(BUILDDIR)/likelihood: \$(BUILDDIR)/likelihood.\$(EXT).o $models\n";
