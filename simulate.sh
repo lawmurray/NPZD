@@ -40,4 +40,4 @@ FORCE_FILE=$DATA_DIR/C7_force_pad.nc # forcings file
 OUTPUT_FILE=$RESULTS_DIR/$ID.nc # output file
 NS=0 # record number in input files
 
-$ROOT/build/simulate -h $H --atoler $ATOLER --rtoler $RTOLER --ns $NS -P $P -K $K -T $T --seed $SEED --init-file $INIT_FILE --force-file $FORCE_FILE --output-file $OUTPUT_FILE --output $OUTPUT --time $TIME
+$ROOT/build/simulate -h $H --atoler=$ATOLER --rtoler=$RTOLER --ns=$NS -P $P -K $K -T $T --seed=$SEED --init-file=$INIT_FILE --force-file=$FORCE_FILE --output-file=$OUTPUT_FILE --output=$OUTPUT --time=$TIME

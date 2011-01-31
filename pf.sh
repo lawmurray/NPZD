@@ -9,10 +9,10 @@ if [[ "`hostname`" == gpu* ]]
 then
     source init.sh
     ROOT=$PBS_O_WORKDIR
-    ID=$PBS_JOBNAME
+    NAME=$PBS_JOBNAME
 else
     ROOT=.
-    ID=pf
+    NAME=pf
 fi
 RESULTS_DIR=$ROOT/results
 DATA_DIR=$ROOT/data
@@ -39,11 +39,11 @@ L=0
 INIT_FILE=$DATA_DIR/C7_initHP2.nc # initial values file
 FORCE_FILE=$DATA_DIR/C7_force_pad.nc # forcings file
 OBS_FILE=$DATA_DIR/C7_S1_obs_padHP2.nc # observations file
-OUTPUT_FILE=$RESULTS_DIR/$ID.nc
+OUTPUT_FILE=$RESULTS_DIR/$NAME.nc
 
 # records to use from input files
 INIT_NS=0
 FORCE_NS=0
 OBS_NS=1
 
-$ROOT/build/pf -P $P -T $T -h $H --atoler $ATOLER --rtoler $RTOLER --seed $SEED --resampler $RESAMPLER -L $L --init-file $INIT_FILE --force-file $FORCE_FILE --obs-file $OBS_FILE --init-ns $INIT_NS --force-ns $FORCE_NS --obs-ns $OBS_NS --output-file $OUTPUT_FILE --output $OUTPUT --time $TIME
+$ROOT/build/pf -P $P -T $T -h $H --atoler=$ATOLER --rtoler=$RTOLER --seed=$SEED --resampler=$RESAMPLER -L $L --init-file=$INIT_FILE --force-file=$FORCE_FILE --obs-file=$OBS_FILE --init-ns=$INIT_NS --force-ns=$FORCE_NS --obs-ns=$OBS_NS --output-file=$OUTPUT_FILE --output=$OUTPUT --time=$TIME

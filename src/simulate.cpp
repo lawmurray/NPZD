@@ -107,11 +107,11 @@ int main(int argc, char* argv[]) {
   } while (c != -1);
 
   /* bi init */
-  bi_omp_init();
-  bi_ode_init(H, ATOLER, RTOLER);
   #ifdef __CUDACC__
   cudaThreadSetCacheConfig(cudaFuncCachePreferL1);
   #endif
+  bi_omp_init();
+  bi_ode_init(H, ATOLER, RTOLER);
 
   /* NetCDF error reporting */
   NcError ncErr(NcError::silent_nonfatal);
