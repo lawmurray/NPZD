@@ -1,3 +1,10 @@
+/**
+ * @file
+ *
+ * @author Lawrence Murray <lawrence.murray@csiro.au>
+ * $Rev$
+ * $Date$
+ */
 #include "device.hpp"
 
 #include "bi/cuda/cuda.hpp"

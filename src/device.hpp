@@ -1,3 +1,10 @@
+/**
+ * @file
+ *
+ * @author Lawrence Murray <lawrence.murray@csiro.au>
+ * $Rev$
+ * $Date$
+ */
 #ifndef DEVICE_HPP
 #define DEVICE_HPP
 

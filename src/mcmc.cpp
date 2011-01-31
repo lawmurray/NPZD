@@ -2,8 +2,8 @@
  * @file
  *
  * @author Lawrence Murray <lawrence.murray@csiro.au>
- * $Rev:234 $
- * $Date:2009-08-17 11:10:31 +0800 (Mon, 17 Aug 2009) $
+ * $Rev$
+ * $Date$
  */
 #include "device.hpp"
 #include "model/NPZDModel.hpp"
