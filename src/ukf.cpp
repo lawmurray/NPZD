@@ -22,43 +22,47 @@
 #include <sys/time.h>
 #include <getopt.h>
 
+#ifdef USE_CPU
+#define LOCATION ON_HOST
+#else
+#define LOCATION ON_DEVICE
+#endif
+
 using namespace bi;
 
 int main(int argc, char* argv[]) {
-  /* openmp */
-  bi_omp_init();
-  bi_ode_init(1.0, 1.0e-6, 1.0e-3);
-  h_ode_set_nsteps(100);
-
   /* command line arguments */
   enum {
+    ATOLER_ARG,
+    RTOLER_ARG,
+    INIT_NS_ARG,
+    FORCE_NS_ARG,
+    OBS_NS_ARG,
     SEED_ARG,
     INIT_FILE_ARG,
     FORCE_FILE_ARG,
     OBS_FILE_ARG,
     OUTPUT_FILE_ARG,
-    INIT_NS_ARG,
-    FORCE_NS_ARG,
-    OBS_NS_ARG,
     OUTPUT_ARG,
     TIME_ARG
   };
-  int SEED = 0;
+  real T = 0.0, H = 1.0, RTOLER = 1.0e-3, ATOLER = 1.0e-3;
+  int INIT_NS = 0, FORCE_NS = 0, OBS_NS = 0, SEED = 0;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE;
-  int INIT_NS = 0, FORCE_NS = 0, OBS_NS = 0;
   bool OUTPUT = false, TIME = false;
-  real T, h = 0.1;
   int c, option_index;
 
   option long_options[] = {
+      {"atoler", required_argument, 0, ATOLER_ARG },
+      {"rtoler", required_argument, 0, RTOLER_ARG },
+      {"init-ns", required_argument, 0, INIT_NS_ARG },
+      {"force-ns", required_argument, 0, FORCE_NS_ARG },
+      {"obs-ns", required_argument, 0, OBS_NS_ARG },
       {"seed", required_argument, 0, SEED_ARG },
       {"init-file", required_argument, 0, INIT_FILE_ARG },
       {"force-file", required_argument, 0, FORCE_FILE_ARG },
       {"obs-file", required_argument, 0, OBS_FILE_ARG },
       {"output-file", required_argument, 0, OUTPUT_FILE_ARG },
-      {"init-ns", required_argument, 0, INIT_NS_ARG },
-      {"force-ns", required_argument, 0, FORCE_NS_ARG },
-      {"obs-ns", required_argument, 0, OBS_NS_ARG },
       {"output", required_argument, 0, OUTPUT_ARG },
       {"time", required_argument, 0, TIME_ARG }
   };
@@ -67,6 +71,21 @@ int main(int argc, char* argv[]) {
   do {
     c = getopt_long(argc, argv, short_options, long_options, &option_index);
     switch(c) {
+    case ATOLER_ARG:
+      ATOLER = atof(optarg);
+      break;
+    case RTOLER_ARG:
+      RTOLER = atof(optarg);
+      break;
+    case INIT_NS_ARG:
+      INIT_NS = atoi(optarg);
+      break;
+    case FORCE_NS_ARG:
+      FORCE_NS = atoi(optarg);
+      break;
+    case OBS_NS_ARG:
+      OBS_NS = atoi(optarg);
+      break;
     case SEED_ARG:
       SEED = atoi(optarg);
       break;
@@ -82,15 +101,6 @@ int main(int argc, char* argv[]) {
     case OUTPUT_FILE_ARG:
       OUTPUT_FILE = std::string(optarg);
       break;
-    case INIT_NS_ARG:
-      INIT_NS = atoi(optarg);
-      break;
-    case FORCE_NS_ARG:
-      FORCE_NS = atoi(optarg);
-      break;
-    case OBS_NS_ARG:
-      OBS_NS = atoi(optarg);
-      break;
     case OUTPUT_ARG:
       OUTPUT = atoi(optarg);
       break;
@@ -101,10 +111,17 @@ int main(int argc, char* argv[]) {
       T = atof(optarg);
       break;
     case 'h':
-      h = atof(optarg);
+      H = atof(optarg);
       break;
     }
   } while (c != -1);
+
+  /* bi init */
+  #ifdef __CUDACC__
+  cudaThreadSetCacheConfig(cudaFuncCachePreferL1);
+  #endif
+  bi_omp_init();
+  bi_ode_init(H, ATOLER, RTOLER);
 
   /* NetCDF error reporting */
   NcError ncErr(NcError::silent_nonfatal);
@@ -114,8 +131,8 @@ int main(int argc, char* argv[]) {
 
   /* state and intermediate results */
   int P = 1;
-  Static<ON_HOST> theta(m);
-  State<ON_HOST> s(m, P);
+  Static<LOCATION> theta(m);
+  State<LOCATION> s(m, P);
 
   /* random number generator */
   Random rng(SEED);
@@ -138,7 +155,7 @@ int main(int argc, char* argv[]) {
   }
 
   /* set filter */
-  BOOST_AUTO(filter, createUnscentedKalmanFilter(m, rng, &inForce, &inObs, out));
+  BOOST_AUTO(filter, UnscentedKalmanFilterFactory<LOCATION>::create(m, rng, &inForce, &inObs, out));
 
   /* do filter */
   TicToc timer;
@@ -149,8 +166,8 @@ int main(int argc, char* argv[]) {
     std::cout << timer.toc() << std::endl;
   }
 
-  delete out;
   delete filter;
+  delete out;
 
   return 0;
 }

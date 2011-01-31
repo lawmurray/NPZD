@@ -51,8 +51,7 @@ int main(int argc, char* argv[]) {
     TIME_ARG
   };
   real T = 0.0, H = 1.0, RTOLER = 1.0e-3, ATOLER = 1.0e-3;
-  unsigned P = 1024, L = 10, INIT_NS = 0, FORCE_NS = 0, OBS_NS = 0;
-  int SEED = 0;
+  int P = 1024, L = 10, INIT_NS = 0, FORCE_NS = 0, OBS_NS = 0, SEED = 0;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE, RESAMPLER = std::string("stratified");
   bool OUTPUT = false, TIME = false;
   int c, option_index;
