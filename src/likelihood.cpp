@@ -12,115 +12,151 @@
 #include "bi/math/ode.hpp"
 #include "bi/state/State.hpp"
 #include "bi/random/Random.hpp"
-#include "bi/method/DistributedMCMC.hpp"
-#include "bi/method/ParticleMCMC.hpp"
-#include "bi/method/AuxiliaryParticleFilter.hpp"
-#include "bi/method/StratifiedResampler.hpp"
-#include "bi/method/MultinomialResampler.hpp"
-#include "bi/method/MetropolisResampler.hpp"
-#include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
-#include "bi/buffer/ParticleMCMCNetCDFBuffer.hpp"
-#include "bi/buffer/SparseInputNetCDFBuffer.hpp"
 #include "bi/pdf/AdditiveExpGaussianPdf.hpp"
 #include "bi/pdf/ExpGaussianMixturePdf.hpp"
 
-#ifdef USE_CPU
-#include "bi/method/StratifiedResampler.inl"
-#include "bi/method/MultinomialResampler.inl"
-#include "bi/method/MetropolisResampler.inl"
-#include "bi/method/Resampler.inl"
-#endif
+#include "bi/method/ParticleMCMC.hpp"
+#include "bi/method/ParticleFilter.hpp"
+#include "bi/method/AuxiliaryParticleFilter.hpp"
+#include "bi/method/DisturbanceParticleFilter.hpp"
+#include "bi/method/StratifiedResampler.hpp"
+#include "bi/method/MultinomialResampler.hpp"
+#include "bi/method/MetropolisResampler.hpp"
 
-#include "boost/program_options.hpp"
+#include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
+#include "bi/buffer/UnscentedKalmanFilterNetCDFBuffer.hpp"
+#include "bi/buffer/ParticleMCMCNetCDFBuffer.hpp"
+#include "bi/buffer/SparseInputNetCDFBuffer.hpp"
+
 #include "boost/typeof/typeof.hpp"
-#include "boost/mpi.hpp"
 
 #include <iostream>
 #include <iomanip>
 #include <string>
-#include <sys/time.h>
+#include <getopt.h>
 
-namespace po = boost::program_options;
-namespace mpi = boost::mpi;
+#ifdef USE_CPU
+#define LOCATION ON_HOST
+#else
+#define LOCATION ON_DEVICE
+#endif
 
 using namespace bi;
 
 int main(int argc, char* argv[]) {
-  /* mpi */
-  mpi::environment env(argc, argv);
-  mpi::communicator world;
-  const int rank = world.rank();
-
-  /* handle command line arguments */
-  real T;
-  int P, INIT_NS, FORCE_NS, OBS_NS, C, L;
-  int SEED;
+  /* command line arguments */
+  enum {
+    ID_ARG,
+    ATOLER_ARG,
+    RTOLER_ARG,
+    SCALE_ARG,
+    SD_ARG,
+    INIT_NS_ARG,
+    FORCE_NS_ARG,
+    OBS_NS_ARG,
+    SEED_ARG,
+    INIT_FILE_ARG,
+    FORCE_FILE_ARG,
+    OBS_FILE_ARG,
+    OUTPUT_FILE_ARG,
+    FILTER_FILE_ARG,
+    PROPOSAL_FILE_ARG,
+    RESAMPLER_ARG
+  };
+  real T = 0.0, H = 1.0, RTOLER = 1.0e-3, ATOLER = 1.0e-3;
+  int ID = 0, P = 1024, INIT_NS = 0, FORCE_NS = 0, OBS_NS = 0,
+      SEED = 0, C = 100;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, FILTER_FILE, OUTPUT_FILE,
-      PROPOSAL_FILE, RESAMPLER;
+      RESAMPLER = std::string("stratified");
+  int c, option_index;
 
-  po::options_description mcmcOptions("MCMC options");
-  mcmcOptions.add_options()
-    (",C", po::value(&C), "no. samples to draw");
+  option long_options[] = {
+      {"id", required_argument, 0, ID_ARG },
+      {"atoler", required_argument, 0, ATOLER_ARG },
+      {"rtoler", required_argument, 0, RTOLER_ARG },
+      {"init-ns", required_argument, 0, INIT_NS_ARG },
+      {"force-ns", required_argument, 0, FORCE_NS_ARG },
+      {"obs-ns", required_argument, 0, OBS_NS_ARG },
+      {"seed", required_argument, 0, SEED_ARG },
+      {"init-file", optional_argument, 0, INIT_FILE_ARG },
+      {"force-file", required_argument, 0, FORCE_FILE_ARG },
+      {"obs-file", required_argument, 0, OBS_FILE_ARG },
+      {"filter-file", required_argument, 0, FILTER_FILE_ARG },
+      {"output-file", required_argument, 0, OUTPUT_FILE_ARG },
+      {"resampler", required_argument, 0, RESAMPLER_ARG }
+  };
+  const char* short_options = "T:h:P:C:";
 
-  po::options_description pfOptions("Particle filter options");
-  pfOptions.add_options()
-    (",P", po::value(&P), "no. particles")
-    (",T", po::value(&T), "total time to filter")
-    ("resampler", po::value(&RESAMPLER)->default_value("metropolis"),
-        "resampling strategy, 'stratified' or 'metropolis'")
-    (",L", po::value(&L)->default_value(0),
-        "lookahead for auxiliary particle filter");
-
-  po::options_description ioOptions("I/O options");
-  ioOptions.add_options()
-    ("init-file", po::value(&INIT_FILE),
-        "input file containing initial values")
-    ("force-file", po::value(&FORCE_FILE),
-        "input file containing forcings")
-    ("obs-file", po::value(&OBS_FILE),
-        "input file containing observations")
-    ("filter-file", po::value(&FILTER_FILE),
-        "temporary file for storage of intermediate particle filter results")
-    ("proposal-file", po::value(&PROPOSAL_FILE),
-        "input file containing non-local file proposals")
-    ("output-file", po::value(&OUTPUT_FILE),
-        "output file to contain results")
-    ("init-ns", po::value(&INIT_NS)->default_value(0),
-        "index along ns dimension of initial value file to use")
-    ("force-ns", po::value(&FORCE_NS)->default_value(0),
-        "index along ns dimension of forcings file to use")
-    ("obs-ns", po::value(&OBS_NS)->default_value(0),
-        "index along ns dimension of observations file to use");
-
-  po::options_description desc("General options");
-  desc.add_options()
-      ("help", "produce help message")
-      ("seed", po::value(&SEED)->default_value(0),
-          "pseudorandom number seed");
-  desc.add(pfOptions).add(mcmcOptions).add(ioOptions);
-
-  po::variables_map vm;
-  po::store(po::command_line_parser(argc, argv).options(desc).run(), vm);
-  po::notify(vm);
-
-  if (vm.count("help")) {
-    if (rank == 0) {
-      std::cerr << desc << std::endl;
+  do {
+    c = getopt_long(argc, argv, short_options, long_options, &option_index);
+    switch(c) {
+    case ID_ARG:
+      ID = atoi(optarg);
+      break;
+    case ATOLER_ARG:
+      ATOLER = atof(optarg);
+      break;
+    case RTOLER_ARG:
+      RTOLER = atof(optarg);
+      break;
+    case INIT_NS_ARG:
+      INIT_NS = atoi(optarg);
+      break;
+    case FORCE_NS_ARG:
+      FORCE_NS = atoi(optarg);
+      break;
+    case OBS_NS_ARG:
+      OBS_NS = atoi(optarg);
+      break;
+    case SEED_ARG:
+      SEED = atoi(optarg);
+      break;
+    case INIT_FILE_ARG:
+      if (optarg) {
+        INIT_FILE = std::string(optarg);
+      }
+      break;
+    case FORCE_FILE_ARG:
+      FORCE_FILE = std::string(optarg);
+      break;
+    case OBS_FILE_ARG:
+      OBS_FILE = std::string(optarg);
+      break;
+    case OUTPUT_FILE_ARG:
+      OUTPUT_FILE = std::string(optarg);
+      break;
+    case FILTER_FILE_ARG:
+      FILTER_FILE = std::string(optarg);
+      break;
+    case RESAMPLER_ARG:
+      RESAMPLER = std::string(optarg);
+      break;
+    case 'T':
+      T = atof(optarg);
+      break;
+    case 'h':
+      H = atof(optarg);
+      break;
+    case 'P':
+      P = atoi(optarg);
+      break;
+    case 'C':
+      C = atoi(optarg);
+      break;
     }
-    return 0;
-  }
+  } while (c != -1);
 
-  /* init stuff */
-  #ifndef USE_CPU
-  int dev = chooseDevice(rank);
-  std::cerr << "Rank " << rank << ": using device " << dev << std::endl;
+  /* bi init */
+  #ifdef __CUDACC__
+  int dev = chooseDevice(ID);
+  std::cerr << "Using device " << dev << std::endl;
+  cudaThreadSetCacheConfig(cudaFuncCachePreferL1);
   #endif
   bi_omp_init();
-  bi_ode_init(1.0, 1.0e-6, 1.0e-3);
-  NcError ncErr(NcError::silent_nonfatal);
+  bi_ode_init(H, ATOLER, RTOLER);
 
-  /* can cause "invalid device function" error if not correct mangled name */
-  //cudaFuncSetCacheConfig("_ZN2bi10kernelRK43I9NPZDModelILj1ELj1ELj1EEEEvdd", cudaFuncCachePreferL1);
+  /* NetCDF error reporting */
+  NcError ncErr(NcError::silent_nonfatal);
 
   /* random number generator */
   Random rng(SEED);
@@ -131,53 +167,32 @@ int main(int argc, char* argv[]) {
   const int ND = m.getNetSize(D_NODE);
   const int NC = m.getNetSize(C_NODE);
 
-  /* state */
-  State s(m, P);
+  /* state and intermediate results */
+  Static<LOCATION> theta(m);
+  State<LOCATION> s(m, P);
 
-  /* inputs */
-  SparseInputNetCDFBuffer inForce(m, InputBuffer::F_NODES, FORCE_FILE, FORCE_NS);
-  SparseInputNetCDFBuffer inObs(m, InputBuffer::O_NODES, OBS_FILE, OBS_NS);
-  SparseInputNetCDFBuffer inInit(m, InputBuffer::P_NODES, INIT_FILE, INIT_NS);
-
-  /* outputs */
-  std::stringstream file;
+  /* inputs and outputs */
+  SparseInputNetCDFBuffer inForce(m, FORCE_FILE, FORCE_NS);
+  SparseInputNetCDFBuffer inObs(m, OBS_FILE, OBS_NS);
+  SparseInputNetCDFBuffer inInit(m, INIT_FILE, INIT_NS);
   const int Y = inObs.countUniqueTimes(T);
-
-  file.str("");
-  file << OUTPUT_FILE << '.' << rank;
-  ParticleMCMCNetCDFBuffer out(m, C, Y, file.str(), NetCDFBuffer::REPLACE);
-
-  file.str("");
-  file << FILTER_FILE << '.' << rank;
-  ParticleFilterNetCDFBuffer tmp(m, P, Y, file.str(), NetCDFBuffer::REPLACE);
+  ParticleMCMCNetCDFBuffer out(m, C, Y, OUTPUT_FILE, NetCDFBuffer::REPLACE);
+  ParticleFilterNetCDFBuffer tmp(m, P, Y, FILTER_FILE, NetCDFBuffer::REPLACE);
 
   /* set up resampler, filter and MCMC */
-  StratifiedResampler resam(s, rng);
-  //MultinomialResampler resam(s, rng);
-  //MetropolisResampler resam(s, rng, 5);
-  BOOST_AUTO(filter, createAuxiliaryParticleFilter(m, s, rng, L, &resam, &inForce, &inObs, &tmp));
-  BOOST_AUTO(mcmc, createParticleMCMC(m, m.getPrior(P_NODE), s, rng, filter, T, &out));
+  StratifiedResampler resam(rng);
+  //MultinomialResampler resam(rng);
+  //MetropolisResampler resam(rng, 5);
+  BOOST_AUTO(filter, DisturbanceParticleFilterFactory<LOCATION>::create(m, rng, &inForce, &inObs, &tmp));
+  BOOST_AUTO(mcmc, ParticleMCMCFactory<LOCATION>::create(m, rng, &out));
 
-  /* and go... */
-  inInit.read(s);
-  std::cin >> s.pHostState(0,0) >> s.pHostState(0,1);
-  //m.getPrior(P_NODE).samples(rng, s.pHostState); // initialise chain
-  s.upload(P_NODE);
-
-  /* using high-level interface */
-  //mcmc->sample(C);
-
-  /* using low-level interface */
-  host_vector<real> theta(m.getNetSize(P_NODE));
-  int c;
-  mcmc->init();
+  /* initialise state */
+  inInit.read(P_NODE, theta.get(P_NODE));
+  mcmc->init(T, theta, s, filter, &resam);
   mcmc->output(0);
   for (c = 1; c < C; ++c) {
-    //mcmc->m.getPrior(P_NODE).sample(rng, theta);
-    std::cin >> theta(0) >> theta(1);
-
-    mcmc->propose(theta);
-    mcmc->likelihood();
+    mcmc->propose(row(theta.get(P_NODE), 0));
+    mcmc->likelihood(T, theta, s, filter, &resam);
     mcmc->accept();
     mcmc->output(c);
 
@@ -185,16 +200,9 @@ int main(int argc, char* argv[]) {
     std::cerr << c << ":\t";
     std::cerr.width(10);
     std::cerr << mcmc->getState().ll;
-    std::cerr << '\t';
-    std::cerr.width(10);
-    std::cerr << mcmc->getState().p;
     std::cerr << std::endl;
   }
-  mcmc->term();
-
-  /* output diagnostics */
-  std::cout << "Rank " << rank << ": " << mcmc->getNumAccepted() << " of " <<
-      mcmc->getNumSteps() << " proposals accepted" << std::endl;
+  mcmc->term(theta);
 
   delete mcmc;
   delete filter;

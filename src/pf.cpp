@@ -11,6 +11,8 @@
 #include "bi/math/ode.hpp"
 #include "bi/random/Random.hpp"
 #include "bi/method/ParticleFilter.hpp"
+#include "bi/method/AuxiliaryParticleFilter.hpp"
+#include "bi/method/DisturbanceParticleFilter.hpp"
 #include "bi/method/StratifiedResampler.hpp"
 #include "bi/method/MultinomialResampler.hpp"
 #include "bi/method/MetropolisResampler.hpp"
@@ -162,6 +164,8 @@ int main(int argc, char* argv[]) {
 
   m.getPrior(D_NODE).samples(rng, s.get(D_NODE));
   m.getPrior(C_NODE).samples(rng, s.get(C_NODE));
+//  set_rows(s.get(D_NODE), row(s.get(D_NODE), 895));
+//  set_rows(s.get(C_NODE), row(s.get(C_NODE), 895));
 
   /* output */
   ParticleFilterNetCDFBuffer* out;
@@ -183,15 +187,15 @@ int main(int argc, char* argv[]) {
     synchronize();
     std::cout << timer.toc() << std::endl;
   }
-  filter->reset();
-  timer.tic();
-  filter->filter(T, theta, s, &resam);
-
-  /* output timing results */
-  if (TIME) {
-    synchronize();
-    std::cout << timer.toc() << std::endl;
-  }
+//  filter->reset();
+//  timer.tic();
+//  filter->filter(T, theta, s, &resam);
+//
+//  /* output timing results */
+//  if (TIME) {
+//    synchronize();
+//    std::cout << timer.toc() << std::endl;
+//  }
 
   delete filter;
   delete out;

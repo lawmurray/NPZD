@@ -32,7 +32,7 @@ H=1.0 # initial step size for ODE integrator
 ATOLER=1.0e-3 # absolute error tolerance for ODE integrator
 RTOLER=1.0e-3 # relative error tolerance for ODE integrator
 SEED=0 # pseudorandom number seed
-OUTPUT=1 # produce output?
+OUTPUT=0 # produce output?
 TIME=1 # produce timings?
 
 INIT_FILE=$DATA_DIR/C7_initHP2.nc # initial values file

@@ -193,16 +193,13 @@ int main(int argc, char* argv[]) {
   Static<LOCATION> theta(m);
   State<LOCATION> s(m, P);
 
-  /* inputs */
+  /* inputs and outputs */
   SparseInputNetCDFBuffer inForce(m, FORCE_FILE, FORCE_NS);
   SparseInputNetCDFBuffer inObs(m, OBS_FILE, OBS_NS);
   SparseInputNetCDFBuffer inInit(m, INIT_FILE, INIT_NS);
   const int Y = inObs.countUniqueTimes(T);
-
-  /* outputs */
-  std::stringstream file;
-  file << OUTPUT_FILE << '.' << ID;
-  ParticleMCMCNetCDFBuffer out(m, C, Y, file.str(), NetCDFBuffer::REPLACE);
+  ParticleMCMCNetCDFBuffer out(m, C, Y, OUTPUT_FILE, NetCDFBuffer::REPLACE);
+  ParticleFilterNetCDFBuffer outFilter(m, P, Y, FILTER_FILE, NetCDFBuffer::REPLACE);
 
   /* proposal distribution and Markov chain initialisation */
   AdditiveExpGaussianPdf<> q(NP);
@@ -258,11 +255,6 @@ int main(int argc, char* argv[]) {
 
   ///////// remove next line for PZ model ////////
   q.setLogs(m.getPrior(P_NODE).getLogs());
-
-  /* filter file */
-  file.str("");
-  file << FILTER_FILE << '.' << ID;
-  ParticleFilterNetCDFBuffer outFilter(m, P, Y, file.str(), NetCDFBuffer::REPLACE);
 
   /* filter */
   StratifiedResampler resam(rng);

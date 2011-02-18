@@ -47,30 +47,26 @@ $MATH_LINKFLAGS = '-lblas -lcblas -llapack -lm';
 # Release flags
 $RELEASE_CXXFLAGS = ' -O3 -funroll-loops -fomit-frame-pointer -g';
 $RELEASE_CUDACCFLAGS = ' -O3 -Xcompiler="-O3 -funroll-loops -fomit-frame-pointer -g"';
-$RELEASE_LINKFLAGS = ' -lcublas -lcudart';
+$RELEASE_LINKFLAGS = ' -lcublas -lcurand -lcudart';
 
 # Debugging flags
 $DEBUG_CXXFLAGS = ' -g';
 $DEBUG_CUDACCFLAGS = ' -g';
-$DEBUG_LINKFLAGS = ' -lcublas -lcudart';
+$DEBUG_LINKFLAGS = ' -lcublas -lcurand -lcudart';
 
 # Profiling flags
 $PROFILE_CXXFLAGS = ' -O1 -pg -g3';
 $PROFILE_CUDACCFLAGS = ' -O1 --compiler-options="-O1 -pg -g"';
-$PROFILE_LINKFLAGS = ' -pg -g3 -lcublas -lcudart';
+$PROFILE_LINKFLAGS = ' -pg -g3 -lcublas -lcurand -lcudart';
 
 # Disassembly flags
 $DISASSEMBLE_CUDACCFLAGS = ' -keep';
-$DISASSEMBLE_LINKFLAGS = ' -lcublas -lcudart';
+$DISASSEMBLE_LINKFLAGS = ' -lcublas -lcurand -lcudart';
 
 # Ocelot flags
 $OCELOT_CXXFLAGS = ' -g -O3 -funroll-loops';
 $OCELOT_CUDACCFLAGS = ' -g -O3 -Xcompiler="-O3 -funroll-loops"';
-$OCELOT_LINKFLAGS = ' -locelot -lhydralize -lcublas';
-
-# Device emulation flags
-$EMULATION_CUDACCFLAGS .= ' --device-emulation -g';
-$EMULATION_LINKFLAGS = ' --device-emulation -g -lcublasemu';
+$OCELOT_LINKFLAGS = ' -locelot -lhydralize -lcublas -lcurand';
 
 # Bootstrap
 `rm -rf $CPPDIR`; # clean up any old code from generator
@@ -180,10 +176,6 @@ OCELOT_CXXFLAGS=$OCELOT_CXXFLAGS
 OCELOT_CUDACCFLAGS=$OCELOT_CUDACCFLAGS
 OCELOT_LINKFLAGS=$OCELOT_LINKFLAGS
 
-EMULATION_CXXFLAGS=$EMULATION_CXXFLAGS
-EMULATION_CUDACCFLAGS=$EMULATION_CUDACCFLAGS
-EMULATION_LINKFLAGS=$EMULATION_LINKFLAGS
-
 ifdef USE_INTEL
 CXX=$ICC
 LINKER=$ICC
@@ -288,12 +280,6 @@ CXXFLAGS += \$(OCELOT_CXXFLAGS)
 LINKFLAGS += \$(OCELOT_LINKFLAGS)
 endif
 
-ifdef EMULATION
-CUDACCFLAGS += \$(EMULATION_CUDACCFLAGS)
-CXXFLAGS += \$(EMULATION_CXXFLAGS)
-LINKFLAGS += \$(EMULATION_LINKFLAGS)
-endif
-
 ifdef USE_CPU_ODE
 CUDACCFLAGS += -DUSE_CPU_ODE
 CXXFLAGS += -DUSE_CPU_ODE
@@ -359,10 +345,10 @@ print "\t\$(LINKER) -o \$\@ \$^ \$(LINKFLAGS)\n\n";
 print "\$(BUILDDIR)/ukf: \$(BUILDDIR)/ukf.\$(EXT).o $models\n";
 print "\t\$(LINKER) -o \$\@ \$^ \$(LINKFLAGS)\n\n";
 
-print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/mcmc.\$(EXT).o \$(BUILDDIR)/device.\$(EXT).o $models\n";
+print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/mcmc.\$(EXT).o \$(BUILDDIR)/device.cu.o $models\n";
 print "\t\$(LINKER) -o \$\@ \$^ \$(LINKFLAGS)\n\n";
 
-print "\$(BUILDDIR)/likelihood: \$(BUILDDIR)/likelihood.\$(EXT).o $models\n";
+print "\$(BUILDDIR)/likelihood: \$(BUILDDIR)/likelihood.\$(EXT).o \$(BUILDDIR)/device.cu.o $models\n";
 print "\t\$(LINKER) -o \$\@ \$^ \$(LINKFLAGS)\n\n";
 
 # Targets
