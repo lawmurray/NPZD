@@ -44,12 +44,13 @@ int main(int argc, char* argv[]) {
     OBS_FILE_ARG,
     OUTPUT_FILE_ARG,
     OUTPUT_ARG,
-    TIME_ARG
+    TIME_ARG,
+    ESTIMATE_PARAMETERS_ARG
   };
   real T = 0.0, H = 1.0, RTOLER = 1.0e-3, ATOLER = 1.0e-3;
   int INIT_NS = 0, FORCE_NS = 0, OBS_NS = 0, SEED = 0;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, OUTPUT_FILE;
-  bool OUTPUT = false, TIME = false;
+  bool OUTPUT = false, TIME = false, ESTIMATE_PARAMETERS = false;
   int c, option_index;
 
   option long_options[] = {
@@ -64,7 +65,8 @@ int main(int argc, char* argv[]) {
       {"obs-file", required_argument, 0, OBS_FILE_ARG },
       {"output-file", required_argument, 0, OUTPUT_FILE_ARG },
       {"output", required_argument, 0, OUTPUT_ARG },
-      {"time", required_argument, 0, TIME_ARG }
+      {"time", required_argument, 0, TIME_ARG },
+      {"estimate-parameters", required_argument, 0, ESTIMATE_PARAMETERS_ARG }
   };
   const char* short_options = "T:h:";
 
@@ -107,6 +109,9 @@ int main(int argc, char* argv[]) {
     case TIME_ARG:
       TIME = atoi(optarg);
       break;
+    case ESTIMATE_PARAMETERS_ARG:
+      ESTIMATE_PARAMETERS = atoi(optarg);
+      break;
     case 'T':
       T = atof(optarg);
       break;
@@ -148,25 +153,31 @@ int main(int argc, char* argv[]) {
   /* output */
   UnscentedKalmanFilterNetCDFBuffer* out;
   if (OUTPUT) {
-    out = new UnscentedKalmanFilterNetCDFBuffer(m, P, inObs.countUniqueTimes(T) + 1,
-        OUTPUT_FILE, NetCDFBuffer::REPLACE);
+    out = new UnscentedKalmanFilterNetCDFBuffer(m, inObs.countUniqueTimes(T) + 1,
+        OUTPUT_FILE, NetCDFBuffer::REPLACE, ESTIMATE_PARAMETERS);
   } else {
     out = NULL;
   }
 
-  /* set filter */
-  BOOST_AUTO(filter, UnscentedKalmanFilterFactory<LOCATION>::create(m, rng, &inForce, &inObs, out));
-
-  /* do filter */
+  /* filter */
   TicToc timer;
-  filter->filter(T, theta, s);
+  if (ESTIMATE_PARAMETERS) {
+    BOOST_AUTO(filter, (UnscentedKalmanFilterFactory<LOCATION,STATIC_OWN>::create(m, rng,
+        &inForce, &inObs, out)));
+    filter->filter(T, theta, s);
+    delete filter;
+  } else {
+    BOOST_AUTO(filter, (UnscentedKalmanFilterFactory<LOCATION,STATIC_SHARED>::create(m, rng,
+        &inForce, &inObs, out)));
+    filter->filter(T, theta, s);
+    delete filter;
+  }
 
   /* output timing results */
   if (TIME) {
     std::cout << timer.toc() << std::endl;
   }
 
-  delete filter;
   delete out;
 
   return 0;
