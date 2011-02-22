@@ -30,6 +30,7 @@ H=0.3 # initial step size
 SEED=3 # pseudorandom number seed
 OUTPUT=1 # produce output?
 TIME=1 # produce timings?
+ESTIMATE_PARAMETERS=1 # estimate parameters?
 
 # input files, in $DATA_DIR
 INIT_FILE=$DATA_DIR/C7_init.nc # initial values file
@@ -42,4 +43,5 @@ INIT_NS=0
 FORCE_NS=0
 OBS_NS=1
 
-$ROOT/build/ukf -T $T -h $H --seed=$SEED --init-file=$INIT_FILE --force-file=$FORCE_FILE --obs-file=$OBS_FILE --init-ns=$INIT_NS --force-ns=$FORCE_NS --obs-ns=$OBS_NS --output-file=$OUTPUT_FILE --output=$OUTPUT --time=$TIME
+$ROOT/build/ukf -T $T -h $H --seed=$SEED --init-file=$INIT_FILE --force-file=$FORCE_FILE --obs-file=$OBS_FILE --init-ns=$INIT_NS --force-ns=$FORCE_NS --obs-ns=$OBS_NS --output-file=$OUTPUT_FILE --output=$OUTPUT --time=$TIME --estimate-parameters=$ESTIMATE_PARAMETERS
+

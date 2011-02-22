@@ -93,13 +93,15 @@ int main(int argc, char* argv[]) {
   Random rng(SEED);
 
   /* inputs */
-  UnscentedKalmanFilterNetCDFBuffer in(m, INPUT_FILE);
+  UnscentedKalmanFilterNetCDFBuffer in(m, INPUT_FILE, NetCDFBuffer::READ_ONLY,
+      ESTIMATE_PARAMETERS ? STATIC_OWN : STATIC_SHARED);
 
   /* output */
   UnscentedRTSSmootherNetCDFBuffer* out;
   if (OUTPUT) {
     out = new UnscentedRTSSmootherNetCDFBuffer(m, in.size2(),
-        OUTPUT_FILE, NetCDFBuffer::REPLACE);
+        OUTPUT_FILE, NetCDFBuffer::REPLACE,
+        ESTIMATE_PARAMETERS ? STATIC_OWN : STATIC_SHARED);
   } else {
     out = NULL;
   }

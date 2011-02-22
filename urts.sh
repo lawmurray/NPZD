@@ -19,7 +19,7 @@ DATA_DIR=$ROOT/data
 
 LD_LIBRARY_PATH=$ROOT/../bi/build:$LD_LIBRARY_PATH
 
-export OMP_NUM_THREADS=4
+export OMP_NUM_THREADS=2
 
 ##
 ## Run config
@@ -28,7 +28,9 @@ export OMP_NUM_THREADS=4
 SEED=3 # pseudorandom number seed
 OUTPUT=1 # produce output?
 TIME=1 # produce timings?
+ESTIMATE_PARAMETERS=1 # estimate parameters?
 INPUT_FILE=$RESULTS_DIR/ukf.nc # UKF results file
 OUTPUT_FILE=$RESULTS_DIR/$NAME.nc # output file
 
-$ROOT/build/urts --seed=$SEED --input-file=$INPUT_FILE --output-file=$OUTPUT_FILE --output=$OUTPUT --time=$TIME
+$ROOT/build/urts --seed=$SEED --input-file=$INPUT_FILE --output-file=$OUTPUT_FILE --output=$OUTPUT --time=$TIME --estimate-parameters=$ESTIMATE_PARAMETERS
+

@@ -154,7 +154,8 @@ int main(int argc, char* argv[]) {
   UnscentedKalmanFilterNetCDFBuffer* out;
   if (OUTPUT) {
     out = new UnscentedKalmanFilterNetCDFBuffer(m, inObs.countUniqueTimes(T),
-        OUTPUT_FILE, NetCDFBuffer::REPLACE, ESTIMATE_PARAMETERS);
+        OUTPUT_FILE, NetCDFBuffer::REPLACE,
+        ESTIMATE_PARAMETERS ? STATIC_OWN : STATIC_SHARED);
   } else {
     out = NULL;
   }
