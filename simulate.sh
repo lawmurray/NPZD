@@ -25,18 +25,18 @@ export OMP_NUM_THREADS=2
 ## Run config
 ##
 
-P=1024 # no. trajectories
-K=416 # number of output points
-T=415.0 # time to simulate
+P=32 # no. trajectories
+K=365 # number of output points
+T=365.0 # time to simulate
 H=1.0 # initial step size for ODE integrator
 ATOLER=1.0e-3 # absolute error tolerance for ODE integrator
 RTOLER=1.0e-3 # relative error tolerance for ODE integrator
 SEED=0 # pseudorandom number seed
-OUTPUT=0 # produce output?
+OUTPUT=1 # produce output?
 TIME=1 # produce timings?
 
 INIT_FILE=$DATA_DIR/C7_initHP2.nc # initial values file
-FORCE_FILE=$DATA_DIR/C7_force_pad.nc # forcings file
+FORCE_FILE=$DATA_DIR/C7_force.nc # forcings file
 OUTPUT_FILE=$RESULTS_DIR/$ID.nc # output file
 NS=0 # record number in input files
 

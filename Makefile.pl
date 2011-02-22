@@ -289,7 +289,7 @@ End
 
 # Default targets
 print <<End;
-default: \$(BUILDDIR)/simulate \$(BUILDDIR)/pf \$(BUILDDIR)/mcmc \$(BUILDDIR)/ukf
+default: \$(BUILDDIR)/simulate
 
 End
 
@@ -343,6 +343,9 @@ print "\$(BUILDDIR)/pf: \$(BUILDDIR)/pf.\$(EXT).o $models\n";
 print "\t\$(LINKER) -o \$\@ \$^ \$(LINKFLAGS)\n\n";
 
 print "\$(BUILDDIR)/ukf: \$(BUILDDIR)/ukf.\$(EXT).o $models\n";
+print "\t\$(LINKER) -o \$\@ \$^ \$(LINKFLAGS)\n\n";
+
+print "\$(BUILDDIR)/urts: \$(BUILDDIR)/urts.\$(EXT).o $models\n";
 print "\t\$(LINKER) -o \$\@ \$^ \$(LINKFLAGS)\n\n";
 
 print "\$(BUILDDIR)/mcmc: \$(BUILDDIR)/mcmc.\$(EXT).o \$(BUILDDIR)/device.cu.o $models\n";

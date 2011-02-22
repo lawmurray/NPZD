@@ -32,7 +32,7 @@ NPERNODE=1 # no. processes per node
 
 # MCMC settings
 T=415.0 # time to simulate
-SEED=0 # pseudorandom number seed
+SEED=5 # pseudorandom number seed
 C=100 # no. samples to draw
 
 # particle filter settings

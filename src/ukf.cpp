@@ -153,7 +153,7 @@ int main(int argc, char* argv[]) {
   /* output */
   UnscentedKalmanFilterNetCDFBuffer* out;
   if (OUTPUT) {
-    out = new UnscentedKalmanFilterNetCDFBuffer(m, inObs.countUniqueTimes(T) + 1,
+    out = new UnscentedKalmanFilterNetCDFBuffer(m, inObs.countUniqueTimes(T),
         OUTPUT_FILE, NetCDFBuffer::REPLACE, ESTIMATE_PARAMETERS);
   } else {
     out = NULL;
