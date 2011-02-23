@@ -163,9 +163,9 @@ int main(int argc, char* argv[]) {
 
   /* model */
   NPZDModel<> m;
-  const int NP = m.getNetSize(P_NODE);
   const int ND = m.getNetSize(D_NODE);
   const int NC = m.getNetSize(C_NODE);
+  const int NP = m.getNetSize(P_NODE);
 
   /* state and intermediate results */
   Static<LOCATION> theta(m);
@@ -183,24 +183,28 @@ int main(int argc, char* argv[]) {
   StratifiedResampler resam(rng);
   //MultinomialResampler resam(rng);
   //MetropolisResampler resam(rng, 5);
-  BOOST_AUTO(filter, AuxiliaryParticleFilterFactory<LOCATION>::create(m, rng, &inForce, &inObs, &tmp));
-  BOOST_AUTO(mcmc, ParticleMCMCFactory<LOCATION>::create(m, rng, &out));
+  BOOST_AUTO(filter, ParticleFilterFactory<LOCATION>::create(m, rng, &inForce, &inObs, &tmp));
+  BOOST_AUTO(mcmc, ParticleMCMCFactory<LOCATION>::create(m, rng, &out, INITIAL_CONDITIONED));
 
   /* initialise state */
-  inInit.read(P_NODE, theta.get(P_NODE));
-  mcmc->init(T, theta, s, filter, &resam);
+  BOOST_AUTO(p0, mcmc->getPrior());
+  host_vector<real> x(p0.size());
+
+  //p0.sample(rng, x);
+
+  inInit.read(D_NODE, vector_as_row_matrix(subrange(x, 0, ND)));
+  inInit.read(C_NODE, vector_as_row_matrix(subrange(x, ND, NC)));
+  inInit.read(P_NODE, vector_as_row_matrix(subrange(x, ND + NC, NP)));
+
+  mcmc->init(x, T, theta, s, filter, &resam);
   mcmc->output(0);
   for (c = 1; c < C; ++c) {
-    mcmc->propose(row(theta.get(P_NODE), 0));
+    mcmc->report(c);
+    mcmc->proposal(x);
+    mcmc->prior();
     mcmc->likelihood(T, theta, s, filter, &resam);
     mcmc->accept();
     mcmc->output(c);
-
-    /* verbose output */
-    std::cerr << c << ":\t";
-    std::cerr.width(10);
-    std::cerr << mcmc->getState().ll;
-    std::cerr << std::endl;
   }
   mcmc->term(theta);
 
