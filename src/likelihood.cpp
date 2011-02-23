@@ -27,6 +27,7 @@
 #include "bi/buffer/UnscentedKalmanFilterNetCDFBuffer.hpp"
 #include "bi/buffer/ParticleMCMCNetCDFBuffer.hpp"
 #include "bi/buffer/SparseInputNetCDFBuffer.hpp"
+#include "bi/buffer/UnscentedRTSSmootherNetCDFBuffer.hpp"
 
 #include "boost/typeof/typeof.hpp"
 
@@ -67,7 +68,7 @@ int main(int argc, char* argv[]) {
   int ID = 0, P = 1024, INIT_NS = 0, FORCE_NS = 0, OBS_NS = 0,
       SEED = 0, C = 100;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, FILTER_FILE, OUTPUT_FILE,
-      RESAMPLER = std::string("stratified");
+      PROPOSAL_FILE, RESAMPLER = std::string("stratified");
   int c, option_index;
 
   option long_options[] = {
@@ -81,8 +82,9 @@ int main(int argc, char* argv[]) {
       {"init-file", optional_argument, 0, INIT_FILE_ARG },
       {"force-file", required_argument, 0, FORCE_FILE_ARG },
       {"obs-file", required_argument, 0, OBS_FILE_ARG },
-      {"filter-file", required_argument, 0, FILTER_FILE_ARG },
       {"output-file", required_argument, 0, OUTPUT_FILE_ARG },
+      {"filter-file", required_argument, 0, FILTER_FILE_ARG },
+      {"proposal-file", required_argument, 0, PROPOSAL_FILE_ARG },
       {"resampler", required_argument, 0, RESAMPLER_ARG }
   };
   const char* short_options = "T:h:P:C:";
@@ -127,6 +129,9 @@ int main(int argc, char* argv[]) {
       break;
     case FILTER_FILE_ARG:
       FILTER_FILE = std::string(optarg);
+      break;
+    case PROPOSAL_FILE_ARG:
+      PROPOSAL_FILE = std::string(optarg);
       break;
     case RESAMPLER_ARG:
       RESAMPLER = std::string(optarg);
@@ -175,6 +180,7 @@ int main(int argc, char* argv[]) {
   SparseInputNetCDFBuffer inForce(m, FORCE_FILE, FORCE_NS);
   SparseInputNetCDFBuffer inObs(m, OBS_FILE, OBS_NS);
   SparseInputNetCDFBuffer inInit(m, INIT_FILE, INIT_NS);
+  UnscentedRTSSmootherNetCDFBuffer inProposal(m, PROPOSAL_FILE, NetCDFBuffer::READ_ONLY, STATIC_OWN);
   const int Y = inObs.countUniqueTimes(T);
   ParticleMCMCNetCDFBuffer out(m, C, Y, OUTPUT_FILE, NetCDFBuffer::REPLACE);
   ParticleFilterNetCDFBuffer tmp(m, P, Y, FILTER_FILE, NetCDFBuffer::REPLACE);
@@ -188,18 +194,29 @@ int main(int argc, char* argv[]) {
 
   /* initialise state */
   BOOST_AUTO(p0, mcmc->getPrior());
+  ExpGaussianPdf<> q(p0.size());
   host_vector<real> x(p0.size());
 
-  //p0.sample(rng, x);
+  inProposal.readSmoothState(0, q.mean(), q.cov());
 
-  inInit.read(D_NODE, vector_as_row_matrix(subrange(x, 0, ND)));
-  inInit.read(C_NODE, vector_as_row_matrix(subrange(x, ND, NC)));
-  inInit.read(P_NODE, vector_as_row_matrix(subrange(x, ND + NC, NP)));
+  q.addLogs(m.getPrior(D_NODE).getLogs(), 0);
+  q.addLogs(m.getPrior(C_NODE).getLogs(), ND);
+  q.addLogs(m.getPrior(P_NODE).getLogs(), ND + NC);
+  q.init();
+
+  //p0.sample(rng, x);
+  q.sample(rng, x);
+
+//  inInit.read(D_NODE, vector_as_row_matrix(subrange(x, 0, ND)));
+//  inInit.read(C_NODE, vector_as_row_matrix(subrange(x, ND, NC)));
+//  inInit.read(P_NODE, vector_as_row_matrix(subrange(x, ND + NC, NP)));
 
   mcmc->init(x, T, theta, s, filter, &resam);
-  mcmc->output(0);
-  for (c = 1; c < C; ++c) {
+  for (c = 0; c < C; ++c) {
     mcmc->report(c);
+    //p0.sample(rng, x);
+    q.sample(rng, x);
+
     mcmc->proposal(x);
     mcmc->prior();
     mcmc->likelihood(T, theta, s, filter, &resam);
