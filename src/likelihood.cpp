@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
   };
   real T = 0.0, H = 1.0, RTOLER = 1.0e-3, ATOLER = 1.0e-3;
   int ID = 0, P = 1024, INIT_NS = 0, FORCE_NS = 0, OBS_NS = 0,
-      SEED = 0, C = 100;
+      SEED = 0, C = 1000, M = 10;
   std::string INIT_FILE, FORCE_FILE, OBS_FILE, FILTER_FILE, OUTPUT_FILE,
       PROPOSAL_FILE, RESAMPLER = std::string("stratified");
   int c, option_index;
@@ -87,7 +87,7 @@ int main(int argc, char* argv[]) {
       {"proposal-file", required_argument, 0, PROPOSAL_FILE_ARG },
       {"resampler", required_argument, 0, RESAMPLER_ARG }
   };
-  const char* short_options = "T:h:P:C:";
+  const char* short_options = "T:h:P:C:M:";
 
   do {
     c = getopt_long(argc, argv, short_options, long_options, &option_index);
@@ -147,6 +147,9 @@ int main(int argc, char* argv[]) {
       break;
     case 'C':
       C = atoi(optarg);
+      break;
+    case 'M':
+      M = atoi(optarg);
       break;
     }
   } while (c != -1);
@@ -213,15 +216,16 @@ int main(int argc, char* argv[]) {
 
   mcmc->init(x, T, theta, s, filter, &resam);
   for (c = 0; c < C; ++c) {
-    mcmc->report(c);
-    //p0.sample(rng, x);
-    q.sample(rng, x);
-
+    if ((c % M) == 0) {
+      //p0.sample(rng, x);
+      q.sample(rng, x);
+    }
     mcmc->proposal(x);
     mcmc->prior();
     mcmc->likelihood(T, theta, s, filter, &resam);
-    mcmc->accept();
+    mcmc->accept(filter);
     mcmc->output(c);
+    mcmc->report(c);
   }
   mcmc->term(theta);
 
