@@ -23,7 +23,7 @@ DATA_DIR=$ROOT/data
 
 LD_LIBRARY_PATH=$ROOT/../bi/build:$LD_LIBRARY_PATH
 
-export OMP_NUM_THREADS=4 # no. OpenMP threads per process
+export OMP_NUM_THREADS=2 # no. OpenMP threads per process
 NPERNODE=1 # no. processes per node
 
 ##
@@ -31,9 +31,10 @@ NPERNODE=1 # no. processes per node
 ##
 
 # MCMC settings
-T=415.0 # time to simulate
+T=365.0 # time to simulate
 SEED=5 # pseudorandom number seed
-C=100 # no. samples to draw
+C=50000 # no. samples to draw
+M=50 # no. steps before changing sample
 
 # particle filter settings
 RESAMPLER=stratified # resampler to use, 'stratified' or 'metropolis'
@@ -47,9 +48,10 @@ RTOLER=1.0e-3 # relative error tolerance for ODE integrator
 
 # input files, in $DATA_DIR
 INIT_FILENAME=C7_initHP2.nc
-FORCE_FILENAME=C7_force_pad.nc
-OBS_FILENAME=C7_S1_obs_padHP2.nc
+FORCE_FILENAME=C7_force.nc
+OBS_FILENAME=C7_S1_obs_HP2.nc
 FILTER_FILENAME=pf.nc
+PROPOSAL_FILENAME=urts.nc
 OUTPUT_FILENAME=$NAME.nc
 
 INIT_FILE=$DATA_DIR/$INIT_FILENAME # initial values file
@@ -57,6 +59,7 @@ FORCE_FILE=$DATA_DIR/$FORCE_FILENAME # forcings file
 OBS_FILE=$DATA_DIR/$OBS_FILENAME # observations file
 PROPOSAL_FILE= # proposal file
 FILTER_FILE=$LOCAL_DIR/$FILTER_FILENAME # intermediate filter results
+PROPOSAL_FILE=$RESULTS_DIR/$PROPOSAL_FILENAME # URTSS results
 OUTPUT_FILE=$LOCAL_DIR/$OUTPUT_FILENAME # output file
 
 # records to use from input files
@@ -72,7 +75,7 @@ cp $INIT_FILE $FORCE_FILE $OBS_FILE $LOCAL_DIR/.
 #cat $ROOT/npzd/mcmc.sh
 
 # run
-$ROOT/build/likelihood --id=$ID -P $P -T $T --resampler=$RESAMPLER -C $C -h $H --atoler=$ATOLER --rtoler=$RTOLER --seed=$SEED --init-file=$LOCAL_DIR/$INIT_FILENAME --force-file=$LOCAL_DIR/$FORCE_FILENAME --obs-file=$LOCAL_DIR/$OBS_FILENAME --filter-file=$FILTER_FILE --init-ns=$INIT_NS --force-ns=$FORCE_NS --obs-ns=$OBS_NS --output-file=$OUTPUT_FILE
+$ROOT/build/likelihood --id=$ID -P $P -T $T --resampler=$RESAMPLER -C $C -M $M -h $H --atoler=$ATOLER --rtoler=$RTOLER --seed=$SEED --init-file=$LOCAL_DIR/$INIT_FILENAME --force-file=$LOCAL_DIR/$FORCE_FILENAME --obs-file=$LOCAL_DIR/$OBS_FILENAME --filter-file=$FILTER_FILE --proposal-file=$PROPOSAL_FILE --init-ns=$INIT_NS --force-ns=$FORCE_NS --obs-ns=$OBS_NS --output-file=$OUTPUT_FILE
 
 # copy results from local to network file system
 cp $LOCAL_DIR/$OUTPUT_FILENAME $RESULTS_DIR/.
