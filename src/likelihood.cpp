@@ -24,6 +24,7 @@
 #include "bi/method/MetropolisResampler.hpp"
 
 #include "bi/buffer/ParticleFilterNetCDFBuffer.hpp"
+#include "bi/buffer/AuxiliaryParticleFilterNetCDFBuffer.hpp"
 #include "bi/buffer/UnscentedKalmanFilterNetCDFBuffer.hpp"
 #include "bi/buffer/ParticleMCMCNetCDFBuffer.hpp"
 #include "bi/buffer/SparseInputNetCDFBuffer.hpp"
@@ -186,13 +187,13 @@ int main(int argc, char* argv[]) {
   UnscentedRTSSmootherNetCDFBuffer inProposal(m, PROPOSAL_FILE, NetCDFBuffer::READ_ONLY, STATIC_OWN);
   const int Y = inObs.countUniqueTimes(T);
   ParticleMCMCNetCDFBuffer out(m, C, Y, OUTPUT_FILE, NetCDFBuffer::REPLACE);
-  ParticleFilterNetCDFBuffer tmp(m, P, Y, FILTER_FILE, NetCDFBuffer::REPLACE);
+  AuxiliaryParticleFilterNetCDFBuffer tmp(m, P, Y, FILTER_FILE, NetCDFBuffer::REPLACE);
 
   /* set up resampler, filter and MCMC */
   StratifiedResampler resam(rng);
   //MultinomialResampler resam(rng);
   //MetropolisResampler resam(rng, 5);
-  BOOST_AUTO(filter, ParticleFilterFactory<LOCATION>::create(m, rng, &inForce, &inObs, &tmp));
+  BOOST_AUTO(filter, AuxiliaryParticleFilterFactory<LOCATION>::create(m, rng, &inForce, &inObs, &tmp));
   BOOST_AUTO(mcmc, ParticleMCMCFactory<LOCATION>::create(m, rng, &out, INITIAL_CONDITIONED));
 
   /* initialise state */
@@ -218,7 +219,7 @@ int main(int argc, char* argv[]) {
   for (c = 0; c < C; ++c) {
     if ((c % M) == 0) {
       //p0.sample(rng, x);
-      q.sample(rng, x);
+      //q.sample(rng, x);
     }
     mcmc->proposal(x);
     mcmc->prior();
