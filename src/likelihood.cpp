@@ -163,6 +163,7 @@ int main(int argc, char* argv[]) {
   #endif
   bi_omp_init();
   bi_ode_init(H, ATOLER, RTOLER);
+  h_ode_set_nsteps(100u);
 
   /* NetCDF error reporting */
   NcError ncErr(NcError::silent_nonfatal);
@@ -193,7 +194,7 @@ int main(int argc, char* argv[]) {
   StratifiedResampler resam(rng);
   //MultinomialResampler resam(rng);
   //MetropolisResampler resam(rng, 5);
-  BOOST_AUTO(filter, AuxiliaryParticleFilterFactory<LOCATION>::create(m, rng, &inForce, &inObs, &tmp));
+  BOOST_AUTO(filter, DisturbanceParticleFilterFactory<LOCATION>::create(m, rng, &inForce, &inObs, &tmp));
   BOOST_AUTO(mcmc, ParticleMCMCFactory<LOCATION>::create(m, rng, &out, INITIAL_CONDITIONED));
 
   /* initialise state */
@@ -219,7 +220,7 @@ int main(int argc, char* argv[]) {
   for (c = 0; c < C; ++c) {
     if ((c % M) == 0) {
       //p0.sample(rng, x);
-      //q.sample(rng, x);
+      q.sample(rng, x);
     }
     mcmc->proposal(x);
     mcmc->prior();
