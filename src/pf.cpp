@@ -13,6 +13,7 @@
 #include "bi/method/ParticleFilter.hpp"
 #include "bi/method/AuxiliaryParticleFilter.hpp"
 #include "bi/method/DisturbanceParticleFilter.hpp"
+#include "bi/method/ExactStratifiedResampler.hpp"
 #include "bi/method/StratifiedResampler.hpp"
 #include "bi/method/MultinomialResampler.hpp"
 #include "bi/method/MetropolisResampler.hpp"
@@ -162,8 +163,8 @@ int main(int argc, char* argv[]) {
   inInit.read(D_NODE, s.get(D_NODE));
   inInit.read(C_NODE, s.get(C_NODE));
 
-  m.getPrior(D_NODE).samples(rng, s.get(D_NODE));
-  m.getPrior(C_NODE).samples(rng, s.get(C_NODE));
+//  m.getPrior(D_NODE).samples(rng, s.get(D_NODE));
+//  m.getPrior(C_NODE).samples(rng, s.get(C_NODE));
 //  set_rows(s.get(D_NODE), row(s.get(D_NODE), 895));
 //  set_rows(s.get(C_NODE), row(s.get(C_NODE), 895));
 
@@ -177,6 +178,7 @@ int main(int argc, char* argv[]) {
   }
 
   /* set filter */
+  //ExactStratifiedResampler resam(rng);
   StratifiedResampler resam(rng);
   BOOST_AUTO(filter, ParticleFilterFactory<LOCATION>::create(m, rng, &inForce, &inObs, out));
 

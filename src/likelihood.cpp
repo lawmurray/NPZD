@@ -194,7 +194,7 @@ int main(int argc, char* argv[]) {
   StratifiedResampler resam(rng);
   //MultinomialResampler resam(rng);
   //MetropolisResampler resam(rng, 5);
-  BOOST_AUTO(filter, DisturbanceParticleFilterFactory<LOCATION>::create(m, rng, &inForce, &inObs, &tmp));
+  BOOST_AUTO(filter, ParticleFilterFactory<LOCATION>::create(m, rng, &inForce, &inObs, &tmp));
   BOOST_AUTO(mcmc, ParticleMCMCFactory<LOCATION>::create(m, rng, &out, INITIAL_CONDITIONED));
 
   /* initialise state */

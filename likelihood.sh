@@ -23,7 +23,7 @@ DATA_DIR=$ROOT/data
 
 LD_LIBRARY_PATH=$ROOT/../bi/build:$LD_LIBRARY_PATH
 
-export OMP_NUM_THREADS=2 # no. OpenMP threads per process
+export OMP_NUM_THREADS=4 # no. OpenMP threads per process
 NPERNODE=1 # no. processes per node
 
 ##
@@ -32,9 +32,9 @@ NPERNODE=1 # no. processes per node
 
 # MCMC settings
 T=365.0 # time to simulate
-SEED=5 # pseudorandom number seed
-C=50000 # no. samples to draw
-M=50 # no. steps before changing sample
+SEED=0 # pseudorandom number seed
+C=10 # no. samples to draw
+M=1 # no. steps before changing sample
 
 # particle filter settings
 RESAMPLER=stratified # resampler to use, 'stratified' or 'metropolis'
@@ -50,9 +50,9 @@ RTOLER=1.0e-3 # relative error tolerance for ODE integrator
 INIT_FILENAME=C7_initHP2.nc
 FORCE_FILENAME=C7_force.nc
 OBS_FILENAME=C7_S1_obs_HP2.nc
-FILTER_FILENAME=pf.nc
+FILTER_FILENAME=pf.nc.$ID
 PROPOSAL_FILENAME=urts.nc
-OUTPUT_FILENAME=$NAME.nc
+OUTPUT_FILENAME=$NAME.nc.$ID
 
 INIT_FILE=$DATA_DIR/$INIT_FILENAME # initial values file
 FORCE_FILE=$DATA_DIR/$FORCE_FILENAME # forcings file
