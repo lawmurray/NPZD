@@ -49,7 +49,6 @@
 								<option id="gnu.cpp.link.option.paths.525385329" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -64,9 +63,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.1273791379" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.1273791379" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1566161925" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -93,8 +90,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -3270,7 +3265,6 @@
 								<option id="gnu.cpp.link.option.paths.1803685423" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -3285,9 +3279,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.392490638" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.392490638" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.546159979" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -3314,8 +3306,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -6491,7 +6481,6 @@
 								<option id="gnu.cpp.link.option.paths.206622522" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -6506,9 +6495,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.415764059" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.415764059" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1069947214" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -6535,8 +6522,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -9712,7 +9697,6 @@
 								<option id="gnu.cpp.link.option.paths.1761726187" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -9727,9 +9711,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.91198024" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.91198024" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1243572795" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -9756,8 +9738,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -12933,7 +12913,6 @@
 								<option id="gnu.cpp.link.option.paths.1468384071" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -12948,9 +12927,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.1837624838" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.1837624838" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.2071116121" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -12977,8 +12954,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -16154,7 +16129,6 @@
 								<option id="gnu.cpp.link.option.paths.1816807005" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -16169,9 +16143,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.1835387703" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.1835387703" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1488775712" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -16198,8 +16170,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -19375,7 +19345,6 @@
 								<option id="gnu.cpp.link.option.paths.1250562596" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -19390,9 +19359,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.522444011" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.522444011" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.312993772" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -19419,8 +19386,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -22596,7 +22561,6 @@
 								<option id="gnu.cpp.link.option.paths.795868895" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -22611,9 +22575,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.417452752" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.417452752" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.173871552" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -22640,8 +22602,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -25817,7 +25777,6 @@
 								<option id="gnu.cpp.link.option.paths.309132247" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -25832,9 +25791,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.50542787" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.50542787" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1163523190" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -25861,8 +25818,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -29038,7 +28993,6 @@
 								<option id="gnu.cpp.link.option.paths.618720723" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -29053,9 +29007,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.860487838" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.860487838" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.776498881" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -29082,8 +29034,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -32259,7 +32209,6 @@
 								<option id="gnu.cpp.link.option.paths.1709360658" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -32274,9 +32223,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.1189817993" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.1189817993" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.272561546" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -32303,8 +32250,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -35480,7 +35425,6 @@
 								<option id="gnu.cpp.link.option.paths.409109573" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -35495,9 +35439,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.307089930" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.307089930" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.2012422358" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -35524,8 +35466,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -38701,7 +38641,6 @@
 								<option id="gnu.cpp.link.option.paths.1035329378" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -38716,9 +38655,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.1378779812" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.1378779812" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.364997871" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -38745,8 +38682,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -41922,7 +41857,6 @@
 								<option id="gnu.cpp.link.option.paths.625270028" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -41937,9 +41871,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.120772343" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.120772343" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1485969179" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -41966,8 +41898,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -45195,7 +45125,6 @@
 								<option id="gnu.cpp.link.option.paths.708062418" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -45210,9 +45139,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.1671826791" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.1671826791" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.349743768" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -45239,8 +45166,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -48416,7 +48341,6 @@
 								<option id="gnu.cpp.link.option.paths.67270113" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -48431,9 +48355,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.1136801191" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.1136801191" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1440170998" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -48460,8 +48382,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
@@ -51637,7 +51557,6 @@
 								<option id="gnu.cpp.link.option.paths.1680640354" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/Release}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi/CUDA}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bi}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/mur387/workspace/bi/build"/>
 									<listOptionValue builtIn="false" value="/home/mur387/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib/mpi/gcc/openmpi/lib"/>
@@ -51652,9 +51571,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.867245764" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="bi"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.867245764" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.860371975" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -51681,8 +51598,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/bi"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/Release"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi/CUDA"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/bi"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="bi"/>
 					</externalSetting>
 				</externalSettings>
 			</storageModule>
