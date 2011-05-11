@@ -63,7 +63,7 @@
 									<listOptionValue builtIn="false" value="/usr/local/cuda/cudaprof/bin"/>
 									<listOptionValue builtIn="false" value="/usr/local/atlas/lib"/>
 								</option>
-								<option id="gnu.cpp.link.option.libs.1273791379" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
+								<option id="gnu.cpp.link.option.libs.1273791379" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1566161925" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
