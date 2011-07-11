@@ -15,9 +15,12 @@
 : ${DATA_DIR=data}        # directory containing data files
 : ${RESULTS_DIR=results}  # directory to contain result files
 
-: ${INIT_FILENAME=C7_initHP2.nc}   # init file
-: ${FORCE_FILENAME=C7_force.nc}  # forcings file
-: ${OBS_FILENAME=C7_S1_obs_HP2.nc}    # observations file
+#: ${INIT_FILENAME=C10_init.nc}   # init file
+: ${FORCE_FILENAME=C10_TE_force.nc}  # forcings file
+: ${OBS_FILENAME=C10_TE_obs.nc}    # observations file
+#: ${INIT_FILENAME=C7_initHP2.nc}   # init file
+#: ${FORCE_FILENAME=C7_force.nc}  # forcings file
+#: ${OBS_FILENAME=C7_S1_obs_HP2.nc}    # observations file
 
 : ${INIT_NS=0}   # record along ns dimension to use for init file
 : ${FORCE_NS=0}  # record along ns dimension to use for forcings file
@@ -28,8 +31,8 @@
 ##
 
 : ${T=365.0}               # time to simulate
-: ${K=365}                 # number of output points
-: ${P=1024}                # number of particles
+: ${K=366}                 # number of output points
+: ${P=2048}                # number of particles
 : ${DELTA=1.0}             # step size for random and discrete-time variables
 : ${H=1.0}                 # step size for ODE integrator
 : ${ATOLER=1.0e-3}         # absolute error tolerance for ODE integrator
@@ -59,7 +62,7 @@
 ##
 
 : ${C=100000}             # number of samples to draw
-: ${A=1000}               # centre of sigmoid for proposal adaptation
+: ${A=200000}               # centre of sigmoid for proposal adaptation
 : ${BETA=1.0e-3}          # decay of sigmoid for proposal adaptation
 : ${LAMBDA0=0}            # starting temperature for annealing
 : ${GAMMA=1.0e-2}         # exponential decay of temperature for annealing
@@ -67,20 +70,20 @@
 : ${S2=1.0}               # starting covariance scaling
 : ${PROPOSAL_TYPE=prior}  # proposal distribution type: file, prior, ukf, urts, pf, pfs or kfb
 : ${STARTING_TYPE=prior}  # starting distribution type: file, prior, ukf, urts, pf, pfs or kfb
-: ${ADAPT=1}              # adapt proposal distribution?
+: ${ADAPT=0}              # adapt proposal distribution?
 : ${INCLUDE_INITIAL=1}    # include initial conditions in MCMC rather than filter?
 
 ##
 ## Likelihood settings
 ##
 
-: ${M=10}  # frequency with which to change samples
+: ${M=100}  # frequency with which to change samples
 
 ##
 ## Random number settings
 ##
 
-: ${SEED=0}  # pseudorandom number seed
+: ${SEED=11}  # pseudorandom number seed
 
 ##
 ## System settings
