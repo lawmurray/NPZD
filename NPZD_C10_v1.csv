@@ -1,0 +1,96 @@
+"OriginalName","Name","Description","LaTeXName","Formulae","Category","Dependencies","Traits"
+"Kd","Kw","Light attenuation, water","Kw","mu0: log(0.03); sigma0: 0.2","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+"Kchla","KCh","Light attenuation, Chl-a","KCh","mu0: log(0.02); sigma0: 0.3","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+"Sink","Dsi","Detrital sinking rate","Dsi","mu0: 5.0; sigma0: 1.0","Parameter",,"IS_P_NODE; HAS_GAUSSIAN_PRIOR"
+"FDG","ZgD","Z grazing inefficiency","ZgD","mu0: log(0.5); sigma0: 0.1","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+"Q10","Q10",,"Q10","x: 2.0","Constant",,
+"Tref","Trf","Reference temperature (10 deg. C)","Trf","x: 20.0","Constant",,
+"Achl","PaC","Chlorophyl absorption","PaC","x: 1.0","Constant",,
+"PE","PQf","Photosynthetic efficiency","PQf","x: 1200.0","Constant",,
+"maxNC","PNC","Maximum N:C (Redfield)","PNC","x: 0.18","Constant",,
+"Pt","Pt","P timescale","Pt","x: 10.0","Constant",,
+"Zt","Zt","Z timescale","Zt","x: 30.0","Constant",,
+"Grazeexp","Zex","Functional response exponent","Zex","x: 2.0","Constant",,
+"PBC","BCP","Phytoplankton boundary condition","BCP",,"Forcing",,"IS_F_NODE"
+"ZBC","BCZ","Zooplankton boundary condition","BCZ",,"Forcing",,"IS_F_NODE"
+"NBC","BCN","Nitrogen boundary condition","BCN",,"Forcing",,"IS_F_NODE"
+"DBC","BCD","Detritus boundary condition","BCD",,"Forcing",,"IS_F_NODE"
+"T","FT","Water temperature","FT",,"Forcing",,"IS_F_NODE"
+"Eir","FE","Surface irradience","FE",,"Forcing",,"IS_F_NODE"
+"Depth","FMLD","Mixed layer depth","FMLD",,"Forcing",,"IS_F_NODE"
+,"FMLC","Mixed layer Change (t - t-1)","FMLC",,"Forcing",,"IS_F_NODE"
+,"FMIX","Mixing and exchange","FMIX",,"Forcing",,"IS_F_NODE"
+"mumaxC","PgC","Maximum growth rate for C","PgC","f: PgC*(1.0 - pow(Pt,  - 1.0)) + pow(Pt,  - 1.0)*(exp(gammaPgC + sigmaPgC*rPgC)); mu0: log(1.2); sigma0: 0.1","Discrete-time variable","PgC; Pt; gammaPgC; sigmaPgC; rPgC","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"ChlCmax","PCh","Maximum growth rate for Chl-a:C","PCh","f: PCh*(1.0 - pow(Pt,  - 1.0)) + pow(Pt,  - 1.0)*(exp(gammaPCh + sigmaPCh*rPCh)); mu0: log(0.033); sigma0: 0.1","Discrete-time variable","PCh; Pt; gammaPCh; sigmaPCh; rPCh","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"minmaxNC","PRN","Min/Max N:C","PRN","f: PRN*(1.0 - pow(Pt,  - 1.0)) + pow(Pt,  - 1.0)*(exp(gammaPRN + sigmaPRN*rPRN)); mu0: log(0.25); sigma0: 0.1","Discrete-time variable","PRN; Pt; gammaPRN; sigmaPRN; rPRN","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"a*_n","ASN","a*n = PaN*PgR","ASN","f: ASN*(1.0 - pow(Pt,  - 1.0)) + pow(Pt,  - 1.0)*(exp(gammaASN + sigmaASN*rASN)); mu0: log(0.12); sigma0: 0.1","Discrete-time variable","ASN; Pt; gammaASN; sigmaASN; rASN","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"Ingmax","Zin","Max Z ingestion rate","Zin","f: Zin*(1.0 - pow(Zt,  - 1.0)) + pow(Zt,  - 1.0)*(exp(gammaZin + sigmaZin*rZin)); mu0: log(4.7); sigma0: 0.1","Discrete-time variable","Zin; Zt; gammaZin; sigmaZin; rZin","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"Clear","ZCl","Zooplankton clearance rate","ZCl","f: ZCl*(1.0 - pow(Zt,  - 1.0)) + pow(Zt,  - 1.0)*(exp(gammaZCl + sigmaZCl*rZCl)); mu0: log(0.2); sigma0: 0.1","Discrete-time variable","ZCl; Zt; gammaZCl; sigmaZCl; rZCl","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"Zeff","ZgE","Zooplankton grazing efficiency","ZgE","f: ZgE*(1.0 - pow(Zt,  - 1.0)) + pow(Zt,  - 1.0)*(exp(gammaZgE + sigmaZgE*rZgE)); mu0: log(0.32); sigma0: 0.1","Discrete-time variable","ZgE; Zt; gammaZgE; sigmaZgE; rZgE","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"Remin","Dre","Remineralisation rate","Dre","f: Dre*(1.0 - pow(Zt,  - 1.0)) + pow(Zt,  - 1.0)*(exp(gammaDre + sigmaDre*rDre)); mu0: log(0.1); sigma0: 0.1","Discrete-time variable","Dre; Zt; gammaDre; sigmaDre; rDre","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"Mq","ZmQ","Z quadratic mortality term","ZmQ","f: ZmQ*(1.0 - pow(Zt,  - 1.0)) + pow(Zt,  - 1.0)*(exp(gammaZmQ + sigmaZmQ*rZmQ)); mu0: log(0.01); sigma0: 0.1","Discrete-time variable","ZmQ; Zt; gammaZmQ; sigmaZmQ; rZmQ","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
+,"PDF","P Diversity Factor","PDF","mu0: log(0.2); sigma0: 0.4","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+,"ZDF","Z Diversity Factor","ZDF","mu0: log(0.2); sigma0: 0.4","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+,"muPgC",,"\mu PgC","mu0: log(1.2); sigma0: 0.63","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+,"thetaPgC",,"\theta PgC","s: 0.63","Static variable",,"IS_S_NODE; IS_GENERIC_STATIC"
+,"muPCh",,"\mu PCh","mu0: log(0.03); sigma0: 0.37","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+,"thetaPCh",,"\theta PCh","s: 0.37","Static variable",,"IS_S_NODE; IS_GENERIC_STATIC"
+,"muPRN",,"\mu PRN","mu0: log(0.25); sigma0: 0.3","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+,"thetaPRN",,"\theta PRN","s: 0.3","Static variable",,"IS_S_NODE; IS_GENERIC_STATIC"
+,"muASN",,"\mu ASN","mu0: log(0.3); sigma0: 1.0","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+,"thetaASN",,"\theta ASN","s: 1.0","Static variable",,"IS_S_NODE; IS_GENERIC_STATIC"
+,"muZin",,"\mu Zin","mu0: log(4.7); sigma0: 0.7","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+,"thetaZin",,"\theta Zin","s: 0.7","Static variable",,"IS_S_NODE; IS_GENERIC_STATIC"
+,"muZCl",,"\mu ZCl","mu0: log(0.2); sigma0: 1.3","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+,"thetaZCl",,"\theta ZCl","s: 1.31","Static variable",,"IS_S_NODE; IS_GENERIC_STATIC"
+,"muZgE",,"\mu ZgE","mu0: log(0.32); sigma0: 0.25","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+,"thetaZgE",,"\theta ZgE","s: 0.25","Static variable",,"IS_S_NODE; IS_GENERIC_STATIC"
+,"muDre",,"\mu Dre","mu0: log(0.1); sigma0: 0.5","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+,"thetaDre",,"\theta Dre","s: 0.5","Static variable",,"IS_S_NODE; IS_GENERIC_STATIC"
+,"muZmQ",,"\mu ZmQ","mu0: log(0.01); sigma0: 1.0","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+,"thetaZmQ",,"\theta ZmQ","s: 0.5","Static variable",,"IS_S_NODE; IS_GENERIC_STATIC"
+,"rPgC",,"rPgC",,"Random variate",,"IS_R_NODE; IS_GAUSSIAN_VARIATE"
+,"rPCh",,"rPCh",,"Random variate",,"IS_R_NODE; IS_GAUSSIAN_VARIATE"
+,"rPRN",,"rPRN",,"Random variate",,"IS_R_NODE; IS_GAUSSIAN_VARIATE"
+,"rASN",,"rASN",,"Random variate",,"IS_R_NODE; IS_GAUSSIAN_VARIATE"
+,"rZin",,"rZin",,"Random variate",,"IS_R_NODE; IS_GAUSSIAN_VARIATE"
+,"rZCl",,"rZCl",,"Random variate",,"IS_R_NODE; IS_GAUSSIAN_VARIATE"
+,"rZgE",,"rZgE",,"Random variate",,"IS_R_NODE; IS_GAUSSIAN_VARIATE"
+,"rDre",,"rDre",,"Random variate",,"IS_R_NODE; IS_GAUSSIAN_VARIATE"
+,"rZmQ",,"rZmQ",,"Random variate",,"IS_R_NODE; IS_GAUSSIAN_VARIATE"
+,"sigmaPgC",,"\sigma PgC","s: sqrt(log(1.0+(2.0*Pt - 1.0)*PDF*PDF*(exp(thetaPgC*thetaPgC) - 1.0)))","Static variable","Pt; PDF; thetaPgC","IS_S_NODE; IS_GENERIC_STATIC"
+,"sigmaPCh",,"\sigma PCh","s: sqrt(log(1.0+(2.0*Pt - 1.0)*PDF*PDF*(exp(thetaPCh*thetaPCh) - 1.0)))","Static variable","Pt; PDF; thetaPCh","IS_S_NODE; IS_GENERIC_STATIC"
+,"sigmaPRN",,"\sigma PRN","s: sqrt(log(1.0+(2.0*Pt - 1.0)*PDF*PDF*(exp(thetaPRN*thetaPRN) - 1.0)))","Static variable","Pt; PDF; thetaPRN","IS_S_NODE; IS_GENERIC_STATIC"
+,"sigmaASN",,"\sigma ASN","s: sqrt(log(1.0+(2.0*Pt - 1.0)*PDF*PDF*(exp(thetaASN*thetaASN) - 1.0)))","Static variable","Pt; PDF; thetaASN","IS_S_NODE; IS_GENERIC_STATIC"
+,"sigmaZin",,"\sigma Zin","s: sqrt(log(1.0+(2.0*Zt - 1.0)*ZDF*ZDF*(exp(thetaZin*thetaZin) - 1.0)))","Static variable","Zt; ZDF; thetaZin","IS_S_NODE; IS_GENERIC_STATIC"
+,"sigmaZCl",,"\sigma ZCl","s: sqrt(log(1.0+(2.0*Zt - 1.0)*ZDF*ZDF*(exp(thetaZCl*thetaZCl) - 1.0)))","Static variable","Zt; ZDF; thetaZCl","IS_S_NODE; IS_GENERIC_STATIC"
+,"sigmaZgE",,"\sigma ZgE","s: sqrt(log(1.0+(2.0*Zt - 1.0)*ZDF*ZDF*(exp(thetaZgE*thetaZgE) - 1.0)))","Static variable","Zt; ZDF; thetaZgE","IS_S_NODE; IS_GENERIC_STATIC"
+,"sigmaDre",,"\sigma Dre","s: sqrt(log(1.0+(2.0*Zt - 1.0)*ZDF*ZDF*(exp(thetaDre*thetaDre) - 1.0)))","Static variable","Zt; ZDF; thetaDre","IS_S_NODE; IS_GENERIC_STATIC"
+,"sigmaZmQ",,"\sigma ZmQ","s: sqrt(log(1.0+(2.0*Zt - 1.0)*ZDF*ZDF*(exp(thetaZmQ*thetaZmQ) - 1.0)))","Static variable","Zt; ZDF; thetaZmQ","IS_S_NODE; IS_GENERIC_STATIC"
+,"gammaPgC",,"\gamma PgC","s: log(muPgC)+pow(thetaPgC, 2.0) / 2.0 - pow(sigmaPgC, 2.0) / 2.0","Static variable","muPgC; thetaPgC; sigmaPgC","IS_S_NODE; IS_GENERIC_STATIC"
+,"gammaPCh",,"\gamma PCh","s: log(muPCh)+pow(thetaPCh, 2.0) / 2.0 - pow(sigmaPCh, 2.0) / 2.0","Static variable","muPCh; thetaPCh; sigmaPCh","IS_S_NODE; IS_GENERIC_STATIC"
+,"gammaPRN",,"\gamma PRN","s: log(muPRN)+pow(thetaPRN, 2.0) / 2.0 - pow(sigmaPRN, 2.0) / 2.0","Static variable","muPRN; thetaPRN; sigmaPRN","IS_S_NODE; IS_GENERIC_STATIC"
+,"gammaASN",,"\gamma ASN","s: log(muASN)+pow(thetaASN, 2.0) / 2.0 - pow(sigmaASN, 2.0) / 2.0","Static variable","muASN; thetaASN; sigmaASN","IS_S_NODE; IS_GENERIC_STATIC"
+,"gammaZin",,"\gamma Zin","s: log(muZin)+pow(thetaZin, 2.0) / 2.0 - pow(sigmaZin, 2.0) / 2.0","Static variable","muZin; thetaZin; sigmaZin","IS_S_NODE; IS_GENERIC_STATIC"
+,"gammaZCl",,"\gamma ZCl","s: log(muZCl)+pow(thetaZCl, 2.0) / 2.0 - pow(sigmaZCl, 2.0) / 2.0","Static variable","muZCl; thetaZCl; sigmaZCl","IS_S_NODE; IS_GENERIC_STATIC"
+,"gammaZgE",,"\gamma ZgE","s: log(muZgE)+pow(thetaZgE, 2.0) / 2.0 - pow(sigmaZgE, 2.0) / 2.0","Static variable","muZgE; thetaZgE; sigmaZgE","IS_S_NODE; IS_GENERIC_STATIC"
+,"gammaDre",,"\gamma Dre","s: log(muDre)+pow(thetaDre, 2.0) / 2.0 - pow(sigmaDre, 2.0) / 2.0","Static variable","muDre; thetaDre; sigmaDre","IS_S_NODE; IS_GENERIC_STATIC"
+,"gammaZmQ",,"\gamma ZmQ","s: log(muZmQ)+pow(thetaZmQ, 2.0) / 2.0 - pow(sigmaZmQ, 2.0) / 2.0","Static variable","muZmQ; thetaZmQ; sigmaZmQ","IS_S_NODE; IS_GENERIC_STATIC"
+"Ez","EZ","Light at depth","EZ","f: FE*(1.0-exp(-Kdz))/Kdz; mu0: log(1.1); sigma0: 1.0","Discrete-time variable","FE; Kdz","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"KdZ","Kdz","Light attenation, total (water + Chl-a)","Kdz","x: (Kw+KCh*Chla)*FMLD","Intermediate result","Kw; KCh; Chla; FMLD",
+"Graze","Zgr",,"Zgr","x: Z*Zin*Tc*Zgs/(1.0+Zgs)","Intermediate result","Z; Zin; Tc; Zgs",
+"Sat","Zgs",,"Zgs","x: pow(ZCl*P/Zin, Zex)","Intermediate result","ZCl; P; Zin; Zex",
+"mumaxCT","PgT",,"PgT","x: PgC*Tc","Intermediate result","PgC; Tc",
+"mu","Pg","Phytoplankton growth rate","Pg","x: PgT*PfE*PfN/(PfN + PfE)","Intermediate result","PgT; PfE; PfN",
+"fE","PfE",,"PfE","x: 1.0-exp(-PaQ*PCh*EZ/PgC)","Intermediate result","PaQ; PCh; EZ; PgC",
+"aQ","PaQ",,"PaQ","x: PaC*KCh*PQf","Intermediate result","PaC; KCh; PQf",
+"fN","PfN",,"PfN","x: N/(1+ASN*N/PgT)","Intermediate result","N; ASN; PgT",
+"Zmort","Zm",,"Zm","x: (ZmQ*Z)*Z","Intermediate result","ZmQ; Z",
+"Tcorr","Tc",,"Tc","x: pow(Q10, (FT - Trf)/10)","Intermediate result","Q10; FT; Trf",
+"P","P",,"P","dfdt: Pg*P - Zgr + FMIX*(BCP - P); mu0: log(1.7763); sigma0: 0.3","Continuous-time variable","Pg; P; Zgr; FMIX; BCP","IS_C_NODE; IS_ODE_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"Z","Z",,"Z","dfdt: Zgr*ZgE - Zm + FMLC/FMLD*(BCZ - Z); mu0: log(3.7753); sigma0: 0.3","Continuous-time variable","Zgr; ZgE; Zm; FMLD; FMLC; BCZ; Z","IS_C_NODE; IS_ODE_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"D","D",,"D","dfdt: (1.0 - ZgE)*ZgD*Zgr + Zm - Dre*D - Dsi*D/FMLD + FMIX*(BCD - D); mu0: log(2.9182); sigma0: 0.3","Continuous-time variable","ZgE; ZgD; Zgr; Zm; Dre; Dsi; D; FMLD; FMIX; BCD","IS_C_NODE; IS_ODE_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"N","N",,"N","dfdt: -Pg*P + (1.0 - ZgE)*(1.0 - ZgD)*Zgr + Dre*D + FMIX*(BCN - N); mu0: log(187.8515); sigma0: 0.3","Continuous-time variable","Pg; P; ZgE; ZgD; Zgr; Dre; FMIX; BCN; N; D","IS_C_NODE; IS_ODE_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"Chla","Chla",,"Chla","f: Tc*P*(PCh/PNC)*PfN/(PRN*PfE+PfN); mu0: log(0.3531); sigma0: 0.3","Discrete-time variable","P; PCh; PfN; PNC; PRN; PfE; Tc","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
+,"N_obs",,"N_obs","mu: log(N); sigma: 0.5","Observation","N","IS_O_NODE; IS_LOG_NORMAL_LIKELIHOOD; HAS_COMMON_SIGMA"
+,"Chla_obs",,"Chla_obs","mu: log(Chla); sigma: 0.5","Observation","Chla","IS_O_NODE; IS_LOG_NORMAL_LIKELIHOOD; HAS_COMMON_SIGMA"
