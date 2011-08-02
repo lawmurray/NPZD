@@ -15,24 +15,21 @@
 : ${DATA_DIR=data}        # directory containing data files
 : ${RESULTS_DIR=results}  # directory to contain result files
 
-#: ${INIT_FILENAME=C10_init.nc}   # init file
-: ${FORCE_FILENAME=C10_TE_force.nc}  # forcings file
-: ${OBS_FILENAME=C10_TE_obs.nc}    # observations file
-#: ${INIT_FILENAME=C7_initHP2.nc}   # init file
-#: ${FORCE_FILENAME=C7_force.nc}  # forcings file
-#: ${OBS_FILENAME=C7_S1_obs_HP2.nc}    # observations file
+: ${INIT_FILENAME=}   # init file
+: ${FORCE_FILENAME=C10_OSP_71_76_force.nc}  # forcings file
+: ${OBS_FILENAME=C10_OSP_71_76_obs.nc}    # observations file
 
 : ${INIT_NS=0}   # record along ns dimension to use for init file
 : ${FORCE_NS=0}  # record along ns dimension to use for forcings file
-: ${OBS_NS=1}    # record along ns dimension to use for observations file
+: ${OBS_NS=0}    # record along ns dimension to use for observations file
 
 ##
 ## Simulation settings
 ##
 
-: ${T=365.0}               # time to simulate
-: ${K=366}                 # number of output points
-: ${P=2048}                # number of particles
+: ${T=1825.0}               # time to simulate
+: ${K=1826}                 # number of output points
+: ${P=64}                # number of particles
 : ${DELTA=1.0}             # step size for random and discrete-time variables
 : ${H=1.0}                 # step size for ODE integrator
 : ${ATOLER=1.0e-3}         # absolute error tolerance for ODE integrator
@@ -49,20 +46,35 @@
 ## Particle filter settings
 ##
 
-: ${FILTER=bootstrap}      # filter method: bootstrap or auxiliary
+# filter method
+if [[ "$PBS_JOBNAME" != "" ]]
+then
+    : ${FILTER=$PBS_JOBNAME}
+else
+    : ${FILTER=cupf}      
+fi
+
 : ${RESAMPLER=stratified}  # resampling method
-: ${ESS_REL=1.0}           # minimum relative ESS to trigger resampling
+: ${ESS_REL=0.5}           # minimum relative ESS to trigger resampling
 : ${SORT=1}                # sort weights before resampling
 : ${B_ABS=0.0}             # absolute kernel bandwidth (0 to use B_REL instead)
 : ${B_REL=1.0}             # relative kernel bandwidth
 : ${SHRINK=1}              # apply shrinkage to kernel densities?
 
 ##
+## Unscented Kalman filter settings
+##
+
+: ${UT_ALPHA=1.0e-1}  # alpha param for scaled unscented transformation
+: ${UT_BETA=2.0}      # beta param for scaled unscented transformation
+: ${UT_KAPPA=0.0}     # kappa param for scaled unscented transformation
+
+##
 ## PMCMC settings
 ##
 
-: ${C=100000}             # number of samples to draw
-: ${A=200000}               # centre of sigmoid for proposal adaptation
+: ${C=100}             # number of samples to draw
+: ${A=1000}               # centre of sigmoid for proposal adaptation
 : ${BETA=1.0e-3}          # decay of sigmoid for proposal adaptation
 : ${LAMBDA0=0}            # starting temperature for annealing
 : ${GAMMA=1.0e-2}         # exponential decay of temperature for annealing
@@ -77,13 +89,13 @@
 ## Likelihood settings
 ##
 
-: ${M=100}  # frequency with which to change samples
+: ${M=10}  # frequency with which to change samples
 
 ##
 ## Random number settings
 ##
 
-: ${SEED=11}  # pseudorandom number seed
+: ${SEED=0}  # pseudorandom number seed
 
 ##
 ## System settings
