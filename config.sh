@@ -4,7 +4,14 @@
 ## General settings
 ##
 
-: ${SUFFIX=}   # suffix for output files
+# suffix for output files
+if [[ "$PBS_JOBNAME" != "" ]]
+then
+    : ${SUFFIX=_$PBS_JOBNAME}
+else
+    : ${SUFFIX=}
+fi
+
 : ${OUTPUT=1}  # produce output?
 : ${TIME=1}    # produce timings?
 
@@ -16,20 +23,31 @@
 : ${RESULTS_DIR=results}  # directory to contain result files
 
 : ${INIT_FILENAME=}   # init file
-: ${FORCE_FILENAME=C10_OSP_71_76_force.nc}  # forcings file
-: ${OBS_FILENAME=C10_OSP_71_76_obs.nc}    # observations file
+: ${FORCE_FILENAME=C10_TE_force.nc}  # forcings file
+: ${PRIOR_FILENAME=}  # prior file
+: ${OBS_FILENAME=C10_TE_obs.nc}    # observations file
 
 : ${INIT_NS=0}   # record along ns dimension to use for init file
 : ${FORCE_NS=0}  # record along ns dimension to use for forcings file
-: ${OBS_NS=0}    # record along ns dimension to use for observations file
+: ${OBS_NS=1}    # record along ns dimension to use for observations file
 
 ##
 ## Simulation settings
 ##
 
-: ${T=1825.0}               # time to simulate
-: ${K=1826}                 # number of output points
-: ${P=64}                # number of particles
+: ${T=100.0}               # time to simulate
+: ${K=1}                 # number of output points
+
+if [[ `expr match "$PBS_JOBNAME" "^pf-pmatch"` > 0 || `expr match "$PBS_JOBNAME" "^mupf-pmatch"` > 0 ]]
+then
+: ${P=1536}
+elif [[ `expr match "$PBS_JOBNAME" "^apf-pmatch"` > 0 || `expr match "$PBS_JOBNAME" "^amupf-pmatch"` > 0 ]]
+then
+: ${P=768}
+else
+: ${P=64}
+fi
+
 : ${DELTA=1.0}             # step size for random and discrete-time variables
 : ${H=1.0}                 # step size for ODE integrator
 : ${ATOLER=1.0e-3}         # absolute error tolerance for ODE integrator
