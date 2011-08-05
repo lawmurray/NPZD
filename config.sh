@@ -38,12 +38,18 @@ fi
 : ${T=100.0}               # time to simulate
 : ${K=1}                 # number of output points
 
-if [[ `expr match "$PBS_JOBNAME" "^pf-pmatch"` > 0 || `expr match "$PBS_JOBNAME" "^mupf-pmatch"` > 0 ]]
+if [[ `expr match "$PBS_JOBNAME" "^pf-pmatch"` > 0 ]]
 then
 : ${P=1536}
-elif [[ `expr match "$PBS_JOBNAME" "^apf-pmatch"` > 0 || `expr match "$PBS_JOBNAME" "^amupf-pmatch"` > 0 ]]
+elif [[ `expr match "$PBS_JOBNAME" "^mupf-pmatch"` > 0 ]]
+then
+: ${P=1500}
+elif [[ `expr match "$PBS_JOBNAME" "^apf-pmatch"` > 0 ]]
 then
 : ${P=768}
+elif [[ `expr match "$PBS_JOBNAME" "^amupf-pmatch"` > 0 ]]
+then
+: ${P=734}
 else
 : ${P=64}
 fi
@@ -58,7 +64,7 @@ fi
 ## Prediction settings
 ##
 
-: ${U=730.0}  # time to which to predict
+: ${U=200.0}  # time to which to predict
 
 ##
 ## Particle filter settings
@@ -91,7 +97,7 @@ fi
 ## PMCMC settings
 ##
 
-: ${C=100}             # number of samples to draw
+: ${C=51200}             # number of samples to draw
 : ${A=1000}               # centre of sigmoid for proposal adaptation
 : ${BETA=1.0e-3}          # decay of sigmoid for proposal adaptation
 : ${LAMBDA0=0}            # starting temperature for annealing
@@ -107,13 +113,13 @@ fi
 ## Likelihood settings
 ##
 
-: ${M=10}  # frequency with which to change samples
+: ${M=200}  # frequency with which to change samples
 
 ##
 ## Random number settings
 ##
 
-: ${SEED=0}  # pseudorandom number seed
+: ${SEED=25309}  # pseudorandom number seed
 
 ##
 ## System settings
