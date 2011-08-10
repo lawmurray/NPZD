@@ -6,7 +6,7 @@
 % -*- texinfo -*-
 % @deftypefn {Function File} prepare_acceptance ()
 %
-% Prepare acceptance rates for PZ model.
+% Prepare acceptance rates for NPZD model.
 % @end deftypefn
 %
 function prepare_acceptance ()
