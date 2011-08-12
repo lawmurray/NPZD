@@ -22,7 +22,7 @@ function plot_minmax (experiment)
     % truth
     vars = invars();
     nc = netcdf(INIT_FILE, 'r');
-    truth = zeros(1, 15);
+    truth = zeros(1, 30);
     for i = 1:30
         truth(i) = nc{vars{i}}(:);
         if i != 3
@@ -31,8 +31,8 @@ function plot_minmax (experiment)
     end
     
     % min and max    
-    mn = mns{experiment}(1,:);
-    mx = mxs{experiment}(1,:);
+    mn = mns{experiment};
+    mx = mxs{experiment};
 
     mu = models{experiment}.mu;
     Sigma = models{experiment}.Sigma;
@@ -42,8 +42,8 @@ function plot_minmax (experiment)
     mn = mn*U;
     mx = mx*U;
     
-    mn = mn./sd;
-    mx = mx./sd;
+    mn = mn./repmat(sd, rows(mn), 1);
+    mx = mx./repmat(sd, rows(mx), 1);
     truth = (truth - mu)./sd;
     
     % some reordering for presentation
@@ -65,12 +65,17 @@ function plot_minmax (experiment)
     end
 
     % plot
-    subplot(2,1,1);
-    h = bar([ mn(1:15); mx(1:15) ]');
-    set(h(1), 'facecolor', fade(gray()(48,:), 0.5), 'edgecolor', ...
-        gray()(48,:));
-    set(h(2), 'facecolor', fade(watercolour(2), 0.5), 'edgecolor', ...
-        watercolour(2));
+    subplot(2,1,1);    
+    h = bar([ mn(:,1:15); mx(:,1:15) ]');
+    for i = 1:rows (mn)
+        set(h(i), 'facecolor', fade(gray()(48,:), 0.5), 'edgecolor', ...
+            gray()(48,:));
+    end
+    for i = 1:rows (mx)
+        
+        set(h(rows (mn) + i), 'facecolor', fade(watercolour(2), 0.5), ...
+            'edgecolor', watercolour(2));
+    end
     hold on;
     plot(truth(1:15), '.k', 'markersize', 6);
     hold off;
@@ -81,11 +86,16 @@ function plot_minmax (experiment)
     ylabel('Prior z-score');
 
     subplot(2,1,2);
-    h = bar([ mn(16:end); mx(16:end) ]');
-    set(h(1), 'facecolor', fade(gray()(48,:), 0.5), 'edgecolor', ...
-        gray()(48,:));
-    set(h(2), 'facecolor', fade(watercolour(2), 0.5), 'edgecolor', ...
-        watercolour(2));
+    h = bar([ mn(:,16:end); mx(:,16:end) ]');
+    for i = 1:rows (mn)
+        set(h(i), 'facecolor', fade(gray()(48,:), 0.5), 'edgecolor', ...
+            gray()(48,:));
+    end
+    for i = 1:rows (mx)
+        
+        set(h(rows (mn) + i), 'facecolor', fade(watercolour(2), 0.5), ...
+            'edgecolor', watercolour(2));
+    end
     hold on;
     plot(truth(16:end), '.k', 'markersize', 6);
     hold off;
