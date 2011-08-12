@@ -97,7 +97,7 @@ fi
 ## PMCMC settings
 ##
 
-: ${C=50}             # number of samples to draw
+: ${C=40000}             # number of samples to draw
 : ${A=1000}               # centre of sigmoid for proposal adaptation
 : ${BETA=1.0e-3}          # decay of sigmoid for proposal adaptation
 : ${LAMBDA0=0}            # starting temperature for annealing
