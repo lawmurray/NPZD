@@ -12,10 +12,10 @@
 function plot_and_print ()
     FIG_DIR = strcat(pwd, '/figs');
     
-    sizes = [ 8 4.5; 8 4.5; 8 4.5; 8 6 ];
+    sizes = [ 8 4.5; 8 4.5; 10.5 7; 8 4.5 ];
 
     % output setup
-    for i = 1:1
+    for i = 1:4
         figure(i, 'visible', 'off');
         h = figure(i);
         set (h, 'papertype', '<custom>');
@@ -35,15 +35,24 @@ function plot_and_print ()
     plot_converge(0);
     subplot(1,2,2);
     plot_converge(1);
+    figure(2);
+    plot_state();
+    figure(3);
+    plot_rstate();
+    figure(4)
+    plot_minmax(6);
     
     % print
     files = {
         'npzd_converge';
+        'npzd_state';
+        'npzd_rstate';
+        'npzd_minmax';
         };
 
-    for i = 1:1
+    for i = 1:length (files)
         file = sprintf('%s/%s.pdf', FIG_DIR, files{i});
-        saveas(figure(1), file);
+        saveas(figure(i), file);
         system(sprintf('pdfcrop %s %s', file, file));
     end
 end

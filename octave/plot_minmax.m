@@ -17,6 +17,12 @@ function plot_minmax (experiment)
         experiment = 1;
     end
 
+    titles = {
+        'Minimum';
+        '';
+        'Maximum';
+        };
+    
     load model_acceptance
     
     % truth
@@ -77,12 +83,12 @@ function plot_minmax (experiment)
             'edgecolor', watercolour(2));
     end
     hold on;
-    plot(truth(1:15), '.k', 'markersize', 6);
+    %plot(truth(1:15), '.k', 'markersize', 6);
     hold off;
     plot_defaults;
+    axis([axis()(1) axis()(2) -6 6]);
     set(gca, 'xtick', 1:length(vars1));
     set(gca, 'xticklabel', vars1);
-    legend({'Minimum'; 'Maximum'});
     ylabel('Prior z-score');
 
     subplot(2,1,2);
@@ -92,15 +98,16 @@ function plot_minmax (experiment)
             gray()(48,:));
     end
     for i = 1:rows (mx)
-        
         set(h(rows (mn) + i), 'facecolor', fade(watercolour(2), 0.5), ...
             'edgecolor', watercolour(2));
     end
     hold on;
-    plot(truth(16:end), '.k', 'markersize', 6);
+    %plot(truth(16:end), '.k', 'markersize', 6);
     hold off;
     plot_defaults;
+    axis([axis()(1) axis()(2) -6 6]);
     set(gca, 'xtick', 1:length(vars2));
     set(gca, 'xticklabel', vars2);
+    legend(titles, 'location', 'southeast');
     ylabel('Prior z-score');
 end
