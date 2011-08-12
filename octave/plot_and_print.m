@@ -12,14 +12,16 @@
 function plot_and_print ()
     FIG_DIR = strcat(pwd, '/figs');
     
+    sizes = [ 8 4.5; 8 4.5; 8 4.5; 8 6 ];
+
     % output setup
     for i = 1:1
         figure(i, 'visible', 'off');
         h = figure(i);
         set (h, 'papertype', '<custom>');
         set (h, 'paperunits', 'inches');
-        set (h, 'papersize', [8.5 3]);
-        set (h, 'paperposition', [0,0,[8.5 3]]);
+        set (h, 'papersize',  sizes(i,:));
+        set (h, 'paperposition', [0,0,sizes(i,:)]);
         set (h, 'defaultaxesfontname', 'Helvetica')
         set (h, 'defaultaxesfontsize', 8)
         set (h, 'defaulttextfontname', 'Helvetica')
@@ -29,10 +31,19 @@ function plot_and_print ()
     
     % plot
     figure(1);
-    plot_minmax();
+    subplot(1,2,1);
+    plot_converge(0);
+    subplot(1,2,2);
+    plot_converge(1);
     
     % print
-    file = sprintf('%s/npzd_minmax.pdf', FIG_DIR);
-    saveas(figure(1), file);
-    system(sprintf('pdfcrop %s %s', file, file));
+    files = {
+        'npzd_converge';
+        };
+
+    for i = 1:1
+        file = sprintf('%s/%s.pdf', FIG_DIR, files{i});
+        saveas(figure(1), file);
+        system(sprintf('pdfcrop %s %s', file, file));
+    end
 end

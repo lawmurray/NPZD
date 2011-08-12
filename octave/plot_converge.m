@@ -76,7 +76,7 @@ function plot_converge (pmatch)
         j = mod(i - 1, 6) + 1;
         fmt = sprintf('%c', markers(j));
         y = Rp{i};
-        plot(x(1:50:end), y(1:50:end), 'color', colour(j,:), fmt, ...
+        plot(x(1:25:end), y(1:25:end), 'color', colour(j,:), fmt, ...
              'linewidth', 3, 'markersize', 4, 'markerfacecolor', ...
              colour(j,:));
     end
@@ -85,6 +85,6 @@ function plot_converge (pmatch)
     %ylabel('{R^p}');
     xlabel('Step');
     legend(titles);
-    axis([0 5000 1 25]);
+    axis([0 10000 1 2.5]);
     set(gca, 'interpreter', 'tex');
 end
