@@ -49,7 +49,7 @@ function plot_and_print ()
     figure(5);
     plot_rstate(1);
     figure(6)
-    plot_minmax(6);
+    plot_cor(6);
     figure(7);
     plot_parameters(0);
     figure(8);
@@ -62,7 +62,7 @@ function plot_and_print ()
         'npzd_rstate';
         'osp_state';
         'osp_rstate';
-        'npzd_minmax';
+        'npzd_cor';
         'npzd_parameters';
         'osp_parameters';
         };

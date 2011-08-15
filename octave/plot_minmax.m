@@ -83,7 +83,7 @@ function plot_minmax (experiment)
             'edgecolor', watercolour(2));
     end
     hold on;
-    %plot(truth(1:15), '.k', 'markersize', 6);
+    plot(truth(1:15), '.k', 'markersize', 6);
     hold off;
     plot_defaults;
     axis([axis()(1) axis()(2) -6 6]);
@@ -102,7 +102,7 @@ function plot_minmax (experiment)
             'edgecolor', watercolour(2));
     end
     hold on;
-    %plot(truth(16:end), '.k', 'markersize', 6);
+    plot(truth(16:end), '.k', 'markersize', 6);
     hold off;
     plot_defaults;
     axis([axis()(1) axis()(2) -6 6]);
