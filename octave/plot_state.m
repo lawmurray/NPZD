@@ -21,7 +21,7 @@ function plot_state (osp)
     if osp
         MCMC_FILE = 'results/mcmc_pf-pmatch.nc.0';
         SIMULATE_FILE = 'results/simulate.nc.osp'; % for prior
-        OBS_FILE = 'data/C10_OSP_71_76_obs.nc';
+        OBS_FILE = 'data/C10_OSP_71_76_obs_pad.nc';
         ps = [20000:40000];
         ns = 1;
     else
