@@ -12,7 +12,8 @@
 function plot_and_print ()
     FIG_DIR = strcat(pwd, '/figs');
     
-    sizes = [ 8 4.5; 8 4.5; 10.5 7; 8 4.5; 10.5 7; 8 4.5 ; 7 10.5; 7 10.5;];
+    sizes = [ 8 4.5; 8 4.5; 10.5 7; 8 4.5; 10.5 7; 8 4.5 ; 7 10.5; 7 10.5; ...
+              8 3.5];
 
     % output setup
     for i = 1:rows (sizes)
@@ -54,6 +55,8 @@ function plot_and_print ()
     plot_parameters(0);
     figure(8);
     plot_parameters(1);
+    figure(9);
+    image_cor;
     
     % print
     files = {
@@ -65,6 +68,7 @@ function plot_and_print ()
         'npzd_cor';
         'npzd_parameters';
         'osp_parameters';
+        'npzd_cormatrix';
         };
 
     for i = 1:length (files)
