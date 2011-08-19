@@ -67,7 +67,7 @@ function image_cor ()
     subplot (1,2,2);
     nc = netcdf (URTS_FILE, 'r');
     is = [25:39, 1:15];
-    Sigma = squeeze (nc{'smooth.Sigma'}(5,:,:));
+    Sigma = squeeze (nc{'smooth.Sigma'}(1,:,:));
     Sigma = tril(Sigma) + tril(Sigma, 1)';
     Sigma = Sigma(is,is);
     sd = sqrt (diag (Sigma));

@@ -35,8 +35,8 @@ fi
 ## Simulation settings
 ##
 
-: ${T=100.0}               # time to simulate
-: ${K=1}                 # number of output points
+: ${T=100}               # time to simulate
+: ${K=101}                 # number of output points
 
 if [[ `expr match "$PBS_JOBNAME" "^pf-pmatch"` > 0 ]]
 then
@@ -89,7 +89,7 @@ fi
 ## Unscented Kalman filter settings
 ##
 
-: ${UT_ALPHA=1.0e-1}  # alpha param for scaled unscented transformation
+: ${UT_ALPHA=1.0e-3}  # alpha param for scaled unscented transformation
 : ${UT_BETA=2.0}      # beta param for scaled unscented transformation
 : ${UT_KAPPA=0.0}     # kappa param for scaled unscented transformation
 
