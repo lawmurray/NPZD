@@ -19,20 +19,24 @@ function plot_state (osp)
     end
     
     if osp
-        MCMC_FILE = 'results/mcmc_pf-pmatch.nc.0';
+        MCMC_FILES = 'results/mcmc_acupf-0.nc.0';
         SIMULATE_FILE = 'results/simulate.nc.osp'; % for prior
         OBS_FILE = 'data/C10_OSP_71_76_obs_pad.nc';
-        ps = [20000:40000];
+        ps = [25000:50000];
         ns = 1;
     else
-        MCMC_FILE = 'results/mcmc_acupf.nc.0';
+        MCMC_FILE = 'results/mcmc_acupf-0.nc.0';
         SIMULATE_FILE = 'results/simulate.nc.te'; % for prior
+        TRUTH_FILE = 'data/C10_TE_true.nc';
         OBS_FILE = 'data/C10_TE_obs.nc';
         ps = [25000:50000];
         ns = 2;
    end
     
     nco = netcdf(OBS_FILE, 'r');
+    if !osp
+        nct = netcdf(TRUTH_FILE, 'r');
+    end
     
     titles = {
         '';
@@ -76,7 +80,7 @@ function plot_state (osp)
         hold on;
         plot_mcmc(MCMC_FILE, vars{j}, [], ps, ts);
         if !osp
-            x = read_var (nco, vars{j}, [], 1, ts);
+            x = read_var (nct, vars{j}, [], 1, ts);
         end
         if (strcmp(vars{j}, 'N') || strcmp(vars{j}, 'Chla'))
             obsvar = sprintf('%s_obs', vars{j});
