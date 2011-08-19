@@ -14,9 +14,9 @@
 % @end deftypefn
 %
 function image_cor ()
-    MCMC_FILE = 'results/mcmc_pf-0.nc.0';
+    MCMC_FILES = glob('results/mcmc_acupf-*.nc.*');
     URTS_FILE = 'results/urts.nc.0';
-    ps = [25000:50000];
+    ps = [20001:10:50000];
     vars = invars();
     logs = ones (30, 1);
     logs(3) = 0;
@@ -31,19 +31,29 @@ function image_cor ()
     colormap (flipud (gray ()));
 
     % PMMH plot
-    nci = netcdf (MCMC_FILE, 'r');
     X = [];
-    for i = 1:length (vars)
-        x = read_var (nci, vars{i}, [], ps, 1);
-        if logs (i)
-            x = log(x);
+    for j = 1:length (MCMC_FILES)
+        nci = netcdf (MCMC_FILES{j}, 'r');
+        localX = [];
+        for i = 1:length (vars)
+            x = read_var (nci, vars{i}, [], ps, 1);
+            if logs (i)
+                x = log(x);
+            end
+            localX = [ localX, x(:) ];
         end
-        X = [ X, x(:) ];
+        X = [ X; localX ];
     end
     Cor = cor(X,X);
 
     subplot (1,2,1);
-    imagesc (abs(Cor));
+    %imagesc (abs(Cor));
+    [x y c] = hintmat (Cor);
+    vertices = [ x'(:) y'(:) ];
+    N = length (vertices);
+    faces = reshape([1:N], 4, N/4)';
+    patch ('Faces', faces, 'Vertices', vertices, 'FaceVertexCData', ...
+        (c - 1).*rows (colormap));
     plot_defaults;
     caxis ([0.0 1.0]);
     %colorbar;
@@ -62,7 +72,13 @@ function image_cor ()
     Sigma = Sigma(is,is);
     sd = sqrt (diag (Sigma));
     Cor = Sigma./(sd*sd');
-    imagesc (abs(Cor));
+    %imagesc (abs(Cor));
+    [x y c] = hintmat (Cor);
+    vertices = [ x'(:) y'(:) ];
+    N = length (vertices);
+    faces = reshape([1:N], 4, N/4)';
+    patch ('Faces', faces, 'Vertices', vertices, 'FaceVertexCData', ...
+        (c - 1).*rows (colormap));
     plot_defaults;
     caxis ([0.0 1.0]);
     %colorbar;
