@@ -19,22 +19,25 @@ function plot_rstate (osp)
     end
     
     if osp
-        MCMC_FILE = 'results/mcmc_pf-pmatch.nc.0';
+        MCMC_FILES = glob('results/mcmc_acupf-0.nc.0');
         SIMULATE_FILE = 'results/simulate.nc.osp'; % for prior
         OBS_FILE = 'data/C10_OSP_71_76_obs.nc';
-        ps = [20000:40000];
+        ps = [25001:50000];
         ns = 1;
     else
-        MCMC_FILE = 'results/mcmc_acupf.nc.0';
+        MCMC_FILES = glob('results/mcmc_acupf-0.nc.*');
         SIMULATE_FILE = 'results/simulate.nc.te'; % for prior
         OBS_FILE = 'data/C10_TE_obs.nc';
-        ps = [25000:50000];
+        TRUTH_FILE = 'data/C10_TE_true.nc';
+        ps = [25001:50000];
         ns = 2;
    end
     
-    nci = netcdf(MCMC_FILE, 'r');
     nco = netcdf(OBS_FILE, 'r');
-    
+    if !osp
+        nct = netcdf(TRUTH_FILE, 'r');
+    end
+
     titles = {
         '';
     %'Prior';
@@ -63,19 +66,27 @@ function plot_rstate (osp)
         else
             ts = [1:101];
         end
-        X = read_var (nci, vars{j}, [], ps, ts);
-        Q = quantile (X, 0.5, 2);
         
+        X = [];
+        for i = 1:length (MCMC_FILES)
+            in = MCMC_FILES{i};
+            nci = netcdf(in, 'r');
+            t = nci{'time'}(:);
+            x = read_var (nci, vars{j}, [], ps, ts);
+            X = [ X x ];
+            ncclose (nci);
+        end
+        Q = quantile (X, 0.5, 2);
+
         subplot(3,3,j);
         %plot_simulate(SIMULATE_FILE, vars{j}, [], [], ts);
         %hold on;
-        plot_mcmc(MCMC_FILE, vars{j}, [], ps, ts);
+        plot_mcmc(MCMC_FILES, vars{j}, [], ps, ts);
         hold on;
         if !osp
-            x = read_var (nco, vars{j}, [], 1, ts);
+            x = read_var (nct, vars{j}, [], 1, ts);
             [ax, h1, h2] = plotyy(ts, x, ts, Q);
         else
-            t = nci{'time'}(:);
             [ax, h1, h2] = plotyy(t, -10*ones(length (t), 1), t, Q);
         end
         hold off;
@@ -89,7 +100,7 @@ function plot_rstate (osp)
         set(ax(1), 'ycolor', 'k');
         set(ax(2), 'ycolor', gray()(32,:));
         set(ax(1), 'ylim', [-3 3]);
-        set(ax(2), 'ylim', [-0.25 0.25]);
+        set(ax(2), 'ylim', [-0.75 0.75]);
         ylabel(ax(1), vars{j});
         if j == 3
             %legend(ax, titles); % causing errors...

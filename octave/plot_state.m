@@ -19,17 +19,17 @@ function plot_state (osp)
     end
     
     if osp
-        MCMC_FILES = 'results/mcmc_acupf-0.nc.0';
+        MCMC_FILES = glob('results/mcmc_acupf-0.nc.0');
         SIMULATE_FILE = 'results/simulate.nc.osp'; % for prior
         OBS_FILE = 'data/C10_OSP_71_76_obs_pad.nc';
-        ps = [25000:50000];
+        ps = [25001:50000];
         ns = 1;
     else
-        MCMC_FILE = 'results/mcmc_acupf-0.nc.0';
+        MCMC_FILES = glob('results/mcmc_acupf-0.nc.*');
         SIMULATE_FILE = 'results/simulate.nc.te'; % for prior
         TRUTH_FILE = 'data/C10_TE_true.nc';
         OBS_FILE = 'data/C10_TE_obs.nc';
-        ps = [25000:50000];
+        ps = [25001:50000];
         ns = 2;
    end
     
@@ -78,7 +78,7 @@ function plot_state (osp)
 
         plot_simulate(SIMULATE_FILE, vars{j}, [], [], ts);
         hold on;
-        plot_mcmc(MCMC_FILE, vars{j}, [], ps, ts);
+        plot_mcmc(MCMC_FILES, vars{j}, [], ps, ts);
         if !osp
             x = read_var (nct, vars{j}, [], 1, ts);
         end
@@ -110,7 +110,7 @@ function plot_state (osp)
                 ymax = 300;
             else
                 ymin = 50;
-                ymax = 350;
+                ymax = 450;
             end
             axis([0 ax(2) ymin ymax]);
             xlabel('Day');
@@ -140,10 +140,10 @@ function plot_state (osp)
             if osp
                 ymax = 2;
             else
-                ymax = 1;
+                ymax = 1.2;
             end
             axis([0 ax(2) 0 ymax]);
-            legend(titles);
+            legend(titles, 'location', 'northwest');
         end
 
     end
