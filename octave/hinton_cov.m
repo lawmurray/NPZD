@@ -4,7 +4,7 @@
 % $Date$
 
 % -*- texinfo -*-
-% @deftypefn {Function File} plot_parameters (@var{osp})
+% @deftypefn {Function File} hinton_cov (@var{type})
 %
 % Produce plot of posterior covariance for NPZD model.
 %
@@ -19,7 +19,7 @@ function hinton_cov (type)
         type = 1;
     end
     
-    MCMC_FILES = glob('results/mcmc_acupf-*.nc.*');
+    MCMC_FILES = glob('results/mcmc_pf.nc.*');
     ps = [25001:1:50000];
  
     if type == 1

@@ -92,5 +92,5 @@
 "D","D",,"D","dfdt: (1.0 - ZgE)*ZgD*Zgr + Zm - Dre*D - Dsi*D/FMLD + FMIX*(BCD - D); mu0: log(2.9182); sigma0: 0.3","Continuous-time variable","ZgE; ZgD; Zgr; Zm; Dre; Dsi; D; FMLD; FMIX; BCD","IS_C_NODE; IS_ODE_FORWARD; HAS_LOG_NORMAL_PRIOR"
 "N","N",,"N","dfdt: -Pg*P + (1.0 - ZgE)*(1.0 - ZgD)*Zgr + Dre*D + FMIX*(BCN - N); mu0: log(187.8515); sigma0: 0.3","Continuous-time variable","Pg; P; ZgE; ZgD; Zgr; Dre; FMIX; BCN; N; D","IS_C_NODE; IS_ODE_FORWARD; HAS_LOG_NORMAL_PRIOR"
 "Chla","Chla",,"Chla","f: Tc*P*(PCh/PNC)*PfN/(PRN*PfE+PfN); mu0: log(0.3531); sigma0: 0.3","Discrete-time variable","P; PCh; PfN; PNC; PRN; PfE; Tc","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
-,"N_obs",,"N_obs","mu: log(N); sigma: 0.5","Observation","N","IS_O_NODE; IS_LOG_NORMAL_LIKELIHOOD; HAS_COMMON_SIGMA"
-,"Chla_obs",,"Chla_obs","mu: log(Chla); sigma: 0.5","Observation","Chla","IS_O_NODE; IS_LOG_NORMAL_LIKELIHOOD; HAS_COMMON_SIGMA"
+,"N_obs",,"N_obs","mu: log(N); sigma: 0.2","Observation","N","IS_O_NODE; IS_LOG_NORMAL_LIKELIHOOD; HAS_COMMON_SIGMA"
+,"Chla_obs",,"Chla_obs","mu: log(Chla); sigma: 0.2","Observation","Chla","IS_O_NODE; IS_LOG_NORMAL_LIKELIHOOD; HAS_COMMON_SIGMA"
