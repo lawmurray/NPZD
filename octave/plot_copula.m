@@ -19,17 +19,20 @@ function plot_copula (pmatch)
 
     load model_acceptance
 
+    % use grey
+    colormap(flipud(gray()(16:end,:)));
+
     % truth
     vars = invars();
     nc = netcdf(INIT_FILE, 'r');
     truth = zeros(1, 30);
-    for i = 1:30
+    for i = 1:15
         truth(i) = nc{vars{i}}(:);
         if i != 3
             truth(i) = log(truth(i));
         end
     end
-
+    
     % some reordering for presentation
     %is = [25:30 16:24];
     is = [ 1:15 ];
@@ -91,11 +94,12 @@ function plot_copula (pmatch)
             
             %subplot(length(is), length(experiments), ...
             %        (i - 1)*length(experiments) + k);
-            subplot(3,5,i);
+            subplot(5,3,i);
             contourf(XX, YY, ZZ, lvl);
             hold on;
             plot([ t(is(i)) t(is(i)) ]', [0 1]', '-k', 'marker', '.', 'markersize', 10);
             plot_defaults;
+            title(vars{i});
             caxis([0 maxz]);
             hold off;
         end

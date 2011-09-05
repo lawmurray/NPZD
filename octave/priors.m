@@ -15,9 +15,9 @@ function [mu0, sd0] = priors ()
     log(0.2);
     log(0.32);
     log(0.1);
+    log(0.01);
     
     % d-nodes
-    log(0.01);
     log(1.2);
     log(0.033);
     log(0.25);
@@ -28,7 +28,6 @@ function [mu0, sd0] = priors ()
     log(0.1);
     log(0.01);
     log(1.1);
-    log(0.3531);
     log(0.3531);
    
     % c-nodes
