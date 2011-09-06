@@ -24,6 +24,7 @@ function plot_copula (pmatch)
 
     % truth
     vars = invars();
+    names = papernames();
     nc = netcdf(INIT_FILE, 'r');
     truth = zeros(1, 30);
     for i = 1:15
@@ -39,15 +40,15 @@ function plot_copula (pmatch)
     
     % prepare labels
     vars = invars();
-    vars = map(@nice_greek, vars);
+    names = map(@nice_greek, names);
     for i = 1:15
-        vars1{i} = vars{i};
+        names1{i} = names{i};
     end
     for i = 16:21
-        vars2{i - 15} = strcat ('{', vars{i + 9}, '_0}');
+        names2{i - 15} = names{i + 9};
     end
     for i = 22:length(vars)
-        vars2{i - 15} = strcat ('{', vars{i - 6}, '_0}');
+        names2{i - 15} = names{i - 6};
     end
 
     % plot
@@ -99,7 +100,7 @@ function plot_copula (pmatch)
             hold on;
             plot([ t(is(i)) t(is(i)) ]', [0 1]', '-k', 'marker', '.', 'markersize', 10);
             plot_defaults;
-            title(vars{i});
+            title(names{is(i)});
             caxis([0 maxz]);
             hold off;
         end

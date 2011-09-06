@@ -4,9 +4,9 @@
 % $Date$
 
 % -*- texinfo -*-
-% @deftypefn {Function File} plot_converge (@var{pmatch})
+% @deftypefn {Function File} plot_acceptcdf (@var{pmatch})
 %
-% Produce plot of convergence statistic for NPZD model.
+% Produce acceptance rate empirical cdfs.
 %
 % @itemize
 % @bullet{ @var{pmatch} True to plot compute matched results, false
@@ -15,7 +15,7 @@
 
 % @end deftypefn
 %
-function plot_converge (pmatch)
+function plot_acceptcdf (pmatch)
     % arguments
     if nargin < 1
         pmatch = 0;
@@ -32,7 +32,7 @@ function plot_converge (pmatch)
         };
     
     % load models
-    load Rp.mat
+    load model_acceptance.mat
     
     % subset of models
     if pmatch
@@ -45,7 +45,7 @@ function plot_converge (pmatch)
 
     markers = '.+*ox^';
     hold off;
-    x = [21:20:50000]';
+    x = linspace(0, 1, 1000);
     colour = [
         0 0 0;
         gray()(32,:);
@@ -58,7 +58,7 @@ function plot_converge (pmatch)
     for i = first:last
         j = mod(i - 1, 6) + 1;
         fmt = sprintf('--%c', markers(j));
-        y = Rp{i};
+        y = empirical_cdf(x, exp(models{i}.y));
         plot(x(1), y(1), fmt, 'color', colour(j,:), 'linewidth', 3, ...
              'markersize', 4, 'markerfacecolor', colour(j,:));
         hold on;
@@ -67,7 +67,7 @@ function plot_converge (pmatch)
     % plot lines only
     for i = first:last
         j = mod(i - 1, 6) + 1;
-        y = Rp{i};
+        y = empirical_cdf(x, exp(models{i}.y));
         plot(x, y, '--', 'color', colour(j,:), 'linewidth', 3);
     end
 
@@ -75,16 +75,17 @@ function plot_converge (pmatch)
     for i = first:last
         j = mod(i - 1, 6) + 1;
         fmt = sprintf('%c', markers(j));
-        y = Rp{i};
-        plot(x(1:25:end), y(1:25:end), 'color', colour(j,:), fmt, ...
+        y = empirical_cdf(x, exp(models{i}.y));
+        start = mod(i - 1, 3)*17 + 1;
+        plot(x(start:51:end), y(start:51:end), 'color', colour(j,:), fmt, ...
              'linewidth', 3, 'markersize', 4, 'markerfacecolor', ...
              colour(j,:));
     end
    
     plot_defaults;
-    %ylabel('{R^p}');
-    xlabel('Step');
-    legend(titles);
-    axis([0 10000 1 2.5]);
+    ylabel('Cumulative density');
+    xlabel('Complement acceptance rate');
+    legend(titles, 'location', 'southeast');
+    axis([0 1 0 1]);
     set(gca, 'interpreter', 'tex');
 end

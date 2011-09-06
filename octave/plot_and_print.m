@@ -12,8 +12,7 @@
 function plot_and_print ()
     FIG_DIR = strcat(pwd, '/figs');
     
-    sizes = [ 8 4.5; 8 4.5; 10.5 7; 8 4.5; 10.5 7; 8 4.5 ; 7 10.5; 7 10.5; ...
-              8 3.5; 8 3.5];
+    sizes = [ 8 4.5; 8 4.5; 10.5 7; 7 8; 8 4.5; 7 10.5; 8 3.5; 8 3.5];
 
     % output setup
     for i = 1:rows (sizes)
@@ -45,19 +44,18 @@ function plot_and_print ()
     plot_state();
     figure(3);
     plot_rstate();
-    figure(4);
-    plot_state(1);
-    figure(5);
-    plot_rstate(1);
-    figure(6)
-    plot_cor(6);
-    figure(7);
+    figure(4)
+    plot_copula();
+    figure(5)
+    subplot(1,2,1);
+    plot_acceptcdf(0);
+    subplot(1,2,2);
+    plot_acceptcdf(1);
+    figure(6);
     plot_parameters(0);
-    figure(8);
-    plot_parameters(1);
-    figure(9);
+    figure(7);
     hinton_cov(1);
-    figure(10);
+    figure(8);
     hinton_cov(2);
     
     % print
@@ -65,11 +63,9 @@ function plot_and_print ()
         'npzd_converge';
         'npzd_state';
         'npzd_rstate';
-        'osp_state';
-        'osp_rstate';
         'npzd_cor';
+        'npzd_acceptcdf';
         'npzd_parameters';
-        'osp_parameters';
         'npzd_initialcov';
         'npzd_paramcov';
         };

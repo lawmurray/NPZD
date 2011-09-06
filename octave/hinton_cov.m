@@ -19,8 +19,8 @@ function hinton_cov (type)
         type = 1;
     end
     
-    MCMC_FILES = glob('results/mcmc_pf.nc.*');
-    ps = [25001:1:50000];
+    MCMC_FILES = glob('results/mcmc_amupf-*.nc.*');
+    ps = [48001:1:50000];
  
     if type == 1
         APPROX_FILE = 'results/urts.nc.0';

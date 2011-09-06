@@ -40,24 +40,13 @@ function plot_rstate (osp)
 
     titles = {
         '';
-    %'Prior';
-    %    '';
         'Posterior';
         'Truth';
         'Posterior mean, right y-axis';
         };
     
-    vars = {
-        'rPgC';
-        'rPCh';
-        'rPRN';
-        'rASN';
-        'rZin';
-        'rZCl';
-        'rZgE';
-        'rDre';
-        'rZmQ';
-        };
+    vars = rinvars();
+    names = rpapernames();
     
     clf;
     for j = 1:length (vars)
@@ -101,7 +90,7 @@ function plot_rstate (osp)
         set(ax(2), 'ycolor', gray()(32,:));
         set(ax(1), 'ylim', [-3 3]);
         set(ax(2), 'ylim', [-0.75 0.75]);
-        ylabel(ax(1), vars{j});
+        ylabel(ax(1), names{j});
         if j == 3
             %legend(ax, titles); % causing errors...
         end
