@@ -19,10 +19,10 @@ function [mu sigma] = acceptrate (ex)
     as = zeros(N,1);
     for i = 1:N
         nc = netcdf(files{i}, 'r');
-        ll = nc{'loglikelihood'}(:);
+        ll = nc{'PDF'}(:);
         as(i) = length(unique(ll))/length(ll);
     end
-    
+
     mu = mean(as);
     sigma = std(as);
 end

@@ -10,8 +10,8 @@
 % @end deftypefn
 %
 function prepare_acceptance ()
-    experiments = {'pf', 'mupf', 'cupf', 'apf', 'mupf', 'acupf', ...
-        'pf-pmatch', 'mupf-pmatch', 'cupf', 'apf-pmatch', 'mupf-pmatch', ...
+    experiments = {'pf', 'mupf', 'cupf', 'apf', 'amupf', 'acupf', ...
+        'pf-pmatch', 'mupf-pmatch', 'cupf', 'apf-pmatch', 'amupf-pmatch', ...
         'acupf'};
     invar = invars();
     M = 200;
@@ -42,10 +42,10 @@ function prepare_acceptance ()
     % construct and krig models
     models = cellfun(@model_acceptance, files, invars, coords, Ms, ...
         logvars, 'UniformOutput', 0);
-    models = cellfun(@krig_model, models, iters, 'UniformOutput', 0);
-    mns = cellfun(@min_model, models, attempts, iters, 'UniformOutput', 0);
-    mxs = cellfun(@max_model, models, attempts, iters, 'UniformOutput', 0);
+    %models = cellfun(@krig_model, models, iters, 'UniformOutput', 0);
+    %mns = parcellfun(C, @min_model, models, attempts, iters, 'UniformOutput', 0);
+    %mxs = parcellfun(C, @max_model, models, attempts, iters, 'UniformOutput', 0);
     
     % save
-    save -binary model_acceptance.mat models mns mxs
+    save -binary model_acceptance.mat models %mns mxs
 end
