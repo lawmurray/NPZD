@@ -25,7 +25,7 @@ function vars = invars ()
         'Dre';
         'ZmQ';
         'EZ';
-        'Chla';
+        'Chla_lag';
         'P';
         'Z';
         'D';

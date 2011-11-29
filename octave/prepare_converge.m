@@ -15,7 +15,7 @@ function prepare_converge ()
                   'mupf-pmatch', 'cupf', 'apf-pmatch', 'amupf-pmatch', 'acupf'};
     invar = invars();
     coord = [];
-    rang = [21:20:50000];
+    rang = [26:50:75000];
 
     % construct arguments for parallel execution
     C = length(experiments);
@@ -32,7 +32,7 @@ function prepare_converge ()
     end
    
     % execute
-    Rp = parcellfun(C, @converge, ins, invars, coords, rangs, ...
+    Rp = cellfun(@converge, ins, invars, coords, rangs, ...
         'UniformOutput', 0);
     
     % save

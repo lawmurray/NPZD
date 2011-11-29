@@ -1,4 +1,4 @@
-function prepare_nonpad ()
+function prepare_truth_nonpad ()
     TRUTH_FILE = 'data/C10_TE_true.nc';
     TRUTH_PAD_FILE = 'data/C10_TE_true_pad.nc';
     PAD = 365;
