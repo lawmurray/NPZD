@@ -29,8 +29,8 @@ function plot_state (osp)
         SIMULATE_FILE = 'results/simulate.nc.te'; % for prior
         TRUTH_FILE = 'data/C10_TE_true.nc';
         OBS_FILE = 'data/C10_TE_obs.nc';
-        ps = [25001:50000];
-        ns = 2;
+        ps = [50000:75000];
+        ns = 1;
    end
     
     nco = netcdf(OBS_FILE, 'r');
@@ -52,7 +52,7 @@ function plot_state (osp)
         'P';
         'Z';
         'D';
-        'Chla';
+        'Chla_lag';
         };
     
     for j = 1:length (vars)
@@ -69,7 +69,7 @@ function plot_state (osp)
             subplot(3,2,3);
         elseif strcmp(vars{j}, 'D')
             subplot(3,2,5);
-        elseif strcmp(vars{j}, 'Chla')
+        elseif strcmp(vars{j}, 'Chla_lag')
             subplot(2,2,2);
             if !osp
                 ts = [2:101]; % first is meaningless
@@ -82,8 +82,12 @@ function plot_state (osp)
         if !osp
             x = read_var (nct, vars{j}, [], 1, ts);
         end
-        if (strcmp(vars{j}, 'N') || strcmp(vars{j}, 'Chla'))
-            obsvar = sprintf('%s_obs', vars{j});
+        if strcmp(vars{j}, 'N') || strcmp(vars{j}, 'Chla_lag')
+            if strcmp(vars{j}, 'N')
+                obsvar = 'N_obs';
+            else
+                obsvar = 'Chla_obs';
+            end
             [t y] = read_obs (nco, obsvar, [], ts, ns);
             plot_obs(OBS_FILE, obsvar, [], ts, ns);
         else
@@ -91,8 +95,8 @@ function plot_state (osp)
             [t y] = read_obs (nco, 'N_obs', [], ts, ns);
         end
         if !osp
-            plot(ts, x, '.k', 'markersize', 5);
-            if (strcmp(vars{j}, 'N') || strcmp(vars{j}, 'Chla'))
+            plot(t, x, '.k', 'markersize', 5);
+            if (strcmp(vars{j}, 'N') || strcmp(vars{j}, 'Chla_lag'))
                 for i = 1:length(t)
                     line([t(i), t(i)], [x(i), y(i)], 'linewidth', 1, ...
                         'color', 'k');
@@ -101,7 +105,6 @@ function plot_state (osp)
         end
         hold off;
         plot_defaults;
-        ylabel(vars{j});
         ax = axis();
         
         if strcmp(vars{j}, 'N')
@@ -114,36 +117,41 @@ function plot_state (osp)
             end
             axis([0 ax(2) ymin ymax]);
             xlabel('Day');
+            ylabel('N');
         elseif strcmp(vars{j}, 'P')
             if osp
                 ymax = 60;
             else
-                ymax = 20;
+                ymax = 40;
             end
             axis([0 ax(2) 0 ymax]);
+            ylabel('P');
         elseif strcmp(vars{j}, 'Z')
             if osp
                 ymax = 40;
             else
-                ymax = 20;
+                ymax = 30;
             end
             axis([0 ax(2) 0 ymax]);
-        elseif strcmp(vars{j}, 'D')
+            ylabel('Z');
+       elseif strcmp(vars{j}, 'D')
             if osp
                 ymax = 60;
             else
-                ymax = 20;
+                ymax = 30;
             end
             axis([0 ax(2) 0 ymax]);
             xlabel('Day');
-        elseif strcmp(vars{j}, 'Chla')
+            ylabel('D');
+        elseif strcmp(vars{j}, 'Chla_lag')
             if osp
                 ymax = 2;
             else
-                ymax = 1.2;
+                ymax = 2;
             end
             axis([0 ax(2) 0 ymax]);
-            legend(titles, 'location', 'northwest');
+            legend(titles, 'location', 'northeast');
+            ylabel('Chla');
         end
 
     end

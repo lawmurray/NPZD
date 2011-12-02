@@ -19,8 +19,8 @@ function hinton_cov (type)
         type = 1;
     end
     
-    MCMC_FILES = glob('results/mcmc_amupf-*.nc.*');
-    ps = [48001:1:50000];
+    MCMC_FILES = glob('results/mcmc_acupf-0.nc.*');
+    ps = [50000:75000];
  
     if type == 1
         APPROX_FILE = 'results/urts.nc.0';
@@ -37,7 +37,7 @@ function hinton_cov (type)
             'Dre';
             'ZmQ';
             %'EZ';
-            'Chla';
+            'Chla_lag';
             'P';
             'Z';
             'D';
@@ -76,7 +76,10 @@ function hinton_cov (type)
             'muDre';
             'muZmQ';
         };
-        names = vars;
+        names = cell(length(vars), 1);
+        for i = 1:length(vars)
+            names{i} = papernames(){i};
+        end
         is = [25:39];
         logs = ones(15,1);
         logs(3) = 0;

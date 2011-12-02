@@ -45,7 +45,7 @@ function plot_converge (pmatch)
 
     markers = '.+*ox^';
     hold off;
-    x = [21:20:50000]';
+    x = [26:50:75000]';
     colour = [
         0 0 0;
         gray()(32,:);
@@ -59,6 +59,7 @@ function plot_converge (pmatch)
         j = mod(i - 1, 6) + 1;
         fmt = sprintf('--%c', markers(j));
         y = Rp{i};
+        
         plot(x(1), y(1), fmt, 'color', colour(j,:), 'linewidth', 3, ...
              'markersize', 4, 'markerfacecolor', colour(j,:));
         hold on;

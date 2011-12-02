@@ -19,13 +19,13 @@ function plot_parameters (osp)
     end
     
     if osp
-        MCMC_FILES = glob('results/mcmc_amupf-*.nc.*');
+        MCMC_FILES = glob('results/mcmc_acupf-0.nc.*');
         INIT_FILE = '';
         ps = [49001:5:50000];
     else
-        MCMC_FILES = glob('results/mcmc_amupf-*.nc.*');
+        MCMC_FILES = glob('results/mcmc_acupf-0.nc.0');
         INIT_FILE = 'data/C10_TE_init.nc';
-        ps = [48001:10:50000];
+        ps = [25000:75000];
    end
    titles = {
         'Posterior';
@@ -82,15 +82,25 @@ function plot_parameters (osp)
        plot(x, y, '-', 'color', gray()(32,:), 'linewidth', 3);
        
        % truth
+       ax = axis();
+       ax = [ax(1) ax(2) ax(3) 1.2*ax(4)];
+       axis(ax);
        if !osp
-           ax = axis();
-           plot([ truth(i) truth(i) ]', [0 0.99*ax(4)]', '-k', 'marker', '.', ...
-                'markersize', 10);
+           plot([ truth(i) truth(i) ]', [0 0.99*ax(4)]', '-k', ...
+                'marker', '.', 'markersize', 10);
        end
        
        title (name);
        if i == 3
            legend(titles);
+       end
+       
+       % thin out xticklabels for particular plots
+       if i == 1 || i == 2 || i == 4 || i == 12 || i == 13 || i == 14
+           labels = get(gca, 'xticklabel');
+           ticks = get(gca, 'xtick');
+           set(gca, 'xticklabel', labels(1:end));
+           set(gca, 'xtick', ticks(1:end));
        end
    end
 end

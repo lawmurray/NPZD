@@ -12,7 +12,7 @@
 function plot_and_print ()
     FIG_DIR = strcat(pwd, '/figs');
     
-    sizes = [ 8 4.5; 8 4.5; 10.5 7; 7 8; 8 4.5; 7 10.5; 8 3.5; 8 3.5];
+    sizes = [ 8 3.5; 8 4.5; 10.5 7; 7 8; 8 3.5; 7 10.5; 8 3.5; 8 3.5];
 
     % output setup
     for i = 1:rows (sizes)

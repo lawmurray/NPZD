@@ -29,7 +29,7 @@ function plot_rstate (osp)
         SIMULATE_FILE = 'results/simulate.nc.te'; % for prior
         OBS_FILE = 'data/C10_TE_obs.nc';
         TRUTH_FILE = 'data/C10_TE_true.nc';
-        ps = [25001:50000];
+        ps = [50001:75000];
         ns = 2;
    end
     

@@ -76,15 +76,15 @@ function plot_acceptcdf (pmatch)
         j = mod(i - 1, 6) + 1;
         fmt = sprintf('%c', markers(j));
         y = empirical_cdf(x, exp(models{i}.y));
-        start = mod(i - 1, 3)*17 + 1;
-        plot(x(start:51:end), y(start:51:end), 'color', colour(j,:), fmt, ...
+        start = mod(i - 1, 6)*16 + 1;
+        plot(x(start:96:end), y(start:96:end), 'color', colour(j,:), fmt, ...
              'linewidth', 3, 'markersize', 4, 'markerfacecolor', ...
              colour(j,:));
     end
    
     plot_defaults;
     ylabel('Cumulative density');
-    xlabel('Complement acceptance rate');
+    xlabel('Conditional acceptance rate (CAR)');
     legend(titles, 'location', 'southeast');
     axis([0 1 0 1]);
     set(gca, 'interpreter', 'tex');
