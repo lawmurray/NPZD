@@ -23,13 +23,13 @@ fi
 : ${RESULTS_DIR=results}  # directory to contain result files
 
 : ${INIT_FILENAME=}   # init file
-: ${FORCE_FILENAME=C10_TE_force.nc}  # forcings file
+: ${FORCE_FILENAME=}  # forcings file
 : ${PRIOR_FILENAME=}  # prior file
 : ${OBS_FILENAME=C10_TE_obs.nc}    # observations file
 
 : ${INIT_NS=0}   # record along ns dimension to use for init file
 : ${FORCE_NS=0}  # record along ns dimension to use for forcings file
-: ${OBS_NS=1}    # record along ns dimension to use for observations file
+: ${OBS_NS=0}    # record along ns dimension to use for observations file
 
 ##
 ## Simulation settings
@@ -79,7 +79,7 @@ else
 fi
 
 : ${RESAMPLER=stratified}  # resampling method
-: ${ESS_REL=0.5}           # minimum relative ESS to trigger resampling
+: ${ESS_REL=0.7}           # minimum relative ESS to trigger resampling
 : ${SORT=1}                # sort weights before resampling
 : ${B_ABS=0.0}             # absolute kernel bandwidth (0 to use B_REL instead)
 : ${B_REL=1.0}             # relative kernel bandwidth
@@ -125,4 +125,4 @@ fi
 ## System settings
 ## 
 
-: ${OMP_NUM_THREADS=4}  # number of threads
+: ${OMP_NUM_THREADS=2}  # number of threads

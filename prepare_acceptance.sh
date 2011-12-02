@@ -1,5 +1,5 @@
 #!/bin/sh
-#PBS -l walltime=02:00:00,nodes=1:ppn=8,vmem=32gb
+#PBS -l walltime=00:30:00,nodes=1:ppn=8,vmem=32gb
 #PBS -j oe
 
 module load octave/3.3.51-gnu

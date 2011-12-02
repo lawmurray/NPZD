@@ -8,18 +8,18 @@
 "Achl","PaC","Chlorophyl absorption","PaC","x: 1.0","Constant",,
 "PE","PQf","Photosynthetic efficiency","PQf","x: 1200.0","Constant",,
 "maxNC","PNC","Maximum N:C (Redfield)","PNC","x: 0.18","Constant",,
-"Pt","Pt","P timescale","Pt","x: 10.0","Constant",,
-"Zt","Zt","Z timescale","Zt","x: 30.0","Constant",,
+"Pt","Pt","P timescale","Pt","x: 3.0","Constant",,
+"Zt","Zt","Z timescale","Zt","x: 9.0","Constant",,
 "Grazeexp","Zex","Functional response exponent","Zex","x: 2.0","Constant",,
-"PBC","BCP","Phytoplankton boundary condition","BCP",,"Forcing",,"IS_F_NODE"
-"ZBC","BCZ","Zooplankton boundary condition","BCZ",,"Forcing",,"IS_F_NODE"
-"NBC","BCN","Nitrogen boundary condition","BCN",,"Forcing",,"IS_F_NODE"
-"DBC","BCD","Detritus boundary condition","BCD",,"Forcing",,"IS_F_NODE"
-"T","FT","Water temperature","FT",,"Forcing",,"IS_F_NODE"
-"Eir","FE","Surface irradience","FE",,"Forcing",,"IS_F_NODE"
-"Depth","FMLD","Mixed layer depth","FMLD",,"Forcing",,"IS_F_NODE"
-,"FMLC","Mixed layer Change (t - t-1)","FMLC",,"Forcing",,"IS_F_NODE"
-,"FMIX","Mixing and exchange","FMIX",,"Forcing",,"IS_F_NODE"
+"PBC","BCP","Phytoplankton boundary condition","BCP","x: 0.0","Constant",,
+"ZBC","BCZ","Zooplankton boundary condition","BCZ","x: 0.0","Constant",,
+"NBC","BCN","Nitrogen boundary condition","BCN","x: 200.0","Constant",,
+"DBC","BCD","Detritus boundary condition","BCD","x: 0.0","Constant",,
+"T","FT","Water temperature","FT","x: 12.0","Constant",,
+"Eir","FE","Surface irradience","FE","x: 30.0","Constant",,
+"Depth","FMLD","Mixed layer depth","FMLD","x: 40.0","Constant",,
+,"FMLC","Mixed layer Change (t - t-1)","FMLC","x: 0.0","Constant",,
+,"FMIX","Mixing and exchange","FMIX","x: 0.05","Constant",,
 "mumaxC","PgC","Maximum growth rate for C","PgC","f: PgC*(1.0 - pow(Pt,  - 1.0)) + pow(Pt,  - 1.0)*(exp(gammaPgC + sigmaPgC*rPgC)); mu0: log(1.2); sigma0: 0.1","Discrete-time variable","PgC; Pt; gammaPgC; sigmaPgC; rPgC","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
 "ChlCmax","PCh","Maximum growth rate for Chl-a:C","PCh","f: PCh*(1.0 - pow(Pt,  - 1.0)) + pow(Pt,  - 1.0)*(exp(gammaPCh + sigmaPCh*rPCh)); mu0: log(0.033); sigma0: 0.1","Discrete-time variable","PCh; Pt; gammaPCh; sigmaPCh; rPCh","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
 "minmaxNC","PRN","Min/Max N:C","PRN","f: PRN*(1.0 - pow(Pt,  - 1.0)) + pow(Pt,  - 1.0)*(exp(gammaPRN + sigmaPRN*rPRN)); mu0: log(0.25); sigma0: 0.1","Discrete-time variable","PRN; Pt; gammaPRN; sigmaPRN; rPRN","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
@@ -29,8 +29,8 @@
 "Zeff","ZgE","Zooplankton grazing efficiency","ZgE","f: ZgE*(1.0 - pow(Zt,  - 1.0)) + pow(Zt,  - 1.0)*(exp(gammaZgE + sigmaZgE*rZgE)); mu0: log(0.32); sigma0: 0.1","Discrete-time variable","ZgE; Zt; gammaZgE; sigmaZgE; rZgE","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
 "Remin","Dre","Remineralisation rate","Dre","f: Dre*(1.0 - pow(Zt,  - 1.0)) + pow(Zt,  - 1.0)*(exp(gammaDre + sigmaDre*rDre)); mu0: log(0.1); sigma0: 0.1","Discrete-time variable","Dre; Zt; gammaDre; sigmaDre; rDre","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
 "Mq","ZmQ","Z quadratic mortality term","ZmQ","f: ZmQ*(1.0 - pow(Zt,  - 1.0)) + pow(Zt,  - 1.0)*(exp(gammaZmQ + sigmaZmQ*rZmQ)); mu0: log(0.01); sigma0: 0.1","Discrete-time variable","ZmQ; Zt; gammaZmQ; sigmaZmQ; rZmQ","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
-,"PDF","P Diversity Factor","PDF","mu0: log(0.2); sigma0: 0.8","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
-,"ZDF","Z Diversity Factor","ZDF","mu0: log(0.2); sigma0: 0.8","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+,"PDF","P Diversity Factor","PDF","mu0: log(0.2); sigma0: 0.4","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
+,"ZDF","Z Diversity Factor","ZDF","mu0: log(0.2); sigma0: 0.4","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
 ,"muPgC",,"\mu PgC","mu0: log(1.2); sigma0: 0.63","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
 ,"thetaPgC",,"\theta PgC","s: 0.63","Static variable",,"IS_S_NODE; IS_GENERIC_STATIC"
 ,"muPCh",,"\mu PCh","mu0: log(0.03); sigma0: 0.37","Parameter",,"IS_P_NODE; HAS_LOG_NORMAL_PRIOR"
@@ -76,7 +76,7 @@
 ,"gammaZgE",,"\gamma ZgE","s: log(muZgE)+pow(thetaZgE, 2.0) / 2.0 - pow(sigmaZgE, 2.0) / 2.0","Static variable","muZgE; thetaZgE; sigmaZgE","IS_S_NODE; IS_GENERIC_STATIC"
 ,"gammaDre",,"\gamma Dre","s: log(muDre)+pow(thetaDre, 2.0) / 2.0 - pow(sigmaDre, 2.0) / 2.0","Static variable","muDre; thetaDre; sigmaDre","IS_S_NODE; IS_GENERIC_STATIC"
 ,"gammaZmQ",,"\gamma ZmQ","s: log(muZmQ)+pow(thetaZmQ, 2.0) / 2.0 - pow(sigmaZmQ, 2.0) / 2.0","Static variable","muZmQ; thetaZmQ; sigmaZmQ","IS_S_NODE; IS_GENERIC_STATIC"
-"Ez","EZ","Light at depth","EZ","f: FE*(1.0-exp(-Kdz))/Kdz; mu0: log(1.1); sigma0: 1.0","Discrete-time variable","FE; Kdz","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"Ez","EZ","Light at depth","EZ","f: FE*(1.0-exp(-Kdz))/Kdz; mu0: log(16.0); sigma0: 0.1","Discrete-time variable","FE; Kdz","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
 "KdZ","Kdz","Light attenation, total (water + Chl-a)","Kdz","x: (Kw+KCh*Chla)*FMLD","Intermediate result","Kw; KCh; Chla; FMLD",
 "Graze","Zgr",,"Zgr","x: Z*Zin*Tc*Zgs/(1.0+Zgs)","Intermediate result","Z; Zin; Tc; Zgs",
 "Sat","Zgs",,"Zgs","x: pow(ZCl*P/Zin, Zex)","Intermediate result","ZCl; P; Zin; Zex",
@@ -87,10 +87,11 @@
 "fN","PfN",,"PfN","x: N/(1+ASN*N/PgT)","Intermediate result","N; ASN; PgT",
 "Zmort","Zm",,"Zm","x: (ZmQ*Z)*Z","Intermediate result","ZmQ; Z",
 "Tcorr","Tc",,"Tc","x: pow(Q10, (FT - Trf)/10)","Intermediate result","Q10; FT; Trf",
-"P","P",,"P","dfdt: Pg*P - Zgr + FMIX*(BCP - P); mu0: log(1.7763); sigma0: 0.3","Continuous-time variable","Pg; P; Zgr; FMIX; BCP","IS_C_NODE; IS_ODE_FORWARD; HAS_LOG_NORMAL_PRIOR"
-"Z","Z",,"Z","dfdt: Zgr*ZgE - Zm + FMLC/FMLD*(BCZ - Z); mu0: log(3.7753); sigma0: 0.3","Continuous-time variable","Zgr; ZgE; Zm; FMLD; FMLC; BCZ; Z","IS_C_NODE; IS_ODE_FORWARD; HAS_LOG_NORMAL_PRIOR"
-"D","D",,"D","dfdt: (1.0 - ZgE)*ZgD*Zgr + Zm - Dre*D - Dsi*D/FMLD + FMIX*(BCD - D); mu0: log(2.9182); sigma0: 0.3","Continuous-time variable","ZgE; ZgD; Zgr; Zm; Dre; Dsi; D; FMLD; FMIX; BCD","IS_C_NODE; IS_ODE_FORWARD; HAS_LOG_NORMAL_PRIOR"
-"N","N",,"N","dfdt: -Pg*P + (1.0 - ZgE)*(1.0 - ZgD)*Zgr + Dre*D + FMIX*(BCN - N); mu0: log(187.8515); sigma0: 0.3","Continuous-time variable","Pg; P; ZgE; ZgD; Zgr; Dre; FMIX; BCN; N; D","IS_C_NODE; IS_ODE_FORWARD; HAS_LOG_NORMAL_PRIOR"
-"Chla","Chla",,"Chla","f: Tc*P*(PCh/PNC)*PfN/(PRN*PfE+PfN); mu0: log(0.3531); sigma0: 0.3","Discrete-time variable","P; PCh; PfN; PNC; PRN; PfE; Tc","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
-,"N_obs",,"N_obs","mu: log(N); sigma: 0.5","Observation","N","IS_O_NODE; IS_LOG_NORMAL_LIKELIHOOD; HAS_COMMON_SIGMA"
-,"Chla_obs",,"Chla_obs","mu: log(Chla); sigma: 0.5","Observation","Chla","IS_O_NODE; IS_LOG_NORMAL_LIKELIHOOD; HAS_COMMON_SIGMA"
+"P","P",,"P","dfdt: Pg*P - Zgr + FMIX*(BCP - P); mu0: log(1.0); sigma0: 0.1","Continuous-time variable","Pg; P; Zgr; FMIX; BCP","IS_C_NODE; IS_ODE_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"Z","Z",,"Z","dfdt: Zgr*ZgE - Zm + FMLC/FMLD*(BCZ - Z); mu0: log(12.0); sigma0: 0.1","Continuous-time variable","Zgr; ZgE; Zm; FMLD; FMLC; BCZ; Z","IS_C_NODE; IS_ODE_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"D","D",,"D","dfdt: (1.0 - ZgE)*ZgD*Zgr + Zm - Dre*D - Dsi*D/FMLD + FMIX*(BCD - D); mu0: log(7.0); sigma0: 0.1","Continuous-time variable","ZgE; ZgD; Zgr; Zm; Dre; Dsi; D; FMLD; FMIX; BCD","IS_C_NODE; IS_ODE_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"N","N",,"N","dfdt: -Pg*P + (1.0 - ZgE)*(1.0 - ZgD)*Zgr + Dre*D + FMIX*(BCN - N); mu0: log(175.0); sigma0: 0.1","Continuous-time variable","Pg; P; ZgE; ZgD; Zgr; Dre; FMIX; BCN; N; D","IS_C_NODE; IS_ODE_FORWARD; HAS_LOG_NORMAL_PRIOR"
+"Chla","Chla",,"Chla","x: Tc*P*(PCh/PNC)*PfN/(PRN*PfE+PfN);","Intermediate result","P; PCh; PfN; PNC; PRN; PfE; Tc",""
+"Chla_lag","Chla_lag",,"Chla","f: Chla; mu0: log(0.2); sigma0: 0.1","Discrete-time variable","Chla","IS_D_NODE; IS_GENERIC_FORWARD; HAS_LOG_NORMAL_PRIOR"
+,"N_obs",,"N_obs","mu: log(N); sigma: 0.4","Observation","N","IS_O_NODE; IS_LOG_NORMAL_LIKELIHOOD; HAS_COMMON_SIGMA"
+,"Chla_obs",,"Chla_obs","mu: log(Chla); sigma: 0.4","Observation","Chla","IS_O_NODE; IS_LOG_NORMAL_LIKELIHOOD; HAS_COMMON_SIGMA"
