@@ -3232,6 +3232,14 @@
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
 					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
 				</buildTargets>
 			</storageModule>
 		</cconfiguration>
@@ -6460,6 +6468,14 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/kfb</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -9696,6 +9712,14 @@
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
 					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
 				</buildTargets>
 			</storageModule>
 		</cconfiguration>
@@ -12924,6 +12948,14 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/kfb</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -16160,6 +16192,14 @@
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
 					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
 				</buildTargets>
 			</storageModule>
 		</cconfiguration>
@@ -19388,6 +19428,14 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/kfb</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -22624,6 +22672,14 @@
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
 					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
 				</buildTargets>
 			</storageModule>
 		</cconfiguration>
@@ -25852,6 +25908,14 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/kfb</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -29088,6 +29152,14 @@
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
 					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
 				</buildTargets>
 			</storageModule>
 		</cconfiguration>
@@ -32316,6 +32388,14 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/kfb</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -35552,6 +35632,14 @@
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
 					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
 				</buildTargets>
 			</storageModule>
 		</cconfiguration>
@@ -38784,6 +38872,14 @@
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
 					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
 				</buildTargets>
 			</storageModule>
 		</cconfiguration>
@@ -42012,6 +42108,14 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/kfb</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -45300,6 +45404,14 @@
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
 					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
 				</buildTargets>
 			</storageModule>
 		</cconfiguration>
@@ -48528,6 +48640,14 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/kfb</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
@@ -51764,6 +51884,14 @@
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
 					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
 				</buildTargets>
 			</storageModule>
 		</cconfiguration>
@@ -54992,6 +55120,14 @@
 						<buildCommand>make</buildCommand>
 						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
 						<buildTarget>build/kfb</buildTarget>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>true</useDefaultCommand>
+						<runAllBuilders>true</runAllBuilders>
+					</target>
+					<target name="pfs" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>make</buildCommand>
+						<buildArguments>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</buildArguments>
+						<buildTarget>build/pfs</buildTarget>
 						<stopOnError>true</stopOnError>
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
