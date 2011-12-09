@@ -8,6 +8,10 @@
  * $Date$
  */
 model NPZD {
+  /* prescribed constants */
+  const Pt = 10.0  // P timescale
+  const Zt = 30.0  // Z timescale
+
   /* forcings */
   input BCP   // phytoplankton boundary condition
   input BCZ   // zooplankton boundary condition
@@ -95,7 +99,7 @@ model NPZD {
   }
 
   /* precalculations */
-  sub precompute {
+  sub init {
     do {
       /* compute rate process noise term standard deviations given desired
        * long-term standard deviation */
@@ -139,7 +143,7 @@ model NPZD {
     P ~ log_normal(log(1.7763), 0.3)
     Z ~ log_normal(log(3.7753), 0.3)
     D ~ log_normal(log(2.9182), 0.3)
-    N ~ log_normal(log(187.8515, 0.3)
+    N ~ log_normal(log(187.8515), 0.3)
 
     Chla ~ log_normal(log(0.3531), 0.3)
     EZ ~ log_normal(log(1.1), 1.0)
@@ -178,21 +182,19 @@ model NPZD {
       const PaC = 1.0      // chlorophyl absorption
       const PQf = 1200.00  // photosynthetic efficiency
       const PNC = 0.18     // maximum N:C (Redfield)
-      const Pt = 10.0      // P timescale
-      const Zt = 30.0      // Z timescale
       const Zex = 2.0      // functional response exponent
 
       /* processes */
-      inline Kdz = (Kw + KCh*Chla)*FMLD // total light attenation, water+Chl-a
-      inline Zgr = Z*Zin*Tc*Zgs/(1.0 + Zgs)
-      inline Zgs = pow(ZCl*P/Zin, Zex)
-      inline PgT = PgC*Tc
-      inline Pg = PgT*PfE*PfN/(PfN + PfE) // phytoplankton growth rate
-      inline PfE = 1.0 - exp(-PaQ*PCh*EZ/PgC)
-      inline PaQ = PaC*KCh*PQf
-      inline PfN = N/(1.0 + ASN*N/PgT)
-      inline Zm = ZmQ*Z*Z
       inline Tc = pow(Q10, (FT - Trf)/10.0)
+      inline Kdz = (Kw + KCh*Chla)*FMLD // total light attenation, water+Chl-a
+      inline Zgs = pow(ZCl*P/Zin, Zex)
+      inline Zgr = Z*Zin*Tc*Zgs/(1.0 + Zgs)
+      inline PgT = PgC*Tc
+      inline PaQ = PaC*KCh*PQf
+      inline PfE = 1.0 - exp(-PaQ*PCh*EZ/PgC)
+      inline PfN = N/(1.0 + ASN*N/PgT)
+      inline Pg = PgT*PfE*PfN/(PfN + PfE) // phytoplankton growth rate
+      inline Zm = ZmQ*Z*Z
 
       /* differential system */
       P <- ode(Pg*P - Zgr + FMIX*(BCP - P));
