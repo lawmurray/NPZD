@@ -25,7 +25,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildArguments</key>
-					<value>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1  -j12</value>
+					<value>USE_DOUBLE=1 USE_ATLAS=1 DEBUG=1 -j12</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildCommand</key>

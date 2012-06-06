@@ -11,6 +11,12 @@ model NPZD {
   /* prescribed constants */
   const Pt = 10.0  // P timescale
   const Zt = 30.0  // Z timescale
+  const Q10 = 2.0
+  const Trf = 20.0     // reference temperature (10 deg. C)
+  const PaC = 1.0      // chlorophyl absorption
+  const PQf = 1200.00  // photosynthetic efficiency
+  const PNC = 0.18     // maximum N:C (Redfield)
+  const Zex = 2.0      // functional response exponent
 
   /* forcings */
   input BCP   // phytoplankton boundary condition
@@ -68,18 +74,32 @@ model NPZD {
   const thetaZmQ = 1.0  // 0.5?
 
   /* rate process noise term means */
-  static gammaPgC, gammaPCh, gammaPRN, gammaASN, gammaZin, gammaZCl, gammaZgE,
-      gammaDre, gammaZmQ
+  inline sigmaPgC = sqrt(log(1.0 + (2.0*Pt - 1.0)*PDF*PDF*(exp(thetaPgC*thetaPgC) - 1.0)))
+  inline sigmaPCh = sqrt(log(1.0 + (2.0*Pt - 1.0)*PDF*PDF*(exp(thetaPCh*thetaPCh) - 1.0)))
+  inline sigmaPRN = sqrt(log(1.0 + (2.0*Pt - 1.0)*PDF*PDF*(exp(thetaPRN*thetaPRN) - 1.0)))
+  inline sigmaASN = sqrt(log(1.0 + (2.0*Pt - 1.0)*PDF*PDF*(exp(thetaASN*thetaASN) - 1.0)))
+  inline sigmaZin = sqrt(log(1.0 + (2.0*Zt - 1.0)*ZDF*ZDF*(exp(thetaZin*thetaZin) - 1.0)))
+  inline sigmaZCl = sqrt(log(1.0 + (2.0*Zt - 1.0)*ZDF*ZDF*(exp(thetaZCl*thetaZCl) - 1.0)))
+  inline sigmaZgE = sqrt(log(1.0 + (2.0*Zt - 1.0)*ZDF*ZDF*(exp(thetaZgE*thetaZgE) - 1.0)))
+  inline sigmaDre = sqrt(log(1.0 + (2.0*Zt - 1.0)*ZDF*ZDF*(exp(thetaDre*thetaDre) - 1.0)))
+  inline sigmaZmQ = sqrt(log(1.0 + (2.0*Zt - 1.0)*ZDF*ZDF*(exp(thetaZmQ*thetaZmQ) - 1.0)))
 
   /* rate process noise term standard deviations */
-  static sigmaPgC, sigmaPCh, sigmaPRN, sigmaASN, sigmaZin, sigmaZCl, sigmaZgE,
-      sigmaDre, sigmaZmQ
+  inline gammaPgC = log(muPgC) + pow(thetaPgC, 2.0)/2.0 - pow(sigmaPgC, 2.0)/2.0
+  inline gammaPCh = log(muPCh) + pow(thetaPCh, 2.0)/2.0 - pow(sigmaPCh, 2.0)/2.0
+  inline gammaPRN = log(muPRN) + pow(thetaPRN, 2.0)/2.0 - pow(sigmaPRN, 2.0)/2.0
+  inline gammaASN = log(muASN) + pow(thetaASN, 2.0)/2.0 - pow(sigmaASN, 2.0)/2.0
+  inline gammaZin = log(muZin) + pow(thetaZin, 2.0)/2.0 - pow(sigmaZin, 2.0)/2.0
+  inline gammaZCl = log(muZCl) + pow(thetaZCl, 2.0)/2.0 - pow(sigmaZCl, 2.0)/2.0
+  inline gammaZgE = log(muZgE) + pow(thetaZgE, 2.0)/2.0 - pow(sigmaZgE, 2.0)/2.0
+  inline gammaDre = log(muDre) + pow(thetaDre, 2.0)/2.0 - pow(sigmaDre, 2.0)/2.0
+  inline gammaZmQ = log(muZmQ) + pow(thetaZmQ, 2.0)/2.0 - pow(sigmaZmQ, 2.0)/2.0
 
   /* observations */
   obs N_obs, Chla_obs
 
   /* prior distribution over parameters */
-  sub prior {
+  sub parameter {
     Kw ~ log_normal(log(0.03), 0.2)
     KCh ~ log_normal(log(0.02), 0.3)
     Dsi ~ normal(5.0, 1.0)
@@ -98,36 +118,6 @@ model NPZD {
     muZmQ ~ log_normal(log(0.01), thetaZmQ)
   }
 
-  /* precalculations */
-  sub init {
-    do {
-      /* compute rate process noise term standard deviations given desired
-       * long-term standard deviation */
-      sigmaPgC <- sqrt(log(1.0 + (2.0*Pt - 1.0)*PDF*PDF*(exp(thetaPgC*thetaPgC) - 1.0)))
-      sigmaPCh <- sqrt(log(1.0 + (2.0*Pt - 1.0)*PDF*PDF*(exp(thetaPCh*thetaPCh) - 1.0)))
-      sigmaPRN <- sqrt(log(1.0 + (2.0*Pt - 1.0)*PDF*PDF*(exp(thetaPRN*thetaPRN) - 1.0)))
-      sigmaASN <- sqrt(log(1.0 + (2.0*Pt - 1.0)*PDF*PDF*(exp(thetaASN*thetaASN) - 1.0)))
-      sigmaZin <- sqrt(log(1.0 + (2.0*Zt - 1.0)*ZDF*ZDF*(exp(thetaZin*thetaZin) - 1.0)))
-      sigmaZCl <- sqrt(log(1.0 + (2.0*Zt - 1.0)*ZDF*ZDF*(exp(thetaZCl*thetaZCl) - 1.0)))
-      sigmaZgE <- sqrt(log(1.0 + (2.0*Zt - 1.0)*ZDF*ZDF*(exp(thetaZgE*thetaZgE) - 1.0)))
-      sigmaDre <- sqrt(log(1.0 + (2.0*Zt - 1.0)*ZDF*ZDF*(exp(thetaDre*thetaDre) - 1.0)))
-      sigmaZmQ <- sqrt(log(1.0 + (2.0*Zt - 1.0)*ZDF*ZDF*(exp(thetaZmQ*thetaZmQ) - 1.0)))
-
-    } then {
-      /* compute rate process noise term means given desired long-term
-       * means */
-      gammaPgC <- log(muPgC) + pow(thetaPgC, 2.0)/2.0 - pow(sigmaPgC, 2.0)/2.0
-      gammaPCh <- log(muPCh) + pow(thetaPCh, 2.0)/2.0 - pow(sigmaPCh, 2.0)/2.0
-      gammaPRN <- log(muPRN) + pow(thetaPRN, 2.0)/2.0 - pow(sigmaPRN, 2.0)/2.0
-      gammaASN <- log(muASN) + pow(thetaASN, 2.0)/2.0 - pow(sigmaASN, 2.0)/2.0
-      gammaZin <- log(muZin) + pow(thetaZin, 2.0)/2.0 - pow(sigmaZin, 2.0)/2.0
-      gammaZCl <- log(muZCl) + pow(thetaZCl, 2.0)/2.0 - pow(sigmaZCl, 2.0)/2.0
-      gammaZgE <- log(muZgE) + pow(thetaZgE, 2.0)/2.0 - pow(sigmaZgE, 2.0)/2.0
-      gammaDre <- log(muDre) + pow(thetaDre, 2.0)/2.0 - pow(sigmaDre, 2.0)/2.0
-      gammaZmQ <- log(muZmQ) + pow(thetaZmQ, 2.0)/2.0 - pow(sigmaZmQ, 2.0)/2.0
-    }
-  }
-  
   /* prior distribution over initial conditions, given parameters */
   sub initial {
     PgC ~ log_normal(log(muPgC), sigmaPgC)
@@ -143,9 +133,9 @@ model NPZD {
     P ~ log_normal(log(1.7763), 0.3)
     Z ~ log_normal(log(3.7753), 0.3)
     D ~ log_normal(log(2.9182), 0.3)
-    N ~ log_normal(log(187.8515), 0.3)
+    N ~ log_normal(log(176.39), 0.3)
 
-    Chla ~ log_normal(log(0.3531), 0.3)
+    Chla ~ log_normal(log(0.6469), 0.5)
     EZ ~ log_normal(log(1.1), 1.0)
   }
 
@@ -153,37 +143,29 @@ model NPZD {
   sub transition(delta = 1.0) {
     do {
       /* autoregressive noise terms */
-      rPgC ~ normal(gammaPgC, sigmaPgC)
-      rPCh ~ normal(gammaPCh, sigmaPCh)
-      rPRN ~ normal(gammaPRN, sigmaPRN)
-      rASN ~ normal(gammaASN, sigmaASN)
-      rZin ~ normal(gammaZin, sigmaZin)
-      rZCl ~ normal(gammaZCl, sigmaZCl)
-      rZgE ~ normal(gammaZgE, sigmaZgE)
-      rDre ~ normal(gammaDre, sigmaDre)
-      rZmQ ~ normal(gammaZmQ, sigmaZmQ)
+      rPgC ~ log_normal(gammaPgC, sigmaPgC)
+      rPCh ~ log_normal(gammaPCh, sigmaPCh)
+      rPRN ~ log_normal(gammaPRN, sigmaPRN)
+      rASN ~ log_normal(gammaASN, sigmaASN)
+      rZin ~ log_normal(gammaZin, sigmaZin)
+      rZCl ~ log_normal(gammaZCl, sigmaZCl)
+      rZgE ~ log_normal(gammaZgE, sigmaZgE)
+      rDre ~ log_normal(gammaDre, sigmaDre)
+      rZmQ ~ log_normal(gammaZmQ, sigmaZmQ)
 
     } then {
       /* autoregressives */
-      PgC <- PgC*(1.0 - 1.0/Pt) + exp(rPgC)/Pt
-      PCh <- PCh*(1.0 - 1.0/Pt) + exp(rPCh)/Pt
-      PRN <- PRN*(1.0 - 1.0/Pt) + exp(rPRN)/Pt
-      ASN <- ASN*(1.0 - 1.0/Pt) + exp(rASN)/Pt
-      Zin <- Zin*(1.0 - 1.0/Zt) + exp(rZin)/Zt
-      ZCl <- ZCl*(1.0 - 1.0/Zt) + exp(rZCl)/Zt
-      ZgE <- ZgE*(1.0 - 1.0/Zt) + exp(rZgE)/Zt
-      Dre <- Dre*(1.0 - 1.0/Zt) + exp(rDre)/Zt
-      ZmQ <- ZmQ*(1.0 - 1.0/Zt) + exp(rZmQ)/Zt
+      PgC <- PgC*(1.0 - 1.0/Pt) + rPgC/Pt
+      PCh <- PCh*(1.0 - 1.0/Pt) + rPCh/Pt
+      PRN <- PRN*(1.0 - 1.0/Pt) + rPRN/Pt
+      ASN <- ASN*(1.0 - 1.0/Pt) + rASN/Pt
+      Zin <- Zin*(1.0 - 1.0/Zt) + rZin/Zt
+      ZCl <- ZCl*(1.0 - 1.0/Zt) + rZCl/Zt
+      ZgE <- ZgE*(1.0 - 1.0/Zt) + rZgE/Zt
+      Dre <- Dre*(1.0 - 1.0/Zt) + rDre/Zt
+      ZmQ <- ZmQ*(1.0 - 1.0/Zt) + rZmQ/Zt
 
-    } then ode(atoler = 1.0e-3, rtoler = 1.0e-3, alg = 'rk43') {
-      /* prescribed constants */
-      const Q10 = 2.0
-      const Trf = 20.0     // reference temperature (10 deg. C)
-      const PaC = 1.0      // chlorophyl absorption
-      const PQf = 1200.00  // photosynthetic efficiency
-      const PNC = 0.18     // maximum N:C (Redfield)
-      const Zex = 2.0      // functional response exponent
-
+    } then ode(h = 0.1, atoler = 1.0e-6, rtoler = 1.0e-3, alg = 'dopri5') {
       /* processes */
       inline Tc = pow(Q10, (FT - Trf)/10.0)
       inline Kdz = (Kw + KCh*Chla)*FMLD // total light attenation, water+Chl-a
