@@ -141,6 +141,18 @@ model NPZD {
 
   /* transition distribution */
   sub transition(delta = 1.0) {
+    /* processes */
+    inline Tc = pow(Q10, (FT - Trf)/10.0)
+    inline Kdz = (Kw + KCh*Chla)*FMLD // total light attenation, water+Chl-a
+    inline Zgs = pow(ZCl*P/Zin, Zex)
+    inline Zgr = Z*Zin*Tc*Zgs/(1.0 + Zgs)
+    inline PgT = PgC*Tc
+    inline PaQ = PaC*KCh*PQf
+    inline PfE = 1.0 - exp(-PaQ*PCh*EZ/PgC)
+    inline PfN = N/(1.0 + ASN*N/PgT)
+    inline Pg = PgT*PfE*PfN/(PfN + PfE) // phytoplankton growth rate
+    inline Zm = ZmQ*Z*Z
+
     do {
       /* autoregressive noise terms */
       rPgC ~ log_normal(gammaPgC, sigmaPgC)
@@ -165,19 +177,10 @@ model NPZD {
       Dre <- Dre*(1.0 - 1.0/Zt) + rDre/Zt
       ZmQ <- ZmQ*(1.0 - 1.0/Zt) + rZmQ/Zt
 
-    } then ode(h = 0.1, atoler = 1.0e-6, rtoler = 1.0e-3, alg = 'dopri5') {
-      /* processes */
-      inline Tc = pow(Q10, (FT - Trf)/10.0)
-      inline Kdz = (Kw + KCh*Chla)*FMLD // total light attenation, water+Chl-a
-      inline Zgs = pow(ZCl*P/Zin, Zex)
-      inline Zgr = Z*Zin*Tc*Zgs/(1.0 + Zgs)
-      inline PgT = PgC*Tc
-      inline PaQ = PaC*KCh*PQf
-      inline PfE = 1.0 - exp(-PaQ*PCh*EZ/PgC)
-      inline PfN = N/(1.0 + ASN*N/PgT)
-      inline Pg = PgT*PfE*PfN/(PfN + PfE) // phytoplankton growth rate
-      inline Zm = ZmQ*Z*Z
+      /* light attenuation */
+      EZ <- FE*(1.0 - exp(-Kdz))/Kdz;
 
+    } then ode(h = 0.1, atoler = 1.0e-6, rtoler = 1.0e-3, alg = 'rk43') {
       /* differential system */
       P <- ode(Pg*P - Zgr + FMIX*(BCP - P));
       Z <- ode(Zgr*ZgE - Zm + FMLC/FMLD*(BCZ - Z));
