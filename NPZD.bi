@@ -118,6 +118,26 @@ model NPZD {
     muZmQ ~ log_normal(log(0.01), thetaZmQ)
   }
 
+  const prop_std = 0.1;
+  sub proposal_parameter {
+    Kw ~ log_normal(log(Kw), 0.2*prop_std);
+    KCh ~ log_normal(log(KCh), 0.3*prop_std);
+    Dsi ~ gaussian(Dsi, 1.0*prop_std);
+    ZgD ~ log_normal(log(ZgD), 0.1*prop_std);
+    PDF ~ log_normal(log(PDF), 0.4*prop_std);
+    ZDF ~ log_normal(log(ZDF), 0.4*prop_std);
+
+    muPgC ~ log_normal(log(muPgC), thetaPgC*prop_std);
+    muPCh ~ log_normal(log(muPCh), thetaPCh*prop_std);
+    muPRN ~ log_normal(log(muPRN), thetaPRN*prop_std);
+    muASN ~ log_normal(log(muASN), thetaASN*prop_std);
+    muZin ~ log_normal(log(muZin), thetaZin*prop_std);
+    muZCl ~ log_normal(log(muZCl), thetaZCl*prop_std);
+    muZgE ~ log_normal(log(muZgE), thetaZgE*prop_std);
+    muDre ~ log_normal(log(muDre), thetaDre*prop_std);
+    muZmQ ~ log_normal(log(muZmQ), thetaZmQ*prop_std);
+  }
+
   /* prior distribution over initial conditions, given parameters */
   sub initial {
     PgC ~ log_normal(log(muPgC), sigmaPgC)
