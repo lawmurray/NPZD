@@ -197,7 +197,7 @@ model NPZD {
       Dre <- Dre*(1.0 - 1.0/Zt) + rDre/Zt
       ZmQ <- ZmQ*(1.0 - 1.0/Zt) + rZmQ/Zt
 
-      /* light attenuation */
+      /* light */
       EZ <- FE*(1.0 - exp(-Kdz))/Kdz;
 
     } then ode(h = 0.1, atoler = 1.0e-6, rtoler = 1.0e-3, alg = 'rk43') {
@@ -208,7 +208,7 @@ model NPZD {
       N <- ode(-Pg*P + (1.0 - ZgE)*(1.0 - ZgD)*Zgr + Dre*D + FMIX*(BCN - N));
 
     } then {
-      /* chlorophyl-a diagnostic */
+      /* chlorophyl-a */
       Chla <- Tc*P*(PCh/PNC)*PfN/(PRN*PfE + PfN)
     }
   }
