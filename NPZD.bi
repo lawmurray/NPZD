@@ -200,7 +200,7 @@ model NPZD {
       /* light */
       EZ <- FE*(1.0 - exp(-Kdz))/Kdz;
 
-    } then ode(h = 0.1, atoler = 1.0e-6, rtoler = 1.0e-3, alg = 'rk43') {
+    } then ode(h = 0.1, atoler = 1.0e-4, rtoler = 1.0e-4, alg = 'rk43') {
       /* differential system */
       P <- ode(Pg*P - Zgr + FMIX*(BCP - P));
       Z <- ode(Zgr*ZgE - Zm + FMLC/FMLD*(BCZ - Z));
