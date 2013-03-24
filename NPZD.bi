@@ -202,10 +202,10 @@ model NPZD {
 
     } then ode(h = 0.1, atoler = 1.0e-4, rtoler = 1.0e-4, alg = 'rk43') {
       /* differential system */
-      P <- ode(Pg*P - Zgr + FMIX*(BCP - P));
-      Z <- ode(Zgr*ZgE - Zm + FMLC/FMLD*(BCZ - Z));
-      D <- ode((1.0 - ZgE)*ZgD*Zgr + Zm - Dre*D - Dsi*D/FMLD + FMIX*(BCD - D));
-      N <- ode(-Pg*P + (1.0 - ZgE)*(1.0 - ZgD)*Zgr + Dre*D + FMIX*(BCN - N));
+      dP/dt = Pg*P - Zgr + FMIX*(BCP - P);
+      dZ/dt = Zgr*ZgE - Zm + FMLC/FMLD*(BCZ - Z);
+      dD/dt = (1.0 - ZgE)*ZgD*Zgr + Zm - Dre*D - Dsi*D/FMLD + FMIX*(BCD - D);
+      dN/dt = -Pg*P + (1.0 - ZgE)*(1.0 - ZgD)*Zgr + Dre*D + FMIX*(BCN - N);
 
     } then {
       /* chlorophyl-a */
