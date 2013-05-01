@@ -118,24 +118,24 @@ model NPZD {
     muZmQ ~ log_normal(log(0.01), thetaZmQ)
   }
 
-  const prop_std = 0.1;
+  const prop_std = 0.1
   sub proposal_parameter {
-    Kw ~ log_normal(log(Kw), 0.2*prop_std);
-    KCh ~ log_normal(log(KCh), 0.3*prop_std);
-    Dsi ~ gaussian(Dsi, 1.0*prop_std);
-    ZgD ~ log_normal(log(ZgD), 0.1*prop_std);
-    PDF ~ log_normal(log(PDF), 0.4*prop_std);
-    ZDF ~ log_normal(log(ZDF), 0.4*prop_std);
+    Kw ~ log_normal(log(Kw), 0.2*prop_std)
+    KCh ~ log_normal(log(KCh), 0.3*prop_std)
+    Dsi ~ gaussian(Dsi, 1.0*prop_std)
+    ZgD ~ log_normal(log(ZgD), 0.1*prop_std)
+    PDF ~ log_normal(log(PDF), 0.4*prop_std)
+    ZDF ~ log_normal(log(ZDF), 0.4*prop_std)
 
-    muPgC ~ log_normal(log(muPgC), thetaPgC*prop_std);
-    muPCh ~ log_normal(log(muPCh), thetaPCh*prop_std);
-    muPRN ~ log_normal(log(muPRN), thetaPRN*prop_std);
-    muASN ~ log_normal(log(muASN), thetaASN*prop_std);
-    muZin ~ log_normal(log(muZin), thetaZin*prop_std);
-    muZCl ~ log_normal(log(muZCl), thetaZCl*prop_std);
-    muZgE ~ log_normal(log(muZgE), thetaZgE*prop_std);
-    muDre ~ log_normal(log(muDre), thetaDre*prop_std);
-    muZmQ ~ log_normal(log(muZmQ), thetaZmQ*prop_std);
+    muPgC ~ log_normal(log(muPgC), thetaPgC*prop_std)
+    muPCh ~ log_normal(log(muPCh), thetaPCh*prop_std)
+    muPRN ~ log_normal(log(muPRN), thetaPRN*prop_std)
+    muASN ~ log_normal(log(muASN), thetaASN*prop_std)
+    muZin ~ log_normal(log(muZin), thetaZin*prop_std)
+    muZCl ~ log_normal(log(muZCl), thetaZCl*prop_std)
+    muZgE ~ log_normal(log(muZgE), thetaZgE*prop_std)
+    muDre ~ log_normal(log(muDre), thetaDre*prop_std)
+    muZmQ ~ log_normal(log(muZmQ), thetaZmQ*prop_std)
   }
 
   /* prior distribution over initial conditions, given parameters */
@@ -173,44 +173,41 @@ model NPZD {
     inline Pg = PgT*PfE*PfN/(PfN + PfE) // phytoplankton growth rate
     inline Zm = ZmQ*Z*Z
 
-    do {
-      /* autoregressive noise terms */
-      rPgC ~ log_normal(gammaPgC, sigmaPgC)
-      rPCh ~ log_normal(gammaPCh, sigmaPCh)
-      rPRN ~ log_normal(gammaPRN, sigmaPRN)
-      rASN ~ log_normal(gammaASN, sigmaASN)
-      rZin ~ log_normal(gammaZin, sigmaZin)
-      rZCl ~ log_normal(gammaZCl, sigmaZCl)
-      rZgE ~ log_normal(gammaZgE, sigmaZgE)
-      rDre ~ log_normal(gammaDre, sigmaDre)
-      rZmQ ~ log_normal(gammaZmQ, sigmaZmQ)
+    /* autoregressive noise terms */
+    rPgC ~ log_normal(gammaPgC, sigmaPgC)
+    rPCh ~ log_normal(gammaPCh, sigmaPCh)
+    rPRN ~ log_normal(gammaPRN, sigmaPRN)
+    rASN ~ log_normal(gammaASN, sigmaASN)
+    rZin ~ log_normal(gammaZin, sigmaZin)
+    rZCl ~ log_normal(gammaZCl, sigmaZCl)
+    rZgE ~ log_normal(gammaZgE, sigmaZgE)
+    rDre ~ log_normal(gammaDre, sigmaDre)
+    rZmQ ~ log_normal(gammaZmQ, sigmaZmQ)
 
-    } then {
-      /* autoregressives */
-      PgC <- PgC*(1.0 - 1.0/Pt) + rPgC/Pt
-      PCh <- PCh*(1.0 - 1.0/Pt) + rPCh/Pt
-      PRN <- PRN*(1.0 - 1.0/Pt) + rPRN/Pt
-      ASN <- ASN*(1.0 - 1.0/Pt) + rASN/Pt
-      Zin <- Zin*(1.0 - 1.0/Zt) + rZin/Zt
-      ZCl <- ZCl*(1.0 - 1.0/Zt) + rZCl/Zt
-      ZgE <- ZgE*(1.0 - 1.0/Zt) + rZgE/Zt
-      Dre <- Dre*(1.0 - 1.0/Zt) + rDre/Zt
-      ZmQ <- ZmQ*(1.0 - 1.0/Zt) + rZmQ/Zt
+    /* autoregressives */
+    PgC <- PgC*(1.0 - 1.0/Pt) + rPgC/Pt
+    PCh <- PCh*(1.0 - 1.0/Pt) + rPCh/Pt
+    PRN <- PRN*(1.0 - 1.0/Pt) + rPRN/Pt
+    ASN <- ASN*(1.0 - 1.0/Pt) + rASN/Pt
+    Zin <- Zin*(1.0 - 1.0/Zt) + rZin/Zt
+    ZCl <- ZCl*(1.0 - 1.0/Zt) + rZCl/Zt
+    ZgE <- ZgE*(1.0 - 1.0/Zt) + rZgE/Zt
+    Dre <- Dre*(1.0 - 1.0/Zt) + rDre/Zt
+    ZmQ <- ZmQ*(1.0 - 1.0/Zt) + rZmQ/Zt
 
-      /* light */
-      EZ <- FE*(1.0 - exp(-Kdz))/Kdz;
+    /* light */
+    EZ <- FE*(1.0 - exp(-Kdz))/Kdz
 
-    } then ode(h = 0.1, atoler = 1.0e-4, rtoler = 1.0e-4, alg = 'rk43') {
-      /* differential system */
-      dP/dt = Pg*P - Zgr + FMIX*(BCP - P);
-      dZ/dt = Zgr*ZgE - Zm + FMLC/FMLD*(BCZ - Z);
-      dD/dt = (1.0 - ZgE)*ZgD*Zgr + Zm - Dre*D - Dsi*D/FMLD + FMIX*(BCD - D);
-      dN/dt = -Pg*P + (1.0 - ZgE)*(1.0 - ZgD)*Zgr + Dre*D + FMIX*(BCN - N);
-
-    } then {
-      /* chlorophyl-a */
-      Chla <- Tc*P*(PCh/PNC)*PfN/(PRN*PfE + PfN)
+    /* differential system */
+    ode(h = 0.1, atoler = 1.0e-4, rtoler = 1.0e-4, alg = 'RK4(3)') {
+      dP/dt = Pg*P - Zgr + FMIX*(BCP - P)
+      dZ/dt = Zgr*ZgE - Zm + FMLC/FMLD*(BCZ - Z)
+      dD/dt = (1.0 - ZgE)*ZgD*Zgr + Zm - Dre*D - Dsi*D/FMLD + FMIX*(BCD - D)
+      dN/dt = -Pg*P + (1.0 - ZgE)*(1.0 - ZgD)*Zgr + Dre*D + FMIX*(BCN - N)
     }
+
+    /* chlorophyl-a */
+    Chla <- Tc*P*(PCh/PNC)*PfN/(PRN*PfE + PfN)
   }
 
   /* observation model */
