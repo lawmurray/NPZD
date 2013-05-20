@@ -18,50 +18,50 @@ function plot_slides ()
     quantile_range = [10000:100000];
     
     % incremental path plots
-    hold off;
-    bi_plot_paths(simulate_file, 'N', [], path_range);
-    axis('tight');
-    ax = axis();
-    axis([ax(1) ax(2) ax(3) 350]);
-    xlabel('Days');
-    ylabel('N');
-    saveas(figure(1), 'figs/npzd_N_prior_paths.pdf');
-    hold on;
-    bi_plot_paths(obs_file, 'N_obs');
-    saveas(figure(1), 'figs/npzd_N_obs.pdf');
-    bi_plot_paths(sample_file, 'N', [], path_range);
-    bi_plot_paths(obs_file, 'N_obs');
-    saveas(figure(1), 'figs/npzd_N_posterior_paths.pdf');
-    bi_plot_paths(predict_file, 'N', [], path_range);
-    bi_plot_paths(obs_file, 'N_obs');
-    saveas(figure(1), 'figs/npzd_N_predict_paths.pdf');
-    
+    %hold off;
+    %bi_plot_paths(simulate_file, 'N', [], path_range);
+    %axis('tight');
+    %ax = axis();
+    %axis([ax(1) ax(2) ax(3) 350]);
+    %xlabel('Days');
+    %ylabel('N');
+    %saveas(figure(1), 'figs/npzd_N_prior_paths.pdf');
+    %hold on;
+    %bi_plot_paths(obs_file, 'N_obs');
+    %saveas(figure(1), 'figs/npzd_N_obs.pdf');
+    %bi_plot_paths(sample_file, 'N', [], path_range);
+    %bi_plot_paths(obs_file, 'N_obs');
+    %saveas(figure(1), 'figs/npzd_N_posterior_paths.pdf');
+    %bi_plot_paths(predict_file, 'N', [], path_range);
+    %bi_plot_paths(obs_file, 'N_obs');
+    %saveas(figure(1), 'figs/npzd_N_predict_paths.pdf');
+     
     % quantile plots
-    vars = {'N'; 'P'; 'Z'; 'D'; 'Chla'; 'N_y'; 'Chla_y'};
-    for i = 1:length(vars)
-        hold off;
-        bi_plot_quantiles(simulate_file, vars{i}, [], quantile_range);
-        axis('tight');
-        xlabel('Days');
-        if strcmp(vars{i}, 'N') || strcmp(vars{i}, 'N_y')
-            ax = axis();
-            axis([ax(1) ax(2) ax(3) 350]);
-            ylabel(vars{i});
-            set(get(figure(1), 'currentaxes'), 'yscale', 'linear');
-        else
-            ylabel(sprintf('log(%s)', vars{i}));
-            set(get(figure(1), 'currentaxes'), 'yscale', 'log');
-        end
-        hold on;
-        bi_plot_quantiles(sample_file, vars{i}, [], quantile_range);
-        bi_plot_quantiles(predict_file, vars{i}, [], quantile_range);
-        if strcmp(vars{i}, 'N') || strcmp(vars{i}, 'N_y')
-            bi_plot_paths(obs_file, 'N_obs');
-        elseif strcmp(vars{i}, 'Chla') || strcmp(vars{i}, 'Chla_y')
-            bi_plot_paths(obs_file, 'Chla_obs');
-        end
-        saveas(figure(1), sprintf('figs/npzd_%s_quantiles.pdf', vars{i}));
-    end
+    %vars = {'N'; 'P'; 'Z'; 'D'; 'Chla'; 'N_y'; 'Chla_y'};
+    %for i = 1:length(vars)
+    %    hold off;
+    %    bi_plot_quantiles(simulate_file, vars{i}, [], quantile_range);
+    %    axis('tight');
+    %    xlabel('Days');
+    %    if strcmp(vars{i}, 'N') || strcmp(vars{i}, 'N_y')
+    %        ax = axis();
+    %        axis([ax(1) ax(2) ax(3) 350]);
+    %        ylabel(vars{i});
+    %        set(get(figure(1), 'currentaxes'), 'yscale', 'linear');
+    %    else
+    %        ylabel(sprintf('log(%s)', vars{i}));
+    %        set(get(figure(1), 'currentaxes'), 'yscale', 'log');
+    %    end
+    %    hold on;
+    %    bi_plot_quantiles(sample_file, vars{i}, [], quantile_range);
+    %    bi_plot_quantiles(predict_file, vars{i}, [], quantile_range);
+    %    if strcmp(vars{i}, 'N') || strcmp(vars{i}, 'N_y')
+    %        bi_plot_paths(obs_file, 'N_obs');
+    %    elseif strcmp(vars{i}, 'Chla') || strcmp(vars{i}, 'Chla_y')
+    %        bi_plot_paths(obs_file, 'Chla_obs');
+    %    end
+    %    saveas(figure(1), sprintf('figs/npzd_%s_quantiles.pdf', vars{i}));
+    %end
     
     % histogram plots
     params = {'muZCl'; 'muASN'; 'muPgC'; 'muZmQ'};
