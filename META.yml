@@ -1,0 +1,8 @@
+name: NPZD
+version: 1.0.0
+author: Lawrence Murray
+email: lawrence.murray@csiro.au
+website-url: http://www.github.com/lawmurray/NPZD
+download-url: http://www.github.com/lawmurray/NPZD/archive/master.tar.gz
+github-url: http://www.github.com/lawmurray/NPZD
+description: Single box NPZD (nutrient, phytoplankton, zooplankton, detritus) marine biogeochemical model.
