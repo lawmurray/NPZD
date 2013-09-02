@@ -18,32 +18,32 @@ function krig ()
     y = FE;
     
     T = 800;
+    u = linspace(t(1), t(T), 1000)';
+    v = linspace(t(T), t(end), 1000)';
     
     inffunc = @infExact;
-    meanfunc = @meanSin; hyp.mean = [20; 10; 90; log(365)];
-    %meanfunc = @meanConst; hyp.mean = [1];
-    %covfunc = @covPeriodic; hyp.cov = log([1; 365/2; 1]);
-    %covfunc = @covSEiso; hyp.cov = log([30; sqrt(100)]);
-    covfunc = {@covSum, {@covPeriodic, @covSEiso}}; hyp.cov = [ log([10; ...
-                        365/2; 1]); log([30; 10])];
-    likfunc = @likGauss; hyp.lik = log(1.0);
-    
-    % train
-    hyp = minimize(hyp, @gp, -100, @infExact, meanfunc, covfunc, likfunc, t(1:T), y(1:T))
-    %[nlZ dnlZ] = gp(hyp, inffunc, meanfunc, covfunc, likfunc, t, y);
+    meanfunc = {@meanSum, {@meanSin, @meanLinear, @meanConst}};
+    hyp.mean = [10; 91; log(365); 0.0; mean(y)]; % 91 for FE, 182 for FT
+    covfunc = {@covSum, {@covPeriodic, @covSEiso}};
+    hyp.cov = log([10; 365/2; 1; 30; 10]);
+    likfunc = @likGauss;
+    hyp.lik = log(0.1);
+                
+    % train (gpwrap removes optimisation of likelihood hyperparameters)
+    hyp = minimize(hyp, @gpwrap, -500, @infExact, meanfunc, covfunc, likfunc, t(1:T), y(1:T));
     
     % predict
-    [ymu ys2 xmu xs2] = gp(hyp, inffunc, meanfunc, covfunc, likfunc, ...
-                           t(1:T), y(1:T), t);
+    [uymu uys2 uxmu uxs2] = gp(hyp, inffunc, meanfunc, covfunc, likfunc, ...
+                           t(1:T), y(1:T), u);
+    [vymu vys2 vxmu vxs2] = gp(hyp, inffunc, meanfunc, covfunc, likfunc, ...
+                           t(1:T), y(1:T), v);
     
     clf;
-    area_between(t(1:T), xmu(1:T) - 2*sqrt(xs2(1:T)), xmu(1:T) + 2* ...
-                 sqrt(xs2(1:T)), watercolour(1));
+    area_between(u, uxmu - 2*sqrt(uxs2), uxmu + 2*sqrt(uxs2), watercolour(1));
     hold on;
-    area_between(t((T+1):end), xmu((T+1):end) - 2*sqrt(xs2((T+1):end)), ...
-                 xmu((T+1):end) + 2*sqrt(xs2((T+1):end)), watercolour(2));
-    plot(t(1:T), xmu(1:T), 'color', watercolour(1), 'linewidth', 3);
-    plot(t((T+1):end), xmu((T+1):end), 'color', watercolour(2), 'linewidth', 3);
+    area_between(v, vxmu - 2*sqrt(vxs2), vxmu + 2*sqrt(vxs2), watercolour(2));
+    plot(u, uxmu, 'color', watercolour(1), 'linewidth', 3);
+    plot(v, vxmu, 'color', watercolour(2), 'linewidth', 3);
     plot(t, y, 'ok');
     hold off;
 end
