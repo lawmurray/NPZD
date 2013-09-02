@@ -7,9 +7,6 @@ This samples from the prior and posterior distributions and performs a
 forecast. The `oct/` directory contains a few functions for plotting these
 results (GNU Octave and OctBi required).
 
-A synthetic data set is provided, but a new one one may be generated with
-`init.sh` (GNU Octave and OctBi required).
-
 
 Description
 -----------
