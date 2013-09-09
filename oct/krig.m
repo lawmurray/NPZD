@@ -12,11 +12,11 @@
 function hyp = krig ()
     nc = netcdf('data/OSP_force_raw.nc', 'r');
     
-    ts = nc{'time_FT'}(:);
-    ys = nc{'FT'}(:)';    
+    ts = nc{'time_FE'}(:);
+    ys = log(nc{'FE'}(:))'; % log all but FT
     
-    is = find(ts <= 5*365);
-    js = find(ts > 5*365);
+    is = find(ts <= 3*365);
+    js = find(ts > 3*365);
 
     t = ts(is)(:); % fit region
     y = ys(is)(:);
@@ -27,21 +27,21 @@ function hyp = krig ()
     % initial values of mean hyperparameters
     a0 = (max(y) - min(y))/2; % initial amplitude
     phi0 = -pi; % initial phase
-    T0 = log(365); % initial period
-    b0 = (y(end) - y(1))/(t(end) - t(1)); % initial drift
     c0 = mean(y); % initial intercept
+    sf = a0/10.0; % variance amplitude
+    sigma = sf/10.0;
     
     inffunc = @infExact;
-    meanfunc = {@meanSum, {@meanSin, @meanLinear, @meanConst}};
-    hyp.mean = [a0; phi0; T0; b0; c0];
-    covfunc = {@covSum, {@covPeriodic, @covSEiso}};
-    hyp.cov = log([10; 365/2; 1; 30; 10]);
+    meanfunc = {@meanSum, {@meanSin, @meanConst}};
+    hyp.mean = [a0; phi0; c0];
+    covfunc = {@covSum, {@covSin, @covSEiso}};
+    hyp.cov = log([a0; 0.1; a0; 30.0]);
     likfunc = @likGauss;
-    hyp.lik = log(0.1);
+    hyp.lik = log(sigma);
                 
     % train (@gpwrap instead of @gp removes optimisation of likelihood
     % hyperparameters)
-    hyp = minimize(hyp, @gp, -1000, @infExact, meanfunc, covfunc, likfunc, t, y);
+    hyp = minimize(hyp, @gp, -500, @infExact, meanfunc, covfunc, likfunc, t, y);
     
     % predict
     [uymu uys2 uxmu uxs2] = gp(hyp, inffunc, meanfunc, covfunc, likfunc, ...
