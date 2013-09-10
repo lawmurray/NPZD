@@ -24,7 +24,9 @@ function prepare_physics ()
     1;
   };
   nyears = 4; % number of years for inference
+  nsamples = 10; % number of paths to sample
 
+  % physics inference
   for i = 1:length(vars)
       ncvar = vars{i};
       time_ncvar = sprintf('time_%s', ncvar);
@@ -35,16 +37,49 @@ function prepare_physics ()
           ys = log(ys);
       end
       
-      is = find(ts <= nyears*365);
-      js = find(ts > nyears*365);
-      
+      is = find(ts < nyears*365);      
       t = ts(is)(:); % fit region
       y = ys(is)(:);
-    
-      u = [floor(ts(1)):ceil(ts(is(end)))]'; % prediction times in fit region
-      v = [(u(end)+1):ceil(ts(end))]'; % prediction times in forecast region
+      u = [1:ceil(ts(end))]'; % prediction times
       
-      models{i} = krig(t, y, u, v);
-      models{i} = sample(models{i}, 1);
-      
+      models{i} = krig_physics(t, y, u);
+      models{i} = sample_physics(models{i}, nsamples);      
   end
+  ncclose(nc);
+
+  % derived and fixed forcings
+  BCP = 0;
+  BCZ = 0;
+  BCD = 0;
+  FX = 1;
+  FMLD = models{1}.X;
+  FMLC = [ zeros(nsamples, 1), diff(FMLD, 1, 2) ];
+  FMIX = (1 + max(FMLC, 0))./FMLD;
+  
+  % create NetCDF file
+  nc = netcdf('data/OSP_force.nc', 'c');
+  nc('nr') = length(u);
+  nc('np') = nsamples;
+      
+  nc{'time'} = ncdouble('nr');
+  nc{'time'}(:) = u;
+  
+  for i = 1:length(vars)
+      nc{vars{i}} = ncdouble('nr', 'np');
+      nc{vars{i}}(:,:) = models{i}.X';
+  end
+    
+  nc{'BCP'} = ncdouble();
+  nc{'BCP'}(:) = BCP;
+  nc{'BCZ'} = ncdouble();
+  nc{'BCZ'}(:) = BCZ;
+  nc{'BCD'} = ncdouble();
+  nc{'BCD'}(:) = BCD;
+  nc{'FX'} = ncdouble();
+  nc{'FX'}(:) = FX;
+  nc{'FMLC'} = ncdouble('nr', 'np');
+  nc{'FMLC'}(:,:) = FMLC;
+  nc{'FMIX'} = ncdouble('nr', 'np');
+  nc{'FMIX'}(:,:) = FMIX;
+  ncclose(nc);
+end

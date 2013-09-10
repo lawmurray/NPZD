@@ -4,12 +4,12 @@
 % $Date$
 
 % -*- texinfo -*-
-% @deftypefn {Function File} krig ()
+% @deftypefn {Function File} krig_physics ()
 %
 % Krig forcings.
 % @end deftypefn
 %
-function model = krig (t, y, u, v)
+function model = krig_physics (t, y, u)
     % initial values of mean hyperparameters
     a0 = (max(y) - min(y))/2; % initial amplitude
     phi0 = -pi; % initial phase
@@ -30,10 +30,7 @@ function model = krig (t, y, u, v)
     hyp = minimize(hyp, @gp, -500, @infExact, meanfunc, covfunc, likfunc, t, y);
     
     % predict marginals
-    [uymu uys2 uxmu uxs2] = gp(hyp, inffunc, meanfunc, covfunc, likfunc, ...
-                           t, y, u);
-    [vymu vys2 vxmu vxs2] = gp(hyp, inffunc, meanfunc, covfunc, likfunc, ...
-                           t, y, v);
+    [ymu ys2 xmu xs2] = gp(hyp, inffunc, meanfunc, covfunc, likfunc, t, y, u);
 
     % construct model
     model.inffunc = inffunc;
@@ -44,9 +41,6 @@ function model = krig (t, y, u, v)
     model.t = t;
     model.y = y;
     model.u = u;
-    model.uxmu = uxmu;
-    model.uxs2 = uxs2;
-    model.v = v;
-    model.vxmu = vxmu;
-    model.vxs2 = vxs2;
+    model.mu = xmu;
+    model.s2 = xs2;
 end
