@@ -9,21 +9,7 @@
 % Krig forcings.
 % @end deftypefn
 %
-function hyp = krig ()
-    nc = netcdf('data/OSP_force_raw.nc', 'r');
-    
-    ts = nc{'time_FE'}(:);
-    ys = log(nc{'FE'}(:))'; % log all but FT
-    
-    is = find(ts <= 3*365);
-    js = find(ts > 3*365);
-
-    t = ts(is)(:); % fit region
-    y = ys(is)(:);
-    
-    u = [floor(ts(1)):ceil(ts(is(end)))]'; % prediction times in fit region
-    v = [(u(end)+1):ceil(ts(end))]'; % prediction times in forecast region
-    
+function model = krig (t, y, u, v)
     % initial values of mean hyperparameters
     a0 = (max(y) - min(y))/2; % initial amplitude
     phi0 = -pi; % initial phase
@@ -43,18 +29,24 @@ function hyp = krig ()
     % hyperparameters)
     hyp = minimize(hyp, @gp, -500, @infExact, meanfunc, covfunc, likfunc, t, y);
     
-    % predict
+    % predict marginals
     [uymu uys2 uxmu uxs2] = gp(hyp, inffunc, meanfunc, covfunc, likfunc, ...
                            t, y, u);
     [vymu vys2 vxmu vxs2] = gp(hyp, inffunc, meanfunc, covfunc, likfunc, ...
                            t, y, v);
-    
-    clf;
-    area_between(u, uxmu - 2*sqrt(uxs2), uxmu + 2*sqrt(uxs2), watercolour(1));
-    hold on;
-    area_between(v, vxmu - 2*sqrt(vxs2), vxmu + 2*sqrt(vxs2), watercolour(2));
-    plot(u, uxmu, 'color', watercolour(1), 'linewidth', 3);
-    plot(v, vxmu, 'color', watercolour(2), 'linewidth', 3);
-    plot(ts, ys, 'ok');
-    hold off;
+
+    % construct model
+    model.inffunc = inffunc;
+    model.meanfunc = meanfunc;
+    model.covfunc = covfunc;
+    model.likfunc = likfunc;
+    model.hyp = hyp;
+    model.t = t;
+    model.y = y;
+    model.u = u;
+    model.uxmu = uxmu;
+    model.uxs2 = uxs2;
+    model.v = v;
+    model.vxmu = vxmu;
+    model.vxs2 = vxs2;
 end
