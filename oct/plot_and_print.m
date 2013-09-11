@@ -12,7 +12,7 @@
 function plot_and_print ()
     FIG_DIR = strcat(pwd, '/figs');
     
-    sizes = [ 8 3.5; 8 4.5; 10.5 7; 7 8; 8 3.5; 7 10.5; 8 3.5; 8 3.5];
+    sizes = [ 8 4.5; 10.5 7; 7 10.5; 7 10.5];
 
     % output setup
     for i = 1:rows (sizes)
@@ -35,44 +35,27 @@ function plot_and_print ()
     end
     
     % plot
-    figure(1);
-    subplot(1,2,1);
-    plot_converge(0);
-    subplot(1,2,2);
-    plot_converge(1);
-    figure(2);
-    plot_state();
-    figure(3);
-    plot_rstate();
+    %figure(1);
+    %plot_state();
+    %figure(2);
+    %plot_noise();
+    %figure(3);
+    %plot_parameters(4);
     figure(4)
-    plot_copula();
-    figure(5)
-    subplot(1,2,1);
-    plot_acceptcdf(0);
-    subplot(1,2,2);
-    plot_acceptcdf(1);
-    figure(6);
-    plot_parameters(0);
-    figure(7);
-    hinton_cov(1);
-    figure(8);
-    hinton_cov(2);
+    plot_physics;
     
     % print
     files = {
-        'npzd_converge';
-        'npzd_state';
-        'npzd_rstate';
-        'npzd_cor';
-        'npzd_acceptcdf';
-        'npzd_parameters';
-        'npzd_initialcov';
-        'npzd_paramcov';
+        'state';
+        'noise';
+        'parameters';
+        'physics';
         };
 
-    for i = 1:length (files)
+    i = 4;
+    %for i = 1:length (files)
         file = sprintf('%s/%s.pdf', FIG_DIR, files{i});
         saveas(figure(i), file);
         system(sprintf('pdfcrop %s %s', file, file));
-    end
+        %end
 end

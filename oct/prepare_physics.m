@@ -24,9 +24,11 @@ function prepare_physics ()
     1;
   };
   nyears = 4; % number of years for inference
-  nsamples = 10; % number of paths to sample
+  nsamples = 500; % number of paths to sample
+  u = [1:7*365]'; % prediction times
 
   % physics inference
+  load physics_models.mat
   for i = 1:length(vars)
       ncvar = vars{i};
       time_ncvar = sprintf('time_%s', ncvar);
@@ -40,13 +42,17 @@ function prepare_physics ()
       is = find(ts < nyears*365);      
       t = ts(is)(:); % fit region
       y = ys(is)(:);
-      u = [1:ceil(ts(end))]'; % prediction times
       
-      models{i} = krig_physics(t, y, u);
-      models{i} = sample_physics(models{i}, nsamples);      
+      %models{i} = krig_physics(t, y, u);
+      models{i} = sample_physics(models{i}, nsamples);
+      
+      if logs{i}
+          models{i}.X = exp(models{i}.X);
+      end
   end
   ncclose(nc);
-
+  save physics_models.mat models
+  
   % derived and fixed forcings
   BCP = 0;
   BCZ = 0;

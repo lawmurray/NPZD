@@ -27,7 +27,7 @@ function model = krig_physics (t, y, u)
                 
     % train (@gpwrap instead of @gp removes optimisation of likelihood
     % hyperparameters)
-    hyp = minimize(hyp, @gp, -500, @infExact, meanfunc, covfunc, likfunc, t, y);
+    hyp = minimize(hyp, @gp, -1000, @infExact, meanfunc, covfunc, likfunc, t, y);
     
     % predict marginals
     [ymu ys2 xmu xs2] = gp(hyp, inffunc, meanfunc, covfunc, likfunc, t, y, u);

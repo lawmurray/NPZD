@@ -4,7 +4,7 @@
 % $Date$
 
 % -*- texinfo -*-
-% @deftypefn {Function File} plot_rstate (@var{osp})
+% @deftypefn {Function File} plot_noise (@var{osp})
 %
 % Produce plot of state posteriors for NPZD model.
 %
@@ -13,7 +13,7 @@
 % @end itemize
 % @end deftypefn
 %
-function plot_rstate (osp)
+function plot_noise (osp)
     if nargin < 1
         osp = 0;
     end

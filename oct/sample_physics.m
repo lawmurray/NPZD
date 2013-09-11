@@ -30,12 +30,16 @@ function m = sample_physics(m, n)
         k = K(1:l,l + 1);
         w = invK*k;
         mu1 = X(1:l,:)'*w;
-        s1 = sqrt(k'*w);
-        X(l + 1,:) = normrnd(mu1, s1);
+        s1 = sqrt(K(l + 1, l + 1) - k'*w);
+        if iscomplex(s1)
+            X(l + 1,:) = mu1;
+        else
+            X(l + 1,:) = normrnd(mu1, s1);
+        end
 
         % recursive update of invK
         a = -invK*k;
-        b = k'*a;
+        b = 1.0/(K(l + 1, l + 1) + k'*a);
         invK = [invK + a*(b*a'), a*b; b*a', b];
     end
     X += repmat(mu, 1, n);
