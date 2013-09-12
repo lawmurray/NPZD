@@ -32,10 +32,10 @@ function plot_physics ()
       [0 50];
   };
   display_names = {
-    'log(MLD)';
-    'log(BCN)';
+    'MLD';
+    'BCN';
     'T';
-    'log(E)';
+    'E';
   };
   nyears = 4; % number of years for inference
   t = [1:nyears*365]';
@@ -56,14 +56,14 @@ function plot_physics ()
         median = norminv(0.5, m.mu, sqrt(m.s2));
     end
     
-    bi_plot_quantiles('data/OSP_force.nc', vars{i}, [], [], t, 1);
-    %area_between(t, lower(t), upper(t), watercolour(1), 1.0, 0.3);
+    %bi_plot_quantiles('data/OSP_force.nc', vars{i}, [], [], t, 1);
+    area_between(t, lower(t), upper(t), watercolour(1), 1.0, 0.3);
     hold on;
-    %plot(t, median(t), 'color', watercolour(1), 'linewidth', 3);
+    plot(t, median(t), 'color', watercolour(1), 'linewidth', 3);
     
-    bi_plot_quantiles('data/OSP_force.nc', vars{i}, [], [], u, 2);
-    %area_between(u, lower(u), upper(u), watercolour(2), 1.0, 0.3);
-    %plot(u, median(u), 'color', watercolour(2), 'linewidth', 3);
+    %bi_plot_quantiles('data/OSP_force.nc', vars{i}, [], [], u, 2);
+    area_between(u, lower(u), upper(u), watercolour(2), 1.0, 0.3);
+    plot(u, median(u), 'color', watercolour(2), 'linewidth', 3);
     
     style = get_style([], [], 'data/OSP_force_raw.nc', vars{i});
     t1 = bi_read_times(nc, vars{i});
@@ -76,7 +76,7 @@ function plot_physics ()
     
     grid on
     ax = axis();
-    axis([t(1) u(end) ax(3) ax(4)]);
+    axis([t(1) u(end) yax{i}]);
     ylabel(display_names{i});
     if i == 4
         xlabel('t');

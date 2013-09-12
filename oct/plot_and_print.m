@@ -35,12 +35,12 @@ function plot_and_print ()
     end
     
     % plot
-    %figure(1);
-    %plot_state();
-    %figure(2);
-    %plot_noise();
-    %figure(3);
-    %plot_parameters(4);
+    figure(1);
+    plot_state();
+    figure(2);
+    plot_noise();
+    figure(3);
+    plot_parameters(4);
     figure(4)
     plot_physics;
     
@@ -52,10 +52,9 @@ function plot_and_print ()
         'physics';
         };
 
-    i = 4;
-    %for i = 1:length (files)
+    for i = 1:length (files)
         file = sprintf('%s/%s.pdf', FIG_DIR, files{i});
         saveas(figure(i), file);
         system(sprintf('pdfcrop %s %s', file, file));
-        %end
+    end
 end
