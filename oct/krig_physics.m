@@ -9,7 +9,7 @@
 % Krig forcings.
 % @end deftypefn
 %
-function model = krig_physics (t, y, u)
+function model = krig_physics (t, y, u, sigma2)
     % initial values of mean hyperparameters
     a0 = (max(y) - min(y))/2; % initial amplitude
     phi0 = -pi; % initial phase
@@ -23,11 +23,11 @@ function model = krig_physics (t, y, u)
     covfunc = {@covSum, {@covSin, @covSEiso}};
     hyp.cov = log([a0; 0.1; a0; 30.0]);
     likfunc = @likGauss;
-    hyp.lik = log(sigma);
+    hyp.lik = log(sqrt(sigma2));
                 
     % train (@gpwrap instead of @gp removes optimisation of likelihood
     % hyperparameters)
-    hyp = minimize(hyp, @gp, -1000, @infExact, meanfunc, covfunc, likfunc, t, y);
+    hyp = minimize(hyp, @gpwrap, -1000, @infExact, meanfunc, covfunc, likfunc, t, y);
     
     % predict marginals
     [ymu ys2 xmu xs2] = gp(hyp, inffunc, meanfunc, covfunc, likfunc, t, y, u);

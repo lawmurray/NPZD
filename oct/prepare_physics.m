@@ -23,9 +23,15 @@ function prepare_physics ()
     0;
     1;
   };
+  sigmas = {
+      0.2;
+      0.1;
+      0.05;
+      0.05;
+  };
   nyears = 4; % number of years for inference
   nsamples = 1000; % number of paths to sample
-  u = [1:7*365]'; % prediction times
+  u = [0:(7*365 - 1)]'; % prediction times
 
   % physics inference
   %load physics_models.mat
@@ -43,7 +49,7 @@ function prepare_physics ()
       t = ts(is)(:); % fit region
       y = ys(is)(:);
       
-      models{i} = krig_physics(t, y, u);
+      models{i} = krig_physics(t, y, u, sigmas{i});
       models{i} = sample_physics(models{i}, nsamples);
       
       if logs{i}

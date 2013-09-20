@@ -31,14 +31,14 @@ function tabulate_physics ()
     'E';
   };
   display_param_names = {
-    'a_\mu';
-    '\varphi_\mu';
-    'c_\mu';
-    'a_k';
-    'v_k';
-    'b_k';
-    'w_k';
-    'c_k';
+    'a';
+    '\varphi';
+    'b';
+    'c';
+    'v';
+    'd';
+    'w';
+    '\sigma^2';
   };
   printf('\\begin{tabular}{rr@{$\\times$}lr@{$\\times$}lr@{$\\times$}lr@{$\\times$}l}\n');
   for i = 1:length(display_names)
