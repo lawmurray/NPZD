@@ -22,7 +22,7 @@ function plot_physics ()
   logs = {
       1;
       1;
-      0;
+      1;
       1;
   };
   yax = {
@@ -75,8 +75,9 @@ function plot_physics ()
     hold off;
     
     grid on
-    ax = axis();
-    axis([t(1) u(end) yax{i}]);
+    %ax = axis();
+    %axis([t(1) u(end) yax{i}]);
+    axis('tight');
     ylabel(display_names{i});
     if i == 4
         xlabel('t');

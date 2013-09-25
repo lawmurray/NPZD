@@ -20,14 +20,14 @@ function prepare_physics ()
   logs = {
     1;
     1;
-    0;
+    1;
     1;
   };
   sigmas = {
-      0.2;
+      0.6;
+      0.5;
       0.1;
-      0.05;
-      0.05;
+      0.2;
   };
   nyears = 4; % number of years for inference
   nsamples = 1000; % number of paths to sample
