@@ -69,7 +69,7 @@ function prepare_physics ()
   FMIX = (1 + max(FMLC, 0))./FMLD;
   
   % create NetCDF file
-  nc = netcdf('data/OSP_force.nc', 'c');
+  nc = netcdf('data/input_osp.nc', 'c');
   nc('nr') = length(u);
   nc('np') = nsamples;
       

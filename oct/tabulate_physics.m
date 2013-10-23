@@ -12,23 +12,17 @@
 function tabulate_physics ()
   load physics_models.mat
 
-  vars = {
-    '\\log FMLD';
-    '\\log BCN';
-    'FT';
-    '\\log FE';
-  };
   logs = {
       1;
       1;
-      0;
+      1;
       1;
   };
   display_names = {
-    'MLD';
-    'BCN';
-    'T';
-    'E';
+    '\\ln MLD';
+    '\\ln BCN';
+    '\\ln T';
+    '\\ln E';
   };
   display_param_names = {
     'a';
@@ -69,8 +63,4 @@ function tabulate_physics ()
       printf(' %s\\\\\n', line);
   end
   printf('\\end{tabular}\n');
- 
- 
- 
-  
 end
