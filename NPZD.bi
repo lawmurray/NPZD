@@ -96,7 +96,7 @@ model NPZD {
   inline gammaZmQ = log(muZmQ) + pow(thetaZmQ, 2.0)/2.0 - pow(sigmaZmQ, 2.0)/2.0
 
   /* observations */
-  obs N_obs, Chla_obs
+  obs delta_N_obs, Chla_obs
 
   /* prior distribution over parameters */
   sub parameter {
@@ -212,7 +212,7 @@ model NPZD {
 
   /* observation model */
   sub observation {
-    N_obs ~ log_normal(log(N), 0.2)
+    delta_N_obs ~ normal(BCN - N, 1.0)
     Chla_obs ~ log_normal(log(Chla), 0.5)
   }
 }
