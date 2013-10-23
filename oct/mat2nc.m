@@ -34,8 +34,8 @@ FE = S_par(1:length(FE_time)); % S_par runs from 1971 to 1978
 FMLD_time = ml.time;
 FMLD = ml.d;
 
-deltaN_obs_time = ml.nit_time;
-deltaN_obs = BCN - ml.nit.*14.0;
+delta_N_obs_time = ml.nit_time;
+delta_N_obs = BCN - ml.nit.*14.0;
 
 Chla_obs_time = ml.chla_time;
 Chla_obs = ml.chla;
@@ -59,11 +59,11 @@ x3 = intersect(x1, x2);
 FMLD_time = (FMLD_time(x3) - syear)*tscale;
 FMLD = FMLD(x3);
 
-x1 = find(deltaN_obs_time >= syear);
-x2 = find(deltaN_obs_time <= fyear);
+x1 = find(delta_N_obs_time >= syear);
+x2 = find(delta_N_obs_time <= fyear);
 x3 = intersect(x1, x2);
-deltaN_obs_time = (deltaN_obs_time(x3) - syear)*tscale;
-deltaN_obs = deltaN_obs(x3);
+delta_N_obs_time = (delta_N_obs_time(x3) - syear)*tscale;
+delta_N_obs = delta_N_obs(x3);
 
 x1 = find(Chla_obs_time >= syear);
 x2 = find(Chla_obs_time <= fyear);
@@ -79,7 +79,7 @@ nc('nr_BCN') = length(BCN);
 nc('nr_FT') = length(FT);
 nc('nr_FE') = length(FE);
 nc('nr_FMLD') = length(FMLD);
-nc('nr_deltaN_obs') = length(deltaN_obs);
+nc('nr_delta_N_obs') = length(delta_N_obs);
 nc('nr_Chla_obs') = length(Chla_obs);
 
 % Define the variables
@@ -87,14 +87,14 @@ nc{'time_BCN'} = ncdouble('nr_BCN');
 nc{'time_FT'} = ncdouble('nr_FT');
 nc{'time_FE'} = ncdouble('nr_FE');
 nc{'time_FMLD'} = ncdouble('nr_FMLD');
-nc{'time_deltaN_obs'} = ncdouble('nr_deltaN_obs');
+nc{'time_delta_N_obs'} = ncdouble('nr_delta_N_obs');
 nc{'time_Chla_obs'} = ncdouble('nr_Chla_obs');
 
 nc{'BCN'} = ncdouble('nr_BCN');
 nc{'FT'} = ncdouble('nr_FT');
 nc{'FE'} = ncdouble('nr_FE');
 nc{'FMLD'} = ncdouble('nr_FMLD');
-nc{'deltaN_obs'} = ncdouble('nr_deltaN_obs');
+nc{'delta_N_obs'} = ncdouble('nr_delta_N_obs');
 nc{'Chla_obs'} = ncdouble('nr_Chla_obs');
 
 % Write data to variables
@@ -102,14 +102,14 @@ nc{'time_BCN'}(:) = BCN_time;
 nc{'time_FT'}(:) = FT_time;
 nc{'time_FE'}(:) = FE_time;
 nc{'time_FMLD'}(:) = FMLD_time;
-nc{'time_deltaN_obs'}(:) = deltaN_obs_time;
+nc{'time_delta_N_obs'}(:) = delta_N_obs_time;
 nc{'time_Chla_obs'}(:) = Chla_obs_time;
 
 nc{'BCN'}(:) = BCN;
 nc{'FT'}(:) = FT;
 nc{'FE'}(:) = FE;
 nc{'FMLD'}(:) = FMLD;
-nc{'deltaN_obs'}(:) = deltaN_obs;
+nc{'delta_N_obs'}(:) = delta_N_obs;
 nc{'Chla_obs'}(:) = Chla_obs;
 
 ncclose(nc)
