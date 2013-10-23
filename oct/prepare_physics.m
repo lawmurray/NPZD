@@ -10,7 +10,7 @@
 % @end deftypefn
 %
 function prepare_physics ()
-  nc = netcdf('data/OSP_force_raw.nc', 'r');
+  nc = netcdf('data/obs_osp.nc', 'r');
   vars = {
     'FMLD';
     'BCN';
