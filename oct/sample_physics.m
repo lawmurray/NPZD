@@ -1,7 +1,5 @@
 % Copyright (C) 2013
 % Author: Lawrence Murray <lawrence.murray@csiro.au>
-% $Rev$
-% $Date$
 
 % -*- texinfo -*-
 % @deftypefn {Function File} sample (model, n)
