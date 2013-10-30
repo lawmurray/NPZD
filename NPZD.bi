@@ -38,12 +38,13 @@ model NPZD {
   param ZDF  // Z diversity factor
 
   /* state variables */
-  state EZ    // light at depth
-  state Chla  // chlorophyl-a
   state P     // phytoplankton
   state Z     // zooplankton
   state D     // detritus
   state N     // nutrient
+  state EZ    // light at depth
+  state Chla  // chlorophyl-a
+  state delta_N
 
   /* rate process autoregressives */
   state PgC  // maximum growth rate for C
@@ -98,6 +99,18 @@ model NPZD {
   /* observations */
   obs delta_N_obs, Chla_obs
 
+  /* processes */
+  inline Tc = pow(Q10, (FT - Trf)/10.0)
+  inline Kdz = (Kw + KCh*Chla)*FMLD // total light attenation, water+Chl-a
+  inline Zgs = pow(ZCl*P/Zin, Zex)
+  inline Zgr = Z*Zin*Tc*Zgs/(1.0 + Zgs)
+  inline PgT = PgC*Tc
+  inline PaQ = PaC*KCh*PQf
+  inline PfE = 1.0 - exp(-PaQ*PCh*EZ/PgC)
+  inline PfN = N/(1.0 + ASN*N/PgT)
+  inline Pg = PgT*PfE*PfN/(PfN + PfE) // phytoplankton growth rate
+  inline Zm = ZmQ*Z*Z
+
   /* prior distribution over parameters */
   sub parameter {
     Kw ~ log_normal(log(0.03), 0.2)
@@ -120,22 +133,40 @@ model NPZD {
 
   const prop_std = 0.1
   sub proposal_parameter {
-    Kw ~ log_normal(log(Kw), 0.2*prop_std)
-    KCh ~ log_normal(log(KCh), 0.3*prop_std)
-    Dsi ~ gaussian(Dsi, 1.0*prop_std)
-    ZgD ~ log_normal(log(ZgD), 0.1*prop_std)
-    PDF ~ log_normal(log(PDF), 0.4*prop_std)
-    ZDF ~ log_normal(log(ZDF), 0.4*prop_std)
+    //Kw ~ log_normal(log(Kw), 0.2*prop_std)
+    //KCh ~ log_normal(log(KCh), 0.3*prop_std)
+    //Dsi ~ gaussian(Dsi, 1.0*prop_std)
+    //ZgD ~ log_normal(log(ZgD), 0.1*prop_std)
+    //PDF ~ log_normal(log(PDF), 0.4*prop_std)
+    //ZDF ~ log_normal(log(ZDF), 0.4*prop_std)
 
-    muPgC ~ log_normal(log(muPgC), thetaPgC*prop_std)
-    muPCh ~ log_normal(log(muPCh), thetaPCh*prop_std)
-    muPRN ~ log_normal(log(muPRN), thetaPRN*prop_std)
-    muASN ~ log_normal(log(muASN), thetaASN*prop_std)
-    muZin ~ log_normal(log(muZin), thetaZin*prop_std)
-    muZCl ~ log_normal(log(muZCl), thetaZCl*prop_std)
-    muZgE ~ log_normal(log(muZgE), thetaZgE*prop_std)
-    muDre ~ log_normal(log(muDre), thetaDre*prop_std)
-    muZmQ ~ log_normal(log(muZmQ), thetaZmQ*prop_std)
+    //muPgC ~ log_normal(log(muPgC), thetaPgC*prop_std)
+    //muPCh ~ log_normal(log(muPCh), thetaPCh*prop_std)
+    //muPRN ~ log_normal(log(muPRN), thetaPRN*prop_std)
+    //muASN ~ log_normal(log(muASN), thetaASN*prop_std)
+    //muZin ~ log_normal(log(muZin), thetaZin*prop_std)
+    //muZCl ~ log_normal(log(muZCl), thetaZCl*prop_std)
+    //muZgE ~ log_normal(log(muZgE), thetaZgE*prop_std)
+    //muDre ~ log_normal(log(muDre), thetaDre*prop_std)
+    //muZmQ ~ log_normal(log(muZmQ), thetaZmQ*prop_std)
+
+    Kw ~ truncated_normal(Kw, 0.001, 0.0)
+    KCh ~ truncated_normal(KCh, 0.001, 0.0)
+    Dsi ~ normal(Dsi, 0.1)
+    ZgD ~ truncated_normal(ZgD, 0.01, 0.0)
+    PDF ~ truncated_normal(PDF, 0.01, 0.0)
+    ZDF ~ truncated_normal(ZDF, 0.01, 0.0)
+
+    muPgC ~ truncated_normal(muPgC, 0.01, 0.0)
+    muPCh ~ truncated_normal(muPCh, 0.001, 0.0)
+    muPRN ~ truncated_normal(muPRN, 0.01, 0.0)
+    muASN ~ truncated_normal(muASN, 0.01, 0.0)
+    muZin ~ truncated_normal(muZin, 0.02, 0.0)
+    muZCl ~ truncated_normal(muZCl, 0.01, 0.0)
+    muZgE ~ truncated_normal(muZgE, 0.01, 0.0)
+    muDre ~ truncated_normal(muDre, 0.01, 0.0)
+    muZmQ ~ truncated_normal(muZmQ, 0.001, 0.0)
+
   }
 
   /* prior distribution over initial conditions, given parameters */
@@ -157,22 +188,11 @@ model NPZD {
 
     Chla ~ log_normal(log(0.6469), 0.5)
     EZ ~ log_normal(log(1.1), 1.0)
+    delta_N <- BCN - N
   }
 
   /* transition distribution */
   sub transition(delta = 1.0) {
-    /* processes */
-    inline Tc = pow(Q10, (FT - Trf)/10.0)
-    inline Kdz = (Kw + KCh*Chla)*FMLD // total light attenation, water+Chl-a
-    inline Zgs = pow(ZCl*P/Zin, Zex)
-    inline Zgr = Z*Zin*Tc*Zgs/(1.0 + Zgs)
-    inline PgT = PgC*Tc
-    inline PaQ = PaC*KCh*PQf
-    inline PfE = 1.0 - exp(-PaQ*PCh*EZ/PgC)
-    inline PfN = N/(1.0 + ASN*N/PgT)
-    inline Pg = PgT*PfE*PfN/(PfN + PfE) // phytoplankton growth rate
-    inline Zm = ZmQ*Z*Z
-
     /* autoregressive noise terms */
     rPgC ~ log_normal(gammaPgC, sigmaPgC)
     rPCh ~ log_normal(gammaPCh, sigmaPCh)
@@ -208,11 +228,12 @@ model NPZD {
 
     /* chlorophyl-a */
     Chla <- Tc*P*(PCh/PNC)*PfN/(PRN*PfE + PfN)
+    delta_N <- BCN - N
   }
 
   /* observation model */
   sub observation {
-    delta_N_obs ~ normal(BCN - N, 1.0)
-    Chla_obs ~ log_normal(log(Chla), 0.5)
+    delta_N_obs ~ normal(BCN - N, 20.0)
+    Chla_obs ~ log_normal(log(Tc*P*(PCh/PNC)*PfN/(PRN*PfE + PfN)), 0.5)
   }
 }
