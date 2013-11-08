@@ -3,4 +3,3 @@ function y = rho(t, theta, k)
   [alpha; psi; gamma; omega] = theta((base+1):(base+4));
   y = alpha*sin(2*pi*sigmoid((t - psi)./730, gamma)) + omega;
 end
-

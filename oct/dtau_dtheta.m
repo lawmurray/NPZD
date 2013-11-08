@@ -6,4 +6,3 @@ function x = dtau_dtheta(s, t, theta, k)
 
   d = (s .- mn).*(dmx_dtheta .- dmn_dtheta)./((mx .- mn).^2) .- dmn_dtheta./(mx .- mn);
 end
-

@@ -3,4 +3,3 @@ function d = dsigmoid_da(x, a)
   x1 = (1 .- x).*x;
   d = 2.^(k + 1).*x1.^k.*log(x1) .+ log(2).*2.^(k + 1).*x1.^k;
 end
-

@@ -1,4 +1,3 @@
-function d = dmu2_dtheta(s, t, theta)
-  d = drho_dthat(t, theta, 1);
+function d = dmu1_dtheta(s, t, theta)
+  d = drho_dtheta(t, theta, 1);
 end
-

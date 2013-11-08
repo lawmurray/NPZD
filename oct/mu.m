@@ -13,4 +13,3 @@ function x = mu(s, t, theta)
   d(is3,:) = mu3(s(is3), t(is3), theta);
   d(is4,:) = mu4(s(is4), t(is4), theta);
 end
-

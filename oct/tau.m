@@ -4,4 +4,3 @@ function x = tau(s, t, theta, k)
 
   x = (s - mn)/(mx - mn);
 end
-

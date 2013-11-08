@@ -13,4 +13,3 @@ function d = dmu3_dtheta(s, t, theta)
 
   d = -sigmoid(x, a).*drho_dtheta(t, theta, 1) .+ drho_dtheta(t, theta, 1) .+ (df_dx.*dx_dtheta .+ df_da.*da_dtheta).*(kappa .- rho(t, theta, 1);
 end
-

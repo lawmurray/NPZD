@@ -15,4 +15,3 @@ function d = dmu_dtheta(s, t, theta)
   d(is3,:) = dmu3_dtheta(s(is3), t(is3), theta);
   d(is4,:) = dmu4_dtheta(s(is4), t(is4), theta);
 end
-

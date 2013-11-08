@@ -5,9 +5,8 @@ function d = drho_dgamma(t, alpha, psi, gamma, omega)
   df_dx = dsigmoid_dx(x, a);
   df_da = dsigmoid_da(x, a);
 
-  dx_dtheta = 0;
-  da_dtheta = 1;
+  dx_dgamma = 0;
+  da_dgamma = 1;
 
-  d = 2*pi*alpha*(df_dx.*dx_dtheta + df_da.*da_dtheta)*cos(2*pi*sigmoid(x, a));
+  d = 2.*pi.*alpha.*(df_dx.*dx_dgamma .+ df_da.*da_dgamma).*cos(2.*pi.*sigmoid(x, a));
 end
-
