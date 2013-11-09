@@ -55,10 +55,11 @@ function [theta,s,t,x] = optim_physics()
         4; % kappa
         ];
     
-    %theta = minimize(theta, @cost, -5000, s, t, data);
+    %checkgrad('cost', 1.0e-8, theta, s, t, data);
+    theta = minimize(theta, @cost, -5000, s, t, data);
     
     t = [0:365]';
-    s = [1:700]';
+    s = [1:300]';
     [t,s] = meshgrid(t, s);
     
     x = mu(s, t, theta);
@@ -83,9 +84,4 @@ function [theta,s,t,x] = optim_physics()
     %nc{'coord_T'}(:) = [0:699]';
     %nc{'T'}(:) = x(:,1);
     %ncclose(nc);
-end
-
-function [val, dval] = cost(theta, s, t, data)
-    val = meansq(data .- mu(s, t, theta));
-    dval = -2.0.*mean((data .- mu(s, t, theta)).*dmu_dtheta(s, t, theta));
 end

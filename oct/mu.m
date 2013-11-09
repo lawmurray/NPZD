@@ -6,8 +6,8 @@ function x = mu(s, t, theta)
   rho7 = rho(t, theta, 7);
   
   is1 = find(s <= rho5);
-  is2 = find((s > rho5).*(s <= rho6));
-  is3 = find((s > rho6).*(s <= rho7));
+  is2 = find((s > rho5).*(s < rho6));
+  is3 = find((s >= rho6).*(s <= rho7));
   is4 = find(s > rho7);
 
   x(is1) = mu1(s(is1), t(is1), theta);
