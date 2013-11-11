@@ -1,5 +1,5 @@
 function d = drho_dpsi(t, alpha, psi, gamma, omega)
-  x = (t .- psi)./730;
+  x = fmod(t .- psi .+ 365, 365)./730;
   a = gamma;
 
   df_dx = dsigmoid_dx(x, a);

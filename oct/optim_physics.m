@@ -11,52 +11,54 @@ function [theta,s,t,x] = optim_physics()
     nc = netcdf('data/obs_1d_osp.nc', 'r');
     t = nc{'time_T'}(:);
     s = nc{'coord_T'}(:);
-    data = log(nc{'T'}(:));
+    data = nc{'T'}(:);
     
     is = find(t <= 365);
     t = t(is);
     s = s(is);
     data = data(is);
     
-    is = find(s <= 200);
+    is = find(s <= 300);
     t = t(is);
     s = s(is);
     data = data(is);
+    data = log(data);
+    
     
     theta = [
-        4; % alpha_1
-        0; % psi_1
-        2; % gamma_1
-        10; % omega_1
+        log(4); % alpha_1
+        180; % psi_1
+        log(0.0001); % gamma_1
+        log(10); % omega_1
         0; % alpha_2
         0; % ...
-        2;
+        log(4);
         0;
         1; % alpha_3
         0;
-        2;
+        log(4);
         3;
         1; % alpha_4
         0;
-        2;
+        log(4);
         3;
         40; % alpha_5
         0;
-        2;
+        log(4);
         80;
-        100; % alpha_6
+        40; % alpha_6
         0;
-        2;
-        50;
+        log(4);
+        80;
         1;  % alpha_7
-        0
-        2; % ...
+        0;
+        log(4); % ...
         200; % omega_7
-        4; % kappa
+        log(4); % kappa
         ];
     
     %checkgrad('cost', 1.0e-8, theta, s, t, data);
-    theta = minimize(theta, @cost, -5000, s, t, data);
+    theta = minimize(theta, @cost, -2000, s, t, data);
     
     t = [0:365]';
     s = [1:300]';
