@@ -1,4 +1,4 @@
-function d = dsigmoid_da(x, a)
+function d = dbulge_da(x, a)
   k = 2.*a .- 2;
   x1 = 4.*x.*(1 .- x);
   logx1 = log(x1);

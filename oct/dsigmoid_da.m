@@ -1,7 +1,5 @@
 function d = dsigmoid_da(x, a)
-  k = 2.*a .- 2;
-  x1 = 4.*x.*(1 .- x);
-  logx1 = log(x1);
-  logx1(find(x1 <= 0)) = 0;
-  d = 2.*logx1.*x1.^k;
+  % finite difference estimate, otherwise need digamma and hypergeometric funcs
+  eps = 1.0e-8;
+  d = (sigmoid(x, a .+ eps) .- sigmoid(x, a .- eps))/(2.*eps);
 end

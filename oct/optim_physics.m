@@ -7,13 +7,13 @@
 % Least squares optimisation of mean function for physical variable.
 % @end deftypefn
 %
-function [theta,s,t,x] = optim_physics()
+function [theta,ss,tt,xx] = optim_physics()
     nc = netcdf('data/obs_1d_osp.nc', 'r');
     t = nc{'time_T'}(:);
     s = nc{'coord_T'}(:);
     data = nc{'T'}(:);
     
-    is = find(t <= 365);
+    is = find(t <= 4*365);
     t = t(is);
     s = s(is);
     data = data(is);
@@ -26,45 +26,45 @@ function [theta,s,t,x] = optim_physics()
     
     
     theta = [
-        log(4); % alpha_1
+        0.5; % alpha_1
         180; % psi_1
-        log(0.0001); % gamma_1
-        log(10); % omega_1
+        2; % gamma_1
+        2; % omega_1
         0; % alpha_2
         0; % ...
-        log(4);
+        1;
         0;
         1; % alpha_3
         0;
-        log(4);
+        1;
         3;
         1; % alpha_4
         0;
-        log(4);
+        1;
         3;
-        40; % alpha_5
+        10; % alpha_5
         0;
-        log(4);
-        80;
+        1;
+        20;
         40; % alpha_6
         0;
-        log(4);
+        1;
         80;
         1;  % alpha_7
         0;
-        log(4); % ...
+        1; % ...
         200; % omega_7
         log(4); % kappa
         ];
     
     %checkgrad('cost', 1.0e-8, theta, s, t, data);
-    theta = minimize(theta, @cost, -2000, s, t, data);
+    theta = minimize(theta, @cost, -20, s, t, data);
     
-    t = [0:365]';
-    s = [1:300]';
-    [t,s] = meshgrid(t, s);
+    tt = [0:4*365]';
+    ss = [1:300]';
+    [tt,ss] = meshgrid(tt, ss);
     
-    x = mu(s, t, theta);
+    xx = mu(ss, tt, theta);
     
     %nc = netcdf('data/init_1d_osp.nc', 'c');
     %nc('z') = 700;

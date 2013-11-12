@@ -32,10 +32,13 @@ function prepare_obs_raster ()
     data = chla(is,3);
     
     nc('n_Chla') = length(raster);
+    
     nc{'time_Chla'} = ncdouble('n_Chla');
+    nc{'coord_Chla'} = ncdouble('n_Chla');
     nc{'Chla'} = ncdouble('n_Chla');
     
     nc{'time_Chla'}(:) = raster;
+    nc{'coord_Chla'}(:) = coord;
     nc{'Chla'}(:) = data;
 
     % N
@@ -49,10 +52,13 @@ function prepare_obs_raster ()
     data = nit(is,3).*14.0;
     
     nc('n_N') = length(raster);
+    
     nc{'time_N'} = ncdouble('n_N');
+    nc{'coord_N'} = ncdouble('n_N');
     nc{'N'} = ncdouble('n_N');
     
     nc{'time_N'}(:) = raster;
+    nc{'coord_N'}(:) = coord;
     nc{'N'}(:) = data;
 
     % T
@@ -66,10 +72,13 @@ function prepare_obs_raster ()
     data = tem(is,3);
     
     nc('n_T') = length(raster);
+    
     nc{'time_T'} = ncdouble('n_T');
+    nc{'coord_T'} = ncdouble('n_T');
     nc{'T'} = ncdouble('n_T');
     
     nc{'time_T'}(:) = raster;
+    nc{'coord_T'}(:) = coord;
     nc{'T'}(:) = data;    
     
     ncclose(nc);

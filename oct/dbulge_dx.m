@@ -1,4 +1,4 @@
-function d = dsigmoid_dx(x, a)
+function d = dbulge_dx(x, a)
   k = 2.*a .- 2;
   x1 = (1 .- x).*x;
 
