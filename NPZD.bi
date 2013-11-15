@@ -3,9 +3,6 @@
  * 
  * @author Emlyn Jones <emlyn.jones@csiro.au>
  * @author Lawrence Murray <lawrence.murray@csiro.au>
- * 
- * $Rev$
- * $Date$
  */
 model NPZD {
   /* prescribed constants */
@@ -44,7 +41,7 @@ model NPZD {
   state N     // nutrient
   state EZ    // light at depth
   state Chla  // chlorophyl-a
-  state delta_N
+    //state delta_N
 
   /* rate process autoregressives */
   state PgC  // maximum growth rate for C
@@ -97,7 +94,7 @@ model NPZD {
   inline gammaZmQ = log(muZmQ) + pow(thetaZmQ, 2.0)/2.0 - pow(sigmaZmQ, 2.0)/2.0
 
   /* observations */
-  obs delta_N_obs, Chla_obs
+    obs /*delta_N_obs, */N_obs, Chla_obs
 
   /* processes */
   inline Tc = pow(Q10, (FT - Trf)/10.0)
@@ -133,24 +130,24 @@ model NPZD {
 
   const prop_std = 0.1
   sub proposal_parameter {
-    //Kw ~ log_normal(log(Kw), 0.2*prop_std)
-    //KCh ~ log_normal(log(KCh), 0.3*prop_std)
-    //Dsi ~ gaussian(Dsi, 1.0*prop_std)
-    //ZgD ~ log_normal(log(ZgD), 0.1*prop_std)
-    //PDF ~ log_normal(log(PDF), 0.4*prop_std)
-    //ZDF ~ log_normal(log(ZDF), 0.4*prop_std)
+    Kw ~ log_normal(log(Kw), 0.2*prop_std)
+    KCh ~ log_normal(log(KCh), 0.3*prop_std)
+    Dsi ~ gaussian(Dsi, 1.0*prop_std)
+    ZgD ~ log_normal(log(ZgD), 0.1*prop_std)
+    PDF ~ log_normal(log(PDF), 0.4*prop_std)
+    ZDF ~ log_normal(log(ZDF), 0.4*prop_std)
 
-    //muPgC ~ log_normal(log(muPgC), thetaPgC*prop_std)
-    //muPCh ~ log_normal(log(muPCh), thetaPCh*prop_std)
-    //muPRN ~ log_normal(log(muPRN), thetaPRN*prop_std)
-    //muASN ~ log_normal(log(muASN), thetaASN*prop_std)
-    //muZin ~ log_normal(log(muZin), thetaZin*prop_std)
-    //muZCl ~ log_normal(log(muZCl), thetaZCl*prop_std)
-    //muZgE ~ log_normal(log(muZgE), thetaZgE*prop_std)
-    //muDre ~ log_normal(log(muDre), thetaDre*prop_std)
-    //muZmQ ~ log_normal(log(muZmQ), thetaZmQ*prop_std)
+    muPgC ~ log_normal(log(muPgC), thetaPgC*prop_std)
+    muPCh ~ log_normal(log(muPCh), thetaPCh*prop_std)
+    muPRN ~ log_normal(log(muPRN), thetaPRN*prop_std)
+    muASN ~ log_normal(log(muASN), thetaASN*prop_std)
+    muZin ~ log_normal(log(muZin), thetaZin*prop_std)
+    muZCl ~ log_normal(log(muZCl), thetaZCl*prop_std)
+    muZgE ~ log_normal(log(muZgE), thetaZgE*prop_std)
+    muDre ~ log_normal(log(muDre), thetaDre*prop_std)
+    muZmQ ~ log_normal(log(muZmQ), thetaZmQ*prop_std)
 
-    Kw ~ truncated_normal(Kw, 0.001, 0.0)
+    /*Kw ~ truncated_normal(Kw, 0.001, 0.0)
     KCh ~ truncated_normal(KCh, 0.001, 0.0)
     Dsi ~ normal(Dsi, 0.1)
     ZgD ~ truncated_normal(ZgD, 0.01, 0.0)
@@ -165,8 +162,7 @@ model NPZD {
     muZCl ~ truncated_normal(muZCl, 0.01, 0.0)
     muZgE ~ truncated_normal(muZgE, 0.01, 0.0)
     muDre ~ truncated_normal(muDre, 0.01, 0.0)
-    muZmQ ~ truncated_normal(muZmQ, 0.001, 0.0)
-
+    muZmQ ~ truncated_normal(muZmQ, 0.001, 0.0)*/
   }
 
   /* prior distribution over initial conditions, given parameters */
@@ -188,7 +184,7 @@ model NPZD {
 
     Chla ~ log_normal(log(0.6469), 0.5)
     EZ ~ log_normal(log(1.1), 1.0)
-    delta_N <- BCN - N
+      //delta_N <- BCN - N
   }
 
   /* transition distribution */
@@ -219,7 +215,7 @@ model NPZD {
     EZ <- FE*(1.0 - exp(-Kdz))/Kdz
 
     /* differential system */
-    ode(h = 0.1, atoler = 1.0e-3, rtoler = 1.0e-3, alg = 'RK4(3)') {
+    ode(h = 0.1, atoler = 1.0e-4, rtoler = 1.0e-4, alg = 'RK4(3)') {
       dP/dt = Pg*P - Zgr + FMIX*(BCP - P)
       dZ/dt = Zgr*ZgE - Zm + FMLC/FMLD*(BCZ - Z)
       dD/dt = (1.0 - ZgE)*ZgD*Zgr + Zm - Dre*D - Dsi*D/FMLD + FMIX*(BCD - D)
@@ -228,12 +224,33 @@ model NPZD {
 
     /* chlorophyl-a */
     Chla <- Tc*P*(PCh/PNC)*PfN/(PRN*PfE + PfN)
-    delta_N <- BCN - N
+      //delta_N <- BCN - N
   }
 
   /* observation model */
   sub observation {
-    delta_N_obs ~ normal(BCN - N, 20.0)
+    //delta_N_obs ~ normal(BCN - N, 20.0)
+    N_obs ~ log_normal(log(N), 0.2);
     Chla_obs ~ log_normal(log(Tc*P*(PCh/PNC)*PfN/(PRN*PfE + PfN)), 0.5)
+  }
+
+  /* bridging likelihood derived from independent Kriging results */
+  sub bridge {
+    const N_ell2 = exp(2*4.12975);
+    const N_sf2 = exp(2*-0.86229);
+    const N_c = 4.9997;
+    inline N_k = N_sf2*exp(-0.5*(t_next_obs - t_now)**2/N_ell2);
+    inline N_mu = (log(N) - N_c)*N_k/N_sf2 + N_c;
+    inline N_sigma = sqrt(N_sf2 - N_k*N_k/N_sf2 + 0.2**2);
+
+    const Chla_ell2 = exp(2*2.45783);
+    const Chla_sf2 = exp(2*-0.93395);
+    const Chla_c = -0.95532;
+    inline Chla_k = Chla_sf2*exp(-0.5*(t_next_obs - t_now)**2/Chla_ell2);
+    inline Chla_mu = (log(Chla) - Chla_c)*Chla_k/Chla_sf2 + Chla_c;
+    inline Chla_sigma = sqrt(Chla_sf2 - Chla_k*Chla_k/Chla_sf2 + 0.5**2);
+
+    N_obs ~ log_normal(N_mu, N_sigma);
+    Chla_obs ~ log_normal(Chla_mu, Chla_sigma);
   }
 }
