@@ -1,5 +1,5 @@
 function d = dmu3_dtheta(s, t, theta)
-  kappa = theta(29);
+  kappa = theta(end);
   d = zeros(length(s), length(theta));
 
   x = tau(s, t, theta, 2);
@@ -12,5 +12,5 @@ function d = dmu3_dtheta(s, t, theta)
   da_dtheta = drho_dtheta(t, theta, 4);
 
   d = -sigmoid(x, a).*drho_dtheta(t, theta, 1) .+ drho_dtheta(t, theta, 1) .+ (df_dx.*dx_dtheta .+ df_da.*da_dtheta).*(kappa .- rho(t, theta, 1));
-  d(:,29) = sigmoid(x, a);
+  d(:,end) = sigmoid(x, a);
 end

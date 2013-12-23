@@ -1,4 +1,11 @@
 function d = drho_dtheta(t, theta, k)
+  % map k for eliminated sub-mixed layer
+  map = [ 1; 0; 0; 2; 0; 3; 4 ];
+  k = map(k);
+  if k == 0
+    error('trying to use sub-mixed layer');
+  end
+
   d = zeros(length(t), length(theta));
   base = 4*(k - 1);
   alpha = theta(base + 1);

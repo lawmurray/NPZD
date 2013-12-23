@@ -5,10 +5,11 @@
  * @author Lawrence Murray <lawrence.murray@csiro.au>
  */
 model PhysicalRaster {
-  const h = 1.0/24.0;
-
   dim n(3);
   dim z(size = 700, boundary = 'repeat');
+
+  const h = 1.0/24.0;
+  const pi = 3.141592653589793;
 
   /* mean function parameters */
   param alpha[n];
@@ -19,14 +20,10 @@ model PhysicalRaster {
 
   /* autoregressive parameters */
   param gamma;
-  param sigma_x;
+  param sigma2_x;
 
   /* observation parameters */
-  const sigma_y = 0.5;
-
-  /* mean function */
-  state phi[n];
-  state mu;
+  const sigma_y = 0.1;
 
   /* state */
   state r; // rasterised index
@@ -40,63 +37,65 @@ model PhysicalRaster {
   /* observations */
   obs T[z];
 
-  /* constraints */
-  const min_T = 0.0;
-  const max_T = 40.0;
-
   sub parameter {
-    alpha[i] ~ uniform(min_T, max_T);
-    psi[i] ~ uniform(0.0, 365.0);
-    beta[i] ~ uniform(min_T, max_T);
+    /*alpha[i] ~ gaussian(0.0, 2.0);
+    psi[i] ~ uniform(-182.5, 182.5);
+    beta[0] ~ truncated_gaussian(0.0, 5.0, 0.0);
+    beta[1] ~ gaussian(0.0, 100.0);
+    beta[2] ~ uniform(0, 700);
     a ~ gaussian(0.0, 1.0);
-    c ~ uniform(min_T, max_T);
-    gamma ~ uniform(0.5, 1.0);
-    sigma_x ~ inverse_gamma(2.0, 3.0);
+    c ~ gaussian(0.0, 5.0);*/
+    gamma ~ gamma(2.0, 2.0);
+    sigma2_x ~ inverse_gamma(2.0, 0.01);
   }
 
   sub proposal_parameter {
-    alpha[0] ~ truncated_gaussian(alpha[0], 0.05, min_T, max_T);
-    alpha[1] ~ truncated_gaussian(alpha[1], 0.05, min_T, max_T);
-    alpha[2] ~ truncated_gaussian(alpha[2], 0.05, min_T, max_T);
-    psi[n] ~ truncated_gaussian(psi[n], 0.5, 0.0, 365.0);
-    beta[n] ~ truncated_gaussian(beta[n], 0.05, min_T, max_T);
-    a ~ gaussian(a, 0.01);
-    c ~ truncated_gaussian(c, 0.1, min_T, max_T);
-    gamma ~ truncated_gaussian(gamma, 0.01, 0.5, 1.0);
-    sigma_x ~ inverse_gamma(8.0, 9.0*sigma_x);
+    /*alpha[0] ~ gaussian(alpha[0], 1.0e-3);
+    alpha[1] ~ gaussian(alpha[1], 1.0e-4);
+    alpha[2] ~ gaussian(alpha[2], 1.0e-5);
+    psi[0] ~ gaussian(psi[0], 1.0e-4);
+    psi[1] ~ gaussian(psi[1], 1.0e-7);
+    psi[2] ~ gaussian(psi[2], 1.0e-9);
+    beta[0] ~ gaussian(beta[0], 1.0e-3);
+    beta[1] ~ gaussian(beta[1], 1.0e-3);
+    beta[2] ~ gaussian(beta[2], 1.0e-3);
+
+    a ~ gaussian(a, 1.0e-7);
+    c ~ gaussian(c, 1.0e-4);*/
+    gamma ~ truncated_gaussian(gamma, 1.0e-3, 0.0);
+    sigma2_x ~ inverse_gamma(16.0, 17.0*sigma2_x);
   }
 
   sub initial {
     r <- 0;
     t <- 0;
     s <- 0;
-    x[z] ~ gaussian(10.0, 5.0);
+    x[z] <- 0;
   }
 
   sub proposal_initial {
     r <- 0;
     t <- 0;
     s <- 0;
-    x[z] ~ truncated_gaussian(x[z], 0.1, min_T, max_T);
+    x[z] ~ gaussian(x[z], 0.01);
   }
 
-  sub transition(delta = h) {
+  sub transition(delta = 1.0) {
     t <- h*floor(r/700.0);
     s <- mod(r, 700.0);
     r <- r + 1;
-    x_1 <- (s == 0) ? x : x_1;
 
-    /* residuals */
-    eps_new ~ gaussian(0.0, sigma_x*sqrt(h));
-    x_new <- x_1[s] - gamma*x_1[s] + 0.5*gamma*(x_1[s-1] + x_1[s+1]) + eps_new;
+    x_1 <- (s == 0) ? x : x_1;
+    eps_new ~ gaussian(0.0, sqrt(sigma2_x*h));
+    x_new <- x_1[s] - h*gamma*(x_1[s] - 0.5*(x_1[s-1] + x_1[s+1])) + eps_new;
     x[i] <- (i == s) ? x_new : x[i];
   }
 
   sub observation {
-    /* mean function */
-    phi[n] <- alpha[n]*sin((t - psi[n])/365.0) + beta[n];
-    mu <- phi[1]*0.5*(sinh((phi[2] - s)/phi[3])/cosh((phi[2] - s)/phi[3]) + 0.5) + a*s + c;
+    inline phi0 = alpha[0]*sin(2*pi*(t - psi[0])/365.0) + beta[0];
+    inline phi1 = alpha[1]*sin(2*pi*(t - psi[1])/365.0) + beta[1];
+    inline phi2 = alpha[2]*sin(2*pi*(t - psi[2])/365.0) + beta[2];
 
-    T ~ gaussian(mu + x_new, sigma_y);
+    T[z] ~ log_gaussian(phi0*(0.5*tanh((phi1 - z)/phi2) + 0.5) + a*z + c + x[z], sigma_y);
   }
 }

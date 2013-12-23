@@ -128,7 +128,8 @@ model NPZD {
     muZmQ ~ log_normal(log(0.01), thetaZmQ)
   }
 
-  const prop_std = 0.1
+  const prop_std = 0.00001
+
   sub proposal_parameter {
     Kw ~ log_normal(log(Kw), 0.2*prop_std)
     KCh ~ log_normal(log(KCh), 0.3*prop_std)
@@ -142,7 +143,7 @@ model NPZD {
     muPRN ~ log_normal(log(muPRN), thetaPRN*prop_std)
     muASN ~ log_normal(log(muASN), thetaASN*prop_std)
     muZin ~ log_normal(log(muZin), thetaZin*prop_std)
-    muZCl ~ log_normal(log(muZCl), thetaZCl*prop_std)
+    muZCl ~ log_normal(log(muZCl), 0.25*thetaZCl*prop_std)
     muZgE ~ log_normal(log(muZgE), thetaZgE*prop_std)
     muDre ~ log_normal(log(muDre), thetaDre*prop_std)
     muZmQ ~ log_normal(log(muZmQ), thetaZmQ*prop_std)
@@ -184,6 +185,29 @@ model NPZD {
 
     Chla ~ log_normal(log(0.6469), 0.5)
     EZ ~ log_normal(log(1.1), 1.0)
+      //delta_N <- BCN - N
+  }
+
+  const prop_std2 = 0.00001
+
+  sub proposal_initial {
+    PgC ~ log_normal(log(PgC), prop_std2*sigmaPgC)
+    PCh ~ log_normal(log(PCh), prop_std2*sigmaPCh)
+    PRN ~ log_normal(log(PRN), prop_std2*sigmaPRN)
+    ASN ~ log_normal(log(ASN), prop_std2*sigmaASN)
+    Zin ~ log_normal(log(Zin), prop_std2*sigmaZin)
+    ZCl ~ log_normal(log(ZCl), prop_std2*sigmaZCl)
+    ZgE ~ log_normal(log(ZgE), prop_std2*sigmaZgE)
+    Dre ~ log_normal(log(Dre), prop_std2*sigmaDre)
+    ZmQ ~ log_normal(log(ZmQ), prop_std2*sigmaZmQ)
+
+    P ~ log_normal(log(P), prop_std2*0.3)
+    Z ~ log_normal(log(Z), prop_std2*0.3)
+    D ~ log_normal(log(D), prop_std2*0.3)
+    N ~ log_normal(log(N), prop_std2*0.3)
+
+    Chla ~ log_normal(log(Chla), prop_std2*0.5)
+    EZ ~ log_normal(log(EZ), prop_std2*1.0)
       //delta_N <- BCN - N
   }
 
@@ -231,24 +255,24 @@ model NPZD {
   sub observation {
     //delta_N_obs ~ normal(BCN - N, 20.0)
     N_obs ~ log_normal(log(N), 0.2);
-    Chla_obs ~ log_normal(log(Tc*P*(PCh/PNC)*PfN/(PRN*PfE + PfN)), 0.5)
+    Chla_obs ~ log_normal(log(Tc*P*(PCh/PNC)*PfN/(PRN*PfE + PfN)), 0.2)
   }
 
   /* bridging likelihood derived from independent Kriging results */
   sub bridge {
-    const N_ell2 = exp(2*4.12975);
-    const N_sf2 = exp(2*-0.86229);
-    const N_c = 4.9997;
+    const N_ell2 = exp(2*3.85391);
+    const N_sf2 = exp(2*-0.93009);
+    const N_c = 5.0034;
     inline N_k = N_sf2*exp(-0.5*(t_next_obs - t_now)**2/N_ell2);
     inline N_mu = (log(N) - N_c)*N_k/N_sf2 + N_c;
-    inline N_sigma = sqrt(N_sf2 - N_k*N_k/N_sf2 + 0.2**2);
+    inline N_sigma = sqrt(N_sf2 - N_k*N_k/N_sf2 + 0.1**2);
 
-    const Chla_ell2 = exp(2*2.45783);
-    const Chla_sf2 = exp(2*-0.93395);
-    const Chla_c = -0.95532;
+    const Chla_ell2 = exp(2*2.25462);
+    const Chla_sf2 = exp(2*-0.85329);
+    const Chla_c = -0.95785;
     inline Chla_k = Chla_sf2*exp(-0.5*(t_next_obs - t_now)**2/Chla_ell2);
     inline Chla_mu = (log(Chla) - Chla_c)*Chla_k/Chla_sf2 + Chla_c;
-    inline Chla_sigma = sqrt(Chla_sf2 - Chla_k*Chla_k/Chla_sf2 + 0.5**2);
+    inline Chla_sigma = sqrt(Chla_sf2 - Chla_k*Chla_k/Chla_sf2 + 0.1**2);
 
     N_obs ~ log_normal(N_mu, N_sigma);
     Chla_obs ~ log_normal(Chla_mu, Chla_sigma);
