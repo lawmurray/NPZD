@@ -41,7 +41,6 @@ model NPZD {
   state N     // nutrient
   state EZ    // light at depth
   state Chla  // chlorophyl-a
-    //state delta_N
 
   /* rate process autoregressives */
   state PgC  // maximum growth rate for C
@@ -94,7 +93,7 @@ model NPZD {
   inline gammaZmQ = log(muZmQ) + pow(thetaZmQ, 2.0)/2.0 - pow(sigmaZmQ, 2.0)/2.0
 
   /* observations */
-    obs /*delta_N_obs, */N_obs, Chla_obs
+  obs N_obs, Chla_obs
 
   /* processes */
   inline Tc = pow(Q10, (FT - Trf)/10.0)
@@ -108,7 +107,10 @@ model NPZD {
   inline Pg = PgT*PfE*PfN/(PfN + PfE) // phytoplankton growth rate
   inline Zm = ZmQ*Z*Z
 
-  /* prior distribution over parameters */
+  /* bridge weighting function parameters */
+  input N_ell2, N_sf2, N_c;
+  input Chla_ell2, Chla_sf2, Chla_c;
+
   sub parameter {
     Kw ~ log_normal(log(0.03), 0.2)
     KCh ~ log_normal(log(0.02), 0.3)
@@ -166,7 +168,6 @@ model NPZD {
     muZmQ ~ truncated_normal(muZmQ, 0.001, 0.0)*/
   }
 
-  /* prior distribution over initial conditions, given parameters */
   sub initial {
     PgC ~ log_normal(log(muPgC), sigmaPgC)
     PCh ~ log_normal(log(muPCh), sigmaPCh)
@@ -185,7 +186,6 @@ model NPZD {
 
     Chla ~ log_normal(log(0.6469), 0.5)
     EZ ~ log_normal(log(1.1), 1.0)
-      //delta_N <- BCN - N
   }
 
   const prop_std2 = 0.00001
@@ -208,10 +208,8 @@ model NPZD {
 
     Chla ~ log_normal(log(Chla), prop_std2*0.5)
     EZ ~ log_normal(log(EZ), prop_std2*1.0)
-      //delta_N <- BCN - N
   }
 
-  /* transition distribution */
   sub transition(delta = 1.0) {
     /* autoregressive noise terms */
     rPgC ~ log_normal(gammaPgC, sigmaPgC)
@@ -248,33 +246,24 @@ model NPZD {
 
     /* chlorophyl-a */
     Chla <- Tc*P*(PCh/PNC)*PfN/(PRN*PfE + PfN)
-      //delta_N <- BCN - N
   }
 
-  /* observation model */
   sub observation {
-    //delta_N_obs ~ normal(BCN - N, 20.0)
-    N_obs ~ log_normal(log(N), 0.2);
+    N_obs ~ log_normal(log(N), 0.5);
     Chla_obs ~ log_normal(log(Tc*P*(PCh/PNC)*PfN/(PRN*PfE + PfN)), 0.2)
   }
 
-  /* bridging likelihood derived from independent Kriging results */
   sub bridge {
-    const N_ell2 = exp(2*3.85391);
-    const N_sf2 = exp(2*-0.93009);
-    const N_c = 5.0034;
     inline N_k = N_sf2*exp(-0.5*(t_next_obs - t_now)**2/N_ell2);
     inline N_mu = (log(N) - N_c)*N_k/N_sf2 + N_c;
-    inline N_sigma = sqrt(N_sf2 - N_k*N_k/N_sf2 + 0.1**2);
-
-    const Chla_ell2 = exp(2*2.25462);
-    const Chla_sf2 = exp(2*-0.85329);
-    const Chla_c = -0.95785;
-    inline Chla_k = Chla_sf2*exp(-0.5*(t_next_obs - t_now)**2/Chla_ell2);
-    inline Chla_mu = (log(Chla) - Chla_c)*Chla_k/Chla_sf2 + Chla_c;
-    inline Chla_sigma = sqrt(Chla_sf2 - Chla_k*Chla_k/Chla_sf2 + 0.1**2);
+    inline N_sigma = sqrt(N_sf2 - N_k*N_k/N_sf2 + 0.5**2);
 
     N_obs ~ log_normal(N_mu, N_sigma);
+
+    inline Chla_k = Chla_sf2*exp(-0.5*(t_next_obs - t_now)**2/Chla_ell2);
+    inline Chla_mu = (log(Chla) - Chla_c)*Chla_k/Chla_sf2 + Chla_c;
+    inline Chla_sigma = sqrt(Chla_sf2 - Chla_k*Chla_k/Chla_sf2 + 0.2**2);
+
     Chla_obs ~ log_normal(Chla_mu, Chla_sigma);
   }
 }
