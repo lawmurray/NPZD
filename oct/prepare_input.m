@@ -11,8 +11,8 @@ function prepare_input ()
     1;
   };
   sigmas = {
-      0.1;
-      0.1;
+      0.2;
+      0.5;
   };
   nyears = 4; % number of years for inference
 

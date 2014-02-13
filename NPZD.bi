@@ -130,7 +130,7 @@ model NPZD {
     muZmQ ~ log_normal(log(0.01), thetaZmQ)
   }
 
-  const prop_std = 0.00001
+  const prop_std = 0.01
 
   sub proposal_parameter {
     Kw ~ log_normal(log(Kw), 0.2*prop_std)
@@ -145,7 +145,7 @@ model NPZD {
     muPRN ~ log_normal(log(muPRN), thetaPRN*prop_std)
     muASN ~ log_normal(log(muASN), thetaASN*prop_std)
     muZin ~ log_normal(log(muZin), thetaZin*prop_std)
-    muZCl ~ log_normal(log(muZCl), 0.25*thetaZCl*prop_std)
+    muZCl ~ log_normal(log(muZCl), thetaZCl*prop_std)
     muZgE ~ log_normal(log(muZgE), thetaZgE*prop_std)
     muDre ~ log_normal(log(muDre), thetaDre*prop_std)
     muZmQ ~ log_normal(log(muZmQ), thetaZmQ*prop_std)
@@ -188,7 +188,7 @@ model NPZD {
     EZ ~ log_normal(log(1.1), 1.0)
   }
 
-  const prop_std2 = 0.00001
+  const prop_std2 = 0.01
 
   sub proposal_initial {
     PgC ~ log_normal(log(PgC), prop_std2*sigmaPgC)
@@ -256,13 +256,13 @@ model NPZD {
   sub bridge {
     inline N_k = N_sf2*exp(-0.5*(t_next_obs - t_now)**2/N_ell2);
     inline N_mu = (log(N) - N_c)*N_k/N_sf2 + N_c;
-    inline N_sigma = sqrt(N_sf2 - N_k*N_k/N_sf2 + 0.5**2);
+    inline N_sigma = sqrt(N_sf2 - N_k*N_k/N_sf2 + 0.2**2);
 
     N_obs ~ log_normal(N_mu, N_sigma);
 
     inline Chla_k = Chla_sf2*exp(-0.5*(t_next_obs - t_now)**2/Chla_ell2);
     inline Chla_mu = (log(Chla) - Chla_c)*Chla_k/Chla_sf2 + Chla_c;
-    inline Chla_sigma = sqrt(Chla_sf2 - Chla_k*Chla_k/Chla_sf2 + 0.2**2);
+    inline Chla_sigma = sqrt(Chla_sf2 - Chla_k*Chla_k/Chla_sf2 + 0.5**2);
 
     Chla_obs ~ log_normal(Chla_mu, Chla_sigma);
   }
