@@ -15,6 +15,9 @@ model NPZD {
   const PNC = 0.18     // maximum N:C (Redfield)
   const Zex = 2.0      // functional response exponent
 
+  const N_obs_sigma = 0.2     // CV on N observations
+  const Chla_obs_sigma = 0.5  // CV on Chla observations
+
   /* forcings */
   input BCP   // phytoplankton boundary condition
   input BCZ   // zooplankton boundary condition
@@ -68,7 +71,7 @@ model NPZD {
   const thetaZCl = 1.3
   const thetaZgE = 0.25
   const thetaDre = 0.5
-  const thetaZmQ = 1.0  // 0.5?
+  const thetaZmQ = 1.0
 
   /* rate process noise term means */
   inline sigmaPgC = sqrt(log(1.0 + (2.0*Pt - 1.0)*PDF*PDF*(exp(thetaPgC*thetaPgC) - 1.0)))
@@ -131,7 +134,7 @@ model NPZD {
   }
 
   sub proposal_parameter {
-    const scale = 0.01
+    const scale = 0.1
 
     Kw ~ log_normal(log(Kw), 0.2*scale)
     KCh ~ log_normal(log(KCh), 0.3*scale)
@@ -162,35 +165,35 @@ model NPZD {
     Dre ~ log_normal(log(muDre), sigmaDre)
     ZmQ ~ log_normal(log(muZmQ), sigmaZmQ)
 
-    P ~ log_normal(log(2.0), 0.5)
-    Z ~ log_normal(log(4.0), 0.5)
-    D ~ log_normal(log(3.0), 0.5)
-    N ~ log_normal(log(175.0), 0.5)
+    P ~ log_normal(log(2.0), 0.3)
+    Z ~ log_normal(log(4.0), 0.3)
+    D ~ log_normal(log(3.0), 0.3)
+    N ~ log_normal(log(175.0), 0.3)
 
-    Chla ~ log_normal(log(0.6469), 0.5)
+    Chla ~ log_normal(log(0.6), 0.3)
     EZ ~ log_normal(log(1.1), 1.0)
   }
 
   sub proposal_initial {
     const scale = 0.01
 
-    PgC ~ log_normal(log(PgC), scale*sigmaPgC)
-    PCh ~ log_normal(log(PCh), scale*sigmaPCh)
-    PRN ~ log_normal(log(PRN), scale*sigmaPRN)
-    ASN ~ log_normal(log(ASN), scale*sigmaASN)
-    Zin ~ log_normal(log(Zin), scale*sigmaZin)
-    ZCl ~ log_normal(log(ZCl), scale*sigmaZCl)
-    ZgE ~ log_normal(log(ZgE), scale*sigmaZgE)
-    Dre ~ log_normal(log(Dre), scale*sigmaDre)
-    ZmQ ~ log_normal(log(ZmQ), scale*sigmaZmQ)
+    PgC ~ log_normal(log(PgC), sigmaPgC*scale)
+    PCh ~ log_normal(log(PCh), sigmaPCh*scale)
+    PRN ~ log_normal(log(PRN), sigmaPRN*scale)
+    ASN ~ log_normal(log(ASN), sigmaASN*scale)
+    Zin ~ log_normal(log(Zin), sigmaZin*scale)
+    ZCl ~ log_normal(log(ZCl), sigmaZCl*scale)
+    ZgE ~ log_normal(log(ZgE), sigmaZgE*scale)
+    Dre ~ log_normal(log(Dre), sigmaDre*scale)
+    ZmQ ~ log_normal(log(ZmQ), sigmaZmQ*scale)
 
-    P ~ log_normal(log(P), scale*0.5)
-    Z ~ log_normal(log(Z), scale*0.5)
-    D ~ log_normal(log(D), scale*0.5)
-    N ~ log_normal(log(N), scale*0.5)
+    P ~ log_normal(log(P), 0.3*scale)
+    Z ~ log_normal(log(Z), 0.3*scale)
+    D ~ log_normal(log(D), 0.3*scale)
+    N ~ log_normal(log(N), 0.3*scale)
 
-    Chla ~ log_normal(log(Chla), scale*0.5)
-    EZ ~ log_normal(log(EZ), scale*1.0)
+    Chla ~ log_normal(log(Chla), 0.3*scale)
+    EZ ~ log_normal(log(EZ), 1.0*scale)
   }
 
   sub transition(delta = 1.0) {
@@ -234,19 +237,19 @@ model NPZD {
   sub bridge {
     inline N_k = N_sf2*exp(-0.5*(t_next_obs - t_now)**2/N_ell2);
     inline N_mu = (log(N) - N_c)*N_k/N_sf2 + N_c;
-    inline N_sigma = sqrt(N_sf2 - N_k*N_k/N_sf2 + 0.2**2);
+    inline N_sigma = sqrt(N_sf2 - N_k*N_k/N_sf2 + N_obs_sigma**2);
 
-    N_obs ~ log_normal(N_mu, N_sigma);
+    N_obs ~ log_normal(N_mu, 2*N_sigma);
 
     inline Chla_k = Chla_sf2*exp(-0.5*(t_next_obs - t_now)**2/Chla_ell2);
     inline Chla_mu = (log(Chla) - Chla_c)*Chla_k/Chla_sf2 + Chla_c;
-    inline Chla_sigma = sqrt(Chla_sf2 - Chla_k*Chla_k/Chla_sf2 + 0.2**2);
+    inline Chla_sigma = sqrt(Chla_sf2 - Chla_k*Chla_k/Chla_sf2 + Chla_obs_sigma**2);
 
-    Chla_obs ~ log_normal(Chla_mu, Chla_sigma);
+    Chla_obs ~ log_normal(Chla_mu, 2*Chla_sigma);
   }
 
   sub observation {
-    N_obs ~ log_normal(log(N), 0.2);
-    Chla_obs ~ log_normal(log(Tc*P*(PCh/PNC)*PfN/(PRN*PfE + PfN)), 0.2)
+    N_obs ~ log_normal(log(N), N_obs_sigma);
+    Chla_obs ~ log_normal(log(Tc*P*(PCh/PNC)*PfN/(PRN*PfE + PfN)), Chla_obs_sigma)
   }
 }

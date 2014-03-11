@@ -10,10 +10,10 @@
 % @end deftypefn
 %
 function plot_slides ()
-    simulate_file = 'results/simulate_osp.nc';
-    sample_file = 'results/sample_osp.nc';
-    predict_file = 'results/predict_osp.nc';
-    obs_file = 'data/C10_OSP_71_76_obs_pad.nc';
+    simulate_file = 'results/simulate.nc';
+    sample_file = 'results/sample.nc';
+    predict_file = 'results/predict.nc';
+    obs_file = 'data/obs.nc';
     path_range = [10000:4000:100000];
     quantile_range = [10000:100000];
     

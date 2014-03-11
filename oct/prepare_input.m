@@ -1,7 +1,7 @@
 % Copyright (C) 2013
 % Author: Lawrence Murray <lawrence.murray@csiro.au>
 function prepare_input ()
-  nc = netcdf('data/obs_osp.nc', 'r');
+  nc = netcdf('data/obs.nc', 'r');
   vars = {
     'N_obs';
     'Chla_obs';
@@ -12,7 +12,7 @@ function prepare_input ()
   };
   sigmas = {
       0.2;
-      0.2;
+      0.5;
   };
   nyears = 4; % number of years for inference
 
@@ -52,7 +52,7 @@ function prepare_input ()
   ncclose(nc);
 
   % write weight function parameters to input file
-  nc = netcdf('data/input_osp.nc', 'w');
+  nc = netcdf('data/input.nc', 'w');
   nc{'N_ell2'}(:) = ell2(1);
   nc{'N_sf2'}(:) = sf2(1);
   nc{'N_c'}(:) = c(1);;
