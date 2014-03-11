@@ -12,7 +12,7 @@ function prepare_input ()
   };
   sigmas = {
       0.2;
-      0.5;
+      0.2;
   };
   nyears = 4; % number of years for inference
 
@@ -53,22 +53,11 @@ function prepare_input ()
 
   % write weight function parameters to input file
   nc = netcdf('data/input_osp.nc', 'w');
-
-  %nc{'N_ell2'} = ncdouble();
-  %nc{'N_sf2'} = ncdouble();
-  %nc{'N_c'} = ncdouble();
-
   nc{'N_ell2'}(:) = ell2(1);
   nc{'N_sf2'}(:) = sf2(1);
   nc{'N_c'}(:) = c(1);;
-
-  %nc{'Chla_ell2'} = ncdouble();
-  %nc{'Chla_sf2'} = ncdouble();
-  %nc{'Chla_c'} = ncdouble();
-  
   nc{'Chla_ell2'}(:) = ell2(2);
   nc{'Chla_sf2'}(:) = sf2(2);
-  nc{'Chla_c'}(:) = c(2);
- 
+  nc{'Chla_c'}(:) = c(2); 
   ncclose(nc);
 end
