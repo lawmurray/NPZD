@@ -1,7 +1,4 @@
 #!/bin/sh
 
-for N in 32 64 128 256 512 1024
-do
-    libbi test_filter @config.conf @test_filter_osp.conf --filter bootstrap --nparticles $N > bootstrap-$N.csv
-    libbi test_filter @config.conf @test_filter_osp.conf --filter bridge --nparticles $N > bridge-$N.csv
-done
+libbi test_filter @config.conf @test_filter.conf --filer bootstrap --output-file results/test_bootstrap.nc
+libbi test_filter @config.conf @test_filter.conf --filer bridge --output-file results/test_bridge.nc
