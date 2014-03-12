@@ -232,7 +232,7 @@ model NPZD {
 
     /* chlorophyl-a */
     Chla <- Tc*P*(PCh/PNC)*PfN/(PRN*PfE + PfN)
-  }
+  } 
 
   sub bridge {
     inline N_k = N_sf2*exp(-0.5*(t_next_obs - t_now)**2/N_ell2);
