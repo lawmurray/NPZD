@@ -223,7 +223,7 @@ model NPZD {
     EZ <- FE*(1.0 - exp(-Kdz))/Kdz
 
     /* differential system */
-    ode(h = 0.1, atoler = 1.0e-4, rtoler = 1.0e-4, alg = 'RK4(3)') {
+    ode(h = 0.1, atoler = 1.0e-4, rtoler = 1.0e-6, alg = 'RK4(3)') {
       dP/dt = Pg*P - Zgr + FMIX*(BCP - P)
       dZ/dt = Zgr*ZgE - Zm + FMLC/FMLD*(BCZ - Z)
       dD/dt = (1.0 - ZgE)*ZgD*Zgr + Zm - Dre*D - Dsi*D/FMLD + FMIX*(BCD - D)
