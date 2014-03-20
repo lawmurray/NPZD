@@ -134,7 +134,7 @@ model NPZD {
   }
 
   sub proposal_parameter {
-    const scale = 0.1
+    const scale = 0.2
 
     Kw ~ log_normal(log(Kw), 0.2*scale)
     KCh ~ log_normal(log(KCh), 0.3*scale)
