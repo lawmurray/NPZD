@@ -10,51 +10,47 @@
 % @end deftypefn
 %
 function plot_and_print ()
-    FIG_DIR = strcat(pwd, '/figs');
+    FIG_DIR = 'figs';
+    mkdir(FIG_DIR);
     
-    sizes = [ 8 4.5; 10.5 7; 7 10.5; 7 10.5];
+    sizes = [ 9 4.5; 10.5 7; 7 10.5; 7 10.5];
 
-    % output setup
-    for i = 1:rows (sizes)
-        sz = sizes(i,:);
-        figure(i, 'visible', 'off');
-        h = figure(i);
-        set (h, 'papertype', '<custom>');
-        set (h, 'paperunits', 'inches');
-        set (h, 'papersize',  sz);
-        set (h, 'paperposition', [0,0,sz]);
-        set (h, 'defaultaxesfontname', 'Helvetica')
-        set (h, 'defaultaxesfontsize', 8)
-        set (h, 'defaulttextfontname', 'Helvetica')
-        set (h, 'defaulttextfontsize', 8)
-        if sz(1) > sz (2)
-            orient('landscape');
-        else
-            orient('portrait');
-        end
-    end
-    
-    % plot
-    figure(1);
+    sz = [ 9 4 ];
+    set (figure(1), 'papersize', sz);
+    set (figure(1), 'paperposition', [0 0 sz]);
+ 
+    subplot(1,3,1);
+    plot_metric(1);
+    title('MSE(log z)^{-1} Mean(t)^{-1}');
+    xlabel('Bootstrap');
+    ylabel('Bridge');
+    subplot(1,3,2);
+    plot_metric(2);
+    title('ESS(z) Mean(t)^{-1}');
+    xlabel('Bootstrap');
+    subplot(1,3,3);
+    plot_metric(3);
+    title('CAR(z) Mean(t)^{-1}');
+    xlabel('Bootstrap');
+    file = sprintf('%s/metrics.pdf', FIG_DIR);
+    saveas(figure(1), file);
+    system(sprintf('pdfcrop %s %s', file, file));
+   
+    clf;
+    sz = [ 9 4 ];
+    set (figure(1), 'papersize', sz);
+    set (figure(1), 'paperposition', [0 0 sz]);
     plot_state();
-    figure(2);
-    plot_noise();
-    figure(3);
-    plot_parameters(4);
-    figure(4)
-    plot_physics;
-    
-    % print
-    files = {
-        'state';
-        'noise';
-        'parameters';
-        'physics';
-        };
-
-    for i = 1:length (files)
-        file = sprintf('%s/%s.pdf', FIG_DIR, files{i});
-        saveas(figure(i), file);
-        system(sprintf('pdfcrop %s %s', file, file));
-    end
+    file = sprintf('%s/state.pdf', FIG_DIR);
+    saveas(figure(1), file);
+    system(sprintf('pdfcrop %s %s', file, file));
+   
+    clf;
+    sz = [ 11 8 ];
+    set (figure(1), 'papersize', sz);
+    set (figure(1), 'paperposition', [0 0 sz]);
+    plot_parameters();
+    file = sprintf('%s/parameters.pdf', FIG_DIR);
+    saveas(figure(1), file);
+    system(sprintf('pdfcrop %s %s', file, file));
 end
