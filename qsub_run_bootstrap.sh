@@ -6,4 +6,4 @@ cd $PBS_O_WORKDIR
 
 SEED=$PBS_ARRAYID
 
-libbi sample @config.conf @posterior.conf --filter bootstrap --output-file results/posterior_bootstrap.nc --seed $SEED
+libbi sample @config.conf @posterior.conf --filter bootstrap --output-file results/posterior_bootstrap-$SEED.nc --seed $SEED
