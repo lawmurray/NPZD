@@ -113,6 +113,7 @@ model NPZD {
   /* bridge weighting function parameters */
   input N_ell2, N_sf2, N_c;
   input Chla_ell2, Chla_sf2, Chla_c;
+  const lambda = 2.0; // tempering
 
   sub parameter {
     Kw ~ log_normal(log(0.03), 0.2)
@@ -239,13 +240,13 @@ model NPZD {
     inline N_mu = (log(N) - N_c)*N_k/N_sf2 + N_c;
     inline N_sigma = sqrt(N_sf2 - N_k*N_k/N_sf2 + N_obs_sigma**2);
 
-    N_obs ~ log_normal(N_mu, 2*N_sigma);
+    N_obs ~ log_normal(N_mu, lambda*N_sigma);
 
     inline Chla_k = Chla_sf2*exp(-0.5*(t_next_obs - t_now)**2/Chla_ell2);
     inline Chla_mu = (log(Chla) - Chla_c)*Chla_k/Chla_sf2 + Chla_c;
     inline Chla_sigma = sqrt(Chla_sf2 - Chla_k*Chla_k/Chla_sf2 + Chla_obs_sigma**2);
 
-    Chla_obs ~ log_normal(Chla_mu, 2*Chla_sigma);
+    Chla_obs ~ log_normal(Chla_mu, lambda*Chla_sigma);
   }
 
   sub observation {
