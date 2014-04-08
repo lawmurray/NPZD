@@ -35,10 +35,12 @@ function plot_metric(metric)
 
     for i = 1:rows(y{1})
         for j = 1:columns(y{1})
-            if y{1}(i,j) > y{2}(i,j)
+            if y{1}(i,j) >= 2*y{2}(i,j)
                 col = watercolour(1);
-            else
+            elseif y{2}(i,j) >= 2*y{1}(i,j)
                 col = watercolour(2);
+            else
+                col = [0.7 0.7 0.7];
             end
             h = loglog(y{1}(i,j), y{2}(i,j), '.', 'color', col, ...
                 'markersize', sqrt(3*P(j)/pi));
