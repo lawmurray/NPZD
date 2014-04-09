@@ -10,53 +10,43 @@
 % @end deftypefn
 %
 function prepare_init ()
-    nci = netcdf('results/simulate.nc.0', 'r');
-    nco = netcdf('data/C10_OSP_71_76_likelihood_init.nc', 'c');    
-    names = {
-        'PgC';
-        'PCh';
-        'PRN';
-        'ASN';
-        'Zin';
-        'ZCl';
-        'ZgE';
-        'Dre';
-        'ZmQ';
-        'EZ';
-        'Chla';
-        'P';
-        'Z';
-        'D';
-        'N';
-        'Kw';
-        'KCh';
-        'Dsi';
-        'ZgD';
-        'PDF';
-        'ZDF';
-        'muPgC';
-        'muPCh';
-        'muPRN';
-        'muASN';
-        'muZin';
-        'muZCl';
-        'muZgE';
-        'muDre';
-        'muZmQ';
-    };
-    
-    % dimensions
-    nco('np') = length(nci('np'));
-    
-    % variables
-    for i = 1:length(names)
-        x = squeeze(nci{names{i}}(end,:));
-        nco{names{i}} = ncdouble('np');
-        nco{names{i}}(:) = x;
+    init_file = 'data/init.nc';
+
+    % create init file
+    try
+      nccreate(init_file, 'Kw');
+      nccreate(init_file, 'KCh');
+      nccreate(init_file, 'Dsi');
+      nccreate(init_file, 'ZgD');
+      nccreate(init_file, 'PDF');
+      nccreate(init_file, 'ZDF');
+      nccreate(init_file, 'muPgC');
+      nccreate(init_file, 'muPCh');
+      nccreate(init_file, 'muPRN');
+      nccreate(init_file, 'muASN');
+      nccreate(init_file, 'muZin');
+      nccreate(init_file, 'muZCl');
+      nccreate(init_file, 'muZgE');
+      nccreate(init_file, 'muDre');
+      nccreate(init_file, 'muZmQ');
+    catch
+        % assume variables already exist...
     end
     
-    ncclose(nci);
-    ncclose(nco);
+    % initialise from previous pilot run
+    ncwrite(init_file, 'Kw', 0.038883);
+    ncwrite(init_file, 'KCh', 0.0083430);
+    ncwrite(init_file, 'Dsi', 4.2340);
+    ncwrite(init_file, 'ZgD', 0.44591);
+    ncwrite(init_file, 'PDF', 0.29149);
+    ncwrite(init_file, 'ZDF', 0.22972);
+    ncwrite(init_file, 'muPgC', 0.47164);
+    ncwrite(init_file, 'muPCh', 0.030454);
+    ncwrite(init_file, 'muPRN', 0.22213);
+    ncwrite(init_file, 'muASN', 1.0067);
+    ncwrite(init_file, 'muZin', 3.9780);
+    ncwrite(init_file, 'muZCl', 0.26615);
+    ncwrite(init_file, 'muZgE', 0.29899);
+    ncwrite(init_file, 'muDre', 0.13225);
+    ncwrite(init_file, 'muZmQ', 0.0092010);
 end
-
- 

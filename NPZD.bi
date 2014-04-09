@@ -117,7 +117,7 @@ model NPZD {
 
   sub parameter {
     Kw ~ log_normal(log(0.03), 0.2)
-    KCh ~ log_normal(log(0.02), 0.3)
+    KCh ~ log_normal(log(0.02), 0.4)
     Dsi ~ normal(5.0, 1.0)
     ZgD ~ log_normal(log(0.5), 0.1)
     PDF ~ log_normal(log(0.2), 0.4)
@@ -138,21 +138,21 @@ model NPZD {
     const scale = 0.2
 
     Kw ~ log_normal(log(Kw), 0.2*scale)
-    KCh ~ log_normal(log(KCh), 0.3*scale)
+    KCh ~ log_normal(log(KCh), 0.4*scale)
     Dsi ~ gaussian(Dsi, 1.0*scale)
     ZgD ~ log_normal(log(ZgD), 0.1*scale)
-    PDF ~ log_normal(log(PDF), 0.4*scale)
+    PDF ~ log_normal(log(PDF), 0.2*scale)
     ZDF ~ log_normal(log(ZDF), 0.4*scale)
 
-    muPgC ~ log_normal(log(muPgC), thetaPgC*scale)
-    muPCh ~ log_normal(log(muPCh), thetaPCh*scale)
-    muPRN ~ log_normal(log(muPRN), thetaPRN*scale)
-    muASN ~ log_normal(log(muASN), thetaASN*scale)
-    muZin ~ log_normal(log(muZin), thetaZin*scale)
-    muZCl ~ log_normal(log(muZCl), thetaZCl*scale)
-    muZgE ~ log_normal(log(muZgE), thetaZgE*scale)
-    muDre ~ log_normal(log(muDre), thetaDre*scale)
-    muZmQ ~ log_normal(log(muZmQ), thetaZmQ*scale)
+    muPgC ~ log_normal(log(muPgC), 0.4*scale)
+    muPCh ~ log_normal(log(muPCh), 0.2*scale)
+    muPRN ~ log_normal(log(muPRN), 0.3*scale)
+    muASN ~ log_normal(log(muASN), 0.8*scale)
+    muZin ~ log_normal(log(muZin), 0.7*scale)
+    muZCl ~ log_normal(log(muZCl), 1.2*scale)
+    muZgE ~ log_normal(log(muZgE), 0.2*scale)
+    muDre ~ log_normal(log(muDre), 0.5*scale)
+    muZmQ ~ log_normal(log(muZmQ), 0.9*scale)
   }
 
   sub initial {
