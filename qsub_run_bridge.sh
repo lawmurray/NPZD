@@ -4,6 +4,4 @@
 source $HOME/init.sh
 cd $PBS_O_WORKDIR
 
-SEED=$PBS_ARRAYID
-
-libbi sample @config.conf @posterior.conf --filter bridge --output-file results/posterior_bridge-$SEED.nc --seed $SEED
+libbi sample @config.conf @posterior.conf --filter bridge --output-file results/posterior_bridge.nc
