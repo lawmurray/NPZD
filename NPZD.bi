@@ -135,14 +135,14 @@ model NPZD {
   }
 
   sub proposal_parameter {
-    const scale = 0.2
+    const scale = 0.4
 
     Kw ~ log_normal(log(Kw), 0.2*scale)
     KCh ~ log_normal(log(KCh), 0.4*scale)
-    Dsi ~ gaussian(Dsi, 1.0*scale)
-    ZgD ~ log_normal(log(ZgD), 0.1*scale)
-    PDF ~ log_normal(log(PDF), 0.2*scale)
-    ZDF ~ log_normal(log(ZDF), 0.4*scale)
+    Dsi ~ gaussian(Dsi, 0.5*scale)
+    ZgD ~ log_normal(log(ZgD), 0.05*scale)
+    PDF ~ log_normal(log(PDF), 0.1*scale)
+    ZDF ~ log_normal(log(ZDF), 0.2*scale)
 
     muPgC ~ log_normal(log(muPgC), 0.4*scale)
     muPCh ~ log_normal(log(muPCh), 0.2*scale)
@@ -175,28 +175,6 @@ model NPZD {
     EZ ~ log_normal(log(1.1), 1.0)
   }
 
-  sub proposal_initial {
-    const scale = 0.01
-
-    PgC ~ log_normal(log(PgC), sigmaPgC*scale)
-    PCh ~ log_normal(log(PCh), sigmaPCh*scale)
-    PRN ~ log_normal(log(PRN), sigmaPRN*scale)
-    ASN ~ log_normal(log(ASN), sigmaASN*scale)
-    Zin ~ log_normal(log(Zin), sigmaZin*scale)
-    ZCl ~ log_normal(log(ZCl), sigmaZCl*scale)
-    ZgE ~ log_normal(log(ZgE), sigmaZgE*scale)
-    Dre ~ log_normal(log(Dre), sigmaDre*scale)
-    ZmQ ~ log_normal(log(ZmQ), sigmaZmQ*scale)
-
-    P ~ log_normal(log(P), 0.3*scale)
-    Z ~ log_normal(log(Z), 0.3*scale)
-    D ~ log_normal(log(D), 0.3*scale)
-    N ~ log_normal(log(N), 0.3*scale)
-
-    Chla ~ log_normal(log(Chla), 0.3*scale)
-    EZ ~ log_normal(log(EZ), 1.0*scale)
-  }
-
   sub transition(delta = 1.0) {
     /* autoregressive noise terms */
     rPgC ~ log_normal(gammaPgC, sigmaPgC)
@@ -224,7 +202,7 @@ model NPZD {
     EZ <- FE*(1.0 - exp(-Kdz))/Kdz
 
     /* differential system */
-    ode(h = 0.1, atoler = 1.0e-4, rtoler = 1.0e-6, alg = 'RK4(3)') {
+    ode(h = 0.1, atoler = 1.0e-3, rtoler = 1.0e-5, alg = 'RK4(3)') {
       dP/dt = Pg*P - Zgr + FMIX*(BCP - P)
       dZ/dt = Zgr*ZgE - Zm + FMLC/FMLD*(BCZ - Z)
       dD/dt = (1.0 - ZgE)*ZgD*Zgr + Zm - Dre*D - Dsi*D/FMLD + FMIX*(BCD - D)
