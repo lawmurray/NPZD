@@ -34,19 +34,19 @@ function prepare_init ()
     end
     
     % initialise from previous pilot run
-    ncwrite(init_file, 'Kw', 0.038883);
-    ncwrite(init_file, 'KCh', 0.0083430);
-    ncwrite(init_file, 'Dsi', 4.2340);
-    ncwrite(init_file, 'ZgD', 0.44591);
-    ncwrite(init_file, 'PDF', 0.29149);
-    ncwrite(init_file, 'ZDF', 0.22972);
-    ncwrite(init_file, 'muPgC', 0.47164);
-    ncwrite(init_file, 'muPCh', 0.030454);
-    ncwrite(init_file, 'muPRN', 0.22213);
-    ncwrite(init_file, 'muASN', 1.0067);
-    ncwrite(init_file, 'muZin', 3.9780);
-    ncwrite(init_file, 'muZCl', 0.26615);
-    ncwrite(init_file, 'muZgE', 0.29899);
-    ncwrite(init_file, 'muDre', 0.13225);
-    ncwrite(init_file, 'muZmQ', 0.0092010);
+    ncwrite(init_file, 'Kw', 0.020219);
+    ncwrite(init_file, 'KCh', 0.016772);
+    ncwrite(init_file, 'Dsi', 5.6781);
+    ncwrite(init_file, 'ZgD', 0.54331);
+    ncwrite(init_file, 'PDF', 0.20884);
+    ncwrite(init_file, 'ZDF', 0.09371);
+    ncwrite(init_file, 'muPgC', 0.78802);
+    ncwrite(init_file, 'muPCh', 0.042694);
+    ncwrite(init_file, 'muPRN', 0.20349);
+    ncwrite(init_file, 'muASN', 0.50564);
+    ncwrite(init_file, 'muZin', 6.2798);
+    ncwrite(init_file, 'muZCl', 0.15968);
+    ncwrite(init_file, 'muZgE', 0.43887);
+    ncwrite(init_file, 'muDre', 0.12111);
+    ncwrite(init_file, 'muZmQ', 0.038316);
 end

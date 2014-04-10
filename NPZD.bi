@@ -135,14 +135,14 @@ model NPZD {
   }
 
   sub proposal_parameter {
-    const scale = 0.4
+    const scale = 0.2
 
     Kw ~ log_normal(log(Kw), 0.2*scale)
     KCh ~ log_normal(log(KCh), 0.4*scale)
-    Dsi ~ gaussian(Dsi, 0.5*scale)
-    ZgD ~ log_normal(log(ZgD), 0.05*scale)
-    PDF ~ log_normal(log(PDF), 0.1*scale)
-    ZDF ~ log_normal(log(ZDF), 0.2*scale)
+    Dsi ~ gaussian(Dsi, 1.0*scale)
+    ZgD ~ log_normal(log(ZgD), 0.1*scale)
+    PDF ~ log_normal(log(PDF), 0.2*scale)
+    ZDF ~ log_normal(log(ZDF), 0.4*scale)
 
     muPgC ~ log_normal(log(muPgC), 0.4*scale)
     muPCh ~ log_normal(log(muPCh), 0.2*scale)
