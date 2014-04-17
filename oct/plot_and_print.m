@@ -13,12 +13,11 @@ function plot_and_print ()
     FIG_DIR = 'figs';
     mkdir(FIG_DIR);
     
-    sizes = [ 9 4.5; 10.5 7; 7 10.5; 7 10.5];
-
-    sz = [ 9 4 ];
+    sz = [ 12 9 ];
     set (figure(1), 'papersize', sz);
     set (figure(1), 'paperposition', [0 0 sz]);
- 
+
+    clf;
     subplot(1,3,1);
     plot_metric(1);
     title('MSE(log z)^{-1} Mean(t)^{-1}');
@@ -37,7 +36,7 @@ function plot_and_print ()
     system(sprintf('pdfcrop %s %s', file, file));
    
     clf;
-    sz = [ 9 4 ];
+    sz = [ 12 9 ];
     set (figure(1), 'papersize', sz);
     set (figure(1), 'paperposition', [0 0 sz]);
     plot_state();
@@ -46,7 +45,7 @@ function plot_and_print ()
     system(sprintf('pdfcrop %s %s', file, file));
    
     clf;
-    sz = [ 11 8 ];
+    sz = [ 12 12 ];
     set (figure(1), 'papersize', sz);
     set (figure(1), 'paperposition', [0 0 sz]);
     plot_parameters();

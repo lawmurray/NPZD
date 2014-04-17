@@ -4,7 +4,7 @@
 % $Date$
 
 % -*- texinfo -*-
-% @deftypefn {Function File} plot_parameters (@var{osp})
+% @deftypefn {Function File} plot_parameters ()
 %
 % Produce plot of parameter posteriors for NPZD model.
 %
@@ -13,8 +13,7 @@
 % @end itemize
 % @end deftypefn
 %
-function plot_parameters (osp)
-    ps = [25000:100000];
+function plot_parameters ()
     vars = invars();
     names = papernames();
     [mus, sigmas] = priors();
@@ -24,7 +23,7 @@ function plot_parameters (osp)
         name = nice_name (names{i});
         
         % posterior histogram
-        bi_hist('results/posterior.nc', vars{i}, [], ps);
+        bi_hist('results/posterior.nc', vars{i});
         hold on;
         ax = axis();
         x = linspace(ax(1), ax(2), 500);
@@ -35,5 +34,6 @@ function plot_parameters (osp)
         end
         bi_plot_prior(x, priorpdf, {mus(i), sigmas(i)}); 
         title(nice_name(names{i}));
+        grid on;
     end
 end

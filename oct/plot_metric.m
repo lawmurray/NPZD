@@ -25,6 +25,8 @@ function plot_metric(metric)
                 tmp = ess(L)./mean(T);
             elseif metric == 3
                 tmp = car(L)./mean(T);
+            elseif metric == 4
+                tmp = 1.0./mean(T);
             end
             y{i} = [ y{i}; tmp ];
             
