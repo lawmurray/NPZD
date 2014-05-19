@@ -39,7 +39,7 @@ Murray, L. M.; Jones, E. M. & Parslow, J. On collapsed state-space models and
 the particle marginal Metropolis-Hastings sampler, 2013.
 
 Del Moral, P. & Murray, L. M. Sequential Monte Carlo with Highly Informative
-Observations, 2014.
+Observations, 2014. [\[arXiv\]](http://arxiv.org/abs/1405.4081)
 
 Matear, R. Parameter optimization and analysis of ecosystem models using
 simulated annealing: A case study at Station P. *Journal of Marine Research*,
